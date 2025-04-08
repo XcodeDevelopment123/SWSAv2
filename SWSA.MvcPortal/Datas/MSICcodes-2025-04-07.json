@@ -1,0 +1,5832 @@
+[
+  {
+    "Code": "00000",
+    "Description": "NOT APPLICABLE",
+    "CategoryReferences": ""
+  },
+  {
+    "Code": "01111",
+    "Description": "Growing of maize",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01112",
+    "Description": "Growing of leguminous crops",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01113",
+    "Description": "Growing of oil seeds",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01119",
+    "Description": "Growing of other cereals n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01120",
+    "Description": "Growing of paddy",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01131",
+    "Description": "Growing of leafy or stem vegetables",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01132",
+    "Description": "Growing of fruits bearing vegetables",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01133",
+    "Description": "Growing of melons",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01134",
+    "Description": "Growing of mushrooms and truffles",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01135",
+    "Description": "Growing of vegetables seeds, except beet seeds",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01136",
+    "Description": "Growing of other vegetables",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01137",
+    "Description": "Growing of sugar beet",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01138",
+    "Description": "Growing of roots, tubers, bulb or tuberous vegetables",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01140",
+    "Description": "Growing of sugar cane",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01150",
+    "Description": "Growing of tobacco",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01160",
+    "Description": "Growing of fibre crops",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01191",
+    "Description": "Growing of flowers",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01192",
+    "Description": "Growing of flower seeds",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01193",
+    "Description": "Growing of sago (rumbia)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01199",
+    "Description": "Growing of other non-perennial crops n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01210",
+    "Description": "Growing of grapes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01221",
+    "Description": "Growing of banana",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01222",
+    "Description": "Growing of mango",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01223",
+    "Description": "Growing of durian",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01224",
+    "Description": "Growing of rambutan",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01225",
+    "Description": "Growing of star fruit",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01226",
+    "Description": "Growing of papaya",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01227",
+    "Description": "Growing of pineapple",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01228",
+    "Description": "Growing of pitaya (dragon fruit)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01229",
+    "Description": "Growing of other tropical and subtropical fruits n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01231",
+    "Description": "Growing of pomelo",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01232",
+    "Description": "Growing of lemon and limes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01233",
+    "Description": "Growing of tangerines and mandarin",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01239",
+    "Description": "Growing of other citrus fruits n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01241",
+    "Description": "Growing of guava",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01249",
+    "Description": "Growing of other pome fruits and stones fruits n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01251",
+    "Description": "Growing of berries",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01252",
+    "Description": "Growing of fruit seeds",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01253",
+    "Description": "Growing of edible nuts",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01259",
+    "Description": "Growing of other tree and bush fruits",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01261",
+    "Description": "Growing of oil palm (estate)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01262",
+    "Description": "Growing of oil palm (smallholdings)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01263",
+    "Description": "Growing of coconut (estate and smallholdings)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01269",
+    "Description": "Growing of other oleaginous fruits n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01271",
+    "Description": "Growing of coffee",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01272",
+    "Description": "Growing of tea",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01273",
+    "Description": "Growing of cocoa",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01279",
+    "Description": "Growing of other beverage crops n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01281",
+    "Description": "Growing of pepper (piper nigrum)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01282",
+    "Description": "Growing of chilies and pepper (capsicum spp.)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01283",
+    "Description": "Growing of nutmeg",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01284",
+    "Description": "Growing of ginger",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01285",
+    "Description": "Growing of plants used primarily in perfumery, in pharmacy or for insecticidal, fungicidal or similar purposes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01289",
+    "Description": "Growing of other spices and aromatic crops n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01291",
+    "Description": "Growing  of rubber trees (estate)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01292",
+    "Description": "Growing of rubber trees (smallholdings)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01293",
+    "Description": "Growing of trees for extraction of sap",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01294",
+    "Description": "Growing of nipa palm",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01295",
+    "Description": "Growing of areca",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01296",
+    "Description": "Growing of roselle",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01299",
+    "Description": "Growing of other perennial crops n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01301",
+    "Description": "Growing of plants for planting",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01302",
+    "Description": "Growing of plants for ornamental purposes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01303",
+    "Description": "Growing of live plants for bulbs, tubers and roots; cuttings and slips; mushroom spawn",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01304",
+    "Description": "Operation of tree nurseries",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01411",
+    "Description": "Raising, breeding and production of cattle or buffaloes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01412",
+    "Description": "Production of raw milk from cows or buffaloes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01413",
+    "Description": "Production of bovine semen",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01420",
+    "Description": "Raising and breeding of horses, asses, mules or hinnes",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01430",
+    "Description": "Raising and breeding of camels (dromedary) and camelids",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01441",
+    "Description": "Raising, breeding and production of sheep and goats",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01442",
+    "Description": "Production of raw sheep or goat’s milk",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01443",
+    "Description": "Production of raw wool",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01450",
+    "Description": "Raising, breeding and production of swine/pigs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01461",
+    "Description": "Raising, breeding and production of chicken, broiler",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01462",
+    "Description": "Raising, breeding and production of ducks",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01463",
+    "Description": "Raising, breeding and production of geese",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01464",
+    "Description": "Raising, breeding and production of quails",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01465",
+    "Description": "Raising and breeding of other poultry n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01466",
+    "Description": "Production of chicken eggs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01467",
+    "Description": "Production of duck eggs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01468",
+    "Description": "Production of other poultry eggs n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01469",
+    "Description": "Operation of poultry hatcheries",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01491",
+    "Description": "Raising, breeding and production of semi-domesticated",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01492",
+    "Description": "Production of fur skins, reptile or bird’s skin from ranching operation",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01493",
+    "Description": "Operation of worm farms, land mollusc farms, snail farms",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01494",
+    "Description": "Raising of silk worms and production of silk worm cocoons",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01495",
+    "Description": "Bee keeping and production of honey and beeswax",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01496",
+    "Description": "Raising and breeding of pet animals",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01497",
+    "Description": "Raising and breeding of swiflet",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01499",
+    "Description": "Raising of diverse/other animals n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01500",
+    "Description": "Mixed Farming",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01610",
+    "Description": "Agricultural activities for crops production on a fee or contract basis",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01620",
+    "Description": "Agricultural activities for animal production on a fee or contract basis",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01631",
+    "Description": "Preparation of crops for primary markets",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01632",
+    "Description": "Preparation of tobacco leaves",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01633",
+    "Description": "Preparation of cocoa beans",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01634",
+    "Description": "Sun-drying of fruits and vegetables",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01640",
+    "Description": "Seed processing for propagation",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01701",
+    "Description": "Hunting and trapping on a commercial basis",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "01702",
+    "Description": "Taking of animals (dead or alive)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02101",
+    "Description": "Planting, replanting, transplanting, thinning and conserving of forests and timber tracts",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02102",
+    "Description": "Growing of coppice, pulpwood and fire wood",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02103",
+    "Description": "Operation of forest tree nurseries",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02104",
+    "Description": "Collection and raising of wildings (peat swamp forest tree species)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02105",
+    "Description": "Forest plantation",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02201",
+    "Description": "Production of round wood for forest-based manufacturing industries",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02202",
+    "Description": "Production of round wood used in an unprocessed form",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02203",
+    "Description": "Production of charcoal in the forest (using traditional methods)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02204",
+    "Description": "Rubber wood logging",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02301",
+    "Description": "Collection of rattan, bamboo",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02302",
+    "Description": "Bird’s nest collection",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02303",
+    "Description": "Wild sago palm collection",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02309",
+    "Description": "Gathering of non-wood forest products n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02401",
+    "Description": "Carrying out part of the forestry and forest plantation operation on a fee or contract basis for forestry service activities",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "02402",
+    "Description": "Carrying out part of the forestry operation on a fee or contract basis for logging service activities",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03111",
+    "Description": "Fishing on a commercial basis in ocean and coastal waters",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03112",
+    "Description": "Collection of marine crustaceans and molluscs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03113",
+    "Description": "Taking of aquatic animals: sea squirts, tunicates, sea urchins",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03114",
+    "Description": "Activities of vessels engaged both in fishing and in processing and preserving of fish",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03115",
+    "Description": "Gathering of other marine organisms and materials (natural pearls, sponges, coral and algae)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03119",
+    "Description": "Marine fishing n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03121",
+    "Description": "Fishing on a commercial basis in inland waters",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03122",
+    "Description": "Taking of freshwater crustaceans and molluscs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03123",
+    "Description": "Taking of freshwater aquatic animals",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03124",
+    "Description": "Gathering of freshwater flora and fauna",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03129",
+    "Description": "Freshwater fishing n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03211",
+    "Description": "Fish farming in sea water",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03212",
+    "Description": "Production of bivalve spat (oyster, mussel), lobster lings, shrimp post-larvae, fish fry and fingerlings",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03213",
+    "Description": "Growing of laver and other edible seaweeds",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03214",
+    "Description": "Culture of crustaceans, bivalves, other molluscs and other aquatic animals in sea water",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03215",
+    "Description": "Aquaculture activities in brackish water",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03216",
+    "Description": "Aquaculture activities in salt water filled tanks or reservoirs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03217",
+    "Description": "Operation of  hatcheries (marine)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03218",
+    "Description": "Operation of marine worm farms for fish feed",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03219",
+    "Description": "Marine aquaculture n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03221",
+    "Description": "Fish farming in freshwater",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03222",
+    "Description": "Shrimp farming in freshwater",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03223",
+    "Description": "Culture of freshwater crustaceans, bivalves, other molluscs and other aquatic animals",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03224",
+    "Description": "Operation of hatcheries (freshwater)",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03225",
+    "Description": "Farming of frogs",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "03229",
+    "Description": "Freshwater aquaculture n.e.c.",
+    "CategoryReferences": "A"
+  },
+  {
+    "Code": "05100",
+    "Description": "Mining of hard coal",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "05200",
+    "Description": "Mining of lignite (brown coal)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06101",
+    "Description": "Extraction of crude petroleum oils",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06102",
+    "Description": "Extraction of bituminous or oil shale and tar sand",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06103",
+    "Description": "Production of crude petroleum from bituminous shale and sand",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06104",
+    "Description": "Processes to obtain crude oils",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06201",
+    "Description": "Production of crude gaseous hydrocarbon (natural gas)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06202",
+    "Description": "Extraction of condensates",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06203",
+    "Description": "Draining and separation of liquid hydrocarbon fractions",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06204",
+    "Description": "Gas desulphurization",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "06205",
+    "Description": "Mining of hydrocarbon liquids, obtain through liquefaction or pyrolysis",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07101",
+    "Description": "Mining of ores valued chiefly for iron content",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07102",
+    "Description": "Beneficiation and agglomeration of iron ores",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07210",
+    "Description": "Mining of uranium and thorium ores",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07291",
+    "Description": "Mining of tin ores",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07292",
+    "Description": "Mining of copper",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07293",
+    "Description": "Mining of bauxite (aluminium)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07294",
+    "Description": "Mining of ilmenite",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07295",
+    "Description": "Mining of gold",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07296",
+    "Description": "Mining of silver",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07297",
+    "Description": "Mining of platinum",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07298",
+    "Description": "Amang retreatment",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "07299",
+    "Description": "Mining of other non-ferrous metal ores n.e.c.",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08101",
+    "Description": "Quarrying, rough trimming and sawing of monumental and building stone such as marble, granite (dimension stone), sandstone",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08102",
+    "Description": "Quarrying, crushing and breaking of limestone",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08103",
+    "Description": "Mining of gypsum and anhydrite",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08104",
+    "Description": "Mining of chalk and uncalcined dolomite",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08105",
+    "Description": "Extraction and dredging of industrial sand, sand for construction and gravel",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08106",
+    "Description": "Breaking and crushing of stone and gravel",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08107",
+    "Description": "Quarrying of sand",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08108",
+    "Description": "Mining of clays, refractory clays and kaolin",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08109",
+    "Description": "Quarrying, crushing and breaking of granite",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08911",
+    "Description": "Mining of natural phosphates",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08912",
+    "Description": "Mining of natural potassium salts",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08913",
+    "Description": "Mining of native sulphur",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08914",
+    "Description": "Extraction and preparation of pyrites and pyrrhotite, except roasting",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08915",
+    "Description": "Mining of natural barium sulphate and carbonate (barytes and witherite)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08916",
+    "Description": "Mining of natural borates, natural magnesium sulphates (kieserite)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08917",
+    "Description": "Mining of earth colours, fluorspar and other minerals valued chiefly as a source of chemicals",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08918",
+    "Description": "Guano mining",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08921",
+    "Description": "Peat digging",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08922",
+    "Description": "Peat agglomeration",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08923",
+    "Description": "Preparation of peat to improve quality or facilitate transport or storage",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08931",
+    "Description": "Extraction of salt from underground",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08932",
+    "Description": "Salt production by evaporation of sea water or other saline waters",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08933",
+    "Description": "Crushing, purification and refining of salt by the producer",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08991",
+    "Description": "Mining and quarrying of abrasive materials",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08992",
+    "Description": "Mining and quarrying of asbestos",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08993",
+    "Description": "Mining and quarrying of siliceous fossil meals",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08994",
+    "Description": "Mining and quarrying of natural graphite",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08995",
+    "Description": "Mining and quarrying of steatite (talc)",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08996",
+    "Description": "Mining and quarrying of gemstones",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "08999",
+    "Description": "Other mining and quarrying n.e.c.",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "09101",
+    "Description": "Oil and gas extraction service activities provided on a fee or contract basis",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "09102",
+    "Description": "Oil and gas field fire fighting services",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "09900",
+    "Description": "Support activities for other mining and quarrying",
+    "CategoryReferences": "B"
+  },
+  {
+    "Code": "10101",
+    "Description": "Processing and preserving of meat and production of meat products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10102",
+    "Description": "Processing and preserving of poultry and poultry products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10103",
+    "Description": "Production of hides and skins originating from slaughterhouses",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10104",
+    "Description": "Operation of slaughterhouses engaged in killing, houses dressing or packing meat",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10109",
+    "Description": "Processing and preserving of meat n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10201",
+    "Description": "Canning of fish, crustaceans and mollusks",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10202",
+    "Description": "Processing, curing and preserving of fish, crustacean and molluscs",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10203",
+    "Description": "Production of fish meals for human consumption or animal feed",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10204",
+    "Description": "Production of keropok including keropok lekor",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10205",
+    "Description": "Processing of seaweed",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10301",
+    "Description": "Manufacture of fruits and vegetable food products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10302",
+    "Description": "Manufacture of fruit and vegetable juices",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10303",
+    "Description": "Pineapple canning",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10304",
+    "Description": "Manufacture of jams, marmalades and table jellies",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10305",
+    "Description": "Manufacture of nuts and nut products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10306",
+    "Description": "Manufacture of bean curd products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10401",
+    "Description": "Manufacture of crude palm oil",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10402",
+    "Description": "Manufacture of refined palm oil",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10403",
+    "Description": "Manufacture of palm kernel oil",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10404",
+    "Description": "Manufacture of crude and refined vegetable oil",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10405",
+    "Description": "Manufacture of coconut oil",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10406",
+    "Description": "Manufacture of compound cooking fats",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10407",
+    "Description": "Manufacture of animal oils and fats",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10501",
+    "Description": "Manufacture of ice cream and other edible ice such as sorbet",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10502",
+    "Description": "Manufacture of condensed, powdered and evaporated milk",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10509",
+    "Description": "Manufacture of other dairy products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10611",
+    "Description": "Rice milling",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10612",
+    "Description": "Provision of milling services",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10613",
+    "Description": "Flour milling",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10619",
+    "Description": "Manufacture of grain mill products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10621",
+    "Description": "Manufacture of starches and starch products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10622",
+    "Description": "Manufacture of glucose, glucose syrup, maltose, inulin",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10623",
+    "Description": "Manufacture of sago and tapioca flour/products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10711",
+    "Description": "Manufacture of biscuits and cookies",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10712",
+    "Description": "Manufacture of bread, cakes and other bakery products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10713",
+    "Description": "Manufacture of snack products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10714",
+    "Description": "Manufacture of frozen bakery products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10721",
+    "Description": "Manufacture of sugar",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10722",
+    "Description": "Manufacture of sugar products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10731",
+    "Description": "Manufacture of cocoa products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10732",
+    "Description": "Manufacture of chocolate and chocolate products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10733",
+    "Description": "Manufacture of sugar confectionery",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10741",
+    "Description": "Manufacture of meehoon, noodles and other related products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10742",
+    "Description": "Manufacture of pastas",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10750",
+    "Description": "Manufacture of prepared meals and dishes",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10791",
+    "Description": "Manufacture of coffee",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10792",
+    "Description": "Manufacture of tea",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10793",
+    "Description": "Manufacture of sauces and condiments",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10794",
+    "Description": "Manufacture of spices and curry powder",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10795",
+    "Description": "Manufacture of egg products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10799",
+    "Description": "Manufacture of other food products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "10800",
+    "Description": "Manufacture of prepared animal feeds",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "11010",
+    "Description": "Distilling, rectifying and blending of spirits",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "11020",
+    "Description": "Manufacture of wines",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "11030",
+    "Description": "Manufacture of malt liquors and malt",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "11041",
+    "Description": "Manufacture of soft drinks",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "11042",
+    "Description": "Production of natural mineral water and other bottled water",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "12000",
+    "Description": "MANUFACTURE OF TOBACCO PRODUCTS",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13110",
+    "Description": "Preparation and spinning of textile fibres",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13120",
+    "Description": "Weaving of textiles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13131",
+    "Description": "Batik making",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13132",
+    "Description": "Dyeing, bleaching, printing and finishing of yarns and fabrics",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13139",
+    "Description": "Other finishing textiles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13910",
+    "Description": "Manufacture of knitted and crocheted fabrics",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13921",
+    "Description": "Manufacture of made-up articles of any textile materials, including of knitted or crocheted fabrics",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13922",
+    "Description": "Manufacture of made-up furnishing articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13930",
+    "Description": "Manufacture of carpets and rugs",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13940",
+    "Description": "Manufacture of cordage, rope, twine and netting",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "13990",
+    "Description": "Manufacture of other textiles n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14101",
+    "Description": "Manufacture of specific wearing apparel",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14102",
+    "Description": "Manufacture of clothings",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14103",
+    "Description": "Custom tailoring",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14109",
+    "Description": "Manufacture of other clothing accessories",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14200",
+    "Description": "Manufacture of articles made of fur skins",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "14300",
+    "Description": "Manufacture of knitted and crocheted apparel",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15110",
+    "Description": "Tanning and dressing of leather; dressing and dyeing of fur",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15120",
+    "Description": "Manufacture of luggage, handbags and the like, saddlery and harness",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15201",
+    "Description": "Manufacture of leather footwear",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15202",
+    "Description": "Manufacture of plastic footwear",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15203",
+    "Description": "Manufacture of rubber footwear",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "15209",
+    "Description": "Manufacture of other footwear n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16211",
+    "Description": "Manufacture of veneer sheets and plywood",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16221",
+    "Description": "Manufacture of builders' carpentry",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16222",
+    "Description": "Manufacture of joinery wood products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16230",
+    "Description": "Manufacture of wooden containers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16291",
+    "Description": "Manufacture of wood charcoal",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "16292",
+    "Description": "Manufacture of other products of wood, cane, articles of cork, straw and plaiting materials",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17010",
+    "Description": "Manufacture of pulp, paper and paperboard",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17020",
+    "Description": "Manufacture of corrugated paper and paperboard and of containers of paper and paperboard",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17091",
+    "Description": "Manufacture of envelopes and letter-card",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17092",
+    "Description": "Manufacture of household and personal hygiene paper",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17093",
+    "Description": "Manufacture of gummed or adhesive paper in strips or rolls and labels and wall paper",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17094",
+    "Description": "Manufacture of effigies, funeral paper goods, joss paper",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "17099",
+    "Description": "Manufacture of other articles of paper and paperboard n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "18110",
+    "Description": "Printing",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "18120",
+    "Description": "Service activities related to printing",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "18200",
+    "Description": "Reproduction of recorded media",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "19100",
+    "Description": "Manufacture of coke oven products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "19201",
+    "Description": "Manufacture of refined petroleum products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "19202",
+    "Description": "Manufacture of bio-diesel products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20111",
+    "Description": "Manufacture of liquefied or compressed inorganic industrial or medical gases",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20112",
+    "Description": "Manufacture of basic organic chemicals",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20113",
+    "Description": "Manufacture of inorganic compounds",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20119",
+    "Description": "Manufacture of other basic chemicals n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20121",
+    "Description": "Manufacture of fertilizers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20129",
+    "Description": "Manufacture of associated nitrogen products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20131",
+    "Description": "Manufacture of plastic in primary forms",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20132",
+    "Description": "Manufacture of synthetic rubber in primary forms: synthetic rubber, factice",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20133",
+    "Description": "Manufacture of mixtures of synthetic rubber and natural rubber or rubber - like gums",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20210",
+    "Description": "Manufacture of pesticides and other agrochemical products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20221",
+    "Description": "Manufacture of paints, varnishes and similar coatings ink and mastics",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20222",
+    "Description": "Manufacture of printing ink",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20231",
+    "Description": "Manufacture of soap and detergents, cleaning and polishing preparations",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20232",
+    "Description": "Manufacture of perfumes and toilet preparations",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20291",
+    "Description": "Manufacture of photographic plates, films, sensitized paper and other sensitized unexposed materials",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20292",
+    "Description": "Manufacture of writing and drawing ink",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20299",
+    "Description": "Manufacture of other chemical products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "20300",
+    "Description": "Manufacture of man-made fibres",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21001",
+    "Description": "Manufacture of medicinal active substances to be used for their pharmacological properties in the manufacture of medicaments",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21002",
+    "Description": "Processing of blood",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21003",
+    "Description": "Manufacture of medicaments",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21004",
+    "Description": "Manufacture of chemical contraceptive products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21005",
+    "Description": "Manufacture of medical diagnostic preparation",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21006",
+    "Description": "Manufacture of radioactive in-vivo diagnostic substances",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21007",
+    "Description": "Manufacture of biotech pharmaceuticals",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "21009",
+    "Description": "Manufacture of other pharmaceuticals, medicinal chemical and botanical products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22111",
+    "Description": "Manufacture of rubber tyres for vehicles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22112",
+    "Description": "Manufacture of interchangeable tyre treads and retreading rubber tyres",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22191",
+    "Description": "Manufacture of other products of natural or synthetic rubber, unvulcanized, vulcanized or hardened",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22192",
+    "Description": "Manufacture of rubber gloves",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22193",
+    "Description": "Rubber remilling and latex processing",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22199",
+    "Description": "Manufacture of other rubber products n.e.c",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22201",
+    "Description": "Manufacture of semi-manufactures of plastic products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22202",
+    "Description": "Manufacture of finished plastic products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22203",
+    "Description": "Manufacture of plastic articles for the packing of goods",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22204",
+    "Description": "Manufacture of builders' plastics ware",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22205",
+    "Description": "Manufacture of plastic tableware, kitchenware and toilet articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "22209",
+    "Description": "Manufacture of diverse plastic products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23101",
+    "Description": "Manufacture of flat glass, including wired, coloured or tinted flat glass",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23102",
+    "Description": "Manufacture of laboratory, hygienic or pharmaceutical glassware",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23109",
+    "Description": "Manufacture of other glass products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23911",
+    "Description": "Manufacture of refractory mortars and concretes",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23912",
+    "Description": "Manufacture of refractory ceramic goods",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23921",
+    "Description": "Manufacture of non-refractory ceramic",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23929",
+    "Description": "Manufacture of other clay building materials",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23930",
+    "Description": "Manufacture of other porcelain and ceramic products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23941",
+    "Description": "Manufacture of hydraulic cement",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23942",
+    "Description": "Manufacture of lime and plaster",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23951",
+    "Description": "Manufacture of ready-mix and dry-mix concrete and mortars",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23952",
+    "Description": "Manufacture of precast concrete, cement or artificial stone articles for use in construction",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23953",
+    "Description": "Manufacture of prefabricated structural components for building or civil engineering of cement, concrete or artificial stone",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23959",
+    "Description": "Manufacture of other articles of concrete, cement and plaster n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23960",
+    "Description": "Cutting, shaping and finishing of stone",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "23990",
+    "Description": "Manufacture of other non-metallic mineral products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24101",
+    "Description": "Production of pig iron and spiegeleisen in pigs, blocks or other primary forms",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24102",
+    "Description": "Production of bars and rods of stainless steel or other alloy steel",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24103",
+    "Description": "Manufacture of seamless tubes, by hot rolling, hot extrusion or hot drawing, or by cold drawing or cold rolling",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24104",
+    "Description": "Manufacture of steel tube fittings",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24109",
+    "Description": "Manufacture of other basic iron and steel products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24201",
+    "Description": "Tin smelting",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24202",
+    "Description": "Production of aluminium from alumina",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24209",
+    "Description": "Manufacture of other basic precious and other non-ferrous metals n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24311",
+    "Description": "Casting of iron",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24312",
+    "Description": "Casting of steel",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "24320",
+    "Description": "Casting of non-ferrous metals",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25111",
+    "Description": "Manufacture of industrial frameworks in metal",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25112",
+    "Description": "Manufacture of prefabricated buildings mainly of metal",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25113",
+    "Description": "Manufacture of metal doors, windows and their frames, shutters and gates",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25119",
+    "Description": "Manufacture of other structural metal products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25120",
+    "Description": "Manufacture of tanks, reservoirs and containers of metal",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25130",
+    "Description": "Manufacture of steam generators, except central heating hot water boilers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25200",
+    "Description": "Manufacture of weapons and ammunition",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25910",
+    "Description": "Forging, pressing, stamping and roll-forming of metal; powder metallurgy",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25920",
+    "Description": "Treatment and coating of metals; machining",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25930",
+    "Description": "Manufacture of cutlery, hand tools and general hardware",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25991",
+    "Description": "Manufacture of tins and cans for food products, collapsible tubes and boxes",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25992",
+    "Description": "Manufacture of metal cable, plaited bands and similar articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25993",
+    "Description": "Manufacture of bolts, screws, nuts and similar threaded products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25994",
+    "Description": "Manufacture of metal household articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "25999",
+    "Description": "Manufacture of any other fabricated metal products n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26101",
+    "Description": "Manufacture of diodes, transistors and similar semiconductor devices",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26102",
+    "Description": "Manufacture electronic integrated circuits micro assemblies",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26103",
+    "Description": "Manufacture of electrical capacitors and resistors",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26104",
+    "Description": "Manufacture of printed circuit boards",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26105",
+    "Description": "Manufacture of display components",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26109",
+    "Description": "Manufacture of other components for electronic applications",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26201",
+    "Description": "Manufacture of computers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26202",
+    "Description": "Manufacture of peripheral equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26300",
+    "Description": "Manufacture of communication equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26400",
+    "Description": "Manufacture of consumer electronics",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26511",
+    "Description": "Manufacture of measuring, testing, navigating and control equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26512",
+    "Description": "Manufacture of industrial process control equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26520",
+    "Description": "Manufacture of watches and clocks and parts",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26600",
+    "Description": "Manufacture of irradiation, electro medical and electrotherapeutic equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26701",
+    "Description": "Manufacture of optical instruments and equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26702",
+    "Description": "Manufacture of photographic equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "26800",
+    "Description": "Manufacture of magnetic and optical recording media",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27101",
+    "Description": "Manufacture of electric motors, generators and transformers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27102",
+    "Description": "Manufacture of electricity distribution and control apparatus",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27200",
+    "Description": "Manufacture of batteries and accumulators",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27310",
+    "Description": "Manufacture of fibre optic cables",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27320",
+    "Description": "Manufacture of other electronic and electric wires and cables",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27330",
+    "Description": "Manufacture of current-carrying and non current-carrying wiring devices for electrical circuits regardless of material",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27400",
+    "Description": "Manufacture of electric lighting equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27500",
+    "Description": "Manufacture of domestic appliances",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "27900",
+    "Description": "Manufacture of miscellaneous electrical equipment other than motors, generators and transformers, batteries and accumulators, wires and wiring devices, lighting equipment or domestic appliances",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28110",
+    "Description": "Manufacture of engines and turbines, except aircraft, vehicle and cycle engines",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28120",
+    "Description": "Manufacture of fluid power equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28130",
+    "Description": "Manufacture of other pumps, compressors, taps and valves",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28140",
+    "Description": "Manufacture of bearings, gears, gearing and driving elements",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28150",
+    "Description": "Manufacture of ovens, furnaces and furnace burners",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28160",
+    "Description": "Manufacture of lifting and handling equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28170",
+    "Description": "Manufacture of office machinery and equipment (except computers and peripheral equipment)",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28180",
+    "Description": "Manufacture of power-driven hand tools with self-contained electric or non-electric motor or pneumatic drives",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28191",
+    "Description": "Manufacture of refrigerating or freezing industrial equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28192",
+    "Description": "Manufacture of air-conditioning machines, including for motor vehicles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28199",
+    "Description": "Manufacture of other general-purpose machinery n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28210",
+    "Description": "Manufacture of agricultural and forestry machinery",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28220",
+    "Description": "Manufacture of metal-forming machinery and machine tools",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28230",
+    "Description": "Manufacture of machinery for metallurgy",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28240",
+    "Description": "Manufacture of machinery for mining, quarrying and construction",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28250",
+    "Description": "Manufacture of machinery for food, beverage and tobacco processing",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28260",
+    "Description": "Manufacture of machinery for textile, apparel and leather production",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "28290",
+    "Description": "Manufacture of other special-purpose machinery n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "29101",
+    "Description": "Manufacture of passenger cars",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "29102",
+    "Description": "Manufacture of commercial vehicles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "29200",
+    "Description": "Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi- trailers",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "29300",
+    "Description": "Manufacture of parts and accessories for motor vehicles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30110",
+    "Description": "Building of ships and floating structures",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30120",
+    "Description": "Building of pleasure and sporting boats",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30200",
+    "Description": "Manufacture of railway locomotives and rolling stock",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30300",
+    "Description": "Manufacture of air and spacecraft and related machinery",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30400",
+    "Description": "Manufacture of military fighting vehicles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30910",
+    "Description": "Manufacture of motorcycles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30920",
+    "Description": "Manufacture of bicycles and invalid carriages",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "30990",
+    "Description": "Manufacture of other transport equipments n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "31001",
+    "Description": "Manufacture of wooden and cane furniture",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "31002",
+    "Description": "Manufacture of metal furniture",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "31003",
+    "Description": "Manufacture of mattress",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "31009",
+    "Description": "Manufacture of other furniture, except of stone, concrete or ceramic",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32110",
+    "Description": "Manufacture of jewellery and related articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32120",
+    "Description": "Manufacture of imitation jewellery and related articles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32200",
+    "Description": "Manufacture of musical instruments",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32300",
+    "Description": "Manufacture of sports goods",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32400",
+    "Description": "Manufacture of games and toys",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32500",
+    "Description": "Manufacture of medical and dental instrument and supplies",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32901",
+    "Description": "Manufacture of stationery",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "32909",
+    "Description": "Other manufacturing n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33110",
+    "Description": "Repair of fabricated metal products",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33120",
+    "Description": "Repair and maintenance of industrial machinery and equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33131",
+    "Description": "Repair and maintenance of the measuring, testing, navigating and control equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33132",
+    "Description": "Repair and maintenance of irradiation, electro medical and electrotherapeutic equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33133",
+    "Description": "Repair of optical instruments and photographic equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33140",
+    "Description": "Repair and maintenance of electrical equipment except domestic appliances",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33150",
+    "Description": "Repair and maintenance of transport equipment except motorcycles and bicycles",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33190",
+    "Description": "Repair and maintenance of other equipment n.e.c.",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "33200",
+    "Description": "Installation of industrial machinery and equipment",
+    "CategoryReferences": "C"
+  },
+  {
+    "Code": "35101",
+    "Description": "Operation of generation facilities that produce electric energy",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35102",
+    "Description": "Operation of transmission, distribution and sales of electricity",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35201",
+    "Description": "Manufacture of gaseous fuels with a specified calorific value, by purification, blending and other processes from gases of various types including natural gas",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35202",
+    "Description": "Transportation, distribution and supply of gaseous fuels of all kinds through a system of mains",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35203",
+    "Description": "Sale of gas to the user through mains",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35301",
+    "Description": "Production, collection and distribution of steam and hot water for heating, power and other purposes",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35302",
+    "Description": "Production and distribution of cooled air, chilled water for cooling purposes",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "35303",
+    "Description": "Production of ice, including ice for food and non-food (e.g. cooling) purposes",
+    "CategoryReferences": "D"
+  },
+  {
+    "Code": "36001",
+    "Description": "Purification and distribution of water for water supply purposes",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "36002",
+    "Description": "Desalting of sea or ground water to produce water as the principal product of interest",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "37000",
+    "Description": "Sewerage and similar activities",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38111",
+    "Description": "Collection of non-hazardous solid waste (i.e. garbage) within a local area",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38112",
+    "Description": "Collection of recyclable materials",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38113",
+    "Description": "Collection of refuse in litter-bins in public places",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38114",
+    "Description": "Collection of construction and demolition waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38115",
+    "Description": "Operation of waste transfer stations for non-hazardous waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38121",
+    "Description": "Collection of hazardous waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38122",
+    "Description": "Operation of waste transfer stations for hazardous waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38210",
+    "Description": "Treatment and disposal of non-hazardous waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38220",
+    "Description": "Treatment and disposal of hazardous waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38301",
+    "Description": "Mechanical crushing of metal waste",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38302",
+    "Description": "Dismantling of automobiles, computers, televisions and other equipment for material recover",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38303",
+    "Description": "Reclaiming of rubber such as used tires to produce secondary raw material",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38304",
+    "Description": "Reuse of rubber products",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "38309",
+    "Description": "Materials recovery n.e.c.",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "39000",
+    "Description": "Remediation activities and other waste management services",
+    "CategoryReferences": "E"
+  },
+  {
+    "Code": "41001",
+    "Description": "Residential buildings",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "41002",
+    "Description": "Non-residential buildings",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "41003",
+    "Description": "Assembly and erection of prefabricated constructions on the site",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "41009",
+    "Description": "Construction of buildings n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42101",
+    "Description": "Construction of motorways, streets, roads, other vehicular and pedestrian ways",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42102",
+    "Description": "Surface work on streets, roads, highways, bridges or tunnels",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42103",
+    "Description": "Construction of bridges, including those for elevated highways",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42104",
+    "Description": "Construction of tunnels",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42105",
+    "Description": "Construction of railways and subways",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42106",
+    "Description": "Construction of airfield/airports runways",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42109",
+    "Description": "Construction of roads and railways n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42201",
+    "Description": "Long-distance pipelines, communication and power lines",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42202",
+    "Description": "Urban pipelines, urban communication and power lines; ancillary urban works",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42203",
+    "Description": "Water main and line construction",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42204",
+    "Description": "Reservoirs",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42205",
+    "Description": "Construction of irrigation systems (canals)",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42206",
+    "Description": "Construction of sewer systems (including repair) and sewage disposal plants",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42207",
+    "Description": "Construction of power plants",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42209",
+    "Description": "Construction of utility projects n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42901",
+    "Description": "Construction of refineries",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42902",
+    "Description": "Construction of waterways, harbour and river works, pleasure ports (marinas), locks",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42903",
+    "Description": "Construction of dams and dykes",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42904",
+    "Description": "Dredging of waterways",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42905",
+    "Description": "Outdoor sports facilities",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42906",
+    "Description": "Land subdivision with land improvement",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "42909",
+    "Description": "Construction of other engineering projects n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43110",
+    "Description": "Demolition or wrecking of buildings and other structures",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43121",
+    "Description": "Clearing of building sites",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43122",
+    "Description": "Earth moving",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43123",
+    "Description": "Drilling, boring and core sampling for construction, geophysical, geological or similar purposes",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43124",
+    "Description": "Site preparation for mining",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43125",
+    "Description": "Drainage of agricultural or forestry land",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43126",
+    "Description": "Land reclamation work",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43129",
+    "Description": "Other site preparation activities n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43211",
+    "Description": "Electrical wiring and fittings",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43212",
+    "Description": "Telecommunications wiring",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43213",
+    "Description": "Computer network and cable television wiring",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43214",
+    "Description": "Satellite dishes",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43215",
+    "Description": "Lighting systems",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43216",
+    "Description": "Security systems",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43219",
+    "Description": "Electrical installation n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43221",
+    "Description": "Installation of heating systems (electric, gas and oil)",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43222",
+    "Description": "Installation of furnaces, cooling towers",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43223",
+    "Description": "Installation of non-electric solar energy collectors",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43224",
+    "Description": "Installation of plumbing and sanitary equipment",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43225",
+    "Description": "Installation of ventilation, refrigeration or air-conditioning equipment and ducts",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43226",
+    "Description": "Installation of gas fittings",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43227",
+    "Description": "Installation of fire and lawn sprinkler systems",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43228",
+    "Description": "Steam piping",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43229",
+    "Description": "Plumbing, heat and air-conditioning installation n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43291",
+    "Description": "Installation of elevators, escalators in buildings or other construction projects",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43292",
+    "Description": "Installation of automated and revolving doors in buildings or other construction projects",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43293",
+    "Description": "Installation of lighting conductors in buildings or other construction projects",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43294",
+    "Description": "Installation vacuum cleaning systems in buildings or other construction projects",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43295",
+    "Description": "Installation thermal, sound or vibration insulation in buildings or other construction projects",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43299",
+    "Description": "Other construction installation n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43301",
+    "Description": "Installation of doors, windows, door and window frames of wood or other materials, fitted kitchens, staircases, shop fittings and furniture",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43302",
+    "Description": "Laying, tiling, hanging or fitting in buildings or other construction projects of various types of materials",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43303",
+    "Description": "Interior and exterior painting of buildings",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43304",
+    "Description": "Painting of civil engineering structures",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43305",
+    "Description": "Installation of glass, mirrors",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43306",
+    "Description": "Interior completion",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43307",
+    "Description": "Cleaning of new buildings after construction",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43309",
+    "Description": "Other building completion and finishing work n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43901",
+    "Description": "Construction of foundations, including pile driving",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43902",
+    "Description": "Erection of non-self-manufactured steel elements",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43903",
+    "Description": "Scaffolds and work platform erecting and dismantling",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43904",
+    "Description": "Bricklaying and stone setting",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43905",
+    "Description": "Construction of outdoor swimming pools",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43906",
+    "Description": "Steam cleaning, sand blasting and similar activities for building exteriors",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43907",
+    "Description": "Renting of construction machinery and equipment with operator (e.g. cranes)",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "43909",
+    "Description": "Other specialized construction activities, n.e.c.",
+    "CategoryReferences": "F"
+  },
+  {
+    "Code": "45101",
+    "Description": "Wholesale and retail of new motor vehicles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45102",
+    "Description": "Wholesale and retail of used motor vehicles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45103",
+    "Description": "Sale of industrial, commercial and agriculture vehicles – new",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45104",
+    "Description": "Sale of industrial, commercial and agriculture vehicles – used",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45105",
+    "Description": "Sale by commission agents",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45106",
+    "Description": "Car auctions",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45109",
+    "Description": "Sale of other motor vehicles n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45201",
+    "Description": "Maintenance and repair of motor vehicles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45202",
+    "Description": "Spraying and painting",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45203",
+    "Description": "Washing and polishing (car wash)",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45204",
+    "Description": "Repair of motor vehicle seats",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45205",
+    "Description": "Installation of parts and accessories not as part of the manufacturing process",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45300",
+    "Description": "Wholesale and retail sale of all kinds of parts, components, supplies, tools and accessories for motor vehicles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45401",
+    "Description": "Wholesale and retail sale of motorcycles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45402",
+    "Description": "Wholesale and retail sale of parts and accessories for motorcycles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "45403",
+    "Description": "Repair and maintenance of motorcycles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46100",
+    "Description": "Wholesale on a fee or contract basis",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46201",
+    "Description": "Wholesale of rubber",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46202",
+    "Description": "Wholesale of palm oil",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46203",
+    "Description": "Wholesale of lumber and timber",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46204",
+    "Description": "Wholesale of flowers and plants",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46205",
+    "Description": "Wholesale of livestock",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46209",
+    "Description": "Wholesale of agricultural raw material and live animal n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46311",
+    "Description": "Wholesale of meat, poultry and eggs",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46312",
+    "Description": "Wholesale of fish and other seafood",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46313",
+    "Description": "Wholesale of fruits",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46314",
+    "Description": "Wholesale of vegetables",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46319",
+    "Description": "Wholesale of meat, fish, fruits and vegetables n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46321",
+    "Description": "Wholesale of rice, other grains, flour and sugars",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46322",
+    "Description": "Wholesale of dairy products",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46323",
+    "Description": "Wholesale of confectionary",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46324",
+    "Description": "Wholesale of  biscuits, cakes, breads and other bakery products",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46325",
+    "Description": "Wholesale of coffee, tea, cocoa and other beverages",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46326",
+    "Description": "Wholesale of beer, wine and spirits",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46327",
+    "Description": "Wholesale of tobacco, cigar, cigarettes",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46329",
+    "Description": "Wholesale of other foodstuffs",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46411",
+    "Description": "Wholesale of yarn and fabrics",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46412",
+    "Description": "Wholesale of household linen, towels, blankets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46413",
+    "Description": "Wholesale of clothing",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46414",
+    "Description": "Wholesale of clothing accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46415",
+    "Description": "Wholesale of fur articles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46416",
+    "Description": "Wholesale of footwear",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46417",
+    "Description": "Wholesale of haberdashery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46419",
+    "Description": "Wholesale of textiles, clothing n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46421",
+    "Description": "Wholesale of pharmaceutical and medical goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46422",
+    "Description": "Wholesale of perfumeries, cosmetics, soap and toiletries",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46431",
+    "Description": "Wholesale of bicycles and their parts and accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46432",
+    "Description": "Wholesale of photographic and optical goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46433",
+    "Description": "Wholesale of leather goods and travel accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46434",
+    "Description": "Wholesale of musical instruments, games and toys, sports goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46441",
+    "Description": "Wholesale of handicrafts and artificial flowers",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46442",
+    "Description": "Wholesale of cut flowers and plants",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46443",
+    "Description": "Wholesale of watches and clocks",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46444",
+    "Description": "Wholesale of jewellery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46491",
+    "Description": "Wholesale of household furniture",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46492",
+    "Description": "Wholesale of household appliances",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46493",
+    "Description": "Wholesale of lighting equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46494",
+    "Description": "Wholesale of household utensils and cutlery, crockery, glassware, chinaware and pottery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46495",
+    "Description": "Wholesale of woodenware, wickerwork and corkware",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46496",
+    "Description": "Wholesale of electrical and electronic goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46497",
+    "Description": "Wholesale of stationery, books, magazines and newspapers",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46499",
+    "Description": "Wholesale of other household goods n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46510",
+    "Description": "Wholesale of computer hardware, software and peripherals",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46521",
+    "Description": "Wholesale of telephone and telecommunications equipment, cell phones, pagers",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46522",
+    "Description": "Wholesale of electronic components and wiring accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46531",
+    "Description": "Wholesale of agricultural machinery, equipment and supplies",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46532",
+    "Description": "Wholesale of lawn mowers however operated",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46591",
+    "Description": "Wholesale of office machinery and business equipment, except computers and computer peripheral equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46592",
+    "Description": "Wholesale of office furniture",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46593",
+    "Description": "Wholesale of computer-controlled machines tools",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46594",
+    "Description": "Wholesale of industrial machinery, equipment and supplies",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46595",
+    "Description": "Wholesale of construction and civil engineering machinery and equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46596",
+    "Description": "Wholesale of lift escalators, air-conditioning, security and fire fighting equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46599",
+    "Description": "Wholesale of other machinery for use in industry, trade and navigation and other services n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46611",
+    "Description": "Wholesale of petrol, diesel, lubricants",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46612",
+    "Description": "Wholesale of liquefied petroleum gas",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46619",
+    "Description": "Wholesale of other solid, liquid and gaseous fuels and related products n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46621",
+    "Description": "Wholesale of ferrous and non-ferrous metal ores and metals",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46622",
+    "Description": "Wholesale of ferrous and non-ferrous semi-finished metal ores and products n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46631",
+    "Description": "Wholesale of logs, sawn timber, plywood, veneer and related products",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46632",
+    "Description": "Wholesale of paints and varnish",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46633",
+    "Description": "Wholesale of construction materials",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46634",
+    "Description": "Wholesale of fittings and fixtures",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46635",
+    "Description": "Wholesale of hot water heaters",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46636",
+    "Description": "Wholesale of sanitary installation and equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46637",
+    "Description": "Wholesale of tools",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46639",
+    "Description": "Wholesale of other construction materials, hardware, plumbing and heating equipment and supplies n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46691",
+    "Description": "Wholesale of industrial chemicals",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46692",
+    "Description": "Wholesale of fertilizers and agrochemical products",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46693",
+    "Description": "Wholesale of plastic materials in primary forms",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46694",
+    "Description": "Wholesale of rubber scrap",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46695",
+    "Description": "Wholesale of textile fibres",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46696",
+    "Description": "Wholesale of paper in bulk, packaging materials",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46697",
+    "Description": "Wholesale of precious stones",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46698",
+    "Description": "Wholesale of metal and non-metal waste and scrap and materials for recycling",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46699",
+    "Description": "Dismantling of automobiles, computer, televisions and other equipment to obtain and re-sell usable parts",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46901",
+    "Description": "Wholesale of aquarium fishes, pet birds and animals",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46902",
+    "Description": "Wholesale of animal/pet food",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "46909",
+    "Description": "Wholesale of a variety of goods without any particular specialization n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47111",
+    "Description": "Provision stores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47112",
+    "Description": "Supermarket",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47113",
+    "Description": "Mini market",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47114",
+    "Description": "Convenience stores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47191",
+    "Description": "Department stores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47192",
+    "Description": "Department stores and supermarket",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47193",
+    "Description": "Hypermarket",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47194",
+    "Description": "News agent and miscellaneous goods store",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47199",
+    "Description": "Other retail sale in non-specialized stores n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47211",
+    "Description": "Retail sale of rice, flour, other grains and sugars",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47212",
+    "Description": "Retail sale of fresh or preserved vegetables and fruits",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47213",
+    "Description": "Retail sale of dairy products and eggs",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47214",
+    "Description": "Retail sale of meat and meat products (including poultry)",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47215",
+    "Description": "Retail sale of fish, other seafood and products thereof",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47216",
+    "Description": "Retail sale of bakery products and sugar confectionery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47217",
+    "Description": "Retail sale of mee, kuey teow, mee hoon, wantan skins and other food products made from flour or soya",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47219",
+    "Description": "Retail sale of other food products n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47221",
+    "Description": "Retail sale of beer, wine and spirits",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47222",
+    "Description": "Retail sale of tea, coffee, soft drinks, mineral water and other beverages",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47230",
+    "Description": "Retail sale of tobacco products in specialized store",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47300",
+    "Description": "Retail sale of automotive fuel in specialized stores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47412",
+    "Description": "Retail sale of video game consoles and non-customized software",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47413",
+    "Description": "Retail sale of telecommunication equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47420",
+    "Description": "Retail sale of audio and video equipment in specialized store",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47510",
+    "Description": "Retail sale of textiles in specialized stores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47531",
+    "Description": "Retail sale of carpets and rugs",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47532",
+    "Description": "Retail sale of curtains and net curtains",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47533",
+    "Description": "Retail sale of wallpaper and floor coverings",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47591",
+    "Description": "Retail sale of household furniture",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47592",
+    "Description": "Retail sale of articles for lighting",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47593",
+    "Description": "Retail sale of household utensils and cutlery, crockery, glassware, chinaware and pottery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47594",
+    "Description": "Retail sale of wood, cork goods and wickerwork goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47595",
+    "Description": "Retail sale of household appliances",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47596",
+    "Description": "Retail sale of musical instruments and scores",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47597",
+    "Description": "Retail sale of security systems",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47598",
+    "Description": "Retail sale of household articles and equipment n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47611",
+    "Description": "Retail sale of office supplies and equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47612",
+    "Description": "Retail sale of books, newspapers and stationary",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47631",
+    "Description": "Retail sale of sports goods and equipments",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47632",
+    "Description": "Retail sale of fishing equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47633",
+    "Description": "Retail sale of camping goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47634",
+    "Description": "Retail sale of boats and equipments",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47635",
+    "Description": "Retail sale of bicycles and related parts and accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47640",
+    "Description": "Retail sale of games and toys, made of all materials",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47711",
+    "Description": "Retail sale of articles of clothing, articles of fur and clothing accessories",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47712",
+    "Description": "Retail sale of footwear",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47713",
+    "Description": "Retail sale of leather goods, accessories of leather and leather substitutes",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47721",
+    "Description": "Stores specialized in retail sale of pharmaceuticals, medical and orthopaedic goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47722",
+    "Description": "Stores specialized in retail sale of perfumery, cosmetic and toilet articles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47731",
+    "Description": "Retail sale of photographic and precision equipment",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47732",
+    "Description": "Retail sale of watches and clocks",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47733",
+    "Description": "Retail sale of jewellery",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47734",
+    "Description": "Retail sale of flowers, plants, seeds, fertilizers",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47735",
+    "Description": "Retail sale of souvenirs, craftwork and religious articles",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47736",
+    "Description": "Retail sale of household fuel oil, cooking gas, coal and fuel wood",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47737",
+    "Description": "Retail sale of spectacles and other optical goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47738",
+    "Description": "Retail sale of aquarium fishes, pet animals and pet food",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47739",
+    "Description": "Other retail sale of new goods in specialized stores n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47741",
+    "Description": "Retail sale of second-hand books",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47742",
+    "Description": "Retail sale of second-hand electrical and electronic goods",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47743",
+    "Description": "Retail sale of antiques",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47744",
+    "Description": "Activities of auctioning houses (retail)",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47749",
+    "Description": "Retail sale of second-hand goods n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47810",
+    "Description": "Retail sale of food, beverages and tobacco products via stalls or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47820",
+    "Description": "Retail sale of textiles, clothing and footwear via stalls or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47891",
+    "Description": "Retail sale of carpets and rugs via stalls or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47893",
+    "Description": "Retail sale of games and toys via stalls or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47894",
+    "Description": "Retail sale of household appliances and consumer electronics via stall or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47895",
+    "Description": "Retail sale of music and video recordings via stall or markets",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47911",
+    "Description": "Retail sale of any kind of product by mail order",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47912",
+    "Description": "Retail sale of any kind of product over the Internet",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47913",
+    "Description": "Direct sale via television, radio and telephone",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47914",
+    "Description": "Internet retail auctions",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47992",
+    "Description": "Retail sale of any kind of product through vending machines",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "47999",
+    "Description": "Other retail sale not in stores, stalls or markets n.e.c.",
+    "CategoryReferences": "G"
+  },
+  {
+    "Code": "49110",
+    "Description": "Passenger transport by inter-urban railways",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49120",
+    "Description": "Freight transport by inter-urban, suburban and urban railways",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49211",
+    "Description": "City bus services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49212",
+    "Description": "Urban and suburban railway passenger transport service",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49221",
+    "Description": "Express bus services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49222",
+    "Description": "Employees bus services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49223",
+    "Description": "School bus services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49224",
+    "Description": "Taxi operation and limousine services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49225",
+    "Description": "Rental of cars with driver",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49229",
+    "Description": "Other passenger land transport n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49230",
+    "Description": "Freight transport by road",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "49300",
+    "Description": "Transport via pipeline",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50111",
+    "Description": "Operation of excursion, cruise or sightseeing boats",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50112",
+    "Description": "Operation of ferries, water taxis",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50113",
+    "Description": "Rental of pleasure boats with crew for sea and coastal water transport",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50121",
+    "Description": "Transport of freight overseas and coastal waters, whether scheduled or not",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50122",
+    "Description": "Transport by towing or pushing of barges, oil rigs",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50211",
+    "Description": "Transport of passenger via rivers, canals, lakes and other inland waterways",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50212",
+    "Description": "Rental of pleasure boats with crew for inland water transport",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "50220",
+    "Description": "Transport of freight via rivers, canals, lakes and other inland waterways",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51101",
+    "Description": "Transport of passengers by air over regular routes and on regular schedules",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51102",
+    "Description": "Non-scheduled transport of passenger by air",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51103",
+    "Description": "Renting of air-transport equipment with operator for the purpose of passenger transportation",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51201",
+    "Description": "Transport freight by air over regular routes and on regular schedules",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51202",
+    "Description": "Non-scheduled transport of freight by air",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "51203",
+    "Description": "Renting of air-transport equipment with operator for the purpose of freight transportation",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52100",
+    "Description": "Warehousing and storage services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52211",
+    "Description": "Operation of terminal facilities",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52212",
+    "Description": "Towing and road side assistance",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52213",
+    "Description": "Operation of parking facilities for motor vehicles (parking lots)",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52214",
+    "Description": "Highway, bridge and tunnel operation services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52219",
+    "Description": "Other service activities incidental to land transportation n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52221",
+    "Description": "Port, harbours and piers operation services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52222",
+    "Description": "Vessel salvage and refloating services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52229",
+    "Description": "Other service activities incidental to water transportation n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52231",
+    "Description": "Operation of terminal facilities",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52232",
+    "Description": "Airport and air-traffic-control activities",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52233",
+    "Description": "Ground service activities on airfields",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52234",
+    "Description": "Fire fighting and fire-prevention services at airports",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52239",
+    "Description": "Other service activities incidental to air transportation n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52241",
+    "Description": "Stevedoring services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52249",
+    "Description": "Other cargo handling activities n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52291",
+    "Description": "Forwarding of freight",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52292",
+    "Description": "Brokerage for ship and aircraft space",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "52299",
+    "Description": "Other transportation support activities n.e.c.",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "53100",
+    "Description": "National postal services",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "53200",
+    "Description": "Courier activities other than national post activities",
+    "CategoryReferences": "H"
+  },
+  {
+    "Code": "55101",
+    "Description": "Hotels and resort hotels",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55102",
+    "Description": "Motels",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55103",
+    "Description": "Apartment hotels",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55104",
+    "Description": "Chalets",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55105",
+    "Description": "Rest house/guest house",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55106",
+    "Description": "Bed and breakfast units",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55107",
+    "Description": "Hostels",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55108",
+    "Description": "Home stay",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55109",
+    "Description": "Other short term accommodation activities n.e.c.",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55200",
+    "Description": "Camping grounds, recreational vehicle parks and trailer parks",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "55900",
+    "Description": "Other accommodation",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56103",
+    "Description": "Fast-food restaurants",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56104",
+    "Description": "Ice cream truck vendors and parlours",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56105",
+    "Description": "Mobile food carts",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56106",
+    "Description": "Food stalls/hawkers",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56107",
+    "Description": "Food or beverage, food and beverage preparation in market stalls/hawkers",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56210",
+    "Description": "Event/food caterers",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56290",
+    "Description": "Other food service activities",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56301",
+    "Description": "Pubs, bars, discotheques, coffee houses, cocktail lounges and karaoke",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56302",
+    "Description": "Coffee shops",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56303",
+    "Description": "Drink stalls/hawkers",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56304",
+    "Description": "Mobile beverage",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "56309",
+    "Description": "Others drinking places n.e.c.",
+    "CategoryReferences": "I"
+  },
+  {
+    "Code": "58110",
+    "Description": "Publishing of books, brochures and other publications",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58120",
+    "Description": "Publishing of mailing lists, telephone book, other directories",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58130",
+    "Description": "Publishing of newspapers, journals, magazines and periodicals in print or electronic form",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58190",
+    "Description": "Publishing of catalogues, photos, engraving and postcards, greeting cards, forms, posters, reproduction of works of art, advertising material and other printed matter n.e.c.",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58201",
+    "Description": "Business and other applications",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58202",
+    "Description": "Computer games for all platforms",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "58203",
+    "Description": "Operating systems",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "59110",
+    "Description": "Motion picture, video and television programme production activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "59120",
+    "Description": "Motion picture, video and television programme post-production activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "59130",
+    "Description": "Motion picture, video and television programme distribution activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "59140",
+    "Description": "Motion picture projection activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "59200",
+    "Description": "Sound recording and music publishing activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "60100",
+    "Description": "Radio broadcasting",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "60200",
+    "Description": "Television programming and broadcasting activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61101",
+    "Description": "Wired telecommunications services",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61102",
+    "Description": "Internet access providers by the operator of the wired infrastructure",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61201",
+    "Description": "Wireless telecommunications services",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61202",
+    "Description": "Internet access providers by the operator of the wireless infrastructure",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61300",
+    "Description": "Satellite telecommunications services",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61901",
+    "Description": "Provision of Internet access over networks between the client and the ISP not owned or controlled by the ISP",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61902",
+    "Description": "Provision of telecommunications services over existing telecom connection",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61903",
+    "Description": "Telecommunications resellers",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61904",
+    "Description": "Provision of telecommunications services over existing telecom connections VOIP (Voice Over Internet Protocol) provision",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61905",
+    "Description": "Provision of specialized telecommunications applications",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "61909",
+    "Description": "Other telecommunications activities n.e.c.",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "62010",
+    "Description": "Computer programming activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "62021",
+    "Description": "Computer consultancy",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "62022",
+    "Description": "Computer facilities management activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "62091",
+    "Description": "Information Communication Technology (ICT) system security",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "62099",
+    "Description": "Other information technology service activities n.e.c.",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "63111",
+    "Description": "Activities of providing infrastructure for hosting, data processing services and related activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "63112",
+    "Description": "Data processing activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "63120",
+    "Description": "Web portals",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "63910",
+    "Description": "News syndicate and news agency activities",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "63990",
+    "Description": "Other information service activities n.e.c.",
+    "CategoryReferences": "J"
+  },
+  {
+    "Code": "64110",
+    "Description": "Central banking",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64191",
+    "Description": "Commercial Banks",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64192",
+    "Description": "Islamic Banks",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64193",
+    "Description": "Offshore Banks",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64194",
+    "Description": "Investment Banks",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64195",
+    "Description": "Development financial institutions (with deposit taking functions)",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64199",
+    "Description": "Other monetary intermediation (with deposit taking functions) n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64200",
+    "Description": "Activities of holding companies",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64301",
+    "Description": "Venture capital companies",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64302",
+    "Description": "Unit trust fund excludes REITs",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64303",
+    "Description": "Property unit trust (REITs)",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64304",
+    "Description": "Other administration of trusts accounts",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64309",
+    "Description": "Trusts, funds and similar financial entities n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64910",
+    "Description": "Financial leasing activities",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64921",
+    "Description": "Development financial institutions (without deposit taking functions)",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64922",
+    "Description": "Credit card services",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64923",
+    "Description": "Licensed money lending activities",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64924",
+    "Description": "Pawnshops and pawnbrokers includes Ar-Rahnu",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64925",
+    "Description": "Co-operative with credits functions",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64929",
+    "Description": "Other credit granting n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64991",
+    "Description": "Factoring companies",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64992",
+    "Description": "Representative office of foreign banks",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64993",
+    "Description": "Nominee companies",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "64999",
+    "Description": "Other financial service activities, except insurance/takaful and pension funding n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65111",
+    "Description": "Life insurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65112",
+    "Description": "Family takaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65121",
+    "Description": "General insurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65122",
+    "Description": "General takaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65123",
+    "Description": "Composite insurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65124",
+    "Description": "Offshore insurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65125",
+    "Description": "Offshore takaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65201",
+    "Description": "Life reinsurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65202",
+    "Description": "Family retakaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65203",
+    "Description": "General reinsurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65204",
+    "Description": "General retakaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65205",
+    "Description": "Composite retakaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65206",
+    "Description": "Offshore reinsurance",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65207",
+    "Description": "Offshore retakaful",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65301",
+    "Description": "Pension funding",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "65302",
+    "Description": "Provident funding",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66111",
+    "Description": "Stock exchanges",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66112",
+    "Description": "Exchanges for commodity contracts",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66113",
+    "Description": "Securities exchange",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66114",
+    "Description": "Exchanges for commodity futures contracts",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66119",
+    "Description": "Administration of financial markets n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66121",
+    "Description": "Stock, share and bond brokers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66122",
+    "Description": "Commodity brokers and dealers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66123",
+    "Description": "Gold bullion dealers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66124",
+    "Description": "Foreign exchange broker and dealers (Bureaux de change)",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66125",
+    "Description": "Money-changing services",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66129",
+    "Description": "Other financial and commodity futures brokers and dealers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66191",
+    "Description": "Investment advisory services",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66192",
+    "Description": "Financial consultancy services",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66199",
+    "Description": "Activities auxiliary to finance n.e.c.",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66211",
+    "Description": "Insurance adjusting service",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66212",
+    "Description": "Takaful adjusting service",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66221",
+    "Description": "Insurance agents",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66222",
+    "Description": "Takaful agents",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66223",
+    "Description": "Insurance brokers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66224",
+    "Description": "Takaful brokers",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66290",
+    "Description": "Other activities auxiliary to insurance, takaful and pension funding",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66301",
+    "Description": "Management of pension funds",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66302",
+    "Description": "Assets/portfolio management",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "66303",
+    "Description": "Unit trust management companies",
+    "CategoryReferences": "K"
+  },
+  {
+    "Code": "68101",
+    "Description": "Buying, selling, renting and operating of self-owned or leased real estate – residential buildings",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68102",
+    "Description": "Buying, selling, renting and operating of self-owned or leased real estate – non-residential buildings",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68103",
+    "Description": "Buying, selling, renting and operating of self-owned or leased real estate – land",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68104",
+    "Description": "Development of building projects for own operation, i.e. for renting of space in these buildings",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68109",
+    "Description": "Real estate activities with own or leased property n.e.c.",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68201",
+    "Description": "Activities of real estate agents and brokers for buying, selling and renting of real estate",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68202",
+    "Description": "Management of real estate on a fee or contract basis",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68203",
+    "Description": "Appraisal services for real estate",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "68209",
+    "Description": "Real estate activities on a fee or contract basis n.e.c.",
+    "CategoryReferences": "L"
+  },
+  {
+    "Code": "69100",
+    "Description": "Legal activities",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "69200",
+    "Description": "Accounting, bookkeeping and auditing activities; tax consultancy",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "70100",
+    "Description": "Activities of head offices",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "70201",
+    "Description": "Business management consultancy services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "70202",
+    "Description": "Human resource consultancy services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "70203",
+    "Description": "Consultancy services in public relation and communications",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "70209",
+    "Description": "Other management consultancy activities n.e.c",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "71101",
+    "Description": "Architectural services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "71102",
+    "Description": "Engineering services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "71103",
+    "Description": "Land surveying services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "71109",
+    "Description": "Other architectural and engineering activities and related technical consultancy n.e.c.",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "71200",
+    "Description": "Technical testing and analysis",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72101",
+    "Description": "Research and development on natural sciences",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72102",
+    "Description": "Research and development on engineering and technology",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72103",
+    "Description": "Research and development on medical sciences",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72104",
+    "Description": "Research and development on biotechnology",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72105",
+    "Description": "Research and development on agricultural sciences",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72106",
+    "Description": "Research and development on Information Communication Technology (ICT)",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72109",
+    "Description": "Research and development on other natural science and engineering n.e.c.",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72201",
+    "Description": "Research and development on social sciences",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72202",
+    "Description": "Research and development on humanities",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "72209",
+    "Description": "Research and development of other social sciences and humanities n.e.c.",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "73100",
+    "Description": "Advertising",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "73200",
+    "Description": "Market research and public opinion polling",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74101",
+    "Description": "Activities of interior decorators",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74102",
+    "Description": "Services of graphic designers",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74103",
+    "Description": "Fashion design services",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74109",
+    "Description": "Specialized design activities n.e.c.",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74200",
+    "Description": "Photographic activities",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74901",
+    "Description": "Translation and interpretation activities",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74902",
+    "Description": "Business brokerage activities",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74903",
+    "Description": "Security consulting",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74904",
+    "Description": "Activities of quantity surveyors",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74905",
+    "Description": "Activities of consultants other than architecture, engineering and management consultants",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "74909",
+    "Description": "Any other professional, scientific and technical activities n.e.c.",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "75000",
+    "Description": "VETERINARY ACTIVITIES",
+    "CategoryReferences": "M"
+  },
+  {
+    "Code": "77101",
+    "Description": "Renting and operational leasing of passenger cars (without driver)",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77102",
+    "Description": "Renting and operational leasing of trucks, utility trailers and recreational vehicles",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77211",
+    "Description": "Renting and leasing of pleasure boats, canoes, sailboats",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77212",
+    "Description": "Renting and leasing of bicycles",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77213",
+    "Description": "Renting and leasing of beach chairs and umbrellas",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77219",
+    "Description": "Renting and leasing of other sports equipment n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77220",
+    "Description": "Renting of video tapes, records, CDs, DVDs",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77291",
+    "Description": "Renting and leasing of textiles, wearing apparel and footwear",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77292",
+    "Description": "Renting and leasing of furniture, pottery and glass, kitchen and tableware, electrical appliances and house wares",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77293",
+    "Description": "Renting and leasing of jewellery, musical instruments, scenery and costumes",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77294",
+    "Description": "Renting and leasing of books, journals and magazines",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77295",
+    "Description": "Renting and leasing of machinery and equipment used by amateurs or as a hobby",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77296",
+    "Description": "Renting of flowers and plants",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77297",
+    "Description": "Renting and leasing of electronic equipment for household use",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77299",
+    "Description": "Renting and leasing of other personal and household goods n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77301",
+    "Description": "Renting and operational leasing, without operator, of other machinery and equipment that are generally used as capital goods by industries",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77302",
+    "Description": "Renting and operational leasing of land-transport equipment (other than motor vehicles) without drivers",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77303",
+    "Description": "Renting and operational leasing of water-transport equipment without operator",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77304",
+    "Description": "Renting and operational leasing of air transport equipment without operator",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77305",
+    "Description": "Renting and operational leasing of agricultural and forestry machinery and equipment without operator",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77306",
+    "Description": "Renting and operational leasing of construction and civil-engineering machinery and equipment without operator",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77307",
+    "Description": "Rental and operational leasing of office machinery and equipment without operator",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77309",
+    "Description": "Renting and leasing of other machinery, equipment and tangible goods n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "77400",
+    "Description": "Leasing of intellectual property and similar products, except copyrighted works",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "78100",
+    "Description": "Activities of employment placement agencies",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "78200",
+    "Description": "Temporary employment agency activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "78300",
+    "Description": "Provision of human resources for client businesses",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "79110",
+    "Description": "Travel agency activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "79120",
+    "Description": "Tour operator activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "79900",
+    "Description": "Other reservation service and related activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "80100",
+    "Description": "Private security activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "80200",
+    "Description": "Security systems service activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "80300",
+    "Description": "Investigation and detective activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81100",
+    "Description": "Combined facilities support activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81210",
+    "Description": "General cleaning of buildings",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81291",
+    "Description": "Cleaning of buildings of all types",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81292",
+    "Description": "Swimming pool cleaning and maintenance services",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81293",
+    "Description": "Cleaning of industrial machinery",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81294",
+    "Description": "Cleaning of trains, buses, planes",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81295",
+    "Description": "Cleaning of pest control services not in connection with agriculture",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81296",
+    "Description": "Disinfecting and exterminating activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81297",
+    "Description": "Cleaning of sea tankers",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81299",
+    "Description": "Other building and industrial cleaning activities, n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "81300",
+    "Description": "Landscape care and maintenance service activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82110",
+    "Description": "Combined office administrative service activities",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82191",
+    "Description": "Document preparation, editing and/or proofreading",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82192",
+    "Description": "Typing, word processing or desktop publishing",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82193",
+    "Description": "Secretarial support services",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82194",
+    "Description": "Transcription of documents and other secretarial services",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82195",
+    "Description": "Provision of mailbox rental and other postal and mailing services",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82196",
+    "Description": "Photocopying, duplicating, blueprinting",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82199",
+    "Description": "Photocopying, document preparation and other specialized office support activities n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82200",
+    "Description": "Activities of call centres",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82301",
+    "Description": "Organization, promotions and/or management of event",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82302",
+    "Description": "Meeting, incentive, convention, exhibition (MICE)",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82910",
+    "Description": "Activities of collection agencies and credit bureaus",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82920",
+    "Description": "Packaging activities on a fee or contract basis, whether or not these involve an automated process",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "82990",
+    "Description": "Other business support service activities n.e.c.",
+    "CategoryReferences": "N"
+  },
+  {
+    "Code": "84111",
+    "Description": "General (overall) public administration activities",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84112",
+    "Description": "Ancillary service activities for the government as a whole",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84121",
+    "Description": "Administrative educational services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84122",
+    "Description": "Administrative health care services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84123",
+    "Description": "Administrative housing and local government services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84124",
+    "Description": "Administrative recreational, cultural, arts and sports services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84125",
+    "Description": "Administrative religious affairs services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84126",
+    "Description": "Administrative welfare services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84129",
+    "Description": "Other community and social affairs services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84131",
+    "Description": "Domestic and international trade affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84132",
+    "Description": "Agriculture and rural development affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84133",
+    "Description": "Primary industries affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84134",
+    "Description": "Public works affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84135",
+    "Description": "Transport affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84136",
+    "Description": "Energy, telecommunication and postal affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84137",
+    "Description": "Tourism affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84138",
+    "Description": "Human resource affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84139",
+    "Description": "Other regulation of and contribution to more efficient operation of businesses n.e.c.",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84210",
+    "Description": "Foreign affairs",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84220",
+    "Description": "Military and civil defence services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84231",
+    "Description": "Police service",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84232",
+    "Description": "Prison service",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84233",
+    "Description": "Immigration service",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84234",
+    "Description": "National registration service",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84235",
+    "Description": "Judiciary and legal service",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84236",
+    "Description": "Firefighting and fire prevention",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84239",
+    "Description": "Other public order and safety affairs related services",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "84300",
+    "Description": "Compulsory social security activities e.g. SOCSO",
+    "CategoryReferences": "O"
+  },
+  {
+    "Code": "85101",
+    "Description": "Pre-primary education (Public)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85102",
+    "Description": "Pre-primary education (Private)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85103",
+    "Description": "Primary education (Public)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85104",
+    "Description": "Primary education (Private)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85211",
+    "Description": "General school secondary education (Public)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85212",
+    "Description": "General school secondary education (Private)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85221",
+    "Description": "Technical and vocational education below the level of higher education (Public)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85222",
+    "Description": "Technical and vocational education below the level of higher education (Private)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85301",
+    "Description": "College and university education (Public)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85302",
+    "Description": "College and university education (Private)",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85411",
+    "Description": "Sports instruction",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85412",
+    "Description": "Martial arts instruction",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85419",
+    "Description": "Any other sports and recreation education n.e.c",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85421",
+    "Description": "Music and dancing school",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85429",
+    "Description": "Any other cultural education n.e.c.",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85491",
+    "Description": "Tuition centre",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85492",
+    "Description": "Driving school",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85493",
+    "Description": "Religious instruction",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85494",
+    "Description": "Computer training",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85499",
+    "Description": "Others education n.e.c",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "85500",
+    "Description": "Educational support services for provision of non-instructional services",
+    "CategoryReferences": "P"
+  },
+  {
+    "Code": "86101",
+    "Description": "Hospital activities",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86102",
+    "Description": "Maternity home services (outside hospital)",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86201",
+    "Description": "General medical services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86202",
+    "Description": "Specialized medical services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86203",
+    "Description": "Dental services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86901",
+    "Description": "Dialysis Centres",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86902",
+    "Description": "Medical laboratories",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86903",
+    "Description": "Physiotherapy and occupational therapy service",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86904",
+    "Description": "Acupuncture services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86905",
+    "Description": "Herbalist and homeopathy services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86906",
+    "Description": "Ambulance services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "86909",
+    "Description": "Other human health services n.e.c.",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87101",
+    "Description": "Homes for the elderly with nursing care",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87102",
+    "Description": "Nursing homes",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87103",
+    "Description": "Palliative or hospices",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87201",
+    "Description": "Drug rehabilitation centres",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87209",
+    "Description": "Other residential care activities for mental retardation n.e.c.",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87300",
+    "Description": "Residential care activities for the elderly and disabled",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87901",
+    "Description": "Orphanages",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87902",
+    "Description": "Welfare homes services",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "87909",
+    "Description": "Other residential care activities n.e.c.",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "88101",
+    "Description": "Day-care activities for the elderly or for handicapped adults",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "88109",
+    "Description": "Others social work activities without accommodation for the elderly and disabled",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "88901",
+    "Description": "Counselling service",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "88902",
+    "Description": "Child day-care activities",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "88909",
+    "Description": "Other social work activities without accommodation n.e.c.",
+    "CategoryReferences": "Q"
+  },
+  {
+    "Code": "90001",
+    "Description": "Theatrical producer, singer group band and orchestra entertainment services",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90002",
+    "Description": "Operation of concert and theatre halls and other arts facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90003",
+    "Description": "Activities of sculptors, painters, cartoonists, engravers, etchers",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90004",
+    "Description": "Activities of individual writers, for all subjects",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90005",
+    "Description": "Activities of independent journalists",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90006",
+    "Description": "Restoring of works of art such as painting",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90007",
+    "Description": "Activities of producers or entrepreneurs of arts live events, with or without facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "90009",
+    "Description": "Creative, arts and entertainment activities n.e.c.",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91011",
+    "Description": "Documentation and information activities of libraries of all kinds",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91012",
+    "Description": "Stock photo libraries and services",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91021",
+    "Description": "Operation of museums of all kinds",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91022",
+    "Description": "Operation of historical sites and buildings",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91031",
+    "Description": "Operation of botanical and zoological gardens",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "91032",
+    "Description": "Operation of nature reserves, including wildlife preservation",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "92000",
+    "Description": "GAMBLING AND BETTING ACTIVITIES",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93111",
+    "Description": "Football, hockey, cricket, baseball, badminton, futsal, paintball",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93112",
+    "Description": "Racetracks for auto",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93113",
+    "Description": "Equestrian clubs",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93114",
+    "Description": "Swimming pools and stadiums, ice-skating arenas",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93115",
+    "Description": "Track and field stadium",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93116",
+    "Description": "Golf courses",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93117",
+    "Description": "Bowling centre",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93118",
+    "Description": "Fitness centres",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93119",
+    "Description": "Organization and operation of outdoor or indoor sports events for professionals or amateurs by organizations with own facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93120",
+    "Description": "The operation of sports clubs such as football club, bowling club, swimming club",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93191",
+    "Description": "Activities of producers or promoters of sports events, with or without facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93192",
+    "Description": "Activities of sports leagues and regulating bodies",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93193",
+    "Description": "Activities of related to promotion of sporting events",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93199",
+    "Description": "Other sports activities n.e.c.",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93210",
+    "Description": "Activities of amusement parks and theme parks",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93291",
+    "Description": "Activities of recreation parks and beaches",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93292",
+    "Description": "Operation of recreational transport facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93293",
+    "Description": "Renting of leisure and pleasure equipment as an integral part of recreational facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93294",
+    "Description": "Operation of fairs and shows of a recreational nature",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93295",
+    "Description": "Operation of discotheques and dance floors",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93296",
+    "Description": "Activities of producers or entrepreneurs of live events other than arts or sports events, with or without facilities",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93297",
+    "Description": "Cyber Café/Internet Centre",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "93299",
+    "Description": "Any other amusement and recreation activities n.e.c.",
+    "CategoryReferences": "R"
+  },
+  {
+    "Code": "94110",
+    "Description": "Activities of business and employers membership organizations",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "94120",
+    "Description": "Activities of professional membership organizations",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "94200",
+    "Description": "Activities of trade unions",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "94910",
+    "Description": "Activities of religious organizations",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "94920",
+    "Description": "Activities of political organizations",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "94990",
+    "Description": "Activities of other membership organizations n.e.c.",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95111",
+    "Description": "Repair of electronic equipment",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95112",
+    "Description": "Repair and maintenance of computer terminals",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95113",
+    "Description": "Repair and maintenance of hand-held computers (PDA's)",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95121",
+    "Description": "Repair and maintenance of cordless telephones",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95122",
+    "Description": "Repair and maintenance of cellular phones",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95123",
+    "Description": "Repair and maintenance of carrier equipment modems",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95124",
+    "Description": "Repair and maintenance of fax machines",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95125",
+    "Description": "Repair and maintenance of communications transmission equipment",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95126",
+    "Description": "Repair and maintenance of two-way radios",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95127",
+    "Description": "Repair and maintenance of commercial TV and video cameras",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95211",
+    "Description": "Repair and maintenance of television, radio receivers",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95212",
+    "Description": "Repair and maintenance of VCR/DVD/VCD",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95213",
+    "Description": "Repair and maintenance of CD players",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95214",
+    "Description": "Repair and maintenance of household-type video cameras",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95221",
+    "Description": "Repair and servicing of household appliances",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95222",
+    "Description": "Repair and servicing of home and garden equipment",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95230",
+    "Description": "Repair of footwear and leather goods",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95240",
+    "Description": "Repair of furniture and home furnishings",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95291",
+    "Description": "Repair of bicycles",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95292",
+    "Description": "Repair and alteration of clothing",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95293",
+    "Description": "Repair and alteration of jewellery",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95294",
+    "Description": "Repair of watches, clocks and their parts",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95295",
+    "Description": "Repair of sporting goods",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95296",
+    "Description": "Repair of musical instruments",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "95299",
+    "Description": "Repair of other personal and household goods n.e.c.",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96011",
+    "Description": "Laundering and dry-cleaning, pressing",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96012",
+    "Description": "Carpet and rug shampooing, and drapery and curtain cleaning, whether on clients' premises or not",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96013",
+    "Description": "Provision of linens, work uniforms and related items by laundries",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96014",
+    "Description": "Diaper supply services",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96020",
+    "Description": "Hairdressing and other beauty treatment",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96031",
+    "Description": "Preparing the dead for burial or cremation and embalming and morticians' services",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96032",
+    "Description": "Providing burial or cremation services",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96033",
+    "Description": "Rental of equipped space in funeral parlours",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96034",
+    "Description": "Rental or sale of graves",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96035",
+    "Description": "Maintenance of graves and mausoleums",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96091",
+    "Description": "Activities of sauna, steam baths, massage salons",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96092",
+    "Description": "Astrological and spiritualists' activities",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96093",
+    "Description": "Social activities such as escort services, dating services, services of marriage bureaux",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96094",
+    "Description": "Pet care services",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96095",
+    "Description": "Genealogical organizations",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96096",
+    "Description": "Shoe shiners, porters, valet car parkers",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96097",
+    "Description": "Concession operation of coin-operated personal service machines",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "96099",
+    "Description": "Other service activities n.e.c.",
+    "CategoryReferences": "S"
+  },
+  {
+    "Code": "97000",
+    "Description": "Activities of households as employers of domestic personnel",
+    "CategoryReferences": "T"
+  },
+  {
+    "Code": "98100",
+    "Description": "Undifferentiated goods-producing activities of private households for own use",
+    "CategoryReferences": "T"
+  },
+  {
+    "Code": "98200",
+    "Description": "Undifferentiated service-producing activities of private households for own use",
+    "CategoryReferences": "T"
+  },
+  {
+    "Code": "99000",
+    "Description": "Activities of extraterritorial organization and bodies",
+    "CategoryReferences": "U"
+  }
+]
