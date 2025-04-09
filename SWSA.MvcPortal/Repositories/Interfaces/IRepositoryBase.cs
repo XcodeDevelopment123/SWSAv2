@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Models;
+﻿using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -17,4 +18,6 @@ public interface IRepositoryBase<T> where T : class
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
     Task RollbackTransactionAsync();
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T?> GetWithIncludedByIdAsync(object id);
 }

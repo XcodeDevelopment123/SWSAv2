@@ -10,11 +10,17 @@ public class CompanyCommunicationContact
     public int Id { get; set; }
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-    public Company Company { get; set; } = null!;
     public string ContactName { get; set; } = null!;
-    public PositionType Position { get; set; } = PositionType.Staff;
     public string WhatsApp { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string? Remark { get; set; }
+    public PositionType Position { get; set; } = PositionType.Staff;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    // Optional 
+    [ForeignKey(nameof(CompanyDepartmentId))]
+    public int? CompanyDepartmentId { get; set; }
+
+    public Company Company { get; set; } = null!;
+    public CompanyDepartment? Department { get; set; }
 }

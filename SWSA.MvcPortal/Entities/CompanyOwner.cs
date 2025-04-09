@@ -10,7 +10,6 @@ public class CompanyOwner
     public int Id { get; set; }
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-    public Company Company { get; set; } = null!;
     public string NamePerIC { get; set; } = null!;
     public string ICOrPassportNumber { get; set; } = null!;
     public PositionType Position { get; set; } = PositionType.Director;
@@ -19,5 +18,6 @@ public class CompanyOwner
     public string PhoneNumber { get; set; } = null!;
     public OwnershipType OwnershipType { get; set; } //Its own or corp with other
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public Company Company { get; set; } = null!;
 }

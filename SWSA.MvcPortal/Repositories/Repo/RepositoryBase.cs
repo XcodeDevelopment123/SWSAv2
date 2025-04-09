@@ -2,6 +2,8 @@
 using SWSA.MvcPortal.Models;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
+using System.Collections.Concurrent;
+using System.Linq.Expressions;
 
 namespace SWSA.MvcPortal.Repositories.Repo;
 
@@ -9,37 +11,60 @@ public class RepositoryBase<T>(
     AppDbContext db
     ) : IRepositoryBase<T> where T : class
 {
-    #region CRUD
+    private static readonly ConcurrentDictionary<Type, string> _keyNameCache = new();
 
-    public void Add(T entity)
+    #region CRUD
+    public virtual void Add(T entity)
     {
+        BeforeAdd(entity);
         db.Set<T>().Add(entity);
     }
 
-    public void AddRange(IEnumerable<T> entities)
+    public virtual void AddRange(IEnumerable<T> entities)
     {
+        foreach (var entity in entities)
+        {
+            BeforeAdd(entity);
+        }
         db.Set<T>().AddRange(entities);
     }
 
-    public void Remove(T entity)
+    public virtual void Remove(T entity)
     {
+        BeforeRemove(entity);
         db.Set<T>().Remove(entity);
     }
 
-    public void RemoveRange(IEnumerable<T> entities)
+    public virtual void RemoveRange(IEnumerable<T> entities)
     {
+        foreach (var entity in entities)
+        {
+            BeforeRemove(entity);
+        }
         db.Set<T>().RemoveRange(entities);
     }
 
-    public void Update(T entity)
+    public virtual void Update(T entity)
     {
+        BeforeUpdate(entity);
         db.Set<T>().Update(entity);
     }
 
-    public void UpdateRange(IEnumerable<T> entities)
+    public virtual void UpdateRange(IEnumerable<T> entities)
     {
+        foreach (var entity in entities)
+        {
+            BeforeUpdate(entity);
+        }
         db.Set<T>().UpdateRange(entities);
     }
+
+    //Provide for repository rewrite the method
+    protected virtual void BeforeAdd(T entity) { }
+
+    protected virtual void BeforeRemove(T entity) { }
+
+    protected virtual void BeforeUpdate(T entity) { }
 
     #endregion
 
@@ -58,12 +83,47 @@ public class RepositoryBase<T>(
     #endregion
 
     #region  Query
+    //For the repository to rewrite the method
+    protected virtual Task<IQueryable<T>> BuildQueryAsync()
+    {
+        return Task.FromResult(db.Set<T>().AsQueryable());
+    }
+
+    protected virtual Task<IQueryable<T>> BuildQueryWithIncludesAsync()
+    {
+        return Task.FromResult(db.Set<T>().AsQueryable());
+    }
+
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    {
+        var query = await BuildQueryAsync();
+        return await query.ToListAsync();
+    }
 
     public async Task<T?> GetByIdAsync(object id)
     {
         return await db.Set<T>().FindAsync(id);
     }
 
+    public virtual async Task<T?> GetWithIncludedByIdAsync(object id)
+    {
+        var query = await BuildQueryWithIncludesAsync();
+        var keyName = GetPrimaryKeyName(typeof(T));
+
+        // e => EF.Property<object>(e, keyName) == id
+        var parameter = Expression.Parameter(typeof(T), "e");
+        var property = Expression.Call(
+            typeof(EF),
+            nameof(EF.Property),
+            new[] { typeof(object) },
+            parameter,
+            Expression.Constant(keyName)
+        );
+        var equals = Expression.Equal(property, Expression.Convert(Expression.Constant(id), typeof(object)));
+        var lambda = Expression.Lambda<Func<T, bool>>(equals, parameter);
+
+        return await query.FirstOrDefaultAsync(lambda);
+    }
     #endregion
 
     #region Pagination
@@ -107,6 +167,20 @@ public class RepositoryBase<T>(
     }
 
     #endregion
+
+    #region Helper
+    private string GetPrimaryKeyName(Type entityType)
+    {
+        return _keyNameCache.GetOrAdd(entityType, type =>
+        {
+            var efEntity = db.Model.FindEntityType(type);
+            var key = efEntity?.FindPrimaryKey()?.Properties.FirstOrDefault()?.Name;
+            return key ?? throw new InvalidOperationException($"No primary key defined for entity {type.Name}");
+        });
+    }
+
+    #endregion
+
 }
 
 

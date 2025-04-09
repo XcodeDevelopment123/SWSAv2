@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Helpers;
+﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Helpers;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
@@ -38,4 +39,9 @@ public class User
 
     //    return false;
     //}
+
+    public string ToJsonData()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 }

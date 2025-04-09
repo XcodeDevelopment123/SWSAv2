@@ -13,4 +13,9 @@ public class CompanyMsicCode
     public int MsicCodeId { get; set; }
     public Company Company { get; set; } = null!;
     public MsicCode MsicCode { get; set; } = null!;
+
+    public CompanyMsicCode(int msicCodeId)
+    {
+        MsicCodeId = msicCodeId;
+    }
 }

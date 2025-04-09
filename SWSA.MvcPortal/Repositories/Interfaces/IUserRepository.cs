@@ -10,4 +10,6 @@ public interface IUserRepository : IRepositoryBase<User>
 {
     // Define your method here
     Task<User> GetByUsernameAsync(string username);
+    Task<User> GetByStaffIdAsync(string staffId);
+
 }

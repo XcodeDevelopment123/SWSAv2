@@ -8,19 +8,6 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
 
 .swal2-popup.swal2-toast .swal2-title {
     line-height: unset;
@@ -29,4 +16,42 @@ body {
 
 .swal2-popup.swal2-toast .swal2-html-container {
     margin: 0 1em
+}
+
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-results__option[aria-disabled="true"] {
+    background-color: #f5f5f5;
+    color: #888;
+}
+
+.input-group .flatpickr-input{
+    background-color:#Fff;
+}
+    .input-group .flatpickr-input + .form-control.input {
+        background-color: #Fff;
+    }
+
+:not(.collapsed-card) .card-body.row {
+    display: flex
+}
+
+.divider-line {
+    width: 100%;
+    height: 1px;
+    background-color: #d8d8d8;
+    margin:0.5rem 0;
+}
+
+
+.dataTables_filter{
+    display:flex;
+    justify-content:end
+}
+
+.dataTables_paginate ul.pagination{
+    justify-content:end
 }

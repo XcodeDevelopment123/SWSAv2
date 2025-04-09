@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Responses;
+using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -8,10 +10,13 @@ namespace SWSA.MvcPortal.Services;
 
 public class AuthService(
     IUserRepository userRepo,
-    IMapper mapper
+    IMapper mapper,
+    IHttpContextAccessor httpContextAccessor
     ) : IAuthService
 {
-
+    private readonly ISession _session =
+       httpContextAccessor.HttpContext?.Session
+       ?? throw new InvalidOperationException("Session is not available.");
     public async Task<LoginResult> Login(string username, string password)
     {
         var user = await userRepo.GetByUsernameAsync(username);
@@ -29,6 +34,12 @@ public class AuthService(
         {
             user.HashedPassword = PasswordHasher.Hash(password);
         }
+
+        var userVM = mapper.Map<UserVM>(user);
+
+        _session.SetString(SessionKeys.StaffId, user.StaffId);
+        _session.SetString(SessionKeys.UserJson, userVM.ToJsonData());
+        _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
 
         user.LastLoginAt = DateTime.Now;
         userRepo.Update(user);

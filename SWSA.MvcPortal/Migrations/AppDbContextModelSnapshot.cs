@@ -37,7 +37,6 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("IncorporationDate")
@@ -77,6 +76,9 @@ namespace SWSA.MvcPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CompanyDepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -103,6 +105,8 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyDepartmentId");
+
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyCommunicationContacts");
@@ -121,6 +125,9 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -154,7 +161,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("CompanyMsicCodes");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOfficalContact", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOfficialContact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,7 +179,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EmailAddress")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -181,14 +188,13 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Remark")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyOfficalContacts");
+                    b.ToTable("CompanyOfficialContacts");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOwner", b =>
@@ -364,13 +370,20 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
                 {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyDepartment", "Department")
+                        .WithMany("CommunicationContacts")
+                        .HasForeignKey("CompanyDepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
                         .WithMany("CommunicationContacts")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyDepartment", b =>
@@ -411,7 +424,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("MsicCode");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOfficalContact", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOfficialContact", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
                         .WithMany("OfficialContacts")
@@ -444,6 +457,11 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("MsicCodes");
 
                     b.Navigation("OfficialContacts");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyDepartment", b =>
+                {
+                    b.Navigation("CommunicationContacts");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.MsicCode", b =>

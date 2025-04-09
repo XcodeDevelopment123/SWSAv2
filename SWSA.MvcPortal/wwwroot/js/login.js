@@ -58,7 +58,7 @@ $(function () {
                     return;
                 }
 
-                window.location.href = "/home/dashboard";
+                window.location.href = "/dashboard/overall";
             },
             error: (res) => {
                 Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");

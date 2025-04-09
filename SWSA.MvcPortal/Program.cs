@@ -1,6 +1,6 @@
 
-using SWSA.MvcPortal.Extensions;
-using SWSA.MvcPortal.Middlewares;
+using SWSA.MvcPortal.Commons.Extensions;
+using SWSA.MvcPortal.Commons.Middlewares;
 using SWSA.MvcPortal.Persistence.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);

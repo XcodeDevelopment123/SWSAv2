@@ -1,0 +1,108 @@
+﻿@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Models.Companies
+@model List<CompanyListVM>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3> Company List</h3>
+
+<!-- DataTables -->
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="companyDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Registration Number</th>
+                            <th>Year End Month</th>
+                            <th>Incorporation Date</th>
+                            <th>Director Name</th>
+                            <th>Contacts Count</th>
+                            <th>Departments Count</th>
+                            <th>MsicCodes Count</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cp in Model)
+                        {
+                            <tr>
+                                <td>@cp.CompanyName</td>
+                                <td>@cp.CompanyType</td>
+                                <td>@cp.RegistrationNumber</td>
+                                <td>@cp.YearEndMonth</td>
+                                <td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
+                                <td>@cp.CompanyDirectorName</td>
+                                <td>@cp.ContactsCount</td>
+                                <td>@cp.DepartmentsCount</td>
+                                <td>@cp.MsicCodesCount</td>
+                                <td>@cp.Status</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete"   data-id="@cp.CompanyId" data-name="@cp.CompanyName" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Registration Number</th>
+                            <th>Year End Month</th>
+                            <th>Incorporation Date</th>
+                            <th>Director Name</th>
+                            <th>Contacts Count</th>
+                            <th>Departments Count</th>
+                            <th>MsicCodes Count</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin-lte/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin-lte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin-lte/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/js/companies/list-company.js" asp-append-version="true"></script>
+}

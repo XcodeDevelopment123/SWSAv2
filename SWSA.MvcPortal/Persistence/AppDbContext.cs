@@ -10,7 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyCommunicationContact> CompanyCommunicationContacts { get; set; }
     internal DbSet<CompanyDepartment> CompanyDepartments { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
-    internal DbSet<CompanyOfficalContact> CompanyOfficalContacts { get; set; }
+    internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<CompanyType> CompanyTypes { get; set; }
     internal DbSet<Department> Departments { get; set; }
@@ -27,6 +27,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
               "'StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
               stored: true);
         });
+
+
+        modelBuilder.Entity<Company>()
+            .HasMany(c => c.CommunicationContacts)
+            .WithOne(cc => cc.Company)
+            .HasForeignKey(cc => cc.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company
+
+        modelBuilder.Entity<CompanyDepartment>()
+            .HasMany(c=>c.CommunicationContacts)
+            .WithOne(cc => cc.Department)
+            .HasForeignKey(cc => cc.CompanyDepartmentId)
+            .OnDelete(DeleteBehavior.SetNull); //When deleting a department, set the foreign key to null instead of deleting the contact
 
         base.OnModelCreating(modelBuilder);
     }
