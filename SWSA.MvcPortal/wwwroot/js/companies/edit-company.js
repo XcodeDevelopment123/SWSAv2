@@ -1,5 +1,8 @@
 ﻿$(function () {
+    const $companyId = $("#companyId");
+
     //#region Company Form 
+
     const $companyForm = $("#companyForm");
     const companyFormInputs = {
         companyName: $companyForm.find('input[name="companyName"]'),
@@ -89,6 +92,28 @@
         }
     });
 
+    $companyForm.on('submit', function (e) {
+        e.preventDefault();
+        if (!$companyForm.valid()) {
+            return;
+        }
+
+        const companyData = getFormData(companyFormInputs);
+        companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
+        companyData.companyId = $companyId.val();
+        console.log(companyData)
+        $.ajax({
+            url: `${urls.companies}/edit`,
+            method: "POST",
+            data: companyData,
+            success: function (res) {
+                Toast_Fire(ICON_SUCCESS, "Success", "Company updated successfully.");
+            },
+            error: (res) => {
+                Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
+            }
+        })
+    })
     //#endregion
 
     //#region Owner Form 
@@ -178,7 +203,7 @@
         }
 
         const ownerData = getFormData(ownerFormInputs);
-        ownerData.companyId = $("#companyId").val();
+        ownerData.companyId = $companyId.val();
         ownerData.ownerId = editOwner.id;
         const apiUrl = editOwner.isEdit ? `${urls.company_owner}/edit` : `${urls.company_owner}/create`;
 
@@ -349,7 +374,7 @@
         }
 
         const contactData = getFormData(officialContactFormInputs);
-        contactData.companyId = $("#companyId").val();
+        contactData.companyId = $companyId.val();
         contactData.contactId = editOfficialContact.id;
         const apiUrl = editOfficialContact.isEdit ? `${urls.company_official_contact}/edit` : `${urls.company_official_contact}/create`;
 
@@ -506,7 +531,7 @@
         }
 
         const staffData = getFormData(staffFormInputs);
-        staffData.companyId = $("#companyId").val();
+        staffData.companyId = $companyId.val();
         staffData.contactId = editStaff.id;
 
         const apiUrl = editStaff.isEdit ? `${urls.company_communication_contact}/edit` : `${urls.company_communication_contact}/create`;
@@ -633,9 +658,8 @@
     });
     //#endregion
 
-    $('.select2').select2({
-        theme: 'bootstrap4'
-    })
+
+    initSelect2();
 
     flatpickr("#incorpDate");
     flatpickr("#yearEndMonth", {
@@ -653,35 +677,6 @@
         const table = $(this).closest('table').DataTable();
         table.row($(this).closest('tr')).remove().draw(false);
     });
-
-    $("#btnSubmitRequest").on('click', function (e) {
-
-        if (!$companyForm.valid()) {
-            return;
-        }
-
-        const companyData = getFormData(companyFormInputs);
-        companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
-        companyData.companyOwners = getOwnerTableData();
-        companyData.communicationContacts = getStaffContactTableData();
-        companyData.officialContacts = getOfficialContactTableData();
-
-        console.log(companyData)
-        $.ajax({
-            url: `${urls.companies}/create`,
-            method: "POST",
-            data: companyData,
-            success: function (res) {
-
-                console.log(res);
-
-            },
-            error: (res) => {
-                Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
-            }
-        })
-    });
-
 
     function addOrUpdateOwnerRow(data) {
         let html =
@@ -767,7 +762,7 @@
 
 
         if (editOfficialContact.isEdit) {
-  
+
             officialContactTable.row(editOfficialContact.index).data([
                 data.address,
                 data.officeTel,
@@ -787,24 +782,4 @@
         }
 
     }
-
-    function getFormData(formInputs) {
-        const formData = {};
-
-        for (const key in formInputs) {
-            if (!formInputs.hasOwnProperty(key)) continue;
-
-            const $input = formInputs[key];
-
-            // 针对 select[multiple] 处理数组，其它默认用 .val()
-            if ($input.is('select[multiple]')) {
-                formData[key] = $input.val() || []; // 确保 null 转为 []
-            } else {
-                formData[key] = $input.val();
-            }
-        }
-
-        return formData;
-    }
-
 })

@@ -10,4 +10,5 @@ public interface ICompanyService
     Task<int> CreateCompany(CreateCompanyRequest req);
     Task<Company> GetCompanyByIdAsync(int companyId);
     Task<Company> DeleteCompanyByIdAsync(int companyId);
+    Task<bool> UpdateCompanyInfo(EditCompanyRequest req);
 }

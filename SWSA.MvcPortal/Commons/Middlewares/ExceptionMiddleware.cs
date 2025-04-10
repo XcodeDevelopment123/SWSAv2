@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Http.HttpResults;
 using SWSA.MvcPortal.Commons.Exceptions;
 
 namespace SWSA.MvcPortal.Commons.Middlewares;
@@ -35,6 +36,10 @@ public class ExceptionMiddleware : IMiddleware
                     await WriteJsonError(context, StatusCodes.Status403Forbidden, "Unauthorized access", unauthorizedEx);
                 else
                     RedirectToPage(context, "/errors/Forbidden");
+                break;
+
+            case BusinessLogicException businessEx:
+                await WriteJsonError(context, StatusCodes.Status400BadRequest, "Operation not permitted by current business rules.", businessEx);
                 break;
 
             default:

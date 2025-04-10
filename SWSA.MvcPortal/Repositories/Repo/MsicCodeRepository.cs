@@ -11,6 +11,11 @@ public class MsicCodeRepository(AppDbContext db) : RepositoryBase<MsicCode>(db),
 {
   
     // Implement the method
+    public async Task<List<MsicCode>> GetByIdsAsync(List<int> msicCodeIds)
+    {
+        var data = db.MsicCodes.Where(c => msicCodeIds.Contains(c.Id));
+        return await data.ToListAsync();
+    }
 
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<MsicCode>> BuildQueryAsync()

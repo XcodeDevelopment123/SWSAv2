@@ -354,13 +354,11 @@
     });
     //#endregion
 
-    $('.select2').select2({
-        theme: 'bootstrap4'
-    })
+    initSelect2();
 
     flatpickr("#incorpDate");
     flatpickr("#yearEndMonth", {
-      
+
         plugins: [
             new monthSelectPlugin({
                 shorthand: false,
@@ -386,19 +384,17 @@
         companyData.companyOwners = getOwnerTableData();
         companyData.communicationContacts = getStaffContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
-
-        console.log(companyData)
         $.ajax({
             url: `${urls.companies}/create`,
             method: "POST",
             data: companyData,
-            success: function (res) {
-           
-                console.log(res);
-
+            success: function (res) {     
+                if (res) {
+                    Toast_Fire(ICON_SUCCESS, "Created", "User created successfully.");
+                    window.location.href = `${urls.companies}/${res}/overview`;
+                }
             },
             error: (res) => {
-                Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
             }
         })
     });
@@ -438,30 +434,13 @@
         ]).draw(false);
     }
 
-    function getFormData(formInputs) {
-        const formData = {};
 
-        for (const key in formInputs) {
-            if (!formInputs.hasOwnProperty(key)) continue;
-
-            const $input = formInputs[key];
-
-            // 针对 select[multiple] 处理数组，其它默认用 .val()
-            if ($input.is('select[multiple]')) {
-                formData[key] = $input.val() || []; // 确保 null 转为 []
-            } else {
-                formData[key] = $input.val();
-            }
-        }
-
-        return formData;
-    }
 
     function getOwnerTableData() {
         const data = [];
 
         ownerTable.rows().every(function () {
-            const rowData = this.data(); 
+            const rowData = this.data();
 
             data.push({
                 namePerIC: rowData[0],

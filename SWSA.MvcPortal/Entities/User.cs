@@ -9,14 +9,13 @@ public class User
     [Key]
     public int Id { get; set; }
     public string StaffId { get; set; } = null!;
-
     public string Username { get; set; } = null!;
+    public string FullName { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string HashedPassword { get; set; } = null!;
     public bool IsActive { get; set; } = true;
     public bool IsLocked { get; set; } = false;
-    public string FullName { get; set; } = null!;
-    public string PhoneNumber { get; set; } = null!;
 
     //  public UserRole Role { get; set; } 
     public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -20,6 +20,11 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
         return await db.Users.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 
+    public async Task<bool> ExistsByUsernameAsync(string username)
+    {
+        return await db.Users.AnyAsync(u => u.Username == username);
+    }
+
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<User>> BuildQueryAsync()
     {

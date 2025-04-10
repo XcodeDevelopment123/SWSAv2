@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
@@ -7,6 +8,7 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
+using System.ComponentModel.Design;
 
 namespace SWSA.MvcPortal.Services;
 
@@ -16,6 +18,7 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 ICompanyRepository repo,
 ICompanyTypeRepository companyTypeRepository,
+ICompanyMsicCodeRepository companyMsicCodeRepository,
 IDepartmentRepository departmentRepository,
 IMsicCodeRepository msicCodeRepository
     ) : ICompanyService
@@ -55,6 +58,29 @@ IMsicCodeRepository msicCodeRepository
 
         ClearCompaniesCache();
         return cp.Id;
+    }
+
+    public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
+    {
+        var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
+        Guard.AgainstNullData(data, "Company not found");
+
+        data!.Name = req.CompanyName;
+        data.RegistrationNumber = req.RegistrationNumber;
+        data.EmployerNumber = req.EmployerNumber;
+        data.TaxIdentificationNumber = req.TaxIdentificationNumber;
+        data.YearEndMonth = req.YearEndMonth;
+        data.IncorporationDate = req.IncorporationDate;
+        data.Status = req.Status;
+        data.CompanyType = null!; //prevent tracking
+        data.CompanyTypeId = req.CompanyTypeId;
+
+        await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
+
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+        ClearCompaniesCache(data.Id);
+        return true;
     }
 
     private async Task<List<Company>> GetCompaniesFromCacheAsync()
@@ -124,6 +150,32 @@ IMsicCodeRepository msicCodeRepository
             cache.Remove($"{cacheKey}_{id}");
             cache.Remove($"{cacheKey}_{id}_Details");
         }
+    }
+
+    private async Task SyncMsicCodes(Company data, HashSet<int> requestedMsicIds)
+    {
+        var existingMsicIds = data.MsicCodes.Select(x => x.MsicCodeId).ToHashSet();
+        var msicIdsToAdd = requestedMsicIds.Except(existingMsicIds).ToList();
+        var msicsToRemove = data.MsicCodes
+          .Where(x => !requestedMsicIds.Contains(x.MsicCodeId)).ToList();
+        var msicIdsToRemove = msicsToRemove.Select(x => x.MsicCodeId).ToList();
+
+
+        if (msicIdsToAdd.Count > 0)
+        {
+            var msicEntities = await msicCodeRepository.GetByIdsAsync(msicIdsToAdd);
+            data.MsicCodes.AddRange(msicEntities.Select(msic => new CompanyMsicCode(msic.Id)));
+        }
+
+        foreach (var msic in msicsToRemove)
+        {
+            //Remove in data entity
+            data.MsicCodes.Remove(msic);
+        }
+
+        //Remove in db
+        var msicRemoveEntities = await companyMsicCodeRepository.GetByIdsAsync(msicIdsToRemove);
+        companyMsicCodeRepository.RemoveRange(msicRemoveEntities);
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿$(function () {
-   const companyTable =  $("#companyDatatable").DataTable({
+    const companyTable = $("#companyDatatable").DataTable({
         "paging": true,
         "lengthChange": false,
         "searching": true,
@@ -14,17 +14,17 @@
     $(document).on('click', '.btn-delete', function () {
         const id = $(this).data('id');
         const name = $(this).data('name');
+        const row = $(this).closest('table').DataTable().row($(this).closest('tr'))
 
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
-            console.log(id);
             $.ajax({
                 url: `${urls.companies}/${id}/delete`,
                 method: "DELETE",
                 success: function (res) {
-                    const table = $(this).closest('table').DataTable();
-                    table.row($(this).closest('tr')).remove().draw(false);
-                    console.log(res);
-
+                    if (res) {
+                        Toast_Fire(ICON_SUCCESS, "Deleted", "Company deleted successfully.");
+                        row.remove().draw(false);
+                    }
                 },
                 error: (res) => {
                     Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");

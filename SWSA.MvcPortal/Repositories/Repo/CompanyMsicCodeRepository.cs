@@ -12,6 +12,19 @@ public class CompanyMsicCodeRepository(AppDbContext db) : RepositoryBase<Company
   
     // Implement the method
 
+    public async Task<List<CompanyMsicCode>> GetByCompanyId(int companyId)
+    {
+        var data = db.CompanyMsicCodes.Where(c => c.CompanyId == companyId);
+        return await data.ToListAsync();
+    }
+
+    public async Task<List<CompanyMsicCode>> GetByIdsAsync(List<int> msicCodeIds)
+    {
+        var data = db.CompanyMsicCodes.Where(c => msicCodeIds.Contains(c.MsicCodeId));
+        return await data.ToListAsync();
+    }
+
+
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<CompanyMsicCode>> BuildQueryAsync()
     {

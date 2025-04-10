@@ -2,6 +2,31 @@ html {
   font-size: 14px;
 }
 
+#globalLoadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1050; 
+    background: rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: wait;
+}
+
+.no-pointer-events {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+.prevent-typing {
+    background-color: #e9ecef;
+    pointer-events: none;
+}
+
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -55,3 +80,4 @@ html {
 .dataTables_paginate ul.pagination{
     justify-content:end
 }
+

@@ -50,7 +50,7 @@ public class CompanyController(
     public async Task<IActionResult> Create(CreateCompanyRequest req)
     {
         var result = await service.CreateCompany(req);
-        return Json(true);
+        return Json(result);
     }
 
     [Route("{companyId}/edit")]
@@ -64,6 +64,14 @@ public class CompanyController(
         return View(vm);
     }
 
+    [Route("edit")]
+    [HttpPost]
+    public async Task<IActionResult> Edit(EditCompanyRequest req)
+    {
+        var result = await service.UpdateCompanyInfo(req);
+        return Json(result);
+    }
+
     [Route("{companyId}/delete")]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromRoute] int companyId)
@@ -71,7 +79,6 @@ public class CompanyController(
         var data = await service.DeleteCompanyByIdAsync(companyId);
         return View(data);
     }
-
 
     [Route("owner/create")]
     [HttpPost]
