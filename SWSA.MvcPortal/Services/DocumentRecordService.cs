@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -17,28 +18,28 @@ IDocumentRecordRepository repo
     ) : IDocumentRecordService
 {
 
-    public async Task<List<DocumentRecord>> GetDocumentRecords()
+    public async Task<List<DocumentRecordVM>> GetDocumentRecords()
     {
         var data = (await repo.GetAllAsync()).ToList();
-        return data;
+        return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
-    public async Task<DocumentRecord> GetDocumentRecordById(int id)
+    public async Task<DocumentRecordVM> GetDocumentRecordById(int id)
     {
         var data = await repo.GetByIdAsync(id);
         Guard.AgainstNullData(data, "DocumentRecord not found");
-        return data!;
+        return mapper.Map<DocumentRecordVM>(data!);
     }
 
-    public async Task<List<DocumentRecord>> GetDocumentRecordByCompanyId(int companyId)
+    public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId)
     {
         var data = await repo.GetDocumentRecordsByCompanyId(companyId);
-        return data;
+        return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
-    public async Task<List<DocumentRecord>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId)
+    public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId)
     {
         var data = await repo.GetDocumentRecordsByCompanyDepartmentId(companyDepartmentId);
-        return data;
+        return mapper.Map<List<DocumentRecordVM>>(data);
     }
 }

@@ -44,13 +44,28 @@ public class DocumentController(
 
             if (i < files.Count && files[i] != null)
             {
-                var result = await uploadFileService.UploadAsync(files[i], "docs", UploadStorageType.Local);
+                var flowType = doc.FlowType.ToString().ToLower();
+
+                var safeCompanyName = SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
+                var safeDeptName = SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+                var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
+
+                var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
                 doc.AttachmentFilePath = result;
             }
-
             // TODO: Save to database
+
+
         }
 
         return Json(true);
+    }
+
+    private string SanitizeFolderName(string input)
+    {
+        foreach (var c in Path.GetInvalidFileNameChars())
+            input = input.Replace(c.ToString(), "");
+
+        return input.Trim().Replace(" ", "_");
     }
 }

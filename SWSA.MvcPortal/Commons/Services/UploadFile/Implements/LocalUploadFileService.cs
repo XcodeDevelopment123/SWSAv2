@@ -7,7 +7,7 @@ public class LocalUploadFileService(
     public async Task<string> UploadAsync(IFormFile file, string subfolder)
     {
         var rootPath = Directory.GetCurrentDirectory();
-        var savePath = Path.Combine(rootPath, "Uploads", subfolder);
+        var savePath = Path.Combine(rootPath, "Datas", "uploads", subfolder);
         if (!Directory.Exists(savePath))
             Directory.CreateDirectory(savePath);
 
@@ -17,7 +17,7 @@ public class LocalUploadFileService(
         using var stream = new FileStream(fullPath, FileMode.Create);
         await file.CopyToAsync(stream);
 
-        var relativePath = Path.Combine("Uploads", subfolder, fileName).Replace("\\", "/");
+        var relativePath = Path.Combine(subfolder, fileName).Replace("\\", "/");
         return relativePath;
     }
 

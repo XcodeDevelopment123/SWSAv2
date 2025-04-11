@@ -149,6 +149,9 @@
         const formData = new FormData();
 
         data.forEach((item, index) => {
+            formData.append(`Documents[${index}].CompanyId`, item.companyId);
+            formData.append(`Documents[${index}].CompanyName`, item.companyName);
+            formData.append(`Documents[${index}].DepartmentName`, item.departmentName);
             formData.append(`Documents[${index}].CompanyDepartmentId`, item.companyDepartmentId);
             formData.append(`Documents[${index}].DocumentDate`, item.documentDate);
             formData.append(`Documents[${index}].FlowType`, item.flowType);
@@ -189,6 +192,9 @@
             const file = $row.find('input.stored-file')[0]?.files?.[0] ?? null;
 
             data.push({
+                companyId: $("#companyId").val(),
+                companyName: $("#companyName").val(),
+                departmentName: $row.find('td').eq(0).find('span').text(),
                 companyDepartmentId: $row.find('td').eq(0).find('span').data('id'),
                 documentDate: $row.find('td').eq(1).text(),
                 flowType: $row.find('td').eq(2).text(),
@@ -199,6 +205,7 @@
                 attachmentFile: file
             });
         });
+
 
         return data;
     }

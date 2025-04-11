@@ -10,8 +10,12 @@ public class CreateDocumentRecordListRequest
 
 public class CreateDocumentRecordRequest
 {
+    //For local file storing
+    public string CompanyName { get; set; }
+    public string DepartmentName { get; set; }
+    //End
+    public int CompanyId { get; set; }
     public int CompanyDepartmentId { get; set; }
-
     public DateTime DocumentDate { get; set; }  // Date Received (for Incoming) or Date Returned (for Outgoing)
     public DocumentFlowType FlowType { get; set; } // Incoming or Outgoing  
 

@@ -20,6 +20,9 @@
     {
         userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
     }
+
+    <input type="hidden" id="companyId" value="@cp.Id" />
+    <input type="hidden" id="companyName" value="@cp.Name" />
 }
 
 
