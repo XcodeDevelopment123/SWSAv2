@@ -11,7 +11,7 @@ public class CompanyDepartment
     public int CompanyId { get; set; }
     [ForeignKey(nameof(Department))]
     public int DepartmentId { get; set; }
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; } = true;
 
     public Company Company { get; set; } = null!;
     public Department Department { get; set; } = null!;
@@ -21,6 +21,15 @@ public class CompanyDepartment
     public CompanyDepartment(int departmentId)
     {
         DepartmentId = departmentId;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
+    public void SetActive()
+    {
+        IsActive = true;
     }
 
 }

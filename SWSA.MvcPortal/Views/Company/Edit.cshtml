@@ -16,6 +16,7 @@
     var ownershipTypes = SelectHelper.GetOwnershipTypes(null);
     var staffPosition = SelectHelper.GetStaffPositionTypes(null);
     var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
+    var cpDepartmentIds = cp.Departments.Select(m => m.DepartmentId).ToList();
 
     <input type="hidden" id="companyId" value="@cp.Id" />
 }
@@ -149,6 +150,27 @@
                                             }
                                         }
                                     </optgroup>
+                                })
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="departmentsIds">Active Departments </label>
+                            <select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+                                @foreach (var department in Model.Departments)
+                                {
+                                    var findDp = cp.Departments.FirstOrDefault(m => m.DepartmentId == department.Id);
+                                    if (findDp == null || !findDp.IsActive)
+                                    {
+                                        <option value="@department.Id">@department.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option selected value="@department.Id">@department.Name</option>
+                                    }
+                                
                                 })
                             </select>
                         </div>

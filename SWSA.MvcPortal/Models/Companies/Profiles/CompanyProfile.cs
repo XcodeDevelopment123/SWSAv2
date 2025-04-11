@@ -24,11 +24,15 @@ public class CompanyProfile : Profile
            {
                return src.CommunicationContacts.Count + src.OfficialContacts.Count;
            }))
-           .ForMember(dest => dest.DepartmentsCount, opt => opt.MapFrom(src => src.Departments.Count))
+           .ForMember(dest => dest.DepartmentsCount, opt => opt.MapFrom((src, dest) =>
+           {
+               return src.Departments.Where(c => c.IsActive).ToList().Count;
+           }))
            .ForMember(dest => dest.MsicCodesCount, opt => opt.MapFrom(src => src.MsicCodes.Count));
 
         CreateMap<CreateCompanyRequest, Company>()
             .ForMember(dest => dest.MsicCodes, opt => opt.MapFrom(src => src.MsicCodeIds.Select(id => new CompanyMsicCode(id)).ToList()))
+            .ForMember(dest => dest.Departments, opt => opt.MapFrom(src => src.DepartmentsIds.Select(id => new CompanyDepartment(id)).ToList()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CompanyName))
             .ForMember(dest => dest.CompanyComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate))
             ;

@@ -18,7 +18,10 @@ IMapper mapper,
 IDepartmentRepository repo
     ) : IDepartmentService
 {
-
+    public async Task<List<Department>> GetDepartments()
+    {
+        return await GetDepartmentsFromCacheAsync();
+    }
 
     private async Task<List<Department>> GetDepartmentsFromCacheAsync()
     {

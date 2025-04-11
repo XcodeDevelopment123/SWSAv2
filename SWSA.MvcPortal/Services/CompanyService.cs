@@ -8,8 +8,6 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
-using System.ComponentModel.Design;
-
 namespace SWSA.MvcPortal.Services;
 
 public class CompanyService(
@@ -19,6 +17,7 @@ IMapper mapper,
 ICompanyRepository repo,
 ICompanyTypeRepository companyTypeRepository,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
+ICompanyDepartmentRepository companyDepartmentRepository,
 IDepartmentRepository departmentRepository,
 IMsicCodeRepository msicCodeRepository
     ) : ICompanyService
@@ -75,6 +74,7 @@ IMsicCodeRepository msicCodeRepository
         data.CompanyType = null!; //prevent tracking
         data.CompanyTypeId = req.CompanyTypeId;
 
+        await SyncDepartments(data, req.DepartmentsIds?.ToHashSet() ?? new());
         await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
 
         repo.Update(data);
@@ -178,4 +178,38 @@ IMsicCodeRepository msicCodeRepository
         companyMsicCodeRepository.RemoveRange(msicRemoveEntities);
     }
 
+    private async Task SyncDepartments(Company company, HashSet<int> requestDepartmentIds)
+    {
+        var companyDepartments = company.Departments;
+        var existingDepartmentIds = companyDepartments.Select(x => x.DepartmentId).ToHashSet();
+
+        var departmentIdsToAdd = requestDepartmentIds.Except(existingDepartmentIds).ToList();
+        var departmentIdsToRemove = existingDepartmentIds.Except(requestDepartmentIds).ToList();
+        var departmentIdsToRetain = existingDepartmentIds.Intersect(requestDepartmentIds).ToList();
+
+        //Only these new department that not in company
+        if (departmentIdsToAdd.Count > 0)
+        {
+            var departmentsToAddEntities = await departmentRepository.GetByIdsAsync(departmentIdsToAdd) ?? new List<Department>();
+
+            foreach (var dept in departmentsToAddEntities)
+            {
+                companyDepartments.Add(new CompanyDepartment(dept.Id));
+            }
+        }
+
+        var deptMap = companyDepartments.ToDictionary(x => x.DepartmentId);
+        foreach (var deptId in departmentIdsToRetain)
+        {
+            if (deptMap.TryGetValue(deptId, out var dept))
+                dept.SetActive();
+        }
+
+        foreach (var deptId in departmentIdsToRemove)
+        {
+            if (deptMap.TryGetValue(deptId, out var dept))
+                dept.Deactivate();
+        }
+
+    }
 }

@@ -10,7 +10,8 @@
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
         companyTypeId: $companyForm.find('select[name="companyType"]'),
         status: $companyForm.find('select[name="companyStatus"]'),
-        msicCodeIds: $companyForm.find('select[name="msicCodesIds"]')
+        msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
+        departmentsIds: $companyForm.find('select[name="departmentsIds"]')
     }
 
     $companyForm.validate({
@@ -41,6 +42,9 @@
             },
             msicCodesIds: {
                 required: true
+            },
+            departmentsIds: {
+                required: false
             }
         },
         messages: {
@@ -368,7 +372,7 @@
 
     initSelect2();
 
- 
+
     flatpickr("#incorpDate,#firstYearAccountStart, #agmDate, #accountDueDate, #anniversaryDate, #annualReturnDueDate", {
         allowInput: true
     });
@@ -404,7 +408,7 @@
             url: `${urls.companies}/create`,
             method: "POST",
             data: companyData,
-            success: function (res) {     
+            success: function (res) {
                 if (res) {
                     Toast_Fire(ICON_SUCCESS, "Created", "Company created successfully.");
                     window.location.href = `${urls.companies}/${res}/overview`;

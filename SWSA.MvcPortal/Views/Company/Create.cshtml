@@ -9,6 +9,7 @@
        .GroupBy(m => m.CategoryReferences)
        .ToList();
 
+
     var companyStatus = SelectHelper.GetCompanyStatus(null);
     var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
     var ownershipTypes = SelectHelper.GetOwnershipTypes(null);
@@ -135,6 +136,17 @@
                         </div>
                     </div>
 
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="departmentsIds">Active Departments </label>
+                            <select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+                                @foreach (var department in Model.Departments)
+                                {
+                                    <option value="@department.Id">@department.Name</option>
+                                })
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -469,7 +481,7 @@
                                 <label for="staffRemark">Remark</label>
                                 <input id="staffRemark" name="staffRemark" class="form-control " placeholder="(Optional)" />
                             </div>
-                        </div>      
+                        </div>
                     </div>
                 </div>
                 <!-- /.card-body -->

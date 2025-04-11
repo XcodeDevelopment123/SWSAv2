@@ -9,19 +9,48 @@ namespace SWSA.MvcPortal.Repositories.Repo;
 
 public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<DocumentRecord>(db), IDocumentRecordRepository
 {
-  
+
     // Implement the method
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyId(int companyId)
+    {
+        var data = await db.DocumentRecords
+                .AsNoTracking()
+                .Include(c => c.Department)
+                .Where(c => c.Department != null && c.Department.CompanyId == companyId)
+                .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyDepartmentId(int companyDepartmentId)
+    {
+        var data = await db.DocumentRecords
+          .AsNoTracking()
+          .Where(c => c.CompanyDepartmentId == companyDepartmentId)
+          .ToListAsync();
+        return data;
+    }
+
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId)
+    {
+        var data = await db.DocumentRecords
+            .AsNoTracking()
+            .Include(c => c.HandledByStaff)
+            .Where(c => c.HandledByStaff != null && c.HandledByStaff.StaffId == staffId)
+            .ToListAsync();
+
+        return data;
+    }
 
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<DocumentRecord>> BuildQueryAsync()
     {
-       //Default query no action
+        //Default query no action
         return Task.FromResult(db.Set<DocumentRecord>().AsQueryable());
 
         // Do you query here
         // var query = db.TableNames.AsNoTracking();
         // return Task.FromResult(query);    
-     }
+    }
 
     //Rewrite the GetWithIncludesAsync method
     protected override Task<IQueryable<DocumentRecord>> BuildQueryWithIncludesAsync()
@@ -37,7 +66,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     //Add the method that want to perform before delete the entity
     protected override void BeforeRemove(DocumentRecord entity)
     {
-    //Do you logic here
+        //Do you logic here
     }
 
     //Add the method that want to perform before add the entity

@@ -24,7 +24,6 @@ public class CompanyMsicCodeRepository(AppDbContext db) : RepositoryBase<Company
         return await data.ToListAsync();
     }
 
-
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<CompanyMsicCode>> BuildQueryAsync()
     {

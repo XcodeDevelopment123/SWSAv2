@@ -15,6 +15,7 @@ public class CreateCompanyRequest
 
     public CreateCompanyComplianceDate ComplianceDate { get; set; } = new();
     public List<int> MsicCodeIds { get; set; } = [];
+    public List<int> DepartmentsIds { get; set; } = [];
     public List<CreateCompanyOwnerRequest> CompanyOwners { get; set; } = [];
     public List<CreateCompanyCommunicationContactRequest> CommunicationContacts { get; set; } = [];
     public List<CreateCompanyOfficialContactRequest> OfficialContacts { get; set; } = [];

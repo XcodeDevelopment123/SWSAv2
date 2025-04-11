@@ -13,7 +13,8 @@ public class CompanyController(
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
-    ICompanyTypeService companyTypeService
+    ICompanyTypeService companyTypeService,
+    IDepartmentService departmentService
     ) : BaseController
 {
     [Route("")]
@@ -41,8 +42,9 @@ public class CompanyController(
     {
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
         var companyTypes = await companyTypeService.GetCompanyTypesAsync();
+        var departments = await departmentService.GetDepartments();
 
-        CompanyCreatePageVM vm = new(msicCodes, companyTypes);
+        CompanyCreatePageVM vm = new(msicCodes, companyTypes, departments);
         return View(vm);
     }
 
@@ -60,8 +62,9 @@ public class CompanyController(
         var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
         var companyTypes = await companyTypeService.GetCompanyTypesAsync();
+        var departments = await departmentService.GetDepartments();
 
-        CompanyEditPageVM vm = new(cp, msicCodes, companyTypes);
+        CompanyEditPageVM vm = new(cp, msicCodes, companyTypes,departments);
         return View(vm);
     }
 

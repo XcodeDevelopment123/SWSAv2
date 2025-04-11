@@ -14,4 +14,6 @@ public class EditCompanyRequest
     public CompanyStatus Status { get; set; }
     public int CompanyTypeId { get; set; }
     public List<int> MsicCodeIds { get; set; } = [];
+    public List<int> DepartmentsIds { get; set; } = [];
+
 }
