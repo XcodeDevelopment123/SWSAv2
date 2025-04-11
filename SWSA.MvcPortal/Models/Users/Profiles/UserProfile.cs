@@ -11,6 +11,7 @@ public class UserProfile:Profile
         CreateMap<User, UserListVM>();
         CreateMap<User, UserEditVM>();
         CreateMap<User, UserVM>();
+        CreateMap<User, UserSelectionVM>();
 
         CreateMap<CreateUserRequest, User>();
     }

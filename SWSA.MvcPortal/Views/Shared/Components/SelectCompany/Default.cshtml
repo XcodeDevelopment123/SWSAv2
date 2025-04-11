@@ -1,0 +1,37 @@
+﻿@using SWSA.MvcPortal.Models.Companies
+@model List<CompanySelectionVM>
+
+
+<div class="modal fade" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="companyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="companyModalLabel">Select Company</h5>
+                <button type="button" class="close  dismiss-btn-selector-company" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="target-url-name"></h5>
+                <select id="companySelector" name="companySelector" class="form-control select2 modal">
+                    <option selected="true" disabled value="">Please select</option>
+                    @foreach (var cp in Model)
+                    {
+                        <option value="@cp.CompanyId">@cp.Name (@cp.RegistrationNumber)</option>
+                    }
+
+                </select>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default dismiss-btn-selector-company" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary select-company-btn">Continue</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<script src="~/js/select-company.js" asp-append-version="true"></script>

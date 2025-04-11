@@ -1,0 +1,212 @@
+﻿@model DocumentRecordCreatePageVM
+@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Models.DocumentRecords
+@using SWSA.MvcPortal.Models.Users
+
+@{
+    ViewData["Title"] = "Create document record";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var cp = Model.Company;
+
+    var flowType = SelectHelper.GetDocumentFLowType(null!);
+    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
+    var companyStatus = SelectHelper.GetCompanyStatus(null);
+
+    UserVM userVM = null!;
+    if (!string.IsNullOrEmpty(userVMJson))
+    {
+        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
+    }
+}
+
+
+<link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+<!-- Select2 -->
+
+<link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+
+<!-- DataTables -->
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="~/admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+<h3>Create New Document Record</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <form>
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <a href="/companies/@cp.Id/overview">
+                            Company Info
+                        </a>
+                        </h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyName">Company</label>
+                            <input readonly value="@($"{cp.Name} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="incorpDate">Incorporation Date</label>
+                            <div class="input-group">
+                                <input readonly type="text" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>          
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyType">Company Type</label>
+                            <ipnut readonly value="@cp.CompanyType.Name"></ipnut>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+
+                            <label for="companyStatus">Company Status</label>
+                            <input readonly id="companyStatus" value="@cp.Status" class="form-control " placeholder="2025041153513" />
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
+
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="documentForm">
+            <div class="card card-secondary  collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Documents</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+
+                <div class="card-body " style="display:none">
+
+                    <table id="documentTable" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>IC or Passport</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Position</th>
+                                <th>Ownership</th>
+                                <th>Tax Refer</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                    <div class="divider-line"></div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ownerNamePerIc">Name Per IC*</label>
+                                <input id="ownerNamePerIc" name="ownerNamePerIc" class="form-control " placeholder="JOHN DEE" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ownerIcOrPassword">IC Or Passport Number*</label>
+                                <input id="ownerIcOrPassword" name="ownerIcOrPassword" class="form-control " placeholder="xxx-xxx-xxx-xxx" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ownerEmail">Email</label>
+                                <input type="email" id="ownerEmail" name="ownerEmail" class="form-control " placeholder="xxx@gmail.com" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ownerPhone">Phone Number</label>
+                                <input id="ownerPhone" name="ownerPhone" class="form-control " placeholder="+601xxxxxxxx" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ownerTaxRefer">Tax Reference Number</label>
+                                <input id="ownerTaxRefer" name="ownerTaxRefer" class="form-control " placeholder="xxxxxxxxx" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary float-end">Add</button>
+                </div>
+
+                <!-- /.card -->
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <!-- /.card-body -->
+        <div class="float-end">
+            <button id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/flatpickr/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+    <script src="~/js/companies/create-company.js" asp-append-version="true"></script>
+    <!-- date-range-picker -->
+    }

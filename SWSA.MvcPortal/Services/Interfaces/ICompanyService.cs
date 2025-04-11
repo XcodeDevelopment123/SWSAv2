@@ -11,4 +11,5 @@ public interface ICompanyService
     Task<Company> GetCompanyByIdAsync(int companyId);
     Task<Company> DeleteCompanyByIdAsync(int companyId);
     Task<bool> UpdateCompanyInfo(EditCompanyRequest req);
+    Task<List<CompanySelectionVM>> GetCompanySelectionAsync();
 }

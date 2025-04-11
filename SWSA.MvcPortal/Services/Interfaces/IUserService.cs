@@ -10,6 +10,7 @@ public interface IUserService
     Task<UserVM> DeleteUserByIdAsync(string staffId);
     Task<UserVM> GetUserByIdAsync(string staffId);
     Task<List<UserListVM>> GetUsersAsync();
+    Task<List<UserSelectionVM>> GetUserSelectionAsync();
     Task<bool> SetUserSession(string staffId);
     Task<bool> UpdateUserInfo(EditUserRequest req);
 }

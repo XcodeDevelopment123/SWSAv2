@@ -22,7 +22,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SWSA.MvcPortal.styles.css" asp-append-version="true" />
-
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 
 
@@ -283,26 +285,32 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link open-company-modal
+                                                @(currentController== ControllerNames.Company && currentAction =="CompanyLP" ?"active":"")
+                                                " data-target-url="/companies/{companyId}/lp" data-url-name="Navigate to Landing Page">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Company LP</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link open-company-modal
+                                                @(currentController== ControllerNames.Company && currentAction =="Department" ?"active":"")
+                                                " data-target-url="/companies/{companyId}/departments" data-url-name="Navigate to Department Page">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Department</p>
+                                        <p>Departments</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link open-company-modal
+                                                @(currentController== ControllerNames.Company && currentAction =="Contact" ?"active":"")
+                                                " data-target-url="/companies/{companyId}/contacts" data-url-name="Navigate to Contact Page">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Contact</p>
+                                        <p>Contacts</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-      
+
                         <li class="nav-item @(currentController== ControllerNames.Document ?"menu-is-opening menu-open":"")">
                             <a href="#" class="nav-link @(currentController== ControllerNames.Document ?"active":"")">
                                 <i class="fas fa-file-alt nav-icon"></i>
@@ -314,7 +322,7 @@
                             <ul class="nav nav-treeview" style="@(currentController == ControllerNames.Document ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
-                                    <a href="/users" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
+                                    <a href="/companies/docs" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
                                         <i class="nav-icon fas fa-list"></i>
                                         <p>
                                             List
@@ -322,11 +330,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/users/create" class="nav-link @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")">
+                                    <a href="#" class="nav-link open-company-modal
+                                                @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")
+                                                " data-target-url="/companies/{companyId}/docs/create" data-url-name="Create documents for">
                                         <i class="nav-icon fas fa-plus"></i>
-                                        <p>
-                                            New Document
-                                        </p>
+                                        New Document
                                     </a>
                                 </li>
                             </ul>
@@ -336,14 +344,14 @@
                             <a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
                                 <i class="fas fa-clipboard-list nav-icon"></i>
                                 <p>
-                                   Tasks
+                                    Tasks
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
-                                    <a href="/users" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
+                                    <a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
                                         <i class="nav-icon fas fa-list"></i>
                                         <p>
                                             List
@@ -351,10 +359,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction =="Create" ?"active":"")">
+                                    <a href="#" class="nav-link open-company-modal
+                                                @(currentController== ControllerNames.CompanyWork && currentAction =="Department" ?"active":"")
+                                                " data-target-url="/companies/{companyId}/works/create" data-url-name="Create new work for">
                                         <i class="nav-icon fas fa-plus"></i>
                                         <p>
-                                            New Task
+                                            New work
                                         </p>
                                     </a>
                                 </li>
@@ -796,6 +806,8 @@
     <script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
@@ -803,9 +815,11 @@
     <!-- overlayScrollbars -->
     <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     <!-- AdminLTE for demo purposes -->
     <script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("SelectCompany")
+
 </body>
 </html>

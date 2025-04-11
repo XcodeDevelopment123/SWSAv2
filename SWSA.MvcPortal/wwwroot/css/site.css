@@ -81,3 +81,6 @@ html {
     justify-content:end
 }
 
+.select2-container.modal-select2 {
+    z-index: 1060 !important;
+}

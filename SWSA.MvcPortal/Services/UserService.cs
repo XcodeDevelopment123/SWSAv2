@@ -29,6 +29,12 @@ IHttpContextAccessor httpContextAccessor
         return mapper.Map<List<UserListVM>>(data);
     }
 
+    public async Task<List<UserSelectionVM>> GetUserSelectionAsync()
+    {
+        var data = await repo.GetByActiveStatus(true);
+        return mapper.Map<List<UserSelectionVM>>(data);
+    }
+
     public async Task<UserVM> GetUserByIdAsync(string staffId)
     {
         var data = await repo.GetByStaffIdAsync(staffId);

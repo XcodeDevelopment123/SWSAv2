@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -14,7 +15,12 @@ IMapper mapper,
 ICompanyWorkAssignmentRepository repo
     ) : ICompanyWorkAssignmentService
 {
-   
+
+    public async Task<List<CompanyWorkAssignment>> GetWorkAssignments()
+    {
+        var data = (await repo.GetAllAsync()).ToList();
+        return data;
+    }
 
 
 }

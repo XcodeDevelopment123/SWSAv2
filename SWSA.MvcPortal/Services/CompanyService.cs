@@ -29,6 +29,12 @@ IMsicCodeRepository msicCodeRepository
         return mapper.Map<List<CompanyListVM>>(data);
     }
 
+    public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
+    {
+        var data = await GetCompaniesFromCacheAsync();
+        return mapper.Map<List<CompanySelectionVM>>(data);
+    }
+
     public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
         var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);

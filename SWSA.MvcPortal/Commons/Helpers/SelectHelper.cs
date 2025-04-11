@@ -6,11 +6,13 @@ namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
-
+    public static List<SelectListItem> GetDocumentFLowType(DocumentFlowType? type)
+    {
+        return ToSelectList<DocumentFlowType>(type);
+    }
     public static List<SelectListItem> GetCompanyStatus(CompanyStatus? status)
     {
         return ToSelectList<CompanyStatus>(status);
-
     }
 
     public static List<SelectListItem> GetOwnerPositionTypes(PositionType? type)

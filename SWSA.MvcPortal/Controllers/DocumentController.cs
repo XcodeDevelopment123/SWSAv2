@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
@@ -6,18 +7,26 @@ namespace SWSA.MvcPortal.Controllers;
 
 [Route("companies")]
 public class DocumentController(
-    IDocumentRecordService service
+    IDocumentRecordService service,
+    ICompanyDepartmentService companyDepartmentService,
+    IUserService userService,
+    ICompanyService companyService
     ) : BaseController
 {
     [Route("docs")]
     public async Task<IActionResult> List()
     {
-        return View();
+        var documents = await service.GetDocumentRecords();
+        return View(documents);
     }
 
-    [Route("docs/create")]
-    public async Task<IActionResult> Create()
+    [Route("{companyId}/docs/create")]
+    public async Task<IActionResult> Create([FromRoute] int companyId)
     {
-        return View();
+        var cp = await companyService.GetCompanyByIdAsync(companyId);
+        var dpts = cp.Departments.ToList();
+        var staff = await userService.GetUserSelectionAsync();
+        var vm = new DocumentRecordCreatePageVM(cp, dpts, staff);
+        return View(vm);
     }
 }

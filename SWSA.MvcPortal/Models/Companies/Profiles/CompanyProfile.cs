@@ -30,6 +30,9 @@ public class CompanyProfile : Profile
            }))
            .ForMember(dest => dest.MsicCodesCount, opt => opt.MapFrom(src => src.MsicCodes.Count));
 
+        CreateMap<Company, CompanySelectionVM>()
+               .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id));
+
         CreateMap<CreateCompanyRequest, Company>()
             .ForMember(dest => dest.MsicCodes, opt => opt.MapFrom(src => src.MsicCodeIds.Select(id => new CompanyMsicCode(id)).ToList()))
             .ForMember(dest => dest.Departments, opt => opt.MapFrom(src => src.DepartmentsIds.Select(id => new CompanyDepartment(id)).ToList()))

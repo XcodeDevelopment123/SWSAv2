@@ -10,6 +10,11 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
 {
 
     // Implement the method
+    public async Task<List<User>> GetByActiveStatus(bool isActive)
+    {
+        return await db.Users.Where(u => u.IsActive == isActive).ToListAsync();
+    }
+
     public async Task<User> GetByUsernameAsync(string username)
     {
         return await db.Users.FirstOrDefaultAsync(u => u.Username == username);

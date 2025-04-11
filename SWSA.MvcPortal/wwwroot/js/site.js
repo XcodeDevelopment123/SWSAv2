@@ -8,8 +8,10 @@ const urls = {
     "company_owner": "/companies/owner",
     "company_official_contact": "/companies/official-contact",
     "company_communication_contact": "/companies/communication-contact",
-    "company_compliance_date":"/companies/compliance-date",
-    "users": "/users"
+    "company_compliance_date": "/companies/compliance-date",
+    "company_documents": "/companies/docs",
+    "company_works": "/companies/works",
+    "users": "/users",
 };
 
 // example use
