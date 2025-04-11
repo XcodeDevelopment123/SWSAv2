@@ -24,12 +24,9 @@
 
 
 <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
+<!-- dropzonejs -->
+<link rel="stylesheet" href="~/admin-lte/plugins/dropzone/min/dropzone.min.css">
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
-<!-- Select2 -->
-
-<link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
-<link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-
 
 <!-- DataTables -->
 <link rel="stylesheet" href="~/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -44,12 +41,12 @@
             <!-- jquery validation -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <a href="/companies/@cp.Id/overview">
+                    <a href="/companies/@cp.Id/overview">
+                        <h3 class="card-title">
                             Company Info
-                        </a>
-                        </h3>
 
+                        </h3>
+                    </a>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -70,7 +67,7 @@
                         <div class="form-group">
                             <label for="incorpDate">Incorporation Date</label>
                             <div class="input-group">
-                                <input readonly type="text" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input disabled type="text" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
@@ -78,19 +75,17 @@
                                 </div>
                             </div>
                         </div>
-                    </div>          
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="companyType">Company Type</label>
-                            <ipnut readonly value="@cp.CompanyType.Name"></ipnut>
+                            <input readonly id="companyType" value="@cp.CompanyType.Name" class="form-control " />
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-
                             <label for="companyStatus">Company Status</label>
-                            <input readonly id="companyStatus" value="@cp.Status" class="form-control " placeholder="2025041153513" />
-
+                            <input readonly id="companyStatus" value="@cp.Status" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -103,30 +98,30 @@
     <div class="col-md-12">
         <!-- jquery validation -->
         <form id="documentForm">
-            <div class="card card-secondary  collapsed-card">
+            <div class="card card-secondary">
                 <div class="card-header">
                     <h3 class="card-title">Documents</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-minus"></i>
                         </button>
                     </div>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
 
-                <div class="card-body " style="display:none">
+                <div class="card-body" style="display:block">
 
                     <table id="documentTable" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>IC or Passport</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                                <th>Position</th>
-                                <th>Ownership</th>
-                                <th>Tax Refer</th>
+                                <th>Department</th>
+                                <th>Document Date</th>
+                                <th>Flow Type</th>
+                                <th>Bag / Box Count</th>
+                                <th>Handled By</th>
+                                <th>Remark</th>
+                                <th>Attachment File</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -134,41 +129,109 @@
                     </table>
 
                     <div class="divider-line"></div>
-
                     <div class="row">
+
+                        <!-- Company Department -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ownerNamePerIc">Name Per IC*</label>
-                                <input id="ownerNamePerIc" name="ownerNamePerIc" class="form-control " placeholder="JOHN DEE" />
+                                <label for="companyDepartmentId">Document for department</label>
+                                <select id="companyDepartmentId" name="companyDepartmentId" class="form-control select2 ">
+                                    <option disabled value="">Please select</option>
+                                    @if (Model.CompanyDepartments.Count == 0)
+                                    {
+                                        <option selected disabled value="">No department available</option>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var dp in Model.CompanyDepartments)
+                                        {
+                                            @if (dp.IsActive)
+                                            {
+                                                <option value="@dp.DepartmentId">@dp.Department?.Name</option>
+                                            }
+                                        }
+                                    }
+
+                                </select>
                             </div>
                         </div>
+                        <!-- Document Date -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ownerIcOrPassword">IC Or Passport Number*</label>
-                                <input id="ownerIcOrPassword" name="ownerIcOrPassword" class="form-control " placeholder="xxx-xxx-xxx-xxx" />
+                                <label for="documentDate">Document Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="documentDate" name="documentDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- Flow Type -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ownerEmail">Email</label>
-                                <input type="email" id="ownerEmail" name="ownerEmail" class="form-control " placeholder="xxx@gmail.com" />
+                                <label for="flowType">Flow Type</label>
+                                <select asp-items="flowType" id="flowType" name="flowType" class="form-control select2">
+                                </select>
                             </div>
                         </div>
 
+                        <!-- Bag or Box Count -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ownerPhone">Phone Number</label>
-                                <input id="ownerPhone" name="ownerPhone" class="form-control " placeholder="+601xxxxxxxx" />
+                                <label for="bagOrBoxCount">Bag / Box Count</label>
+                                <input type="number" id="bagOrBoxCount" name="bagOrBoxCount" class="form-control" placeholder="e.g. 2" min="0" />
                             </div>
                         </div>
 
+                        <!-- Handled By Staff -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ownerTaxRefer">Tax Reference Number</label>
-                                <input id="ownerTaxRefer" name="ownerTaxRefer" class="form-control " placeholder="xxxxxxxxx" />
+                                <label for="handledByStaffId">Handled By</label>
+                                <select id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
+                                    <option disabled value="">Please select</option>
+                                    @foreach (var staff in Model.StaffSelections)
+                                    {
+                                        @if (staff.StaffId == userVM.StaffId)
+                                        {
+                                            <option value="@staff.StaffId">@staff.FullName (You)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@staff.StaffId">@staff.FullName</option>
+                                        }
+                                    })
+                                </select>
                             </div>
                         </div>
+                        <!-- Remark -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="remark">Remark</label>
+                                <input type="text" id="remark" name="remark" class="form-control" placeholder="(Optional)" />
+                            </div>
+                        </div>
+
+                        <!-- Attachment File Name -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="attachment">Attachment File</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="attachmentFile" name="attachmentFile">
+                                    <label class="custom-file-label" for="attachmentFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="attachmentFileName">Attachment Name (Customize Name)</label>
+                                <input type="text" id="attachmentFileName" name="attachmentFileName" class="form-control" placeholder="(Optional)" />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -203,10 +266,10 @@
     <script src="~/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="~/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="~/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <!-- Select2 -->
-    <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
     <script src="~/lib/flatpickr/flatpickr.min.js"></script>
+    <!-- dropzonejs -->
+    <script src="~/admin-lte/plugins/dropzone/min/dropzone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-    <script src="~/js/companies/create-company.js" asp-append-version="true"></script>
+    <script src="~/js/documents/create-document.js" asp-append-version="true"></script>
     <!-- date-range-picker -->
     }

@@ -77,7 +77,12 @@ function getFormData(formInputs) {
         // 针对 select[multiple] 处理数组，其它默认用 .val()
         if ($input.is('select[multiple]')) {
             formData[key] = $input.val() || []; // 确保 null 转为 []
-        } else {
+        }
+        else if ($input.is('input[type="file"]')) {
+            const file = $input[0].files[0];
+            formData[key] = file ?? null;
+        }
+        else {
             formData[key] = $input.val();
         }
     }

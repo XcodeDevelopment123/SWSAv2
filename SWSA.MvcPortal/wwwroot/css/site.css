@@ -25,7 +25,9 @@ html {
     background-color: #e9ecef;
     pointer-events: none;
 }
-
+input:disabled {
+    background-color: #e9ecef !important;
+}
 
 @media (min-width: 768px) {
   html {
@@ -83,4 +85,13 @@ html {
 
 .select2-container.modal-select2 {
     z-index: 1060 !important;
+}
+
+
+#previews .dz-preview {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
 }

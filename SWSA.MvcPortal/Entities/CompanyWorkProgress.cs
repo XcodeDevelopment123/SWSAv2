@@ -14,8 +14,6 @@ public class CompanyWorkProgress
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? TimeTakenInDays { get; set; }
-    public DateTime? DatePassedToAudit { get; set; }
-    public DateTime? DateTaxSubmitted { get; set; }
     public WorkProgressStatus Status { get; set; }
     public string? ProgressNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;

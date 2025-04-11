@@ -7,4 +7,15 @@
          return this.optional(element) || /^\d{2}-\d{2}-\d{4}$/.test(value);
      }, "Please enter a valid date in DD-MM-YYYY format.");
 
+
+    $.validator.addMethod("filetype", function (value, element, param) {
+        if (element.files.length === 0) return true; 
+
+        const allowedExtensions = param.split('|');
+        const file = element.files[0];
+        const fileName = file.name.toLowerCase();
+        const extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+        return allowedExtensions.includes(extension);
+    }, "Invalid file type.");
 </script>

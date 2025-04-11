@@ -9,6 +9,8 @@ using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Repositories.Repo;
 using SWSA.MvcPortal.Services;
 using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Commons.Services.UploadFile;
+using SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -114,6 +116,11 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
+
+        //Third party service eg. sms service/ image / save file
+        services.AddScoped<IUploadFileService, UploadFileService>();
+        services.AddScoped<LocalUploadFileService>();
+        services.AddScoped<CloudUploadFileService>();
     }
 
     public static void AddSeedData(this IServiceCollection services)
@@ -128,6 +135,7 @@ public static class DependencyInjector
     public static void ConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
 
+        services.AddHttpClient();
         //services.AddHttpClient("clientName", client =>
         //  {
         //      client.BaseAddress = new Uri("baseUrl");
