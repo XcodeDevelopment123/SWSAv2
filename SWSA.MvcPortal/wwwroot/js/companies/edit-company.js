@@ -116,6 +116,38 @@
     })
     //#endregion
 
+    //#region Compliance Date
+    const $complianceDateForm = $("#complianceDateForm");
+    const complianceDateFormInputs = {
+        firstYearAccountStart: $complianceDateForm.find('input[name="firstYearAccountStart"]'),
+        agmDate: $complianceDateForm.find('input[name="agmDate"]'),
+        accountDueDate: $complianceDateForm.find('input[name="accountDueDate"]'),
+        anniversaryDate: $complianceDateForm.find('input[name="anniversaryDate"]'),
+        annualReturnDueDate: $complianceDateForm.find('input[name="annualReturnDueDate"]'),
+        notes: $complianceDateForm.find('input[name="notes"]')
+    };
+
+    $complianceDateForm.on('submit', function (e) {
+        e.preventDefault();
+
+        const dateData = getFormData(complianceDateFormInputs);
+        dateData.companyId = $companyId.val();
+        $.ajax({
+            url: `${urls.company_compliance_date}/edit`,
+            method: "POST",
+            data: { req: dateData },
+            success: function (res) {
+                Toast_Fire(ICON_SUCCESS, "Success", "Compliance Date saved successfully.");
+            },
+            error: function () {
+                Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
+            }
+        });
+    })
+
+    //#endregion
+
+
     //#region Owner Form 
     const $ownerForm = $("#ownerForm");
     const $btnAddOwner = $("#btnAddOwner");
@@ -226,8 +258,6 @@
                 Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
             }
         });
-
-
     });
 
     let editOwner = {
@@ -661,7 +691,9 @@
 
     initSelect2();
 
-    flatpickr("#incorpDate");
+    flatpickr("#incorpDate,#firstYearAccountStart, #agmDate, #accountDueDate, #anniversaryDate, #annualReturnDueDate", {
+        allowInput: true
+    });
     flatpickr("#yearEndMonth", {
 
         plugins: [

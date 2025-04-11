@@ -5,4 +5,6 @@ public class ControllerNames
     public const string Dashboard = "Dashboard";
     public const string Company = "Company";
     public const string User = "User";
+    public const string Document = "Document";
+    public const string CompanyWork = "CompanyWork";
 }

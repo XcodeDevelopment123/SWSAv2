@@ -18,6 +18,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
 
         var query = db.Companies
             .Include(c => c.CompanyType)
+            .Include(c => c.CompanyComplianceDate)
             .Include(c => c.CompanyOwners)
             .Include(c => c.CommunicationContacts)
             .Include(c => c.OfficialContacts)
@@ -34,6 +35,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     {
         var query = db.Companies
             .Include(c => c.CompanyType)
+            .Include(c => c.CompanyComplianceDate)
             .Include(c => c.CompanyOwners)
             .Include(c => c.CommunicationContacts)
             .Include(c => c.OfficialContacts)

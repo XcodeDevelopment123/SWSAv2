@@ -91,6 +91,18 @@
 
     //#endregion
 
+    //#region Compliance Date
+    const $complianceDateForm = $("#complianceDateForm");
+    const complianceDateFormInputs = {
+        firstYearAccountStart: $complianceDateForm.find('input[name="firstYearAccountStart"]'),
+        agmDate: $complianceDateForm.find('input[name="agmDate"]'),
+        accountDueDate: $complianceDateForm.find('input[name="accountDueDate"]'),
+        anniversaryDate: $complianceDateForm.find('input[name="anniversaryDate"]'),
+        annualReturnDueDate: $complianceDateForm.find('input[name="annualReturnDueDate"]'),
+        notes: $complianceDateForm.find('input[name="notes"]')
+    };
+    //#endregion
+
     //#region Owner Form 
     const $ownerForm = $("#ownerForm");
     const ownerFormInputs = {
@@ -356,7 +368,10 @@
 
     initSelect2();
 
-    flatpickr("#incorpDate");
+ 
+    flatpickr("#incorpDate,#firstYearAccountStart, #agmDate, #accountDueDate, #anniversaryDate, #annualReturnDueDate", {
+        allowInput: true
+    });
     flatpickr("#yearEndMonth", {
 
         plugins: [
@@ -384,13 +399,14 @@
         companyData.companyOwners = getOwnerTableData();
         companyData.communicationContacts = getStaffContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
+        companyData.complianceDate = getFormData(complianceDateFormInputs);
         $.ajax({
             url: `${urls.companies}/create`,
             method: "POST",
             data: companyData,
             success: function (res) {     
                 if (res) {
-                    Toast_Fire(ICON_SUCCESS, "Created", "User created successfully.");
+                    Toast_Fire(ICON_SUCCESS, "Created", "Company created successfully.");
                     window.location.href = `${urls.companies}/${res}/overview`;
                 }
             },
@@ -433,8 +449,6 @@
             '<button type="button" class="btn btn-sm btn-danger btn-delete-row"><i class="fa fa-trash"></i></button>'
         ]).draw(false);
     }
-
-
 
     function getOwnerTableData() {
         const data = [];

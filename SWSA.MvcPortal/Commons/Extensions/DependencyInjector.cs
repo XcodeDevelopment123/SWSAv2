@@ -84,6 +84,10 @@ public static class DependencyInjector
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
+        services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
+        services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
+        services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
     }
 
     public static void ConfigureAppService(this IServiceCollection services)
@@ -106,6 +110,10 @@ public static class DependencyInjector
         services.AddScoped<ICompanyTypeService, CompanyTypeService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
+        services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
+        services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
+        services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
+        services.AddScoped<IDocumentRecordService, DocumentRecordService>();
     }
 
     public static void AddSeedData(this IServiceCollection services)

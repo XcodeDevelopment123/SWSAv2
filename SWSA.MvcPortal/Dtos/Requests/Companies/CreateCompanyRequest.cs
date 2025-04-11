@@ -12,8 +12,9 @@ public class CreateCompanyRequest
     public DateTime? IncorporationDate { get; set; } // Incorporation Date (optional) - 成立日期
     public CompanyStatus Status { get; set; }
     public int CompanyTypeId { get; set; }
-    public List<int> MsicCodeIds { get; set; } = [];
 
+    public CreateCompanyComplianceDate ComplianceDate { get; set; } = new();
+    public List<int> MsicCodeIds { get; set; } = [];
     public List<CreateCompanyOwnerRequest> CompanyOwners { get; set; } = [];
     public List<CreateCompanyCommunicationContactRequest> CommunicationContacts { get; set; } = [];
     public List<CreateCompanyOfficialContactRequest> OfficialContacts { get; set; } = [];

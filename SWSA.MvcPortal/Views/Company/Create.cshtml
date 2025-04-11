@@ -2,7 +2,7 @@
 @using SWSA.MvcPortal.Models.Companies
 @model CompanyCreatePageVM
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Company Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var groupedMsicCodes = Model.MsicCodes
@@ -140,6 +140,99 @@
             </div>
         </form>
         <!-- /.card -->
+    </div>
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="complianceDateForm">
+            <div class="card card-secondary  collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        SSM due date
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body" style="display:none">
+                    <div class="row">
+                        <h4>Audit Report</h4>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstYearAccountStart">First Year Account Start</label>
+                                <div class="input-group">
+                                    <input type="text" id="firstYearAccountStart" name="firstYearAccountStart" class="form-control" placeholder="(Optional)" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="agmDate">AGM Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="agmDate" name="agmDate" class="form-control" placeholder="(Optional)" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="accountDueDate">Account Due Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="accountDueDate" name="accountDueDate" class="form-control" placeholder="(Optional)" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Annual Return</h4>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="anniversaryDate">Anniversary Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="(Optional)" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="annualReturnDueDate">Annual Return Due Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="annualReturnDueDate" name="annualReturnDueDate" class="form-control" placeholder="(Optional)" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="notes">Notes</label>
+                                <input id="notes" name="notes" class="form-control" placeholder="(Optional)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </form>
     </div>
 
     <div class="col-md-12">

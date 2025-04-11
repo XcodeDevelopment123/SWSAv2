@@ -13,7 +13,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<CompanyType> CompanyTypes { get; set; }
+    internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
+    internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
+    internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<Department> Departments { get; set; }
+    internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,17 +33,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         });
 
 
-        modelBuilder.Entity<Company>()
-            .HasMany(c => c.CommunicationContacts)
+        modelBuilder.Entity<Company>(entity =>
+        {
+            entity.HasMany(c => c.CommunicationContacts)
             .WithOne(cc => cc.Company)
             .HasForeignKey(cc => cc.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company
+            .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company;
+
+            entity.HasOne(c => c.CompanyComplianceDate)
+            .WithOne(ccd => ccd.Company)
+            .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
+        });
+
+        modelBuilder.Entity<CompanyComplianceDate>()
+            .HasIndex(c => new { c.CompanyId });
 
         modelBuilder.Entity<CompanyDepartment>()
             .HasMany(c=>c.CommunicationContacts)
             .WithOne(cc => cc.Department)
             .HasForeignKey(cc => cc.CompanyDepartmentId)
             .OnDelete(DeleteBehavior.SetNull); //When deleting a department, set the foreign key to null instead of deleting the contact
+
+        modelBuilder.Entity<CompanyWorkAssignment>()
+            .HasOne(x => x.Progress)
+            .WithOne(p => p.WorkAssignment)
+            .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
 
         base.OnModelCreating(modelBuilder);
     }

@@ -10,6 +10,7 @@ public class CompanyController(
     ICompanyService service,
     ICompanyOwnerService companyOwnerService,
     ICompanyCommunicationContactService companyCommunicationContactService,
+    ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
     ICompanyTypeService companyTypeService
@@ -78,6 +79,14 @@ public class CompanyController(
     {
         var data = await service.DeleteCompanyByIdAsync(companyId);
         return View(data);
+    }
+
+    [Route("compliance-date/edit")]
+    [HttpPost]
+    public async Task<IActionResult> EditComplianceDate(EditCompanyComplianceDate req)
+    {
+        var result = await companyComplianceDateService.SaveComplianceDate(req);
+        return Json(true);
     }
 
     [Route("owner/create")]

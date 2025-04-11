@@ -1,0 +1,32 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using SWSA.MvcPortal.Commons.Enums;
+
+namespace SWSA.MvcPortal.Entities;
+
+public class CompanyWorkAssignment
+{
+    [Key]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Company))]
+    public int CompanyId { get; set; }
+    public Company Company { get; set; } = null!;
+    public CompanyActivityLevel CompanyActivityLevel { get; set; }
+    public WorkType WorkType { get; set; }
+    public ServiceScope ServiceScope { get; set; }
+    public MonthOfYear MonthToDo { get; set; } // 1-12
+    public int YearToDo { get; set; }  // 2025, 2026
+
+    [ForeignKey(nameof(AssignedStaff))]
+    public int? AssignedStaffId { get; set; }
+    public User? AssignedStaff { get; set; }
+    public bool IsCompleted { get; set; } = false;
+    public DateTime? CompletedDate { get; set; }
+    public string? InternalNote { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
+
+    public CompanyWorkProgress Progress { get; set; } = null!;
+
+}

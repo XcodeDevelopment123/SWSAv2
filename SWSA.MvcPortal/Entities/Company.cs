@@ -22,6 +22,7 @@ public class Company
     [ForeignKey(nameof(CompanyType))]
     public int CompanyTypeId { get; set; }
     public CompanyType CompanyType { get; set; } = null!;
+    public CompanyComplianceDate CompanyComplianceDate { get; set; } = null!;
     public ICollection<CompanyOwner> CompanyOwners { get; set; } = new List<CompanyOwner>();
     public ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();
     public ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();

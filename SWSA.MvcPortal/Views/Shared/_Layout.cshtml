@@ -302,6 +302,64 @@
                                 </li>
                             </ul>
                         </li>
+      
+                        <li class="nav-item @(currentController== ControllerNames.Document ?"menu-is-opening menu-open":"")">
+                            <a href="#" class="nav-link @(currentController== ControllerNames.Document ?"active":"")">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>
+                                    Documents
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.Document ? @"display:block" : "display:none")">
+
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            List
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users/create" class="nav-link @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")">
+                                        <i class="nav-icon fas fa-plus"></i>
+                                        <p>
+                                            New Document
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
+                            <a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>
+                                   Tasks
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
+
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            List
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction =="Create" ?"active":"")">
+                                        <i class="nav-icon fas fa-plus"></i>
+                                        <p>
+                                            New Task
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                         <li class="nav-header">Users & Systems</li>
 
