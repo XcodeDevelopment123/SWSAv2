@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Helpers;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
@@ -16,8 +15,6 @@ public class User
     public string HashedPassword { get; set; } = null!;
     public bool IsActive { get; set; } = true;
     public bool IsLocked { get; set; } = false;
-
-    //  public UserRole Role { get; set; } 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }
 

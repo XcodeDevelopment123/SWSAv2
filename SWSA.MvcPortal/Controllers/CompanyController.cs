@@ -9,7 +9,7 @@ namespace SWSA.MvcPortal.Controllers;
 public class CompanyController(
     ICompanyService service,
     ICompanyOwnerService companyOwnerService,
-    ICompanyCommunicationContactService companyCommunicationContactService,
+    ICompanyStaffService companyCommunicationContactService,
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
@@ -37,6 +37,12 @@ public class CompanyController(
         return View(data);
     }
 
+    [Route("{companyId}/staff-list")]
+    public IActionResult StaffList([FromRoute] int companyId)
+    {
+        return View();
+    }
+
     [Route("create")]
     public async Task<IActionResult> Create()
     {
@@ -46,14 +52,6 @@ public class CompanyController(
 
         CompanyCreatePageVM vm = new(msicCodes, companyTypes, departments);
         return View(vm);
-    }
-
-    [Route("create")]
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateCompanyRequest req)
-    {
-        var result = await service.CreateCompany(req);
-        return Json(result);
     }
 
     [Route("{companyId}/edit")]
@@ -66,6 +64,14 @@ public class CompanyController(
 
         CompanyEditPageVM vm = new(cp, msicCodes, companyTypes, departments);
         return View(vm);
+    }
+
+    [Route("create")]
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateCompanyRequest req)
+    {
+        var result = await service.CreateCompany(req);
+        return Json(result);
     }
 
     [Route("edit")]
@@ -116,23 +122,23 @@ public class CompanyController(
         return Json(true);
     }
 
-    [Route("communication-contact/create")]
+    [Route("staff/create")]
     [HttpPost]
-    public async Task<IActionResult> CreateStaffContact(CreateCompanyCommunicationContactRequest req)
+    public async Task<IActionResult> CreateStaffContact(CreateCompanyStaffRequest req)
     {
         var result = await companyCommunicationContactService.CreateContact(req);
         return Json(true);
     }
 
-    [Route("communication-contact/edit")]
+    [Route("staff/edit")]
     [HttpPost]
-    public async Task<IActionResult> EditStaffContact(EditCompanyCommunicationContactRequest req)
+    public async Task<IActionResult> EditStaffContact(EditCompanyStaffInfoRequest req)
     {
         var result = await companyCommunicationContactService.EditContact(req);
         return Json(true);
     }
 
-    [Route("communication-contact/{contactId}/delete")]
+    [Route("staff/{contactId}/delete")]
     [HttpDelete]
     public async Task<IActionResult> DeleteStaffContact([FromRoute] int contactId)
     {

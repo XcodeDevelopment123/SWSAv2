@@ -2,7 +2,9 @@
 
 public enum WorkProgressStatus
 {
-    InProgress = 1,
-    Completed = 2,
-    Backlog = 3
+    Unknown = 0,
+    Pending = 1,
+    InProgress,
+    Completed,
+    Backlog
 }

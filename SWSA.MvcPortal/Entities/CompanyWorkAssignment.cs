@@ -11,7 +11,6 @@ public class CompanyWorkAssignment
 
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-    public Company Company { get; set; } = null!;
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
@@ -20,13 +19,13 @@ public class CompanyWorkAssignment
 
     [ForeignKey(nameof(AssignedStaff))]
     public int? AssignedStaffId { get; set; }
-    public User? AssignedStaff { get; set; }
     public bool IsCompleted { get; set; } = false;
     public DateTime? CompletedDate { get; set; }
     public string? InternalNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
-
-    public CompanyWorkProgress Progress { get; set; } = null!;
+    public virtual Company Company { get; set; } = null!;
+    public virtual CompanyStaff? AssignedStaff { get; set; }
+    public virtual CompanyWorkProgress Progress { get; set; } = null!;
 
 }

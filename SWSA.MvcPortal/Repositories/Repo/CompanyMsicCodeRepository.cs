@@ -47,19 +47,19 @@ public class CompanyMsicCodeRepository(AppDbContext db) : RepositoryBase<Company
     }
 
     //Add the method that want to perform before delete the entity
-    protected override void BeforeRemove(CompanyMsicCode entity)
+    protected override async Task BeforeRemove(CompanyMsicCode entity)
     {
     //Do you logic here
     }
 
     //Add the method that want to perform before add the entity
-    protected override void BeforeAdd(CompanyMsicCode entity)
+    protected override async Task BeforeAdd(CompanyMsicCode entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before update the entity
-    protected override void BeforeUpdate(CompanyMsicCode entity)
+    protected override async Task BeforeUpdate(CompanyMsicCode entity)
     {
         //Do you logic here
     }

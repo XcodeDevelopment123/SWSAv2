@@ -39,20 +39,31 @@ public class MsicCodeRepository(AppDbContext db) : RepositoryBase<MsicCode>(db),
         // return Task.FromResult(query);    
     }
 
+    //Rewrite the GetSingleAsync method
+    protected override Task<IQueryable<MsicCode>> BuildGetByIdQueryAsync()
+    {
+        //Default query no action
+        return Task.FromResult(db.Set<MsicCode>().AsQueryable());
+
+        // Do you query here
+        // var query = db.TableNames;
+        // return Task.FromResult(query);    
+    }
+
     //Add the method that want to perform before delete the entity
-    protected override void BeforeRemove(MsicCode entity)
+    protected override async Task BeforeRemove(MsicCode entity)
     {
     //Do you logic here
     }
 
     //Add the method that want to perform before add the entity
-    protected override void BeforeAdd(MsicCode entity)
+    protected override async Task BeforeAdd(MsicCode entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before update the entity
-    protected override void BeforeUpdate(MsicCode entity)
+    protected override async Task BeforeUpdate(MsicCode entity)
     {
         //Do you logic here
     }

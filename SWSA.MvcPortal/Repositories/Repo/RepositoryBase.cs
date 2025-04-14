@@ -60,11 +60,11 @@ public class RepositoryBase<T>(
     }
 
     //Provide for repository rewrite the method
-    protected virtual void BeforeAdd(T entity) { }
+    protected virtual Task BeforeAdd(T entity) => Task.CompletedTask;
 
-    protected virtual void BeforeRemove(T entity) { }
+    protected virtual Task BeforeRemove(T entity) => Task.CompletedTask;
 
-    protected virtual void BeforeUpdate(T entity) { }
+    protected virtual Task BeforeUpdate(T entity) => Task.CompletedTask;
 
     #endregion
 

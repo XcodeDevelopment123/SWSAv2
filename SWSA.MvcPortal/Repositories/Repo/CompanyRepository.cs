@@ -19,11 +19,10 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
                  .Include(c => c.CompanyType)
                  .Include(c => c.CompanyComplianceDate)
                  .Include(c => c.CompanyOwners)
-                 .Include(c => c.CommunicationContacts)
                  .Include(c => c.OfficialContacts)
+                 .Include(c => c.CompanyStaffs)
                  .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
                  .Include(c => c.Departments).ThenInclude(cd => cd.Department)
-                 .Include(c => c.Departments).ThenInclude(cd => cd.CommunicationContacts)
                  .Where(c => !c.IsDeleted)
                  .AsNoTracking();
 
@@ -37,13 +36,11 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.CompanyType)
             .Include(c => c.CompanyComplianceDate)
             .Include(c => c.CompanyOwners)
-            .Include(c => c.CommunicationContacts)
             .Include(c => c.OfficialContacts)
+            .Include(c => c.CompanyStaffs)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Include(c => c.Departments).ThenInclude(cd => cd.Department)
-            .Include(c => c.Departments).ThenInclude(cd => cd.CommunicationContacts)
-            .Where(c => !c.IsDeleted)
-            .AsNoTracking();
+            .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);
     }
@@ -52,24 +49,38 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override Task<IQueryable<Company>> BuildGetByIdQueryAsync()
     {
         var query = db.Companies
-            .Where(c => !c.IsDeleted)
-            .AsNoTracking();
+            .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);
     }
 
     //Add the method that want to perform before delete the entity
-    protected override void BeforeRemove(Company entity)
+    protected override async Task BeforeRemove(Company entity)
     {
         //Do you logic here
+        var findContacts = await db.CompanyStaffs
+            .Where(c => c.CompanyId == entity.Id)
+            .ToListAsync();
+        var findComplianceDate = await db.CompanyComplianceDates.Where(c => c.CompanyId == entity.Id)
+            .ToListAsync();
+
+        if (findContacts.Count > 0)
+        {
+            db.CompanyStaffs.RemoveRange(findContacts);
+        }
+        if (findComplianceDate.Count > 0)
+        {
+            db.CompanyComplianceDates.RemoveRange(findComplianceDate);
+        }
+
     }
     //Add the method that want to perform before add the entity
-    protected override void BeforeAdd(Company entity)
+    protected override async Task BeforeAdd(Company entity)
     {
         //Do you logic here
     }
     //Add the method that want to perform before update the entity
-    protected override void BeforeUpdate(Company entity)
+    protected override async Task BeforeUpdate(Company entity)
     {
         //Do you logic here
     }

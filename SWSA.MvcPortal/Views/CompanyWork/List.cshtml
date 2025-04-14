@@ -1,0 +1,90 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.CompnayWorks
+@model List<CompanyWorkListVM>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3> Task / Work List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="companyDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Work Type</th>
+                            <th>Services Offer</th>
+                            <th>Activity Size </th>
+                            <th>Year To Do</th>
+                            <th>Month To Do</th>
+                            <th>Status</th>
+                            <th>Internal Note</th>
+                            <th>Handle Staff</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cp in Model)
+                        {
+                            <tr>
+                                <td>@cp.CompanyName</td>
+                                <td>@cp.WorkType</td>
+                                <td>@cp.ServiceScope.GetDisplayName()</td>
+                                <td>@cp.ActivitySize.GetDisplayName()</td>
+                                <td>@cp.YearToDo</td>
+                                <td>@cp.MonthToDo.GetIntValue()</td>
+                                <td>@cp.Status</td>
+                                <td>@cp.InternalNote</td>
+                                <td>@cp.DepartmentName - @cp.StaffName</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="/users/@cp.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="/users/@cp.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+
+
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Company</th>
+                            <th>Work Type</th>
+                            <th>Services Offer</th>
+                            <th>Activity Size </th>
+                            <th>Year To Do</th>
+                            <th>Month To Do</th>
+                            <th>Status</th>
+                            <th>Internal Note</th>
+                            <th>Handle Staff</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/companies/list-work.js" asp-append-version="true"></script>
+}

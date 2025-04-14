@@ -17,6 +17,6 @@ public class CreateCompanyRequest
     public List<int> MsicCodeIds { get; set; } = [];
     public List<int> DepartmentsIds { get; set; } = [];
     public List<CreateCompanyOwnerRequest> CompanyOwners { get; set; } = [];
-    public List<CreateCompanyCommunicationContactRequest> CommunicationContacts { get; set; } = [];
+    public List<CreateCompanyStaffRequest> StaffsContact { get; set; } = [];
     public List<CreateCompanyOfficialContactRequest> OfficialContacts { get; set; } = [];
 }

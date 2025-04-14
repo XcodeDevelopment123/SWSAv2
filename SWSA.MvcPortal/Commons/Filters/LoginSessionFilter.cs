@@ -27,7 +27,7 @@ public class LoginSessionFilter(
         {
             if (!string.IsNullOrEmpty(staffId))
             {
-                RedirectLoginToDashboard(context);     
+                RedirectLoginToHome(context);     
                 return;
             }
             //No Logged
@@ -71,6 +71,15 @@ public class LoginSessionFilter(
         {
             { "controller", "Dashboard" },
             { "action", "Overall" },
+        });
+    }
+
+    private void RedirectLoginToHome(ActionExecutingContext context)
+    {
+        context.Result = new RedirectToRouteResult(new RouteValueDictionary
+        {
+            { "controller", "Home" },
+            { "action", "Home" },
         });
     }
 

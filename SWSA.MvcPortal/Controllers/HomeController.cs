@@ -4,7 +4,7 @@ using SWSA.MvcPortal.Models;
 
 namespace SWSA.MvcPortal.Controllers;
 
-
+[Route("home")]
 public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
@@ -14,11 +14,19 @@ public class HomeController : BaseController
         _logger = logger;
     }
 
+    [Route("")]
+    public IActionResult Home()
+    {
+        return View();
+    }
+
+    [Route("privacy")]
     public IActionResult Privacy()
     {
         return View();
     }
 
+    [Route("error")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

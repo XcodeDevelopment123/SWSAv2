@@ -47,9 +47,12 @@ IMsicCodeRepository msicCodeRepository
         var data = await GetCompanyByIdFromCacheAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
-        //Remove in db
+        ////Remove in db
+        //await repo.BeginTransactionAsync();
         //repo.Remove(data!);
         //await repo.SaveChangesAsync();
+
+        //await repo.CommitTransactionAsync();
 
         //soft delete
         data!.IsDeleted = true;

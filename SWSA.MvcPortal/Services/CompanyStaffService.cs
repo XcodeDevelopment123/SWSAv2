@@ -12,23 +12,23 @@ using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Services;
 
-public class CompanyCommunicationContactService(
+public class CompanyStaffService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-ICompanyCommunicationContactRepository repo
-    ) : ICompanyCommunicationContactService
+ICompanyStaffRepository repo
+    ) : ICompanyStaffService
 {
-    public async Task<int> CreateContact(CreateCompanyCommunicationContactRequest req)
+    public async Task<int> CreateContact(CreateCompanyStaffRequest req)
     {
-        var data = mapper.Map<CompanyCommunicationContact>(req);
+        var data = mapper.Map<CompanyStaff>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
         return data.Id;
     }
 
-    public async Task<bool> EditContact(EditCompanyCommunicationContactRequest req)
+    public async Task<bool> EditContact(EditCompanyStaffInfoRequest req)
     {
         var data = await repo.GetByIdAsync(req.ContactId);
 
@@ -62,7 +62,7 @@ ICompanyCommunicationContactRepository repo
         return true;
     }
 
-    private void UpdateCompanyCommunicationContactCache(CompanyCommunicationContact contact, bool isRemove = false)
+    private void UpdateCompanyCommunicationContactCache(CompanyStaff contact, bool isRemove = false)
     {
         string cacheList = $"{DataCacheKey.Companies}";
         string cacheDetailKey = $"{DataCacheKey.Companies}_{contact.CompanyId}_Details";

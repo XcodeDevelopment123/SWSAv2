@@ -1,5 +1,9 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 #globalLoadingOverlay {
@@ -8,7 +12,7 @@ html {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1050; 
+    z-index: 1050;
     background: rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
@@ -25,20 +29,21 @@ html {
     background-color: #e9ecef;
     pointer-events: none;
 }
+
 input:disabled {
     background-color: #e9ecef !important;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 
 .swal2-popup.swal2-toast .swal2-title {
     line-height: unset;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .swal2-popup.swal2-toast .swal2-html-container {
@@ -55,9 +60,10 @@ input:disabled {
     color: #888;
 }
 
-.input-group .flatpickr-input{
-    background-color:#Fff;
+.input-group .flatpickr-input {
+    background-color: #Fff;
 }
+
     .input-group .flatpickr-input + .form-control.input {
         background-color: #Fff;
     }
@@ -70,17 +76,17 @@ input:disabled {
     width: 100%;
     height: 1px;
     background-color: #d8d8d8;
-    margin:0.5rem 0;
+    margin: 0.5rem 0;
 }
 
 
-.dataTables_filter{
-    display:flex;
-    justify-content:end
+.dataTables_filter {
+    display: flex;
+    justify-content: end
 }
 
-.dataTables_paginate ul.pagination{
-    justify-content:end
+.dataTables_paginate ul.pagination {
+    justify-content: end
 }
 
 .select2-container.modal-select2 {

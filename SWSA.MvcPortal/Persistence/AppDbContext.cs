@@ -7,7 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     internal DbSet<User> Users { get; set; }
     internal DbSet<Company> Companies { get; set; }
-    internal DbSet<CompanyCommunicationContact> CompanyCommunicationContacts { get; set; }
+    internal DbSet<CompanyStaff> CompanyStaffs { get; set; }
     internal DbSet<CompanyDepartment> CompanyDepartments { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
@@ -35,7 +35,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasMany(c => c.CommunicationContacts)
+            entity.HasMany(c => c.CompanyStaffs)
             .WithOne(cc => cc.Company)
             .HasForeignKey(cc => cc.CompanyId)
             .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company;
@@ -43,17 +43,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasOne(c => c.CompanyComplianceDate)
             .WithOne(ccd => ccd.Company)
             .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
-            .OnDelete(DeleteBehavior.Cascade); // Prevent cascade delete, enforce manual cleanup
+            .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
+        });
+
+        modelBuilder.Entity<CompanyStaff>(entity =>
+        {
+            entity.HasIndex(tc => new { tc.StaffId }).IsUnique();
+
+            entity.Property(e => e.StaffId)
+         .HasComputedColumnSql(
+              "'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
+              stored: true);
         });
 
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });
 
-        modelBuilder.Entity<CompanyDepartment>()
-            .HasMany(c => c.CommunicationContacts)
-            .WithOne(cc => cc.Department)
+
+        modelBuilder.Entity<CompanyDepartment>(entity =>
+        {
+            entity.HasMany(c => c.CompanyStaffs)
+            .WithOne(cc => cc.CompanyDepartment)
             .HasForeignKey(cc => cc.CompanyDepartmentId)
             .OnDelete(DeleteBehavior.SetNull); //When deleting a department, set the foreign key to null instead of deleting the contact
+
+        });
 
         modelBuilder.Entity<CompanyWorkAssignment>()
             .HasOne(x => x.Progress)

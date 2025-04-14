@@ -376,6 +376,7 @@
     flatpickr("#incorpDate,#firstYearAccountStart, #agmDate, #accountDueDate, #anniversaryDate, #annualReturnDueDate", {
         allowInput: true
     });
+
     flatpickr("#yearEndMonth", {
 
         plugins: [
@@ -401,7 +402,7 @@
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.companyOwners = getOwnerTableData();
-        companyData.communicationContacts = getStaffContactTableData();
+        companyData.staffsContact = getStaffContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
         companyData.complianceDate = getFormData(complianceDateFormInputs);
         $.ajax({

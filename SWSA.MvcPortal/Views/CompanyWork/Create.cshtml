@@ -1,0 +1,211 @@
+﻿@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Models.CompnayWorks
+@using SWSA.MvcPortal.Models.Users
+@model CompanyWorkAssignmentCreatePageVM
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var cp = Model.Company;
+
+    var workTypes = SelectHelper.GetWorkTypes(null!);
+    var serviceScopes = SelectHelper.GetServiceScopes(null!);
+    var companyActivityLevels = SelectHelper.GetCompanyActivityLevels(null!);
+    var staffSelections = cp.CompanyStaffs;
+
+
+    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
+    UserVM userVM = null!;
+    if (!string.IsNullOrEmpty(userVMJson))
+    {
+        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
+    }
+
+    var currentYear = DateTime.Now.Year;
+    var startYear = currentYear - 10;
+    var endYear = currentYear + 20;
+
+    <input type="hidden" id="companyId" value="@cp.Id" />
+
+}
+
+<h3>Create Task for @cp.Name (@cp.RegistrationNumber)</h3>
+<div class="row">
+    <div class="col-md-12">
+        <form>
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <a href="/companies/@cp.Id/overview">
+                        <h3 class="card-title">
+                            Company Info
+
+                        </h3>
+                    </a>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyName">Company</label>
+                            <input readonly value="@($"{cp.Name} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="incorpDate">Incorporation Date</label>
+                            <div class="input-group">
+                                <input disabled type="text" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyType">Company Type</label>
+                            <input readonly id="companyType" value="@cp.CompanyType.Name" class="form-control " />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyStatus">Company Status</label>
+                            <input readonly id="companyStatus" value="@cp.Status" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
+
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="taskForm">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">Task / Work</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="workType">Work Type</label>
+                                <select asp-items="workTypes" id="flowType" name="workType" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="serviceScope">Services Offer</label>
+                                <select asp-items="serviceScopes" id="serviceScope" name="serviceScope" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="companyActivityLevel">Company Activity Level</label>
+                                <select asp-items="companyActivityLevels" id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do</label>
+                                <select id="yearToDo" name="yearToDo" class="form-control select2">
+                                    @for (var year = startYear; year <= endYear; year++)
+                                    {
+                                        if (year == currentYear)
+                                        {
+                                            <option value="@year" selected>@year</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@year">@year</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="monthToDo">Month to do</label>
+                                <div class="input-group">
+                                    <input type="text" id="monthToDo" name="monthToDo" class="form-control" placeholder="Select month" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Handled By Staff -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="handledByStaffId">Handled By</label>
+                                <select id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
+                                    <option disabled value="">Please select</option>
+                                    @if (staffSelections.Count == 0)
+                                    {
+                                        <option disabled value="">No staff available in company</option>
+                                    }
+                                    @foreach (var staff in staffSelections)
+                                    {
+                                        <option value="@staff.StaffId">@staff.ContactName (@staff.Position)</option>
+                                    })
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="internalNote">Internal Note</label>
+                                <input type="text" id="internalNote" name="internalNote" class="form-control" placeholder="(Optional)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer ">
+                    <button id="btnSubmitRequest" class="btn btn-primary float-end">Submit</button>
+                </div>
+
+                <!-- /.card -->
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/companies/create-work.js" asp-append-version="true"></script>
+    <!-- date-range-picker -->
+    }

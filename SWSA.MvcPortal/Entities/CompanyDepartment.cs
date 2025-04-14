@@ -16,7 +16,7 @@ public class CompanyDepartment
     public Company Company { get; set; } = null!;
     public Department Department { get; set; } = null!;
 
-    public ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();
+    public ICollection<CompanyStaff> CompanyStaffs { get; set; } = new List<CompanyStaff>();
 
     public CompanyDepartment(int departmentId)
     {

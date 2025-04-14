@@ -24,7 +24,7 @@ public class Company
     public CompanyType CompanyType { get; set; } = null!;
     public CompanyComplianceDate CompanyComplianceDate { get; set; } = null!;
     public ICollection<CompanyOwner> CompanyOwners { get; set; } = new List<CompanyOwner>();
-    public ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();
+    public ICollection<CompanyStaff> CompanyStaffs { get; set; } = new List<CompanyStaff>();
     public ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
     public ICollection<CompanyDepartment> Departments { get; set; } = new List<CompanyDepartment>();
     public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();

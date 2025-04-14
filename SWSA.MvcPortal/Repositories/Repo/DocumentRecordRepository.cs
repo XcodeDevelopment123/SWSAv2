@@ -90,19 +90,19 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     }
 
     //Add the method that want to perform before delete the entity
-    protected override void BeforeRemove(DocumentRecord entity)
+    protected override async Task BeforeRemove(DocumentRecord entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before add the entity
-    protected override void BeforeAdd(DocumentRecord entity)
+    protected override async Task BeforeAdd(DocumentRecord entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before update the entity
-    protected override void BeforeUpdate(DocumentRecord entity)
+    protected override async Task BeforeUpdate(DocumentRecord entity)
     {
         //Do you logic here
     }

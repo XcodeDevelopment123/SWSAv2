@@ -1,11 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
+    public static List<SelectListItem> GetCompanyActivityLevels(CompanyActivityLevel? levels)
+    {
+        return ToSelectList<CompanyActivityLevel>(levels);
+    }
+
+    public static List<SelectListItem> GetServiceScopes(ServiceScope? scope)
+    {
+        return ToSelectList<ServiceScope>(scope);
+    }
+
+    public static List<SelectListItem> GetWorkTypes(WorkType? type)
+    {
+        return ToSelectList<WorkType>(type);
+    }
+
     public static List<SelectListItem> GetDocumentFLowType(DocumentFlowType? type)
     {
         return ToSelectList<DocumentFlowType>(type);
@@ -58,7 +74,7 @@ public class SelectHelper
 
         foreach (var value in values)
         {
-            var displayName = GetEnumDisplayName(value);
+            var displayName = value.GetDisplayName();
 
             selectList.Add(new SelectListItem
             {
@@ -69,21 +85,5 @@ public class SelectHelper
         }
 
         return selectList;
-    }
-
-    private static string GetEnumDisplayName<TEnum>(TEnum value) where TEnum : struct, Enum
-    {
-        var fieldInfo = typeof(TEnum).GetField(value.ToString()!);
-
-        var displayAttribute = fieldInfo?
-            .GetCustomAttributes(typeof(DisplayAttribute), false)
-            .FirstOrDefault() as DisplayAttribute;
-
-        return displayAttribute?.Name ?? SplitCamelCase(value.ToString()!);
-    }
-
-    private static string SplitCamelCase(string input)
-    {
-        return System.Text.RegularExpressions.Regex.Replace(input, "(\\B[A-Z])", " $1");
     }
 }

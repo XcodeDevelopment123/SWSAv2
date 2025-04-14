@@ -11,8 +11,6 @@ using SWSA.MvcPortal.Services;
 using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
-using System.Configuration;
-using System.Drawing.Printing;
 using Microsoft.Extensions.Options;
 using SWSA.MvcPortal.Models.DocumentRecords.Profiles;
 
@@ -80,7 +78,7 @@ public static class DependencyInjector
 
         }, ServiceLifetime.Scoped);
 
-        services.AddScoped<ICompanyCommunicationContactRepository, CompanyCommunicationContactRepository>();
+        services.AddScoped<ICompanyStaffRepository, CompanyStaffRepository>();
         services.AddScoped<ICompanyDepartmentRepository, CompanyDepartmentRepository>();
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
@@ -96,7 +94,7 @@ public static class DependencyInjector
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
     }
 
-    public static void ConfigureAppService(this IServiceCollection services,IConfiguration config)
+    public static void ConfigureAppService(this IServiceCollection services, IConfiguration config)
     {
         var applicationAssembly = typeof(DependencyInjector).Assembly;
         services.Configure<FileSettings>(config.GetSection("FileSettings"));
@@ -111,7 +109,7 @@ public static class DependencyInjector
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICompanyService, CompanyService>();
-        services.AddScoped<ICompanyCommunicationContactService, CompanyCommunicationContactService>();
+        services.AddScoped<ICompanyStaffService, CompanyStaffService>();
         services.AddScoped<ICompanyDepartmentService, CompanyDepartmentService>();
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
         services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();

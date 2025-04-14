@@ -2,7 +2,10 @@
 
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.CompnayWorks;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -12,15 +15,33 @@ public class CompanyWorkAssignmentService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-ICompanyWorkAssignmentRepository repo
+ICompanyWorkAssignmentRepository repo,
+ICompanyStaffRepository companyStaffRepo
     ) : ICompanyWorkAssignmentService
 {
 
-    public async Task<List<CompanyWorkAssignment>> GetWorkAssignments()
+    public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
     {
         var data = (await repo.GetAllAsync()).ToList();
-        return data;
+        return mapper.Map<List<CompanyWorkListVM>>(data);
     }
 
+    public async Task<int> CreateCompanyWorkAssignment(CreateCompanyWorkAssignmentRequest req)
+    {
+        var staff = await companyStaffRepo.GetByStaffId(req.AssignedStaffId);
+        Guard.AgainstNullData(staff, "Company Staff not found");
+
+        var entity = mapper.Map<CompanyWorkAssignment>(req);
+        if (entity.Progress == null)
+        {
+            entity.Progress = new CompanyWorkProgress();
+        }
+
+        entity.AssignedStaffId = staff.Id;
+        repo.Add(entity);
+        await repo.SaveChangesAsync();
+
+        return entity.Id;
+    }
 
 }

@@ -22,7 +22,7 @@ public class CompanyProfile : Profile
            }))
            .ForMember(dest => dest.ContactsCount, opt => opt.MapFrom((src, dest) =>
            {
-               return src.CommunicationContacts.Count + src.OfficialContacts.Count;
+               return src.CompanyStaffs.Count + src.OfficialContacts.Count;
            }))
            .ForMember(dest => dest.DepartmentsCount, opt => opt.MapFrom((src, dest) =>
            {

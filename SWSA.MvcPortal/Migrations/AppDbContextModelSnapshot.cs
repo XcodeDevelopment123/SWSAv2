@@ -68,50 +68,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CompanyDepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContactName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remark")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WhatsApp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyDepartmentId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("CompanyCommunicationContacts");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyComplianceDate", b =>
                 {
                     b.Property<int>("Id")
@@ -279,6 +235,71 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyOwners");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStaff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CompanyDepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HashedPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLoginEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaffId")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(450)")
+                        .HasComputedColumnSql("'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)", true);
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WhatsApp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyDepartmentId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("StaffId")
+                        .IsUnique();
+
+                    b.ToTable("CompanyStaffs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyType", b =>
@@ -539,30 +560,12 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("CompanyType");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyDepartment", "Department")
-                        .WithMany("CommunicationContacts")
-                        .HasForeignKey("CompanyDepartmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany("CommunicationContacts")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Department");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyComplianceDate", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
                         .WithOne("CompanyComplianceDate")
                         .HasForeignKey("SWSA.MvcPortal.Entities.CompanyComplianceDate", "CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -628,9 +631,27 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStaff", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyDepartment", "Department")
+                        .WithMany("CompanyStaffs")
+                        .HasForeignKey("CompanyDepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
+                        .WithMany("CompanyStaffs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.User", "AssignedStaff")
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyStaff", "AssignedStaff")
                         .WithMany()
                         .HasForeignKey("AssignedStaffId");
 
@@ -677,12 +698,12 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Company", b =>
                 {
-                    b.Navigation("CommunicationContacts");
-
                     b.Navigation("CompanyComplianceDate")
                         .IsRequired();
 
                     b.Navigation("CompanyOwners");
+
+                    b.Navigation("CompanyStaffs");
 
                     b.Navigation("Departments");
 
@@ -693,7 +714,7 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyDepartment", b =>
                 {
-                    b.Navigation("CommunicationContacts");
+                    b.Navigation("CompanyStaffs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>

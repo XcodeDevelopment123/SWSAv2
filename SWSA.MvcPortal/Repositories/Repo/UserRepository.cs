@@ -42,19 +42,19 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     }
 
     //Add the method that want to perform before delete the entity
-    protected override void BeforeRemove(User entity)
+    protected override async Task BeforeRemove(User entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before add the entity
-    protected override void BeforeAdd(User entity)
+    protected override async Task BeforeAdd(User entity)
     {
         //Do you logic here
     }
 
     //Add the method that want to perform before update the entity
-    protected override void BeforeUpdate(User entity)
+    protected override async Task BeforeUpdate(User entity)
     {
         //Do you logic here
     }
