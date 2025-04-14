@@ -9,7 +9,7 @@ builder.Services.AddAppSetup(builder.Configuration,builder.Environment);
 builder.Services.ConfigureSwsaDb(builder.Configuration);
 builder.Services.AddSeedData();
 builder.Services.ConfigureHttpClientService(builder.Configuration);
-builder.Services.ConfigureAppService();
+builder.Services.ConfigureAppService(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

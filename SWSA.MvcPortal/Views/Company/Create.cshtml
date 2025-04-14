@@ -9,20 +9,11 @@
        .GroupBy(m => m.CategoryReferences)
        .ToList();
 
-
     var companyStatus = SelectHelper.GetCompanyStatus(null);
     var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
     var ownershipTypes = SelectHelper.GetOwnershipTypes(null);
     var staffPosition = SelectHelper.GetStaffPositionTypes(null);
 }
-
-<link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
-<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
-
-<!-- DataTables -->
-<link rel="stylesheet" href="~/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="~/admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-<link rel="stylesheet" href="~/admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
 <h3>Create New Company Profile</h3>
 
@@ -502,16 +493,8 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
 
-
-    <!-- DataTables  & Plugins -->
-    <script src="~/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="~/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="~/admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="~/lib/flatpickr/flatpickr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
     <script src="~/js/companies/create-company.js" asp-append-version="true"></script>
     <!-- date-range-picker -->
     }

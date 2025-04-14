@@ -43,14 +43,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasOne(c => c.CompanyComplianceDate)
             .WithOne(ccd => ccd.Company)
             .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
+            .OnDelete(DeleteBehavior.Cascade); // Prevent cascade delete, enforce manual cleanup
         });
 
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });
 
         modelBuilder.Entity<CompanyDepartment>()
-            .HasMany(c=>c.CommunicationContacts)
+            .HasMany(c => c.CommunicationContacts)
             .WithOne(cc => cc.Department)
             .HasForeignKey(cc => cc.CompanyDepartmentId)
             .OnDelete(DeleteBehavior.SetNull); //When deleting a department, set the foreign key to null instead of deleting the contact

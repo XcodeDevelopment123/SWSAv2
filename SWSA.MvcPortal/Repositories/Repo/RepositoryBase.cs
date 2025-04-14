@@ -84,6 +84,11 @@ public class RepositoryBase<T>(
 
     #region  Query
     //For the repository to rewrite the method
+    protected virtual Task<IQueryable<T>> BuildGetByIdQueryAsync()
+    {
+        return Task.FromResult(db.Set<T>().AsQueryable());
+    }
+
     protected virtual Task<IQueryable<T>> BuildQueryAsync()
     {
         return Task.FromResult(db.Set<T>().AsQueryable());
@@ -102,7 +107,22 @@ public class RepositoryBase<T>(
 
     public async Task<T?> GetByIdAsync(object id)
     {
-        return await db.Set<T>().FindAsync(id);
+        var query = await BuildGetByIdQueryAsync();
+        var keyName = GetPrimaryKeyName(typeof(T));
+
+        // e => EF.Property<object>(e, keyName) == id
+        var parameter = Expression.Parameter(typeof(T), "e");
+        var property = Expression.Call(
+            typeof(EF),
+            nameof(EF.Property),
+            new[] { typeof(object) },
+            parameter,
+            Expression.Constant(keyName)
+        );
+        var equals = Expression.Equal(property, Expression.Convert(Expression.Constant(id), typeof(object)));
+        var lambda = Expression.Lambda<Func<T, bool>>(equals, parameter);
+
+        return await query.FirstOrDefaultAsync(lambda);
     }
 
     public virtual async Task<T?> GetWithIncludedByIdAsync(object id)

@@ -54,8 +54,24 @@ public class DocumentController(
                 doc.AttachmentFilePath = result;
             }
             // TODO: Save to database
+            await service.CreateDocument(doc);
+        }
 
+        return Json(true);
+    }
 
+    [Route("docs/{docId}/delete")]
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromRoute] int docId)
+    {
+        var result = await service.DeleteDocumentById(docId);
+        if (result != null)
+        {
+            var filePath = result.AttachmentPath;
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                await uploadFileService.DeleteAsync(filePath);
+            }
         }
 
         return Json(true);

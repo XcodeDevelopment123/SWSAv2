@@ -23,7 +23,7 @@ public class LocalUploadFileService(
 
     public bool Delete(string relativePath)
     {
-        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "Datas", "uploads", relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

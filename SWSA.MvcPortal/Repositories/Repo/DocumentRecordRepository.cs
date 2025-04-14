@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
+using System.ComponentModel.Design;
 
 namespace SWSA.MvcPortal.Repositories.Repo;
 
@@ -15,8 +16,12 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var data = await db.DocumentRecords
                 .AsNoTracking()
-                .Include(c => c.Department)
-                .Where(c => c.Department != null && c.Department.CompanyId == companyId)
+                .Include(c => c.Department) //For company department
+                .ThenInclude(c => c.Department) //Public setting
+                .Include(c => c.Department) 
+                .ThenInclude(c => c.Company) 
+                .Include(c => c.HandledByStaff) //For staff
+                .Where(c => c.Department != null && !c.Department.Company.IsDeleted && c.Department.CompanyId == companyId)
                 .ToListAsync();
         return data;
     }
@@ -25,7 +30,12 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var data = await db.DocumentRecords
           .AsNoTracking()
-          .Where(c => c.CompanyDepartmentId == companyDepartmentId)
+          .Include(c => c.Department) //For company department
+          .ThenInclude(c => c.Department) //Public setting
+          .Include(c => c.Department)
+          .ThenInclude(c => c.Company)
+          .Include(c => c.HandledByStaff) //For staff
+          .Where(c => c.CompanyDepartmentId == companyDepartmentId && c.Department != null && !c.Department.Company.IsDeleted)
           .ToListAsync();
         return data;
     }
@@ -35,7 +45,10 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
         var data = await db.DocumentRecords
             .AsNoTracking()
             .Include(c => c.HandledByStaff)
-            .Where(c => c.HandledByStaff != null && c.HandledByStaff.StaffId == staffId)
+            .Include(c => c.Department)
+            .ThenInclude(c => c.Company) 
+            .Where(c => c.HandledByStaff != null && c.HandledByStaff.StaffId == staffId 
+                     && c.Department != null && !c.Department.Company.IsDeleted)
             .ToListAsync();
 
         return data;
@@ -45,22 +58,35 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     protected override Task<IQueryable<DocumentRecord>> BuildQueryAsync()
     {
         //Default query no action
-        return Task.FromResult(db.Set<DocumentRecord>().AsQueryable());
+        //return Task.FromResult(db.Set<DocumentRecord>().AsQueryable());
 
         // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.DocumentRecords
+                .Include(c => c.Department) //For company department
+                .ThenInclude(c => c.Department) //Public setting
+                .Include(c => c.Department)
+                .ThenInclude(c => c.Company)
+                .Include(c => c.HandledByStaff) //For staff
+                .Where(c => c.Department != null && !c.Department.Company.IsDeleted)
+                .AsNoTracking();
+        //For staff;
+        return Task.FromResult(query);
     }
 
     //Rewrite the GetWithIncludesAsync method
     protected override Task<IQueryable<DocumentRecord>> BuildQueryWithIncludesAsync()
     {
-        //Default query no action
-        return Task.FromResult(db.Set<DocumentRecord>().AsQueryable());
-
         // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.DocumentRecords
+                .Include(c => c.Department) //For company department
+                .ThenInclude(c => c.Department) //Public setting
+                .Include(c => c.Department)
+                .ThenInclude(c => c.Company)
+                .Include(c => c.HandledByStaff) //For staff
+                .Where(c => c.Department != null && !c.Department.Company.IsDeleted)
+                .AsNoTracking();
+        //For staff;
+        return Task.FromResult(query);
     }
 
     //Add the method that want to perform before delete the entity

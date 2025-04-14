@@ -6,7 +6,7 @@ namespace SWSA.MvcPortal.Controllers;
 public class FileController : BaseController
 {
     [HttpGet("download")]
-    public async Task<IActionResult> Download([FromQuery] string path)
+    public async Task<IActionResult> Download([FromQuery] string path, [FromQuery] string? fileOriName)
     {
         //TO DO: Secure download, use token / one time download
         var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "Datas", "uploads", path.TrimStart('/'));
@@ -17,7 +17,7 @@ public class FileController : BaseController
         var fileName = Path.GetFileName(fullPath);
         var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
 
-        return File(stream, contentType, fileName);
+        return File(stream, contentType, fileOriName ?? fileName);
     }
 
     [HttpGet("view")]

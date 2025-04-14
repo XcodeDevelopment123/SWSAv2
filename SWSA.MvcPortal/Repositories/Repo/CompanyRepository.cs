@@ -10,22 +10,22 @@ namespace SWSA.MvcPortal.Repositories.Repo;
 public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), ICompanyRepository
 {
     // Implement the method
-  
+
 
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<Company>> BuildQueryAsync()
     {
-
         var query = db.Companies
-            .Include(c => c.CompanyType)
-            .Include(c => c.CompanyComplianceDate)
-            .Include(c => c.CompanyOwners)
-            .Include(c => c.CommunicationContacts)
-            .Include(c => c.OfficialContacts)
-            .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
-            .Include(c => c.Departments).ThenInclude(cd => cd.Department)
-            .Include(c => c.Departments).ThenInclude(cd => cd.CommunicationContacts)
-            .AsNoTracking();
+                 .Include(c => c.CompanyType)
+                 .Include(c => c.CompanyComplianceDate)
+                 .Include(c => c.CompanyOwners)
+                 .Include(c => c.CommunicationContacts)
+                 .Include(c => c.OfficialContacts)
+                 .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
+                 .Include(c => c.Departments).ThenInclude(cd => cd.Department)
+                 .Include(c => c.Departments).ThenInclude(cd => cd.CommunicationContacts)
+                 .Where(c => !c.IsDeleted)
+                 .AsNoTracking();
 
         return Task.FromResult(query);
     }
@@ -42,6 +42,17 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Include(c => c.Departments).ThenInclude(cd => cd.Department)
             .Include(c => c.Departments).ThenInclude(cd => cd.CommunicationContacts)
+            .Where(c => !c.IsDeleted)
+            .AsNoTracking();
+
+        return Task.FromResult(query);
+    }
+
+    //Rewrite the GetSingleAsync method
+    protected override Task<IQueryable<Company>> BuildGetByIdQueryAsync()
+    {
+        var query = db.Companies
+            .Where(c => !c.IsDeleted)
             .AsNoTracking();
 
         return Task.FromResult(query);

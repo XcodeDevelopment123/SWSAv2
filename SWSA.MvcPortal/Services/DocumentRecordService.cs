@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Repositories.Interfaces;
@@ -14,7 +15,8 @@ public class DocumentRecordService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-IDocumentRecordRepository repo
+IDocumentRecordRepository repo,
+IUserRepository userRepo
     ) : IDocumentRecordService
 {
 
@@ -41,5 +43,30 @@ IDocumentRecordRepository repo
     {
         var data = await repo.GetDocumentRecordsByCompanyDepartmentId(companyDepartmentId);
         return mapper.Map<List<DocumentRecordVM>>(data);
+    }
+
+    public async Task<bool> CreateDocument(CreateDocumentRecordRequest doc)
+    {
+        var staff = await userRepo.GetByStaffIdAsync(doc.HandledByStaffId);
+        Guard.AgainstNullData(staff, "Staff not found");
+
+        var data = mapper.Map<DocumentRecord>(doc);
+
+        data.HandledByStaffId = staff.Id;
+
+        repo.Add(data);
+
+        await repo.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<DocumentRecordVM> DeleteDocumentById(int docId)
+    {
+        var doc = await repo.GetByIdAsync(docId);
+        Guard.AgainstNullData(doc, "Document not found");
+
+        repo.Remove(doc!);
+        await repo.SaveChangesAsync();
+        return mapper.Map<DocumentRecordVM>(doc);
     }
 }

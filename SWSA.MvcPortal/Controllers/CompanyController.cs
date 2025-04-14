@@ -64,7 +64,7 @@ public class CompanyController(
         var companyTypes = await companyTypeService.GetCompanyTypesAsync();
         var departments = await departmentService.GetDepartments();
 
-        CompanyEditPageVM vm = new(cp, msicCodes, companyTypes,departments);
+        CompanyEditPageVM vm = new(cp, msicCodes, companyTypes, departments);
         return View(vm);
     }
 
@@ -80,8 +80,8 @@ public class CompanyController(
     [HttpDelete]
     public async Task<IActionResult> Delete([FromRoute] int companyId)
     {
-        var data = await service.DeleteCompanyByIdAsync(companyId);
-        return View(data);
+        await service.DeleteCompanyByIdAsync(companyId);
+        return Json(true);
     }
 
     [Route("compliance-date/edit")]

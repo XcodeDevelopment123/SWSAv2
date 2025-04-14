@@ -11,6 +11,10 @@ using SWSA.MvcPortal.Services;
 using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
+using System.Configuration;
+using System.Drawing.Printing;
+using Microsoft.Extensions.Options;
+using SWSA.MvcPortal.Models.DocumentRecords.Profiles;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -92,13 +96,16 @@ public static class DependencyInjector
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
     }
 
-    public static void ConfigureAppService(this IServiceCollection services)
+    public static void ConfigureAppService(this IServiceCollection services,IConfiguration config)
     {
         var applicationAssembly = typeof(DependencyInjector).Assembly;
+        services.Configure<FileSettings>(config.GetSection("FileSettings"));
 
+        //Auto mapper use config 
         services.AddAutoMapper((serviceProvider, cfg) =>
         {
-
+            var fileSettings = serviceProvider.GetRequiredService<IOptions<FileSettings>>();
+            cfg.AddProfile(new DocumentRecordProfile(fileSettings));
         }, applicationAssembly);
 
         services.AddScoped<IAuthService, AuthService>();

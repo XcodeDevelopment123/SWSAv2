@@ -1,9 +1,105 @@
-﻿@using SWSA.MvcPortal.Entities
-@model List<DocumentRecord>
+﻿@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Models.DocumentRecords
+@using SWSA.MvcPortal.Models.Users
+@model List<DocumentRecordVM>
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
+    UserVM userVM = null!;
+    if (!string.IsNullOrEmpty(userVMJson))
+    {
+        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
+    }
 }
 
-<h1>List</h1>
 
+<h3> Document List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="documentTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Flow</th>
+                            <th>Date</th>
+                            <th>File</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Handle Staff</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model)
+                        {
+                            <tr>
+                                <td>@doc.FlowType</td>
+                                <td>@DateLabelHelper.GetDateOnlyLabel(doc.DocumentDate)</td>
+                                <td>
+                                    <a target="_blank" href="@doc.DownloadLink" title="Download">
+                                        @doc.AttachmentFileName
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/companies/@doc.CompanyId/overview" title="company overview">
+                                        @doc.CompanyName
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#" title="department overview">
+                                        @doc.DepartmentName
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
+                                        @doc.StaffName @(userVM.StaffId == doc.HandledByStaffId ? "(You)" : "")
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a target="_blank" href="@doc.ViewLink" class="btn btn-sm btn-info mr-2" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Flow</th>
+                            <th>Date</th>
+                            <th>File</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Handle Staff</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+    <script src="~/js/documents/list-document.js" asp-append-version="true"></script>
+
+
+
+}

@@ -173,7 +173,8 @@
             processData: false,
             contentType: false,
             success: function (res) {
-                Toast_Fire(ICON_SUCCESS, "Create successfullly");
+                Toast_Fire(ICON_SUCCESS, "Create successfullly", "Documents has been created");
+                window.location.href = `${urls.company_documents}`;
             },
             error: function (err) {
             }
@@ -181,6 +182,12 @@
 
 
     })
+
+
+    $(document).on('click', '.btn-delete-row', function () {
+        const table = $(this).closest('table').DataTable();
+        table.row($(this).closest('tr')).remove().draw(false);
+    });
 
     function getDocumentTableData() {
         const data = [];
