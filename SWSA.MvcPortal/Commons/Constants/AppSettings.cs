@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Commons.Constants;
+﻿using SWSA.MvcPortal.Entities;
+
+namespace SWSA.MvcPortal.Commons.Constants;
 
 public class AppSettings
 {
@@ -16,4 +18,5 @@ public class SessionKeys
     public const string StaffId = "StaffId";
     public const string LoginTime = "LoginTime";
     public const string UserJson = "UserJson";
+    public const string CompanyId = "CompanyId"; // Use for company staff login 
 }

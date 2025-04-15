@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Models.CompanyStaffs;
@@ -18,4 +19,9 @@ public class CompanyStaffVM
     public int CompanyId { get; set; }
     public int? CompanyDepartmentId { get; set; }
     public CompanyDepartment CompanyDepartment { get; set; } = null!;
+
+    public string ToJsonData()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
 }

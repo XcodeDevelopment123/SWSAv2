@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Partner Login";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
@@ -7,7 +7,7 @@
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <p class="h1 m-0"><b>SWSA</b></p>
+            <p class="h1 m-0"><b>SWSA Partner</b></p>
         </div>
         <div class="card-body">
             <p class="login-box-msg">Sign in to start your session</p>
@@ -34,7 +34,7 @@
                     <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                 </p>
 
-                <a href="/auth/partner-login" class="text-center d-flex justify-content-center mt-3">Partner Login</a>
+                <a href="/auth/login" class="text-center d-flex justify-content-center mt-3">Swsa Login</a>
             </form>
 
 
@@ -47,5 +47,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <script src="~/js/auths/login.js" asp-append-version="true"></script>
+    <script src="~/js/auths/login-partner.js" asp-append-version="true"></script>
 }

@@ -54,6 +54,7 @@ public class LoginResult
         Success = 0,
         UserNotFound = 1,
         InvalidPassword = 2,
+        AccountNotEnable=3,
         Others = 99,
     }
 

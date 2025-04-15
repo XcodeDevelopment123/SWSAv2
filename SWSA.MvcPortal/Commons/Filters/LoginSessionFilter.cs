@@ -89,7 +89,9 @@ public class LoginSessionFilter(
         var controller = routeData.Values["controller"]?.ToString();
         var action = routeData.Values["action"]?.ToString();
         return string.Equals(controller, "Auth", StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(action, "Login", StringComparison.OrdinalIgnoreCase);
+                (string.Equals(action, "Login", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(action, "PartnerLogin", StringComparison.OrdinalIgnoreCase)
+                );
     }
 
     private bool IsIgnoreLoginSession(ActionExecutingContext context)

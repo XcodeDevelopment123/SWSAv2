@@ -11,5 +11,5 @@ public interface ICompanyStaffRepository : IRepositoryBase<CompanyStaff>
 
     // Define your method here
     Task<CompanyStaff> GetByStaffId(string staffId);
-
+    Task<CompanyStaff> GetByUsernameAsync(string username);
 }
