@@ -14,7 +14,8 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.AssignedStaffId, opt => opt.Ignore());
 
         CreateMap<CompanyWorkAssignment, CompanyWorkListVM>()
-            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.CompanyId))
+            .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyId))
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Company.Name))
             .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.AssignedStaff?.ContactName ?? AppSettings.NotAvailable))
             .ForMember(dest => dest.StaffId, opt => opt.MapFrom((src, dest) => src.AssignedStaffId))
@@ -24,5 +25,13 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown))
            ;
 
+        CreateMap<CompanyWorkAssignment, CompanyWorkVM>()
+             .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))
+             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
+             .ForMember(dest => dest.Staff, opt => opt.MapFrom(src => src.AssignedStaff))
+             .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company))
+             .ForMember(dest => dest.CompanyDepartment, opt => opt.MapFrom((src,dest) => src.AssignedStaff?.CompanyDepartment??null!))
+             .ForMember(dest => dest.Progress, opt => opt.MapFrom(src => src.Progress))
+             ;
     }
 }

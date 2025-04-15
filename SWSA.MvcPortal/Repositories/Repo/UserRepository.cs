@@ -25,6 +25,13 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
         return await db.Users.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 
+    public async Task<Dictionary<string, User>> GetDictionaryByStaffIdsAsync(List<string> staffIds)
+    {
+        return await db.Users
+            .Where(u => staffIds.Contains(u.StaffId))
+            .ToDictionaryAsync(u => u.StaffId);
+    }
+
     public async Task<bool> ExistsByUsernameAsync(string username)
     {
         return await db.Users.AnyAsync(u => u.Username == username);

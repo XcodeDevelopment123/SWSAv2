@@ -16,7 +16,7 @@
         <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="companyDatatable" class="table table-bordered table-striped">
+                <table id="workDatatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Company</th>
@@ -32,28 +32,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var cp in Model)
+                        @foreach (var task in Model)
                         {
                             <tr>
-                                <td>@cp.CompanyName</td>
-                                <td>@cp.WorkType</td>
-                                <td>@cp.ServiceScope.GetDisplayName()</td>
-                                <td>@cp.ActivitySize.GetDisplayName()</td>
-                                <td>@cp.YearToDo</td>
-                                <td>@cp.MonthToDo.GetIntValue()</td>
-                                <td>@cp.Status</td>
-                                <td>@cp.InternalNote</td>
-                                <td>@cp.DepartmentName - @cp.StaffName</td>
+                                <td>@task.CompanyName</td>
+                                <td>@task.WorkType</td>
+                                <td>@task.ServiceScope.GetDisplayName()</td>
+                                <td>@task.ActivitySize.GetDisplayName()</td>
+                                <td>@task.YearToDo</td>
+                                <td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
+                                <td>@task.Status.GetDisplayName()</td>
+                                <td>@task.InternalNote</td>
+                                <td>@task.DepartmentName - @task.StaffName</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="/users/@cp.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+                                        <a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="/users/@cp.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+                                        <a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </a>
 
-
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.ServiceScope.GetDisplayName()} for {task.CompanyName}")" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
 
                                     </div>
                                 </td>

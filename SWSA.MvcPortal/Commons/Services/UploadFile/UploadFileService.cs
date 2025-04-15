@@ -4,7 +4,7 @@ namespace SWSA.MvcPortal.Commons.Services.UploadFile;
 
 public class UploadFileService(
     LocalUploadFileService localService,
-    CloudUploadFileService cloudService 
+    CloudUploadFileService cloudService
     ) : IUploadFileService
 {
     public async Task<string> UploadAsync(IFormFile file, string subfolder, UploadStorageType storageType = UploadStorageType.Local)
@@ -25,6 +25,14 @@ public class UploadFileService(
             UploadStorageType.Cloud => await cloudService.DeleteAsync(pathOrUrl),
             _ => false
         };
+    }
+
+    public string SanitizeFolderName(string input)
+    {
+        foreach (var c in Path.GetInvalidFileNameChars())
+            input = input.Replace(c.ToString(), "");
+
+        return input.Trim().Replace(" ", "_");
     }
 
 

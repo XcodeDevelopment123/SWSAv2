@@ -9,6 +9,9 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 public interface ICompanyWorkAssignmentService
 {
     Task<int> CreateCompanyWorkAssignment(CreateCompanyWorkAssignmentRequest req);
+    Task<CompanyWorkAssignment> DeleteWork(int taskId);
+    Task<bool> EditCompanyWorkAssignment(EditCompanyWorkAssignmentRequest req);
+    Task<CompanyWorkVM> GetWorkAssignmentById(int taskId);
 
     // Define your method here
     Task<List<CompanyWorkListVM>> GetWorkAssignments();

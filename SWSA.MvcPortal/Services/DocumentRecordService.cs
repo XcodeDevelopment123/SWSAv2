@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
@@ -15,6 +16,7 @@ public class DocumentRecordService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
 IUserRepository userRepo
     ) : IDocumentRecordService
@@ -45,8 +47,17 @@ IUserRepository userRepo
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
-    public async Task<bool> CreateDocument(CreateDocumentRecordRequest doc)
+    public async Task<bool> CreateDocument(CreateDocumentRecordRequest doc, IFormFile files)
     {
+        var flowType = doc.FlowType.ToString().ToLower();
+
+        var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
+        var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+        var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
+
+        var result = await uploadFileService.UploadAsync(files, subFolder, UploadStorageType.Local);
+        doc.AttachmentFilePath = result;
+
         var staff = await userRepo.GetByStaffIdAsync(doc.HandledByStaffId);
         Guard.AgainstNullData(staff, "Staff not found");
 
@@ -60,6 +71,48 @@ IUserRepository userRepo
         return true;
     }
 
+    public async Task<bool> CreateDocuments(CreateDocumentRecordListRequest req, List<IFormFile> files)
+    {
+        var staffIds = req.Documents.Select(d => d.HandledByStaffId).Distinct().ToList();
+        var staffMap = await userRepo.GetDictionaryByStaffIdsAsync(staffIds);
+
+        var skippedDocuments = new List<string>();
+
+        for (int i = 0; i < req.Documents.Count; i++)
+        {
+            var doc = req.Documents[i];
+            if (!staffMap.TryGetValue(doc.HandledByStaffId, out var staff))
+            {
+                skippedDocuments.Add(doc.AttachmentFileName ?? $"[Index {i}]");
+                continue;
+            }
+
+            if (i >= files.Count || files[i] == null)
+            {
+                skippedDocuments.Add(doc.AttachmentFileName ?? $"[Index {i}]");
+                continue;
+            }
+
+            // Sanitize the folder name
+            var flowType = doc.FlowType.ToString().ToLower();
+            var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
+            var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+            var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
+
+            //Upload the file
+            var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
+            doc.AttachmentFilePath = result;
+
+            var data = mapper.Map<DocumentRecord>(doc);
+            data.HandledByStaffId = staff.Id;
+
+            repo.Add(data);
+        }
+
+        await repo.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<DocumentRecordVM> DeleteDocumentById(int docId)
     {
         var doc = await repo.GetByIdAsync(docId);
@@ -67,6 +120,13 @@ IUserRepository userRepo
 
         repo.Remove(doc!);
         await repo.SaveChangesAsync();
+
+        var filePath = doc!.AttachmentFilePath;
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            await uploadFileService.DeleteAsync(filePath);
+        }
+
         return mapper.Map<DocumentRecordVM>(doc);
     }
 }

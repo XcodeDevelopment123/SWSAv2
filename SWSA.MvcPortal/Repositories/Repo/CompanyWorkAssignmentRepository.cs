@@ -30,11 +30,14 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
     protected override Task<IQueryable<CompanyWorkAssignment>> BuildQueryWithIncludesAsync()
     {
         //Default query no action
-        return Task.FromResult(db.Set<CompanyWorkAssignment>().AsQueryable());
-
-        // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.CompanyWorkAssignments
+                 .Include(c => c.Progress)
+                 .Include(c => c.Company)
+                 .Include(c => c.AssignedStaff)
+                     .ThenInclude(s => s.CompanyDepartment)
+                     .ThenInclude(cd => cd.Department)
+                 .AsNoTracking();
+        return Task.FromResult(query);
     }
 
     //Rewrite the GetSingleAsync method

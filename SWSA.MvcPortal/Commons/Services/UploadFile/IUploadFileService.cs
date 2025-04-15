@@ -4,4 +4,5 @@ public interface IUploadFileService
 {
     Task<string> UploadAsync(IFormFile file, string subfolder, UploadStorageType storageType = UploadStorageType.Local);
     Task<bool> DeleteAsync(string pathOrUrl, UploadStorageType storageType = UploadStorageType.Local);
+    string SanitizeFolderName(string input);
 }

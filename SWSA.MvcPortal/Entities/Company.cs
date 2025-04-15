@@ -29,14 +29,5 @@ public class Company
     public ICollection<CompanyDepartment> Departments { get; set; } = new List<CompanyDepartment>();
     public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
 
-    public string GetYearEndMonthLabel()
-    {
-        if (!YearEndMonth.HasValue || !Enum.IsDefined(typeof(MonthOfYear), YearEndMonth))
-            return AppSettings.NotAvailable;
-
-        var monthNum = ((int)YearEndMonth).ToString("D2");
-        var monthName = YearEndMonth.ToString();
-        return $"{monthNum} ({monthName})";
-    }
 
 }

@@ -26,6 +26,14 @@ ICompanyStaffRepository companyStaffRepo
         return mapper.Map<List<CompanyWorkListVM>>(data);
     }
 
+    public async Task<CompanyWorkVM> GetWorkAssignmentById(int taskId)
+    {
+        var data = await repo.GetWithIncludedByIdAsync(taskId);
+        Guard.AgainstNullData(data, "Company Work Assignment not found");
+
+        return mapper.Map<CompanyWorkVM>(data);
+    }
+
     public async Task<int> CreateCompanyWorkAssignment(CreateCompanyWorkAssignmentRequest req)
     {
         var staff = await companyStaffRepo.GetByStaffId(req.AssignedStaffId);
@@ -42,6 +50,47 @@ ICompanyStaffRepository companyStaffRepo
         await repo.SaveChangesAsync();
 
         return entity.Id;
+    }
+
+    public async Task<bool> EditCompanyWorkAssignment(EditCompanyWorkAssignmentRequest req)
+    {
+        var task = await repo.GetByIdAsync(req.TaskId);
+        Guard.AgainstNullData(task, "Company Work Assignment not found");
+
+        var reqStaff = await companyStaffRepo.GetByStaffId(req.AssignedStaffId);
+        Guard.AgainstNullData(reqStaff, "Company Staff not found");
+
+        //update if transfer to another staff  
+        if (task!.AssignedStaffId != reqStaff.Id)
+        {
+            task.AssignedStaffId = reqStaff.Id;
+        }
+
+        task.CompanyActivityLevel = req.CompanyActivityLevel;
+        task.WorkType = req.WorkType;
+        task.ServiceScope = req.ServiceScope;
+        task.YearToDo = req.YearToDo;
+        task.MonthToDo = req.MonthToDo;
+        task.InternalNote = req.InternalNote;
+        task.IsCompleted = req.IsCompleted;
+        task.CompletedDate = req.CompletedDate ?? null;
+        task.UpdatedAt = DateTime.Now;
+
+        repo.Update(task);
+        await repo.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<CompanyWorkAssignment> DeleteWork(int taskId)
+    {
+        var data = await repo.GetByIdAsync(taskId);
+        Guard.AgainstNullData(data, "Company Work Assignment not found");
+
+        repo.Remove(data!);
+
+        await repo.SaveChangesAsync();
+        return data!;
     }
 
 }

@@ -17,5 +17,5 @@ public class CompanyWorkProgress
     public string? ProgressNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
-    public CompanyWorkAssignment WorkAssignment { get; set; } = null!;
+    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
 }

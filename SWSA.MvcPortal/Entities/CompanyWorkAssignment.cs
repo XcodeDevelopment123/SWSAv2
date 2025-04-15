@@ -22,10 +22,10 @@ public class CompanyWorkAssignment
     public bool IsCompleted { get; set; } = false;
     public DateTime? CompletedDate { get; set; }
     public string? InternalNote { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime? UpdatedAt { get; set; }
     public virtual Company Company { get; set; } = null!;
     public virtual CompanyStaff? AssignedStaff { get; set; }
     public virtual CompanyWorkProgress Progress { get; set; } = null!;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
 
 }

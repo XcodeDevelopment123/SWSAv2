@@ -11,6 +11,7 @@ const urls = {
     "company_compliance_date": "/companies/compliance-date",
     "company_documents": "/companies/docs",
     "company_works": "/companies/works",
+    "company_work_progress": "/companies/works/progress",
     "users": "/users",
 };
 
@@ -52,6 +53,13 @@ $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
     stopLoading();
     console.error(jqxhr.responseJSON);
     Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize all tooltips
+    loadToolTip();
 });
 
 
@@ -102,4 +110,11 @@ function stopLoading() {
     $overlay.addClass("d-none");
 
     $('body').removeClass('no-pointer-events');
+}
+
+function loadToolTip() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 }

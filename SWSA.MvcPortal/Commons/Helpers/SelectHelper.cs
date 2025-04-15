@@ -7,6 +7,22 @@ namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
+    public static List<SelectListItem> GetYesNoSelection(bool? yesOrNo)
+    {
+        return new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Please select", Value = "", Selected = yesOrNo == null,Disabled=true },
+        new SelectListItem { Text = "Yes", Value = "true", Selected = yesOrNo == true },
+        new SelectListItem { Text = "No", Value = "false", Selected = yesOrNo  == false }
+    };
+    }
+
+    public static List<SelectListItem> GetWorkProgressStatus(WorkProgressStatus? status)
+    {
+        return ToSelectList<WorkProgressStatus>(status);
+    }
+
+
     public static List<SelectListItem> GetCompanyActivityLevels(CompanyActivityLevel? levels)
     {
         return ToSelectList<CompanyActivityLevel>(levels);

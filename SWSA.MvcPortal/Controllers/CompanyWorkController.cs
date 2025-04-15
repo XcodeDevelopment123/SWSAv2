@@ -28,11 +28,46 @@ public class CompanyWorkController(
     }
 
 
+    [Route("works/{taskId}/edit")]
+    public async Task<IActionResult> Edit([FromRoute] int taskId)
+    {
+        var data = await service.GetWorkAssignmentById(taskId);
+        if (data.Company != null)
+            data.Company = await companyService.GetCompanyByIdAsync(data.Company.Id);
+
+        return View(data);
+    }
+
     [Route("works/create")]
     [HttpPost]
     public async Task<IActionResult> Create(CreateCompanyWorkAssignmentRequest req)
     {
         var result = await service.CreateCompanyWorkAssignment(req);
+        return Json(result);
+    }
+
+    [Route("works/edit")]
+    [HttpPost]
+    public async Task<IActionResult> Edit(EditCompanyWorkAssignmentRequest req)
+    {
+        var result = await service.EditCompanyWorkAssignment(req);
+        return Json(result);
+    }
+
+
+    [Route("works/progress/edit")]
+    [HttpPost]
+    public async Task<IActionResult> EditProgress(EditCompanyWorkProgressRequest req)
+    {
+        var result = await progressService.EditCompanyWorkProgress(req);
+        return Json(result);
+    }
+
+    [Route("works/{taskId}/delete")]
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromRoute] int taskId)
+    {
+        var result = await service.DeleteWork(taskId);
         return Json(result);
     }
 

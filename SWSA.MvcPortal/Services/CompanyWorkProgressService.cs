@@ -2,6 +2,8 @@
 
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -14,7 +16,22 @@ IMapper mapper,
 ICompanyWorkProgressRepository repo
     ) : ICompanyWorkProgressService
 {
-   
 
+    public async Task<bool> EditCompanyWorkProgress(EditCompanyWorkProgressRequest req)
+    {
+        var progress = await repo.GetByIdAsync(req.ProgressId);
+        Guard.AgainstNullData(progress, "Work Progress not found.");
+
+        progress!.StartDate = req.StartDate;
+        progress.EndDate = req.EndDate;
+        progress.TimeTakenInDays = req.TimeTakenInDays;
+        progress.Status = req.Status;
+        progress.ProgressNote = req.ProgressNote;
+        progress.UpdatedAt = DateTime.Now;
+
+        repo.Update(progress);
+        await repo.SaveChangesAsync();
+        return true;
+    }
 
 }

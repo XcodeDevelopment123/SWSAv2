@@ -20,6 +20,13 @@ public class CompanyStaffRepository(AppDbContext db) : RepositoryBase<CompanySta
         return find!;
     }
 
+    public async Task<List<CompanyStaff>> GetAllByCompanyIdAsync(int companyId)
+    {
+        var data = await db.CompanyStaffs
+            .Where(c => c.CompanyId == companyId).ToListAsync();
+        return data;
+    }
+
 
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<CompanyStaff>> BuildQueryAsync()

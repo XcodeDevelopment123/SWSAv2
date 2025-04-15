@@ -38,24 +38,7 @@ public class DocumentController(
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CreateDocumentRecordListRequest req, List<IFormFile> files)
     {
-        for (int i = 0; i < req.Documents.Count; i++)
-        {
-            var doc = req.Documents[i];
-
-            if (i < files.Count && files[i] != null)
-            {
-                var flowType = doc.FlowType.ToString().ToLower();
-
-                var safeCompanyName = SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
-                var safeDeptName = SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
-                var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
-
-                var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
-                doc.AttachmentFilePath = result;
-            }
-            // TODO: Save to database
-            await service.CreateDocument(doc);
-        }
+        await service.CreateDocuments(req, files);
 
         return Json(true);
     }
@@ -65,23 +48,6 @@ public class DocumentController(
     public async Task<IActionResult> Delete([FromRoute] int docId)
     {
         var result = await service.DeleteDocumentById(docId);
-        if (result != null)
-        {
-            var filePath = result.AttachmentPath;
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                await uploadFileService.DeleteAsync(filePath);
-            }
-        }
-
         return Json(true);
-    }
-
-    private string SanitizeFolderName(string input)
-    {
-        foreach (var c in Path.GetInvalidFileNameChars())
-            input = input.Replace(c.ToString(), "");
-
-        return input.Trim().Replace(" ", "_");
-    }
+    } 
 }

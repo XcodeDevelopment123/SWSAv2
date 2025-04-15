@@ -19,6 +19,12 @@ IMapper mapper,
 ICompanyStaffRepository repo
     ) : ICompanyStaffService
 {
+    public async Task<List<CompanyStaff>> GetStaffsByCompanyId(int companyId)
+    {
+        var data = await repo.GetAllByCompanyIdAsync(companyId);
+        return data;
+    }
+
     public async Task<int> CreateContact(CreateCompanyStaffRequest req)
     {
         var data = mapper.Map<CompanyStaff>(req);

@@ -1,4 +1,5 @@
-﻿@using SWSA.MvcPortal.Commons.Helpers
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Companies
 @model CompanyEditPageVM
 @{
@@ -83,7 +84,7 @@
                         <div class="form-group">
                             <label for="yearEndMonth">Year End Month</label>
                             <div class="input-group">
-                                <input type="text" id="yearEndMonth" value="@cp.GetYearEndMonthLabel()" name="yearEndMonth" class="form-control" placeholder="Select month" />
+                                <input type="text" id="yearEndMonth" value="@cp.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
