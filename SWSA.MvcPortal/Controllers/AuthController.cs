@@ -29,7 +29,7 @@ public class AuthController(IAuthService service, IUserService userService) : Ba
     [HttpPost("/auth/login-partner")]
     public async Task<IActionResult> PartnerLogin(string username, string password)
     {
-        var result = await service.Login(username, password);
+        var result = await service.PartnerLogin(username, password);
         return Json(result);
     }
 
