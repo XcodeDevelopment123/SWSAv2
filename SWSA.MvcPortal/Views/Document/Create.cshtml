@@ -1,6 +1,7 @@
 ﻿@model DocumentRecordCreatePageVM
 @using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.DocumentRecords
 @using SWSA.MvcPortal.Models.Users
@@ -11,8 +12,8 @@
 
     var cp = Model.Company;
 
-    var flowType = SelectHelper.GetDocumentFLowType(null!);
-    var companyStatus = SelectHelper.GetCompanyStatus(null);
+    var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
+    var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null);
 
     var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
     UserVM userVM = null!;

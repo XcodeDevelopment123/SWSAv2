@@ -1,4 +1,5 @@
-﻿@using SWSA.MvcPortal.Commons.Extensions
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Companies
 @model CompanyEditPageVM
@@ -12,9 +13,9 @@
 
     var cp = Model.Company;
 
-    var companyStatus = SelectHelper.GetCompanyStatus(cp.Status);
+    var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.Status);
+    var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
     var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
-    var ownershipTypes = SelectHelper.GetOwnershipTypes(null);
     var staffPosition = SelectHelper.GetStaffPositionTypes(null);
     var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
     var cpDepartmentIds = cp.Departments.Select(m => m.DepartmentId).ToList();
@@ -526,10 +527,10 @@
                                     <td>@staffCt.Remark</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="@staffCt.Id" data-name="@staffCt.ContactName" title="Edit">
+                                            <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="@staffCt.Id" data-name="@staffCt.ContactName"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

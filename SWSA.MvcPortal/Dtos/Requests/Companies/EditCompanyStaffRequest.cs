@@ -4,9 +4,9 @@ namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 
 public class EditCompanyStaffInfoRequest
 {
+    public string StaffId { get; set; }
     public int? CompanyId { get; set; }
     public int? CompanyDepartmentId { get; set; }
-    public int ContactId { get; set; }
     public string ContactName { get; set; } = null!;
     public string WhatsApp { get; set; } = null!;
     public string Email { get; set; } = null!;
@@ -17,6 +17,8 @@ public class EditCompanyStaffInfoRequest
 
 public class EditCompanyStaffLoginProfileRequest
 {
+    public string StaffId { get; set; }
+    public bool EnableLogin { get; set; } = false;
     public string? Username { get; set; } = null!;
-    public string? HashedPassword { get; set; } = null!;
+    public string? Password { get; set; } = null!;
 }

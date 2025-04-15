@@ -7,6 +7,13 @@ namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
+
+    public static List<SelectListItem> GetEnumSelectList<TEnum>(TEnum? selected = null, string defaultText = "Please select")
+        where TEnum : struct, Enum
+    {
+        return ToSelectList(selected, defaultText);
+    }
+
     public static List<SelectListItem> GetYesNoSelection(bool? yesOrNo)
     {
         return new List<SelectListItem>
@@ -15,36 +22,6 @@ public class SelectHelper
         new SelectListItem { Text = "Yes", Value = "true", Selected = yesOrNo == true },
         new SelectListItem { Text = "No", Value = "false", Selected = yesOrNo  == false }
     };
-    }
-
-    public static List<SelectListItem> GetWorkProgressStatus(WorkProgressStatus? status)
-    {
-        return ToSelectList<WorkProgressStatus>(status);
-    }
-
-
-    public static List<SelectListItem> GetCompanyActivityLevels(CompanyActivityLevel? levels)
-    {
-        return ToSelectList<CompanyActivityLevel>(levels);
-    }
-
-    public static List<SelectListItem> GetServiceScopes(ServiceScope? scope)
-    {
-        return ToSelectList<ServiceScope>(scope);
-    }
-
-    public static List<SelectListItem> GetWorkTypes(WorkType? type)
-    {
-        return ToSelectList<WorkType>(type);
-    }
-
-    public static List<SelectListItem> GetDocumentFLowType(DocumentFlowType? type)
-    {
-        return ToSelectList<DocumentFlowType>(type);
-    }
-    public static List<SelectListItem> GetCompanyStatus(CompanyStatus? status)
-    {
-        return ToSelectList<CompanyStatus>(status);
     }
 
     public static List<SelectListItem> GetOwnerPositionTypes(PositionType? type)
@@ -57,11 +34,6 @@ public class SelectHelper
     {
         return ToSelectList<PositionType>(type,
                     filter: x => x != PositionType.Director && x != PositionType.Shareholder);
-    }
-
-    public static List<SelectListItem> GetOwnershipTypes(OwnershipType? type)
-    {
-        return ToSelectList<OwnershipType>(type);
     }
 
     private static List<SelectListItem> ToSelectList<TEnum>(

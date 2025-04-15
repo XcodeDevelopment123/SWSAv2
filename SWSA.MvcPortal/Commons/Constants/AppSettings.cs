@@ -6,6 +6,7 @@ public class AppSettings
     public const string AllowedOrigins = "AllowedOrigins";
     public const string DynamicCorsPolicy = "DynamicCorsPolicy";
     public const string NotAvailable = "N/A";
+    public const string DisplayPassword = "••••••";
 
 }
 

@@ -4,9 +4,12 @@
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.CompanyStaffs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -19,10 +22,17 @@ IMapper mapper,
 ICompanyStaffRepository repo
     ) : ICompanyStaffService
 {
-    public async Task<List<CompanyStaff>> GetStaffsByCompanyId(int companyId)
+    public async Task<CompanyStaffVM> GetStaffByStaffId(string staffId)
+    {
+        var data = await repo.GetByStaffId(staffId);
+        Guard.AgainstNullData(data, "Company staff not found");
+        return mapper.Map<CompanyStaffVM>(data);
+    }
+
+    public async Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId)
     {
         var data = await repo.GetAllByCompanyIdAsync(companyId);
-        return data;
+        return mapper.Map<List<CompanyStaffVM>>(data); ;
     }
 
     public async Task<int> CreateContact(CreateCompanyStaffRequest req)
@@ -36,7 +46,7 @@ ICompanyStaffRepository repo
 
     public async Task<bool> EditContact(EditCompanyStaffInfoRequest req)
     {
-        var data = await repo.GetByIdAsync(req.ContactId);
+        var data = await repo.GetByStaffId(req.StaffId);
 
         Guard.AgainstNullData(data, "Company Official Contact not found");
 
@@ -57,9 +67,39 @@ ICompanyStaffRepository repo
         return true;
     }
 
-    public async Task<bool> DeleteContact(int ownerId)
+    public async Task<bool> EditLoginProfile(EditCompanyStaffLoginProfileRequest req)
     {
-        var data = await repo.GetByIdAsync(ownerId);
+        var data = await repo.GetByStaffId(req.StaffId);
+
+        Guard.AgainstNullData(data, "Company Official Contact not found");
+
+        if (req.EnableLogin)
+        {
+            if (string.IsNullOrEmpty(req.Username) || string.IsNullOrEmpty(req.Password))
+                throw new BusinessLogicException("Username and password cannot be empty");
+
+            if (await repo.ExistUsernameInCompanyExcludingStaffId(data.CompanyId, req.Username, data.StaffId))
+                throw new BusinessLogicException("Username already exists");
+
+            data.IsLoginEnabled = true;
+            data.Username = req.Username;
+            if (!string.IsNullOrEmpty(req.Password) && req.Password != AppSettings.DisplayPassword)
+                data.HashedPassword = PasswordHasher.Hash(req.Password);
+        }
+        else
+        {
+            data.IsLoginEnabled = false;
+        }
+
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+        UpdateCompanyCommunicationContactCache(data);
+        return true;
+    }
+
+    public async Task<bool> DeleteContact(string staffId)
+    {
+        var data = await repo.GetByStaffId(staffId);
         Guard.AgainstNullData(data, "Company Communication Contact not found");
 
         repo.Remove(data!);

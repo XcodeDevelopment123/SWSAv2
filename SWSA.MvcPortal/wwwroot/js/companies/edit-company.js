@@ -503,7 +503,7 @@
     let editStaff = {
         isEdit: false,
         index: -1,
-        id: -1
+        id: ""
     };
 
     $staffForm.validate({
@@ -566,9 +566,9 @@
 
         const staffData = getFormData(staffFormInputs);
         staffData.companyId = $companyId.val();
-        staffData.contactId = editStaff.id;
+        staffData.staffId = editStaff.id;
 
-        const apiUrl = editStaff.isEdit ? `${urls.company_communication_contact}/edit` : `${urls.company_communication_contact}/create`;
+        const apiUrl = editStaff.isEdit ? `${urls.company_staffs}/edit` : `${urls.company_staffs}/create`;
 
         $.ajax({
             url: apiUrl,
@@ -608,7 +608,7 @@
         editStaff = {
             isEdit: false,
             index: -1,
-            id: -1
+            id: ""
         };
 
         staffFormInputs.contactName.val("");
@@ -629,7 +629,7 @@
 
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
             $.ajax({
-                url: `${urls.company_communication_contact}/${id}/delete`,
+                url: `${urls.company_staffs}/${id}/delete`,
                 method: "DELETE",
                 success: function () {
                     Toast_Fire(ICON_SUCCESS, "Success", "Communication contact deleted successfully.");

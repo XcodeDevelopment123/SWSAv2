@@ -1,5 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.CompnayWorks
 @using SWSA.MvcPortal.Models.Users
@@ -8,14 +9,12 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
     var cp = Model.Company;
 
-    var workTypes = SelectHelper.GetWorkTypes(null!);
-    var serviceScopes = SelectHelper.GetServiceScopes(null!);
-    var companyActivityLevels = SelectHelper.GetCompanyActivityLevels(null!);
+    var workTypes = SelectHelper.GetEnumSelectList<WorkType>(null!);
+    var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(null!);
+    var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
     var staffSelections = cp.CompanyStaffs;
-
 
     var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
     UserVM userVM = null!;
@@ -29,7 +28,6 @@
     var endYear = currentYear + 20;
 
     <input type="hidden" id="companyId" value="@cp.Id" />
-
 }
 
 <h3>Create Task for @cp.Name (@cp.RegistrationNumber)</h3>

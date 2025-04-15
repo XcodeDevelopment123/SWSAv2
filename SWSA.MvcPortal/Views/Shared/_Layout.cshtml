@@ -36,7 +36,7 @@
     var currentAction = ViewData["action"]!.ToString();
 
     var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-
+    var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
 
     UserVM userVM = null!;
     if (!string.IsNullOrEmpty(userVMJson))
@@ -260,15 +260,15 @@
 
                         <li class="nav-header">Companies</li>
 
-                        <li class="nav-item @(currentController== ControllerNames.Company ?"menu-is-opening menu-open":"")">
-                            <a href="#" class="nav-link @(currentController== ControllerNames.Company ?"active":"")">
+                        <li class="nav-item @(companyNav.Contains(currentController!) ?"menu-is-opening menu-open":"")">
+                            <a href="#" class="nav-link @(companyNav.Contains(currentController!) ?"active":"")">
                                 <i class="fas fa-building nav-icon"></i>
                                 <p>
                                     Company
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.Company ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(companyNav.Contains(currentController!) ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
                                     <a href="/companies" class="nav-link @(currentController== ControllerNames.Company && currentAction =="List" ?"active":"")">
@@ -305,7 +305,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.Company && currentAction =="Staffs" ?"active":"")
+                                                @(currentController== ControllerNames.CompanyStaff ?"active":"")
                                                 " data-target-url="/companies/{companyId}/staff-list" data-url-name="Navigate to Staffs Page">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Staffs</p>

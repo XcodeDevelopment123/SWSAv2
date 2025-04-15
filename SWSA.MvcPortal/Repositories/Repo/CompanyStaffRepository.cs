@@ -15,14 +15,23 @@ public class CompanyStaffRepository(AppDbContext db) : RepositoryBase<CompanySta
     {
         var find = await db.CompanyStaffs
             .Include(c => c.CompanyDepartment)
+            .ThenInclude(c => c.Department)
             .Include(c => c.Company)
             .FirstOrDefaultAsync(c => c.StaffId == staffId);
         return find!;
     }
 
+    public async Task<bool> ExistUsernameInCompanyExcludingStaffId(int companyId, string username,string excludeStaffId)
+    {
+        return await db.CompanyStaffs
+            .AnyAsync(c => c.CompanyId == companyId && c.Username == username && c.StaffId != excludeStaffId);
+    }
+
     public async Task<List<CompanyStaff>> GetAllByCompanyIdAsync(int companyId)
     {
         var data = await db.CompanyStaffs
+            .Include(c => c.CompanyDepartment)
+            .ThenInclude(c => c.Department)
             .Where(c => c.CompanyId == companyId).ToListAsync();
         return data;
     }
@@ -34,6 +43,7 @@ public class CompanyStaffRepository(AppDbContext db) : RepositoryBase<CompanySta
         // Do you query here
         var query = db.CompanyStaffs
            .Include(c => c.CompanyDepartment)
+           .ThenInclude(c => c.Department)
            .Include(c => c.Company)
            .AsNoTracking();
         return Task.FromResult(query);

@@ -2,6 +2,7 @@
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace SWSA.MvcPortal.Controllers;
 
@@ -14,7 +15,8 @@ public class CompanyController(
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
     ICompanyTypeService companyTypeService,
-    IDepartmentService departmentService
+    IDepartmentService departmentService,
+    ICompanyStaffService companyStaffService
     ) : BaseController
 {
     [Route("")]
@@ -35,12 +37,6 @@ public class CompanyController(
     {
         var data = await service.GetCompanyByIdAsync(companyId);
         return View(data);
-    }
-
-    [Route("{companyId}/staff-list")]
-    public IActionResult StaffList([FromRoute] int companyId)
-    {
-        return View();
     }
 
     [Route("create")]
@@ -119,30 +115,6 @@ public class CompanyController(
     public async Task<IActionResult> DeleteOwner([FromRoute] int ownerId)
     {
         var result = await companyOwnerService.DeleteOwner(ownerId);
-        return Json(true);
-    }
-
-    [Route("staff/create")]
-    [HttpPost]
-    public async Task<IActionResult> CreateStaffContact(CreateCompanyStaffRequest req)
-    {
-        var result = await companyCommunicationContactService.CreateContact(req);
-        return Json(true);
-    }
-
-    [Route("staff/edit")]
-    [HttpPost]
-    public async Task<IActionResult> EditStaffContact(EditCompanyStaffInfoRequest req)
-    {
-        var result = await companyCommunicationContactService.EditContact(req);
-        return Json(true);
-    }
-
-    [Route("staff/{contactId}/delete")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteStaffContact([FromRoute] int contactId)
-    {
-        var result = await companyCommunicationContactService.DeleteContact(contactId);
         return Json(true);
     }
 

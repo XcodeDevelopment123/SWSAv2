@@ -1,5 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.CompnayWorks
@@ -13,10 +14,10 @@
     var cp = Model.Company;
     var progress = Model.Progress;
 
-    var workTypes = SelectHelper.GetWorkTypes(Model.WorkType);
-    var serviceScopes = SelectHelper.GetServiceScopes(Model.ServiceScope);
-    var companyActivityLevels = SelectHelper.GetCompanyActivityLevels(Model.ActivitySize);
-    var workProgressStatus = SelectHelper.GetWorkProgressStatus(progress.Status);
+    var workTypes = SelectHelper.GetEnumSelectList<WorkType>(Model.WorkType);
+    var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(Model.ServiceScope);
+    var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(Model.ActivitySize);
+    var workProgressStatus = SelectHelper.GetEnumSelectList<WorkProgressStatus>(progress.Status);
     var isCompleted = SelectHelper.GetYesNoSelection(Model.IsCompleted);
 
     var staffSelections = cp.CompanyStaffs;
@@ -70,7 +71,7 @@
                         <div class="form-group">
                             <label for="incorpDate">Incorporation Date</label>
                             <div class="input-group">
-                                <input disabled type="text" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input disabled type="text" value="@cp.IncorporationDate.ToFormattedString()" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
@@ -216,7 +217,7 @@
                             <div class="form-group">
                                 <label for="completedDate">Completed At</label>
                                 <div class="input-group">
-                                    <input @(Model.IsCompleted ? "" : "disabled") type="text" id="completedDate" value="@Model.CompletedDate.ToInputDateValue()" name="completedDate" class="form-control" placeholder="Select date" />
+                                    <input @(Model.IsCompleted ? "" : "disabled") type="text" id="completedDate" value="@Model.CompletedDate.ToFormattedString()" name="completedDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -255,7 +256,7 @@
                             <div class="form-group">
                                 <label for="startDate">Task Start At</label>
                                 <div class="input-group">
-                                    <input type="text" id="startDate" value="@progress.StartDate.ToInputDateValue()" name="startDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="startDate" value="@progress.StartDate.ToFormattedString()" name="startDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -269,7 +270,7 @@
                             <div class="form-group">
                                 <label for="endDate">Task End At</label>
                                 <div class="input-group">
-                                    <input type="text" id="endDate" value="@progress.EndDate.ToInputDateValue()" name="endDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="endDate" value="@progress.EndDate.ToFormattedString()" name="endDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>

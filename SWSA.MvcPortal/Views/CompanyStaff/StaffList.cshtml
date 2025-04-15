@@ -1,0 +1,87 @@
+﻿@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities
+@using SWSA.MvcPortal.Models.CompanyStaffs
+@model List<CompanyStaffVM>
+@{
+    ViewData["Title"] = "StaffList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3> Staff List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="companyDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Staff Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Account Login</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var staff in Model)
+                        {
+                            <tr>
+                                <td>@staff.StaffId</td>
+                                <td>@staff.ContactName</td>
+                                <td>@staff.Email</td>
+                                <td>@staff.WhatsApp</td>
+                                <td>@(staff.CompanyDepartment?.Department.Name ?? AppSettings.NotAvailable)</td>
+                                <td>@staff.Position.GetDisplayName()</td>
+                                <td>@(staff.IsLoginEnabled ? "Enabled" : "Disabled")</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="/companies/staffs/@staff.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="/companies/staffs/@staff.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+
+
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@staff.StaffId" data-name="@staff.ContactName" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Staff Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Is Login Enabled</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/companies/list-staff.js" asp-append-version="true"></script>
+}
