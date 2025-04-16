@@ -19,31 +19,53 @@ ICompanyTypeRepository companyTypeRepository,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
 ICompanyDepartmentRepository companyDepartmentRepository,
 IDepartmentRepository departmentRepository,
-IMsicCodeRepository msicCodeRepository
+IMsicCodeRepository msicCodeRepository,
+IUserContext userContext
     ) : ICompanyService
 {
 
     public async Task<List<CompanyListVM>> GetCompaniesAsync()
     {
-        var data = await GetCompaniesFromCacheAsync();
-        return mapper.Map<List<CompanyListVM>>(data);
+        if (userContext.IsCompanyStaff && userContext.CompanyId.HasValue)
+        {
+            var data = await GetCompanyByIdFromCacheAsync(userContext.CompanyId.Value);
+            return mapper.Map<List<CompanyListVM>>(new List<Company>() { data! });
+        }
+        else
+        {
+            var data = await GetCompaniesFromCacheAsync();
+            return mapper.Map<List<CompanyListVM>>(data);
+        }
     }
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
-        var data = await GetCompaniesFromCacheAsync();
-        return mapper.Map<List<CompanySelectionVM>>(data);
+        if (userContext.IsCompanyStaff && userContext.CompanyId.HasValue)
+        {
+            var data = await GetCompanyByIdFromCacheAsync(userContext.CompanyId.Value);
+            return mapper.Map<List<CompanySelectionVM>>(new List<Company>() { data! });
+        }
+        else
+        {
+            var data = await GetCompaniesFromCacheAsync();
+            return mapper.Map<List<CompanySelectionVM>>(data);
+        }
     }
 
     public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
+        Guard.AgainstCrossCompanyAccess(companyId, userContext);
+
         var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
+
         return data!;
     }
 
     public async Task<Company> DeleteCompanyByIdAsync(int companyId)
     {
+        Guard.AgainstCompanyStaff(userContext);
+
         var data = await GetCompanyByIdFromCacheAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
@@ -65,6 +87,8 @@ IMsicCodeRepository msicCodeRepository
 
     public async Task<int> CreateCompany(CreateCompanyRequest req)
     {
+        Guard.AgainstCompanyStaff(userContext);
+
         Company cp = mapper.Map<Company>(req);
 
         repo.Add(cp);

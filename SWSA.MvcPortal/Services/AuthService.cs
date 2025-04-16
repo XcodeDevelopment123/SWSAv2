@@ -41,7 +41,7 @@ public class AuthService(
         var userVM = mapper.Map<UserVM>(user);
 
         _session.SetString(SessionKeys.StaffId, user.StaffId);
-        _session.SetString(SessionKeys.UserJson, userVM.ToJsonData());
+        _session.SetString(SessionKeys.Name, user.FullName);
         _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
 
         user.LastLoginAt = DateTime.Now;
@@ -74,7 +74,11 @@ public class AuthService(
 
         _session.SetString(SessionKeys.StaffId, staff.StaffId);
         _session.SetString(SessionKeys.CompanyId, staff.CompanyId.ToString());
-        _session.SetString(SessionKeys.UserJson, staffVM.ToJsonData());
+        if (staff.CompanyDepartmentId.HasValue)
+        {
+            _session.SetString(SessionKeys.CompanyDepartmentId, staff.CompanyDepartmentId.ToString() ?? "");
+        }
+        _session.SetString(SessionKeys.Name, staffVM.ContactName);
         _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
 
         staff.LastLoginAt = DateTime.Now;

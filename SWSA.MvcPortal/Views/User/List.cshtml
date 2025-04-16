@@ -1,19 +1,14 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Models.Users
+@using SWSA.MvcPortal.Services.Interfaces
+@inject IUserContext UserContext;
 @model List<UserListVM>
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-
-    UserVM userVM = null!;
-    if (!string.IsNullOrEmpty(userVMJson))
-    {
-        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
-    }
+   
 }
-
 
 <h3> User List</h3>
 
@@ -24,7 +19,7 @@
         <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="companyDatatable" class="table table-bordered table-striped">
+                <table id="userDatatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Staff Id</th>
@@ -57,7 +52,7 @@
                                             <i class="fa fa-edit"></i>
                                         </a>
 
-                                        @if (userVM?.StaffId != cp.StaffId)
+                                        @if (UserContext?.StaffId != cp.StaffId)
                                         {
                                             <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.StaffId" data-name="@cp.FullName" title="Delete">
                                                 <i class="fa fa-trash"></i>

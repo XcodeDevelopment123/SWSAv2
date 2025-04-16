@@ -12,6 +12,19 @@ public class ErrorController : BaseController
         return View("NotFound");
     }
 
+
+    [Route("BusinessError")]
+    public IActionResult BusinessError(string? message = null)
+    {
+        Response.StatusCode = 400;
+
+        ViewData["ErrorMessage"] = string.IsNullOrEmpty(message)
+            ? "Operation not permitted by current business rules."
+            : message;
+
+        return View("BusinessError");
+    }
+
     [Route("ServerError")]
     public IActionResult ServerError()
     {

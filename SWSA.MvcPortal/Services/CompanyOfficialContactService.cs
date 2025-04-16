@@ -16,6 +16,7 @@ public class CompanyOfficialContactService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUserContext userContext,
 ICompanyOfficialContactRepository repo
     ) : ICompanyOfficialContactService
 {

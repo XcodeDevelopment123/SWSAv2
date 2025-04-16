@@ -71,6 +71,7 @@ public class {entityName}Service(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUserContext userContext,
 I{entityName}Repository repo
     ) : I{entityName}Service
 {{

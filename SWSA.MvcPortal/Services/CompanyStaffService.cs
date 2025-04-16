@@ -12,6 +12,7 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompanyStaffs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
+using System.ComponentModel.Design;
 
 namespace SWSA.MvcPortal.Services;
 
@@ -19,6 +20,7 @@ public class CompanyStaffService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUserContext userContext,
 ICompanyStaffRepository repo
     ) : ICompanyStaffService
 {
@@ -26,11 +28,15 @@ ICompanyStaffRepository repo
     {
         var data = await repo.GetByStaffId(staffId);
         Guard.AgainstNullData(data, "Company staff not found");
+        Guard.AgainstCrossCompanyAccess(data.CompanyId, userContext);
+
         return mapper.Map<CompanyStaffVM>(data);
     }
 
     public async Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId)
     {
+        Guard.AgainstCrossCompanyAccess(companyId, userContext);
+
         var data = await repo.GetAllByCompanyIdAsync(companyId);
         return mapper.Map<List<CompanyStaffVM>>(data); ;
     }

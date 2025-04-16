@@ -3,7 +3,6 @@
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Repositories.Interfaces;

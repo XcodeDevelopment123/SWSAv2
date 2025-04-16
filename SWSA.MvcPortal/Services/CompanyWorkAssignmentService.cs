@@ -15,6 +15,7 @@ public class CompanyWorkAssignmentService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUserContext userContext,
 ICompanyWorkAssignmentRepository repo,
 ICompanyStaffRepository companyStaffRepo
     ) : ICompanyWorkAssignmentService
@@ -30,6 +31,7 @@ ICompanyStaffRepository companyStaffRepo
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
+        Guard.AgainstCrossCompanyAccess(data!.CompanyId, userContext);
 
         return mapper.Map<CompanyWorkVM>(data);
     }

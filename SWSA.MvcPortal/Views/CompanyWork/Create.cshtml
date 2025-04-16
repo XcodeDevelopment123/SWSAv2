@@ -16,13 +16,6 @@
     var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
     var staffSelections = cp.CompanyStaffs;
 
-    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-    UserVM userVM = null!;
-    if (!string.IsNullOrEmpty(userVMJson))
-    {
-        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
-    }
-
     var currentYear = DateTime.Now.Year;
     var startYear = currentYear - 10;
     var endYear = currentYear + 20;

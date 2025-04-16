@@ -6,13 +6,6 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-
-    UserVM userVM = null!;
-    if (!string.IsNullOrEmpty(userVMJson))
-    {
-        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
-    }
 }
 <h3>Create New User</h3>
 

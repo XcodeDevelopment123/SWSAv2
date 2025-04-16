@@ -103,7 +103,7 @@ IHttpContextAccessor httpContextAccessor
         var userVM = mapper.Map<UserVM>(user);
 
         _session.SetString(SessionKeys.StaffId, user.StaffId);
-        _session.SetString(SessionKeys.UserJson, userVM.ToJsonData());
+        _session.SetString(SessionKeys.Name, user.FullName);
         _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
         return true;
     }

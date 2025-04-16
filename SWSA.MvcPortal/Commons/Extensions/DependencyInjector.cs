@@ -21,6 +21,7 @@ public static class DependencyInjector
     public static void AddAppSetup(this IServiceCollection services, IConfigurationManager configuration, IWebHostEnvironment environment)
     {
         services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
         services.AddTransient<ExceptionMiddleware>();
 
         var allowedOrigins = configuration.GetSection(AppSettings.AllowedOrigins).Get<string[]>();
@@ -121,7 +122,6 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
-
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();

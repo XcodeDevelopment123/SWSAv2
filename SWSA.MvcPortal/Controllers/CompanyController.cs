@@ -13,6 +13,7 @@ public class CompanyController(
     ICompanyStaffService companyCommunicationContactService,
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
+    ICompanyDepartmentService companyDepartmentService,
     IMsicCodeService msicCodeService,
     ICompanyTypeService companyTypeService,
     IDepartmentService departmentService,
@@ -60,6 +61,13 @@ public class CompanyController(
 
         CompanyEditPageVM vm = new(cp, msicCodes, companyTypes, departments);
         return View(vm);
+    }
+
+    [Route("{companyId}/departments")]
+    public async Task<IActionResult> CompanyDepartment([FromRoute] int companyId)
+    {
+        var cpDpts = await companyDepartmentService.GetByCompanyId(companyId);
+        return View(cpDpts);
     }
 
     [Route("create")]

@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "BusinessError";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var errorMessage = ViewData["ErrorMessage"]?.ToString() ?? "Operation not permitted.";
+
+}
+
+<h1 class="text-danger">⚠️ Business Rule Violation</h1>
+<p>@errorMessage</p>
+
+<div class="mt-4">
+    <a href="/" class="btn btn-primary me-2">🏠 Back to Home</a>
+    <a href="javascript:history.back()" class="btn btn-secondary">⬅ Back to Previous Page</a>
+</div>

@@ -1,19 +1,14 @@
-﻿@using Newtonsoft.Json
-@using SWSA.MvcPortal.Commons.Constants
-@using SWSA.MvcPortal.Commons.Helpers
+﻿@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.DocumentRecords
-@using SWSA.MvcPortal.Models.Users
+@using SWSA.MvcPortal.Services.Interfaces
+
+@inject IUserContext UserContext
+
 @model List<DocumentRecordVM>
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-    UserVM userVM = null!;
-    if (!string.IsNullOrEmpty(userVMJson))
-    {
-        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
-    }
 }
 
 
@@ -61,7 +56,7 @@
                                 </td>
                                 <td>
                                     <a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
-                                        @doc.StaffName @(userVM.StaffId == doc.HandledByStaffId ? "(You)" : "")
+                                        @doc.StaffName @(UserContext.StaffId == doc.HandledByStaffId ? "(You)" : "")
                                     </a>
                                 </td>
                                 <td>
@@ -69,9 +64,12 @@
                                         <a target="_blank" href="@doc.ViewLink" class="btn btn-sm btn-info mr-2" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                        @if (!UserContext.IsCompanyStaff)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        }
                                     </div>
                                 </td>
                             </tr>

@@ -1,5 +1,5 @@
 ﻿$(function () {
-    const companyTable = $("#companyDatatable").DataTable({
+    const userDatatable = $("#userDatatable").DataTable({
         "paging": true,
         "lengthChange": false,
         "searching": true,

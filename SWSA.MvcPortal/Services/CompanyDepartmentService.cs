@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -13,12 +14,14 @@ public class CompanyDepartmentService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
+IUserContext userContext,
 ICompanyDepartmentRepository repo
     ) : ICompanyDepartmentService
 {
-
     public async Task<List<CompanyDepartment>> GetByCompanyId(int companyId)
     {
+        Guard.AgainstCrossCompanyAccess(companyId, userContext);
+
         var data = (await repo.GetByCompanyId(companyId)).ToList();
         return data;
     }

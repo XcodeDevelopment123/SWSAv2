@@ -1,10 +1,10 @@
 ﻿@model DocumentRecordCreatePageVM
-@using Newtonsoft.Json
-@using SWSA.MvcPortal.Commons.Constants
+
 @using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.DocumentRecords
-@using SWSA.MvcPortal.Models.Users
+@using SWSA.MvcPortal.Services.Interfaces
+@inject IUserContext UserContext
 
 @{
     ViewData["Title"] = "Create document record";
@@ -15,12 +15,6 @@
     var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
     var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null);
 
-    var userVMJson = Context.Session.GetString(SessionKeys.UserJson);
-    UserVM userVM = null!;
-    if (!string.IsNullOrEmpty(userVMJson))
-    {
-        userVM = JsonConvert.DeserializeObject<UserVM>(userVMJson)!;
-    }
 
     <input type="hidden" id="companyId" value="@cp.Id" />
     <input type="hidden" id="companyName" value="@cp.Name" />
@@ -188,7 +182,7 @@
                                     <option disabled value="">Please select</option>
                                     @foreach (var staff in Model.StaffSelections)
                                     {
-                                        @if (staff.StaffId == userVM.StaffId)
+                                        @if (staff.StaffId == UserContext.StaffId)
                                         {
                                             <option value="@staff.StaffId">@staff.FullName (You)</option>
                                         }
