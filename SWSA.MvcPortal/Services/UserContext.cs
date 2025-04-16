@@ -16,8 +16,8 @@ public class UserContext : IUserContext
     {
         var session = accessor.HttpContext?.Session;
 
-        StaffId = session?.GetString(SessionKeys.StaffId) ?? throw new UnauthorizedAccessException("Not logged in");
-        Name = session?.GetString(SessionKeys.Name) ?? throw new UnauthorizedAccessException("Not logged in");
+        StaffId = session?.GetString(SessionKeys.StaffId) ?? "";
+        Name = session?.GetString(SessionKeys.Name) ?? "";
         CompanyId = TryParseInt(session?.GetString(SessionKeys.CompanyId));
         CompanyDepartmentId = TryParseInt(session?.GetString(SessionKeys.CompanyDepartmentId));
         LoginTime = DateTime.TryParse(session?.GetString(SessionKeys.LoginTime), out var time)

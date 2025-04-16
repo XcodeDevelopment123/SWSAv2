@@ -12,4 +12,5 @@ public interface ICompanyStaffService
     Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId);
     Task<bool> EditLoginProfile(EditCompanyStaffLoginProfileRequest req);
     Task<CompanyStaffVM> GetStaffByStaffId(string staffId);
+    Task<bool> SetStaffSession(string staffId);
 }

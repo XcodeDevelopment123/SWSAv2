@@ -27,8 +27,8 @@ public class CompanyController(
         return View(data);
     }
 
-    [Route("master-list")]
-    public IActionResult MasterList()
+    [Route("landing-page")]
+    public IActionResult LandingPage()
     {
         return View();
     }
@@ -66,8 +66,8 @@ public class CompanyController(
     [Route("{companyId}/departments")]
     public async Task<IActionResult> CompanyDepartment([FromRoute] int companyId)
     {
-        var cpDpts = await companyDepartmentService.GetByCompanyId(companyId);
-        return View(cpDpts);
+        var cp = await service.GetCompanyByIdAsync(companyId);
+        return View(cp);
     }
 
     [Route("create")]

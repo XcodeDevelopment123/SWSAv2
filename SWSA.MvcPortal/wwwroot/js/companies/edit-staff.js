@@ -7,7 +7,8 @@
         whatsApp: $staffForm.find('input[name="staffWhatsapp"]'),
         email: $staffForm.find('input[name="staffEmail"]'),
         remark: $staffForm.find('input[name="staffRemark"]'),
-        position: $staffForm.find('select[name="staffPosition"]')
+        position: $staffForm.find('select[name="staffPosition"]'),
+        companyDepartmentId: $staffForm.find('select[name="departmentId"]')
     };
 
     $staffForm.validate({

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SWSA.MvcPortal.Commons.Filters;
 
@@ -20,14 +21,14 @@ public class LoginSessionFilter(
 
         var httpContext = context.HttpContext;
         var session = httpContext.Session;
-        var staffId = session.GetString(SessionKeys.StaffId);
+        var userContext = serviceProvider.GetRequiredService<IUserContext>();
 
         //If has logged but try to navigate to login page
         if (IsLoginPage(context))
         {
-            if (!string.IsNullOrEmpty(staffId))
+            if (!string.IsNullOrEmpty(userContext.StaffId))
             {
-                RedirectLoginToHome(context);     
+                RedirectLoginToHome(context);
                 return;
             }
             //No Logged
@@ -35,7 +36,7 @@ public class LoginSessionFilter(
             return;
         }
 
-        if (string.IsNullOrEmpty(staffId))
+        if (string.IsNullOrEmpty(userContext.StaffId))
         {
             RedirectLoginPage(context);
             return;
@@ -48,9 +49,16 @@ public class LoginSessionFilter(
             //
             if ((DateTime.Now - loginTime).TotalMinutes > 20)
             {
-                var userService = serviceProvider.GetRequiredService<IUserService>();
-
-                await userService.SetUserSession(staffId);
+                if (userContext.IsCompanyStaff)
+                {
+                    var staffService = serviceProvider.GetRequiredService<ICompanyStaffService>();
+                    await staffService.SetStaffSession(userContext.StaffId);
+                }
+                else
+                {
+                    var userService = serviceProvider.GetRequiredService<IUserService>();
+                    await userService.SetUserSession(userContext.StaffId);
+                }
             }
         }
         await next();

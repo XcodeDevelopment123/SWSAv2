@@ -132,10 +132,42 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="departmentId">Department</label>
+                                <select id="departmentId" name="departmentId" class="form-control select2">
+                                    <option disabled selected value="">Please select</option>
+                                    @if (cp.Departments.Count == 0)
+                                    {
+                                        <option selected disabled value="">No department available</option>
+                                    }
+
+                                    @foreach (var dp in cp.Departments)
+                                    {
+                                        @if (dp.IsActive)
+                                        {
+                                            if (dp.Id == Model.CompanyDepartmentId)
+                                            {
+                                                <option selected value="@dp.DepartmentId">@dp.Department?.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@dp.DepartmentId">@dp.Department?.Name</option>
+                                            }
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="staffPosition">Position</label>
                                 <select asp-items="@staffPosition" id="staffPosition" name="staffPosition" class="form-control select2">  </select>
                             </div>
                         </div>
+
+
 
                         <div class="col-md-6">
                             <div class="form-group">
