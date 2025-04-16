@@ -13,6 +13,16 @@ using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
 using Microsoft.Extensions.Options;
 using SWSA.MvcPortal.Models.DocumentRecords.Profiles;
+using Quartz;
+using System.Collections.Specialized;
+using SWSA.MvcPortal.Commons.Quartz.Factories;
+using SWSA.MvcPortal.Commons.Quartz.Jobs;
+using SWSA.MvcPortal.Commons.Quartz.Services;
+using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
+using Quartz.Spi;
+using Quartz.Impl;
+using SWSA.MvcPortal.Commons.Quartz.Config;
+using SWSA.MvcPortal.Commons.Quartz;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -154,4 +164,60 @@ public static class DependencyInjector
         //});
 
     }
+
+    public static IServiceCollection AddQuartzJobs(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        var quartzConfig = configuration.GetSection("Quartz").Get<QuartzConfig>();
+        if (quartzConfig != null)
+        {
+            var properties = new NameValueCollection
+            {
+                ["quartz.scheduler.instanceName"] = quartzConfig.Scheduler.InstanceName,
+                ["quartz.scheduler.instanceId"] = quartzConfig.Scheduler.InstanceId,
+                ["quartz.threadPool.type"] = quartzConfig.ThreadPool.Type,
+                ["quartz.threadPool.maxConcurrency"] = quartzConfig.ThreadPool.MaxConcurrency.ToString(),
+                ["quartz.jobStore.type"] = quartzConfig.JobStore.Type,
+                ["quartz.jobStore.driverDelegateType"] = quartzConfig.JobStore.DriverDelegateType,
+                ["quartz.jobStore.dataSource"] = quartzConfig.JobStore.DataSource,
+                ["quartz.jobStore.tablePrefix"] = quartzConfig.JobStore.TablePrefix,
+                ["quartz.jobStore.misfireThreshold"] = quartzConfig.JobStore.MisfireThreshold.ToString(),
+                ["quartz.dataSource.default.connectionString"] = quartzConfig.DataSource.Default.ConnectionString,
+                ["quartz.dataSource.default.provider"] = quartzConfig.DataSource.Default.Provider,
+                ["quartz.serializer.type"] = "json"
+            };
+
+            services.AddSingleton<ISchedulerFactory>(_ => new StdSchedulerFactory(properties));
+            // Quartz needs a DI-enabled JobFactory
+            services.AddSingleton<IJobFactory, QuartzJobFactory>();
+
+            // Register IScheduler with injected JobFactory and start
+            services.AddScoped<IScheduler>(provider =>
+            {
+                var factory = provider.GetRequiredService<ISchedulerFactory>();
+                var scheduler = factory.GetScheduler().Result;
+                scheduler.JobFactory = provider.GetRequiredService<IJobFactory>();
+                scheduler.ListenerManager.AddJobListener(new QuartzJobListener());
+                scheduler.Start().Wait();
+                return scheduler;
+            });
+        }
+
+        // Job-specific factories (your IJobBaseFactory design)
+        services.AddTransient<AssignmentDueSoonJobFactory>();
+        services.AddTransient<GenerateAssignmentReportJobFactory>();
+
+        // Job class instances (support DI)
+        services.AddScoped<AssignmentDueSoonJob>();
+        services.AddScoped<GenerateAssignmentReportJob>();
+
+        // Services used in jobs
+        services.AddScoped<IAssignmentDueSoonJobService, AssignmentDueSoonJobService>();
+
+        services.AddScoped<IJobSchedulerService, JobSchedulerService>();
+
+        return services;
+    }
+
 }
+

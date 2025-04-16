@@ -31,6 +31,9 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Quartz" Version="3.14.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.14.0" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.14.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Commons\Services\Messaging\Requests\" />
     <Folder Include="Datas\uploads\" />
     <Folder Include="wwwroot\assets\imgs\" />
   </ItemGroup>

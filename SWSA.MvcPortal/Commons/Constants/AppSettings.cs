@@ -12,6 +12,12 @@ public class AppSettings
 
 }
 
+public class QuartzGroupKeys
+{
+    public const string NotificationGroup = "notificationGroup";
+    public const string ReportGroup = "reportGroup";
+}
+
 
 public class SessionKeys
 {

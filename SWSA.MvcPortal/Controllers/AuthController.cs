@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
 
 
 [AllowAnonymous]
-public class AuthController(IAuthService service, IUserService userService) : BaseController
+public class AuthController(
+    IAuthService service,
+    IUserService userService
+    ) : BaseController
 {
     public IActionResult Login()
     {
+
         return View();
     }
 
