@@ -8,8 +8,7 @@ public class EditCompanyWorkAssignmentRequest
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
-    public int YearToDo { get; set; }
-    public MonthOfYear MonthToDo { get; set; }
+    public DateTime DueDate { get; set; }
     public string AssignedStaffId { get; set; }
     public string? InternalNote { get; set; }
     public bool IsCompleted { get; set; }

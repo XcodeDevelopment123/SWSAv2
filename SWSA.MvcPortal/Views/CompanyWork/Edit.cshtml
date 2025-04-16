@@ -123,7 +123,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyActivityLevel">Company Activity Level</label>
                                 <select id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
@@ -134,28 +134,12 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yearToDo">Year to do</label>
-                                <select id="yearToDo" name="yearToDo" class="form-control select2">
-                                    @for (var year = startYear; year <= endYear; year++)
-                                    {
-                                        if (Model.YearToDo == year)
-                                        {
-                                            <option value="@year" selected>@year</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@year">@year</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="monthToDo">Month to do</label>
+                                <label for="dueDate">
+                                    Due Date
+                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The deadline of the task, will apply the date month and year for the month to do and year to do"></i>
+                                </label>
                                 <div class="input-group">
-                                    <input type="text" id="monthToDo" value="@Model.MonthToDo.GetDisplayNameAndNumber()" name="monthToDo" class="form-control" placeholder="Select month" />
+                                    <input type="text" id="dueDate" name="dueDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>

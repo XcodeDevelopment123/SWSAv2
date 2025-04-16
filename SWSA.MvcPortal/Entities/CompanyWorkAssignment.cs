@@ -14,8 +14,7 @@ public class CompanyWorkAssignment
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
-    public MonthOfYear MonthToDo { get; set; } // 1-12
-    public int YearToDo { get; set; }  // 2025, 2026
+    public DateTime DueDate { get; set; }
 
     [ForeignKey(nameof(AssignedStaff))]
     public int? AssignedStaffId { get; set; }

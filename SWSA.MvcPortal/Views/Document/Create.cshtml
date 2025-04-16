@@ -13,6 +13,7 @@
     var cp = Model.Company;
 
     var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
+    var docType = SelectHelper.GetEnumSelectList<DocumentType>(null);
     var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null);
 
 
@@ -162,6 +163,15 @@
                             <div class="form-group">
                                 <label for="flowType">Flow Type</label>
                                 <select asp-items="flowType" id="flowType" name="flowType" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Flow Type -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="docType">Document Type</label>
+                                <select asp-items="docType" id="docType" name="docType" class="form-control select2">
                                 </select>
                             </div>
                         </div>

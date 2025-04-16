@@ -17,6 +17,7 @@ public class CreateDocumentRecordRequest
     //End
     public DateTime DocumentDate { get; set; }  // Date Received (for Incoming) or Date Returned (for Outgoing)
     public DocumentFlowType FlowType { get; set; } // Incoming or Outgoing  
+    public DocumentType DocumentType { get; set; } 
     public int BagOrBoxCount { get; set; }
     public string? Remark { get; set; } = null!;
     public string HandledByStaffId { get; set; } = null!;

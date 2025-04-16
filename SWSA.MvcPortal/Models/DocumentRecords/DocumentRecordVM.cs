@@ -7,6 +7,7 @@ public class DocumentRecordVM
     public int DocumentId { get; set; }
     public DateTime DocumentDate { get; set; }
     public DocumentFlowType FlowType { get; set; }
+    public DocumentType DocumentType { get; set; }
     public string? AttachmentFileName { get; set; } = null!;
     public string HandledByStaffId { get; set; } = null!;
     public string StaffName { get; set; } = null!;

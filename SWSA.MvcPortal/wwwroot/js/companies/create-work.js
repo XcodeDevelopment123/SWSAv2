@@ -5,8 +5,7 @@
         workType: $taskForm.find('select[name="workType"]'),
         serviceScope: $taskForm.find('select[name="serviceScope"]'),
         companyActivityLevel: $taskForm.find('select[name="companyActivityLevel"]'),
-        yearToDo: $taskForm.find('select[name="yearToDo"]'),
-        monthToDo: $taskForm.find('input[name="monthToDo"]'),
+        dueDate: $taskForm.find('input[name="dueDate"]'),
         assignedStaffId: $taskForm.find('select[name="handledByStaffId"]'),
         internalNote: $taskForm.find('input[name="internalNote"]'),    
         companyId:$("#companyId")
@@ -24,10 +23,7 @@
             companyActivityLevel: {
                 required: true
             },
-            yearToDo: {
-                required: true
-            },
-            monthToDo: {
+            dueDate: {
                 required: true
             },
             handledByStaffId: {
@@ -44,11 +40,8 @@
             companyActivityLevel: {
                 required: "Company activity level is required."
             },
-            yearToDo: {
-                required: "Please select a year."
-            },
-            monthToDo: {
-                required: "Please select a month."
+            dueDate: {
+                required: "Due date is required."
             },
             handledByStaffId: {
                 required: "Please select a staff."
@@ -76,8 +69,6 @@
         if (!$taskForm.valid()) return;
 
         const taskData = getFormData(taskFormInputs);
-        taskData.monthToDo = extractNumbers(taskData.monthToDo);
-
         $.ajax({
             url: `${urls.company_works}/create`,
             method: "POST",
@@ -96,20 +87,22 @@
 
     initSelect2();
 
-    flatpickr("#id", {
+    flatpickr("#dueDate", {
         allowInput: true
     });
 
-    flatpickr("#monthToDo", {
-        plugins: [
-            new monthSelectPlugin({
-                shorthand: false,
-                dateFormat: "m (F)",
-                altFormat: "m (F)",
-            })
-        ],
-        onReady: function (selectedDates, dateStr, instance) {
-            instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
-        }
-    });
+  
 })
+
+//flatpickr("#dueDate", {
+//    plugins: [
+//        new monthSelectPlugin({
+//            shorthand: false,
+//            dateFormat: "m (F)",
+//            altFormat: "m (F)",
+//        })
+//    ],
+//    onReady: function (selectedDates, dateStr, instance) {
+//        instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
+//    }
+//});

@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+﻿using Microsoft.VisualBasic;
+using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
 
@@ -10,8 +11,9 @@ public class CompanyWorkListVM
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public CompanyActivityLevel ActivitySize { get; set; }
-    public int YearToDo { get; set; }
-    public MonthOfYear MonthToDo { get; set; }
+    public DateTime DueDate { get; set; }
+    public int YearToDo => DueDate.Year;
+    public MonthOfYear MonthToDo => (MonthOfYear)DueDate.Month;
     public WorkProgressStatus Status { get; set; }
     public string? InternalNote { get; set; }
     public int DepartmentId { get; set; }

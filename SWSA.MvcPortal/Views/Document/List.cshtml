@@ -1,4 +1,5 @@
-﻿@using SWSA.MvcPortal.Commons.Helpers
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.DocumentRecords
 @using SWSA.MvcPortal.Services.Interfaces
 
@@ -26,6 +27,7 @@
                         <tr>
                             <th>Flow</th>
                             <th>Date</th>
+                            <th>Document Type</th>
                             <th>File</th>
                             <th>Company</th>
                             <th>Department</th>
@@ -39,6 +41,7 @@
                             <tr>
                                 <td>@doc.FlowType</td>
                                 <td>@DateLabelHelper.GetDateOnlyLabel(doc.DocumentDate)</td>
+                                <td>@doc.DocumentType.GetDisplayName()</td>
                                 <td>
                                     <a target="_blank" href="@doc.DownloadLink" title="Download">
                                         @doc.AttachmentFileName

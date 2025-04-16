@@ -71,8 +71,7 @@ ICompanyStaffRepository companyStaffRepo
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.WorkType = req.WorkType;
         task.ServiceScope = req.ServiceScope;
-        task.YearToDo = req.YearToDo;
-        task.MonthToDo = req.MonthToDo;
+        task.DueDate = req.DueDate;
         task.InternalNote = req.InternalNote;
         task.IsCompleted = req.IsCompleted;
         task.CompletedDate = req.CompletedDate ?? null;

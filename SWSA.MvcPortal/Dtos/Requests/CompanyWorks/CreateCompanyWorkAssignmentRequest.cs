@@ -8,8 +8,7 @@ public class CreateCompanyWorkAssignmentRequest
     public ServiceScope ServiceScope { get; set; }
     public int CompanyId { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
-    public int YearToDo { get; set; }  // 2025, 2026
-    public MonthOfYear MonthToDo { get; set; } // 1-12
+    public DateTime DueDate { get; set; }
     public string AssignedStaffId { get; set; } = null!;
     public string? InternalNote { get; set; }
     public CreateCompanyWorkProgressRequest CompanyWorkProgressRequest { get; set; } = null!;

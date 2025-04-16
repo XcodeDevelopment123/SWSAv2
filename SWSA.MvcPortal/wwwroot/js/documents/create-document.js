@@ -6,6 +6,7 @@
         companyDepartmentId: $documentForm.find('select[name="companyDepartmentId"]'),
         documentDate: $documentForm.find('input[name="documentDate"]'),
         flowType: $documentForm.find('select[name="flowType"]'),
+        documentType: $documentForm.find('select[name="docType"]'),
         bagOrBoxCount: $documentForm.find('input[name="bagOrBoxCount"]'),
         handledByStaffId: $documentForm.find('select[name="handledByStaffId"]'),
         remark: $documentForm.find('input[name="remark"]'),
@@ -23,6 +24,9 @@
                 date: true
             },
             flowType: {
+                required: true
+            },
+            docType: {
                 required: true
             },
             bagOrBoxCount: {
@@ -51,6 +55,9 @@
             },
             flowType: {
                 required: "Flow type is required."
+            },
+            docType: {
+                required: "Document type is required."
             },
             bagOrBoxCount: {
                 required: "Bag/Box count is required.",

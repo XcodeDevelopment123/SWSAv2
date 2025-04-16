@@ -9,8 +9,9 @@ public class CompanyWorkVM
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public CompanyActivityLevel ActivitySize { get; set; }
-    public int YearToDo { get; set; }
-    public MonthOfYear MonthToDo { get; set; }
+    public DateTime DueDate { get; set; }
+    public int YearToDo => DueDate.Year;
+    public MonthOfYear MonthToDo => (MonthOfYear)DueDate.Month;
     public string? InternalNote { get; set; }
     public bool IsCompleted { get; set; } = false;
     public DateTime? CompletedDate { get; set; }
