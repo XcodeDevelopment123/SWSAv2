@@ -19,6 +19,13 @@ public class CompanyWorkController(
         return View(works);
     }
 
+    [Route("works/overview")]
+    public async Task<IActionResult> Overview()
+    {
+        var works = await service.GetWorkAssignments();
+        return View(works);
+    }
+
     [Route("{companyId}/works/create")]
     public async Task<IActionResult> Create([FromRoute] int companyId)
     {
@@ -36,6 +43,14 @@ public class CompanyWorkController(
             data.Company = await companyService.GetCompanyByIdAsync(data.Company.Id);
 
         return View(data);
+    }
+
+    [Route("works/calendar-events")]
+    [HttpGet]
+    public async Task<IActionResult> GetCalendarEvent()
+    {
+        var data = await service.GetWorkCalendarEvents();
+        return Json(data);
     }
 
     [Route("works/create")]

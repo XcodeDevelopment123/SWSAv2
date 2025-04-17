@@ -27,6 +27,12 @@ ICompanyStaffRepository companyStaffRepo
         return mapper.Map<List<CompanyWorkListVM>>(data);
     }
 
+    public async Task<List<CompanyWorkCalendarVM>> GetWorkCalendarEvents()
+    {
+        var data = await repo.GetAllAsync();
+        return data.Select(CompanyWorkCalendarVM.FromTask).ToList();
+    }
+
     public async Task<CompanyWorkVM> GetWorkAssignmentById(int taskId)
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);

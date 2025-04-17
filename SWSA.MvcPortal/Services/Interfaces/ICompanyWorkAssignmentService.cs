@@ -15,4 +15,5 @@ public interface ICompanyWorkAssignmentService
 
     // Define your method here
     Task<List<CompanyWorkListVM>> GetWorkAssignments();
+    Task<List<CompanyWorkCalendarVM>> GetWorkCalendarEvents();
 }

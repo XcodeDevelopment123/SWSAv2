@@ -22,8 +22,7 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom((src, dest) => src.AssignedStaff?.CompanyDepartment?.Id ?? 0))
             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom((src, dest) => src.AssignedStaff?.CompanyDepartment?.Department?.Name ?? AppSettings.NotAvailable))
             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown))
-           ;
+            .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown));
 
         CreateMap<CompanyWorkAssignment, CompanyWorkVM>()
              .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))

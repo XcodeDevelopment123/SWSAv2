@@ -355,6 +355,14 @@
                             </a>
                             <ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
                                 <li class="nav-item">
+                                    <a href="/companies/works/overview" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="Overview" ?"active":"")">
+                                        <i class="nav-icon fas fa-calendar-alt"></i>
+                                        <p>
+                                            Overview
+                                        </p>
+                                    </a>
+                                </li>   
+                                <li class="nav-item">
                                     <a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
                                         <i class="nav-icon fas fa-list"></i>
                                         <p>

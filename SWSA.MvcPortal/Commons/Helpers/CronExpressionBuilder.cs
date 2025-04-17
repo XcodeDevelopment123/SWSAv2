@@ -25,20 +25,47 @@ public static class CronExpressionBuilder
         return $"{minute} {hour} {day} {month} {weekday}";
     }
 
-    public static string MonthlyAt(int day = 1, int hour = 9, int minute = 0)
-        => $"{minute} {hour} {day} * ?";
-
-    public static string WeeklyOn(int weekday = 1, int hour = 9, int minute = 0)
-        => $"{minute} {hour} ? * {weekday}";
-
+    /// <summary>
+    /// 每天指定时间执行
+    /// </summary>
     public static string DailyAt(int hour = 9, int minute = 0)
-        => $"{minute} {hour} * * ?";
+        => $"0 {minute} {hour} ? * *"; // 秒 分 时 日 月 星期
 
+    /// <summary>
+    /// 每周指定星期几与时间执行（1=Sunday, 2=Monday, ..., 7=Saturday）
+    /// </summary>
+    public static string WeeklyOn(int weekday = 2, int hour = 9, int minute = 0)
+        => $"0 {minute} {hour} ? * {weekday}";
+
+    /// <summary>
+    /// 每月指定日期与时间执行（day: 1~31）
+    /// </summary>
+    public static string MonthlyAt(int day = 1, int hour = 9, int minute = 0)
+        => $"0 {minute} {hour} {day} * ?";
+
+    /// <summary>
+    /// 每 X 分钟执行一次
+    /// </summary>
     public static string EveryXMinutes(int interval)
-        => $"*/{interval} * * * ?";
+        => $"0 0/{interval} * * * ?";
 
+    /// <summary>
+    /// 每 X 小时执行一次
+    /// </summary>
     public static string EveryXHours(int interval)
-        => $"0 */{interval} * * ?";
+        => $"0 0 0/{interval} * * ?";
+
+    /// <summary>
+    /// 每小时的固定分钟执行（例如：每小时第15分钟执行）
+    /// </summary>
+    public static string HourlyAt(int minute = 0)
+        => $"0 {minute} * * * ?";
+
+    /// <summary>
+    /// 每分钟执行一次
+    /// </summary>
+    public static string EveryMinute()
+        => "0 * * * * ?";
 
     /// <summary>
     /// Usage Examples:
