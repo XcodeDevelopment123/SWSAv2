@@ -69,7 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commons\Services\Messaging\Requests\" />
     <Folder Include="Datas\uploads\" />
     <Folder Include="wwwroot\assets\imgs\" />
   </ItemGroup>

@@ -27,3 +27,25 @@ public class SessionKeys
     public const string CompanyId = "CompanyId"; // Use for company staff login 
     public const string CompanyDepartmentId = "CompanyDepartmentId"; // Use for company staff login 
 }
+
+public class FileSettings
+{
+    public string LocalDomain { get; set; }
+    public string CloudDomain { get; set; }
+}
+
+
+public class WappySettings 
+{
+    public string Url { get; set; } = string.Empty;
+    public string ApiToken { get; set; } = string.Empty;
+
+
+}
+
+public class MessagingTemplateCode
+{
+    public const string OTP= "OTP";
+    public const string Wappy = "Wappy";
+    public const string Notification = "Notification";
+}

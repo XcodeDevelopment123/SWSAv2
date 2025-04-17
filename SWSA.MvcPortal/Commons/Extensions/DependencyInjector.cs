@@ -23,6 +23,9 @@ using Quartz.Spi;
 using Quartz.Impl;
 using SWSA.MvcPortal.Commons.Quartz.Config;
 using SWSA.MvcPortal.Commons.Quartz;
+using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
+using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -76,6 +79,9 @@ public static class DependencyInjector
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables();
+
+        services.AddSignalR().AddNewtonsoftJsonProtocol();
+
     }
 
     public static void ConfigureSwsaDb(this IServiceCollection services, IConfigurationManager configuration)
@@ -136,6 +142,23 @@ public static class DependencyInjector
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();
         services.AddScoped<CloudUploadFileService>();
+
+
+        //Messaging service
+        services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
+        services.AddSingleton<IMessageDispatcher, DefaultDispatcher>();
+        services.AddSingleton<IMessageProducer, InMemoryMessageQueue>();
+        services.AddSingleton<IMessageConsumer>(sp => (IMessageConsumer)sp.GetRequiredService<IMessageProducer>());
+        services.AddSingleton<IMessagingService, MessagingService>();
+
+        // 注册所有 Sender（可多个）
+        services.AddSingleton<IMessageSender, SmsSender>();
+        services.AddSingleton<IMessageSender>(sp => sp.GetRequiredService<WappySender>());
+
+        // Background 消费服务
+        services.AddHostedService<MessageQueueWorker>();
+
+
     }
 
     public static void AddSeedData(this IServiceCollection services)
@@ -149,19 +172,23 @@ public static class DependencyInjector
 
     public static void ConfigureHttpClientService(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<WappySettings>(configuration.GetSection(nameof(WappySettings)));
 
         services.AddHttpClient();
         //services.AddHttpClient("clientName", client =>
         //  {
         //      client.BaseAddress = new Uri("baseUrl");
         //  });
-        //services.AddHttpClient<SmsService>(client =>
-        //{
-        //    client.BaseAddress = new Uri("https://api.example.com/");
-        //    client.Timeout = TimeSpan.FromSeconds(30);
-        //    client.DefaultRequestHeaders.Add("User-Agent", "SmsServiceHttpClient");
-        //    client.DefaultRequestHeaders.Add("Accept", "application/json");
-        //});
+        services.AddHttpClient<WappySender>((serviceProvider, client) =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<WappySettings>>();
+            var token = options.Value.ApiToken;
+            var url = options.Value.Url;
+            client.BaseAddress = new Uri(url);
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token} ");
+
+        });
 
     }
 
@@ -212,7 +239,7 @@ public static class DependencyInjector
         services.AddScoped<GenerateAssignmentReportJob>();
 
         // Services used in jobs
-        services.AddScoped<IAssignmentDueSoonJobService, AssignmentDueSoonJobService>();
+        //  services.AddScoped<IAssignmentDueSoonJobService, AssignmentDueSoonJobService>();
 
         services.AddScoped<IJobSchedulerService, JobSchedulerService>();
 

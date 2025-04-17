@@ -12,12 +12,26 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
 
     // Implement the method
 
+    public Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7)
+    {
+        // Get the current date
+        var today = DateTime.Today;
+        var endDate = today.AddDays(day);
+
+        // Get the assignments that are due within the next 7 days
+        return db.CompanyWorkAssignments
+           .Where(c => c.DueDate >= today && c.DueDate < endDate.AddDays(1)) // 小于隔天 00:00
+           .Include(c => c.Company)
+           .Include(c => c.AssignedStaff)
+           .ToListAsync();
+    }
+
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<CompanyWorkAssignment>> BuildQueryAsync()
     {
         // Do you query here
         var query = db.CompanyWorkAssignments
-                  .Include(c => c.Progress) 
+                  .Include(c => c.Progress)
                   .Include(c => c.Company)
                   .Include(c => c.AssignedStaff)
                       .ThenInclude(s => s.CompanyDepartment)

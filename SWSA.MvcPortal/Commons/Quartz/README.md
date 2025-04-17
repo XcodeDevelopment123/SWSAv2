@@ -41,7 +41,7 @@ public override ITrigger CreateTrigger(IJobRequest? request)
   - `Job.Execute()` 是执行入口，通常调用 Service 层方法
   - 通过 DI 注入业务 Service 以及日志工具
 
-### 🔧 Service（服务）
+### 🔧 Service（服务）- 以后需求/确定了才做， 目前直接在Job执行
 
 - **职责：** 封装 Job 的业务逻辑
 - **说明：**

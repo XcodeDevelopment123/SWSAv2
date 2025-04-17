@@ -5,6 +5,21 @@ namespace SWSA.MvcPortal.Commons.Extensions;
 
 public static class DateTimeExtensions
 {
+    public static string ToFormattedString(this DateTime dateTime, DateTimeFormatType formatType = DateTimeFormatType.DateOnly)
+    {
+        var format = formatType switch
+        {
+            DateTimeFormatType.DateOnly => DateTimeFormats.DateOnly,
+            DateTimeFormatType.DateTime24H => DateTimeFormats.DateTime24H,
+            DateTimeFormatType.DateTime12H => DateTimeFormats.DateTime12H,
+            DateTimeFormatType.TimeOnly => DateTimeFormats.TimeOnly,
+            DateTimeFormatType.Iso8601 => DateTimeFormats.Iso8601,
+            _ => DateTimeFormats.DateOnly
+        };
+
+        return dateTime.ToString(format);
+    }
+
     public static string ToFormattedString(this DateTime? dateTime, DateTimeFormatType formatType = DateTimeFormatType.DateOnly)
     {
         if (!dateTime.HasValue) return AppSettings.NotAvailable;

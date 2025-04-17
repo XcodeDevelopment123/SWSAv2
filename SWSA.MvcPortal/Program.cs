@@ -49,10 +49,10 @@ try
         await seederManager.SeedAll();
 
         var jobScheduler = scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
-        // await jobScheduler.ClearAllJobs();
+        await jobScheduler.ClearAllJobs();
 
-        await jobScheduler.ScheduleBackgroundJob();
-        Console.WriteLine("Background job scheduled at system startup.");
+        //  await jobScheduler.ScheduleBackgroundJob();
+        //   Console.WriteLine("Background job scheduled at system startup.");
 
     }
 
@@ -76,8 +76,4 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application failed to start");
-}
-finally
-{
-    Log.CloseAndFlush();
 }

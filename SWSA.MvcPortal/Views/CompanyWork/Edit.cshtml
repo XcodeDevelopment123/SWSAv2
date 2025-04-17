@@ -139,7 +139,7 @@
                                     <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The deadline of the task, will apply the date month and year for the month to do and year to do"></i>
                                 </label>
                                 <div class="input-group">
-                                    <input type="text" id="dueDate" name="dueDate" value="@Model.DueDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="dueDate" name="dueDate" value="@Model.DueDate.ToFormattedString()" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>

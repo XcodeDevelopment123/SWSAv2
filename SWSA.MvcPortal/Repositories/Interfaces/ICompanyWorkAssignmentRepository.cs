@@ -1,8 +1,5 @@
 ﻿
-using System;
-using System.Threading.Tasks;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -10,4 +7,10 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkAssignment>
 {
     // Define your method here
+    /// <summary>
+    /// Get the assignments that are due within the {day} days
+    /// </summary>
+    /// <param name="day"> Default is 7 days</param>
+    /// <returns></returns>
+    Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7);
 }

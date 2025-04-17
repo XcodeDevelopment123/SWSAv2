@@ -1,6 +1,7 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -30,4 +31,9 @@ public class CompanyStaff
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }
+
+    public string GetWhatsappNumber()
+    {
+        return Regex.Replace(this.WhatsApp ?? "", @"\D", "");
+    }
 }

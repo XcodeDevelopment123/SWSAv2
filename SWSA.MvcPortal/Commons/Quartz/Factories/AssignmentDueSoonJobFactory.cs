@@ -1,5 +1,6 @@
 ﻿using Quartz;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Commons.Quartz.Jobs;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Support;
@@ -19,9 +20,7 @@ public class AssignmentDueSoonJobFactory : BaseJobFactory
     {
         return TriggerBuilder.Create()
             .WithIdentity($"trigger_{Guid.NewGuid()}", QuartzGroupKeys.NotificationGroup)
-            .WithSimpleSchedule(x => x
-            .WithIntervalInHours(12)
-            .RepeatForever())
+            .WithCronSchedule(CronExpressionBuilder.DailyAt(9)) // every day 9:00 AM
             .ForJob(QuartzJobKeys.AssignmentDueSoonJobKey)
             .Build();
     }
