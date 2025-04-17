@@ -35,7 +35,7 @@ ISystemNotificationLogRepository repo
             TemplateCode = result.MessageEnvelope.TemplateCode,
             IsSuccess = result.IsSuccess,
             ResultMessage = result.Message,
-            Reason = result.Reason
+            Reason = result.MessageEnvelope.Reason,
         };
 
         repo.Add(log);
