@@ -1,10 +1,9 @@
 ﻿
-using Microsoft.AspNetCore.Http.HttpResults;
 using SWSA.MvcPortal.Commons.Exceptions;
 
 namespace SWSA.MvcPortal.Commons.Middlewares;
 
-public class ExceptionMiddleware : IMiddleware
+public class ExceptionMiddleware() : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -41,7 +40,7 @@ public class ExceptionMiddleware : IMiddleware
             case BusinessLogicException businessEx:
                 if (isAjax)
                     await WriteJsonError(context, StatusCodes.Status400BadRequest, "Operation not permitted by current business rules.", businessEx);
-                  else
+                else
                     RedirectToPage(context, $"/errors/BusinessError?message={Uri.EscapeDataString(businessEx.Message)}");
                 break;
 
