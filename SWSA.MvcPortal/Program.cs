@@ -51,9 +51,8 @@ try
         var jobScheduler = scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
         await jobScheduler.ClearAllJobs();
 
-        //  await jobScheduler.ScheduleBackgroundJob();
-        //   Console.WriteLine("Background job scheduled at system startup.");
-
+        await jobScheduler.ScheduleBackgroundJob();
+        Console.WriteLine("Background job scheduled at system startup.");
     }
 
     app.UseHttpsRedirection();

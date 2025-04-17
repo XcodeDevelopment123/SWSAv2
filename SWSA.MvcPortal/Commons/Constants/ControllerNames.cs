@@ -8,4 +8,5 @@ public class ControllerNames
     public const string User = "User";
     public const string Document = "Document";
     public const string CompanyWork = "CompanyWork";
+    public const string Notification = "Notification";
 }

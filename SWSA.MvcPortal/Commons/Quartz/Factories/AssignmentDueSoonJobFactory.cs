@@ -21,6 +21,7 @@ public class AssignmentDueSoonJobFactory : BaseJobFactory
         return TriggerBuilder.Create()
             .WithIdentity($"trigger_{Guid.NewGuid()}", QuartzGroupKeys.NotificationGroup)
             .WithCronSchedule(CronExpressionBuilder.DailyAt(9)) // every day 9:00 AM
+                                                                //.StartNow() //Testing use
             .ForJob(QuartzJobKeys.AssignmentDueSoonJobKey)
             .Build();
     }

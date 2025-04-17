@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<Department> Departments { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
+    internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,7 +32,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
               "'StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
               stored: true);
         });
-
 
         modelBuilder.Entity<Company>(entity =>
         {
@@ -73,6 +73,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne(x => x.Progress)
             .WithOne(p => p.WorkAssignment)
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
+
+        modelBuilder.Entity<SystemNotificationLog>(entity =>
+        {
+            entity.HasIndex(c => new { c.CreatedAt, c.Channel });
+            entity.HasIndex(c => new { c.CreatedAt, c.TemplateCode });
+        });
 
         base.OnModelCreating(modelBuilder);
     }

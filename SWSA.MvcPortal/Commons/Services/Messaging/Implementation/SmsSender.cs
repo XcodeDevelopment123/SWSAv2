@@ -15,11 +15,7 @@ public class SmsSender : IMessageSender
 
 
         await Task.Delay(500); // delay
-        return new MessagingResult()
-        {
-            IsSuccess = true,
-            Message = successMessage
-        };
+        return new MessagingResult(true, successMessage, message);
     }
 }
 

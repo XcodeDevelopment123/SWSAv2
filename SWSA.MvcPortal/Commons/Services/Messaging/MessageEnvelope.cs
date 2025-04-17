@@ -16,10 +16,13 @@ public class MessagingResult
 {
     public bool IsSuccess { get; set; } = false;
     public string Message { get; set; } = string.Empty;
-    public MessagingResult(bool success, string message)
+    public string? Reason { get; set; } = null; // why send this message
+    public MessageEnvelope MessageEnvelope { get; set; }
+    public MessagingResult(bool success, string message, MessageEnvelope messageEnvelope)
     {
         IsSuccess = success;
         Message = message;
+        MessageEnvelope = messageEnvelope;
     }
 
 }

@@ -1,0 +1,70 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities
+@model List<SystemNotificationLog>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3> Notification Log List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="logsDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Send At</th>
+                            <th>Recipient</th>
+                            <th>Channel</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Message</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var doc in Model)
+                        {
+                            <tr>
+                               <td>@doc.CreatedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
+                               <td>@doc.Recipient</td>
+                               <td>@doc.Channel.GetDisplayName()</td>
+                               <td>@doc.TemplateCode</td>
+                               <td>@(doc.IsSuccess?"Success":"Failed")</td>
+                                <td>@doc.ResultMessage</td>
+                               <td>@doc.Reason</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Send At</th>
+                            <th>Recipient</th>
+                            <th>Channel</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Message</th>
+                            <th>Reason</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+    <script src="~/js/notifications/list-log.js" asp-append-version="true"></script>
+
+
+
+}

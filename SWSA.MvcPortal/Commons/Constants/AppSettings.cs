@@ -1,4 +1,5 @@
 ﻿using SWSA.MvcPortal.Entities;
+using System.CodeDom;
 
 namespace SWSA.MvcPortal.Commons.Constants;
 
@@ -46,6 +47,6 @@ public class WappySettings
 public class MessagingTemplateCode
 {
     public const string OTP= "OTP";
-    public const string Wappy = "Wappy";
+    public const string AssignmentWorkDueSoon = "Assignment_Work_Due_Soon";
     public const string Notification = "Notification";
 }

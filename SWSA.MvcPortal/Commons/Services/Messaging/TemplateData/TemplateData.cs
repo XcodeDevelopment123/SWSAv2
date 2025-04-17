@@ -1,10 +1,5 @@
 ﻿namespace SWSA.MvcPortal.Commons.Services.Messaging.TemplateData;
 
-public interface IMessageTemplateData
-{
-    Dictionary<string, string> ToDictionary();
-}
-
 public class OtpTemplateData
 {
     public string Otp { get; set; } = null!;

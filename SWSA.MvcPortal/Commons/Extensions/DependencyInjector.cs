@@ -109,6 +109,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
+        services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
     }
 
     public static void ConfigureAppService(this IServiceCollection services, IConfiguration config)
@@ -138,6 +139,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
+        services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();

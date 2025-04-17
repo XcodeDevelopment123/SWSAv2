@@ -40,6 +40,7 @@ public class AssignmentDueSoonJob(
                 }
 
                 var whatsapp = ts.AssignedStaff.GetWhatsappNumber();
+                var daysLeft = (ts.DueDate.Date - DateTime.Today).Days;
                 var wappyMessage = new WappyTemplateData()
                 {
                     WhatsappName = "zTemp8620",
@@ -49,13 +50,13 @@ public class AssignmentDueSoonJob(
                     *Task:* {ts.ServiceScope}
                     *Task ID:* {ts.Id}
                     *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
-                    *Due Date:* {ts.DueDate:yyyy-MM-dd}
-
+                    *Due Date:* {ts.DueDate:yyyy-MM-dd}  ({daysLeft} day{(daysLeft == 1 ? "" : "s")} left)
+                    
                     Please review and take necessary action as soon as possible.
                     """
                 };
                 await messagingService.SendAsync(MessagingChannel.Wappy,
-                        whatsapp, MessagingTemplateCode.Wappy, TemplateDataBuilder.From(wappyMessage));
+                         whatsapp, MessagingTemplateCode.AssignmentWorkDueSoon, TemplateDataBuilder.From(wappyMessage));
             }
 
 

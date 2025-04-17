@@ -26,22 +26,21 @@ public class WappySender(HttpClient client) : IMessageSender
             if (!response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var failedMessage = $"Wappy send failed: {response.StatusCode} - {content}";
+                var failedMessage = $"[Wappy] send failed: {response.StatusCode} - {content}";
                 Log.Error(failedMessage);
-                return new MessagingResult(false, failedMessage);
+                return new MessagingResult(false, failedMessage, message);
             }
 
             var successMessage = $"[Wappy] Sent to {message.Recipient}";
             Log.Information(successMessage);
 
-            return new MessagingResult(true, successMessage);
-            ;
+            return new MessagingResult(true, successMessage, message);
         }
         catch (Exception ex)
         {
             var msg = $"[Wappy] exception: {ex.Message}";
             Log.Error(ex, msg);
-            return new MessagingResult(false, msg);
+            return new MessagingResult(false, msg, message);
         }
 
     }
