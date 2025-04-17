@@ -23,9 +23,9 @@
                             <th>Recipient</th>
                             <th>Channel</th>
                             <th>Code</th>
+                            <th>Reason</th>
                             <th>Status</th>
                             <th>Message</th>
-                            <th>Reason</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,9 +36,9 @@
                                <td>@doc.Recipient</td>
                                <td>@doc.Channel.GetDisplayName()</td>
                                <td>@doc.TemplateCode</td>
+                               <td>@doc.Reason</td>
                                <td>@(doc.IsSuccess?"Success":"Failed")</td>
                                 <td>@doc.ResultMessage</td>
-                               <td>@doc.Reason</td>
                             </tr>
                         }
                     </tbody>
@@ -48,9 +48,9 @@
                             <th>Recipient</th>
                             <th>Channel</th>
                             <th>Code</th>
+                            <th>Reason</th>
                             <th>Status</th>
                             <th>Message</th>
-                            <th>Reason</th>
                         </tr>
                     </tfoot>
                 </table>

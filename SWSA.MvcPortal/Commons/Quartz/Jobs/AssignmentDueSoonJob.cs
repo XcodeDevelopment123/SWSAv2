@@ -56,7 +56,8 @@ public class AssignmentDueSoonJob(
                     """
                 };
                 await messagingService.SendAsync(MessagingChannel.Wappy,
-                         whatsapp, MessagingTemplateCode.AssignmentWorkDueSoon, TemplateDataBuilder.From(wappyMessage));
+                         whatsapp, MessagingTemplateCode.AssignmentWorkDueSoon, TemplateDataBuilder.From(wappyMessage),
+                        "due date nearing");
             }
 
 

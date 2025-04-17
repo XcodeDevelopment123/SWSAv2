@@ -4,7 +4,7 @@ using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 
 public interface IMessagingService
 {
-    Task SendAsync(MessagingChannel channel, string recipient, string templateCode, Dictionary<string, string> data);
+    Task SendAsync(MessagingChannel channel, string recipient, string templateCode, Dictionary<string, string> data, string? reason);
 }
 
 public class MessagingService : IMessagingService
@@ -16,14 +16,15 @@ public class MessagingService : IMessagingService
         _producer = producer;
     }
 
-    public Task SendAsync(MessagingChannel channel, string recipient, string templateCode, Dictionary<string, string> data)
+    public Task SendAsync(MessagingChannel channel, string recipient, string templateCode, Dictionary<string, string> data, string? reason = "")
     {
         var message = new MessageEnvelope
         {
             Channel = channel,
             Recipient = recipient,
             TemplateCode = templateCode,
-            Data = data
+            Data = data,
+            Reason = reason
         };
 
         return _producer.EnqueueAsync(message);

@@ -9,6 +9,7 @@ public class MessageEnvelope
     public string Recipient { get; set; } = null!;
     public string TemplateCode { get; set; } = null!;
     public Dictionary<string, string> Data { get; set; } = new();
+    public string? Reason { get; set; }// why send this message
 }
 
 
@@ -16,7 +17,6 @@ public class MessagingResult
 {
     public bool IsSuccess { get; set; } = false;
     public string Message { get; set; } = string.Empty;
-    public string? Reason { get; set; } = null; // why send this message
     public MessageEnvelope MessageEnvelope { get; set; }
     public MessagingResult(bool success, string message, MessageEnvelope messageEnvelope)
     {
