@@ -25,42 +25,49 @@ public class AssignmentDueSoonJob(
                 return;
             }
 
-            foreach (var ts in tasks)
+            var groupedTasks = tasks
+                .Where(t => t.AssignedStaff != null && !string.IsNullOrEmpty(t.AssignedStaff.WhatsApp))
+                .GroupBy(t => t.AssignedStaff?.Id);
+
+            foreach (var group in groupedTasks)
             {
-                if (ts.AssignedStaff == null)
-                {
-                    Log.Warning($"[AssignmentDueSoonJob] Task \"{ts.ServiceScope}\" (ID: {ts.Id}) has no assigned staff");
-                    continue;
-                }
+                var staff = group.First().AssignedStaff!;
+                var whatsapp = staff.GetWhatsappNumber();
 
-                if (string.IsNullOrEmpty(ts.AssignedStaff.WhatsApp))
+                var taskListText = string.Join("\n\n", group.Select(ts =>
                 {
-                    Log.Information($"[AssignmentDueSoonJob] {ts.AssignedStaff.ContactName} has no whatsapp");
-                    continue;
-                }
+                    var daysLeft = (ts.DueDate.Date - DateTime.Today).Days;
+                    return $"""
+                            *Task:* {ts.ServiceScope}
+                            *Task ID:* {ts.Id}
+                            *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
+                            *Due Date:* {ts.DueDate:yyyy-MM-dd} ({daysLeft} day{(daysLeft == 1 ? "" : "s")} left)
+                            """;
+                }));
 
-                var whatsapp = ts.AssignedStaff.GetWhatsappNumber();
-                var daysLeft = (ts.DueDate.Date - DateTime.Today).Days;
-                var wappyMessage = new WappyTemplateData()
+                var wappyMessage = new WappyTemplateData
                 {
-                    WhatsappName = "zTemp8620",
+                    WhatsappName = staff.ContactName,
                     Body = $"""
-                    [SWSA] Reminder 🕒
+                            [SWSA] Reminder 🕒
 
-                    *Task:* {ts.ServiceScope}
-                    *Task ID:* {ts.Id}
-                    *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
-                    *Due Date:* {ts.DueDate:yyyy-MM-dd}  ({daysLeft} day{(daysLeft == 1 ? "" : "s")} left)
-                    
-                    Please review and take necessary action as soon as possible.
-                    """
+                            You have {group.Count()} upcoming task{(group.Count() > 1 ? "s" : "")} nearing deadline:
+
+                            {taskListText}
+
+                            Please review and take necessary action as soon as possible.
+                            *This is system auto generated*
+                            """
                 };
-                await messagingService.SendAsync(MessagingChannel.Wappy,
-                         whatsapp, MessagingTemplateCode.AssignmentWorkDueSoon, TemplateDataBuilder.From(wappyMessage),
-                        "due date nearing");
+
+                await messagingService.SendAsync(
+                    MessagingChannel.Wappy,
+                    whatsapp,
+                    MessagingTemplateCode.AssignmentWorkDueSoon,
+                    TemplateDataBuilder.From(wappyMessage),
+                    "Reminder: tasks due soon"
+                );
             }
-
-
 
             Log.Information($"[AssignmentDueSoonJob] {tasks.Count} due soon assignment found");
         }
