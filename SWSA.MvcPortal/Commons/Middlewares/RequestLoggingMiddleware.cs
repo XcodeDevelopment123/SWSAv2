@@ -1,6 +1,8 @@
-﻿using Serilog;
+﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Serilog.Context;
 using SWSA.MvcPortal.Services.Interfaces;
+using System.Diagnostics;
 using System.Text;
 
 namespace SWSA.MvcPortal.Commons.Middlewares;
@@ -9,19 +11,35 @@ public class RequestLoggingMiddleware
 {
 
     private readonly RequestDelegate _next;
-    private const int MaxBodyLength = 1000;
+    private const int MaxBody = 2048;
+    private static readonly string[] StaticExt =
+    { ".css",".js",".jpg",".jpeg",".png",".gif",".svg",".woff",".woff2",".eot",".ttf",".otf",".ico" };
+
     public RequestLoggingMiddleware(RequestDelegate next)
     {
         _next = next;
     }
 
     public async Task InvokeAsync(HttpContext context)
-    {   
-        var path = context.Request.Path;
+    {
+
+        //Skip static resources
+        if (StaticExt.Any(e => context.Request.Path.Value!.EndsWith(e, StringComparison.OrdinalIgnoreCase)))
+        {
+            await _next(context);
+            return;
+        }
+
+        var sw = Stopwatch.StartNew();
+        var traceId = Activity.Current?.TraceId.ToString() ?? Guid.NewGuid().ToString();
+        var route = context.GetEndpoint()?.Metadata.GetMetadata<RouteAttribute>()?.Template
+                    ?? context.Request.Path.Value ?? "/";
         var method = context.Request.Method;
         var query = context.Request.QueryString.ToString();
-
-        string body = "";
+        var requestBytes = context.Request.ContentLength ?? 0;
+        var responseBytes = 0L;
+        var statusCode = 200;
+        var body = await ReadBodyAsync(context);
 
         IUserContext? userContext = null;
         try
@@ -38,36 +56,30 @@ public class RequestLoggingMiddleware
         var companyId = userContext?.CompanyId?.ToString() ?? "-";
         var companyDeptId = userContext?.CompanyDepartmentId?.ToString() ?? "-";
 
-        using (LogContext.PushProperty("UserName", userName))
-        using (LogContext.PushProperty("StaffId", staffId))
-        using (LogContext.PushProperty("CompanyId", companyId))
-        using (LogContext.PushProperty("CompanyDepartmentId", companyDeptId))
-        using (LogContext.PushProperty("Path", path))
-        using (LogContext.PushProperty("Method", method))
-        using (LogContext.PushProperty("Query", query))
-        using (LogContext.PushProperty("RequestBody", body))
+        try
         {
-            try
+            await _next(context);
+            statusCode = context.Response.StatusCode;
+            responseBytes = context.Response.ContentLength ?? 0;
+        }
+        finally
+        {
+            sw.Stop();
+            using (LogContext.PushProperty("LogType", "Request"))
+            using (LogContext.PushProperty("TraceId", traceId))
+            using (LogContext.PushProperty("Route", route))
+            using (LogContext.PushProperty("Method", method))
+            using (LogContext.PushProperty("Query", query))
+            using (LogContext.PushProperty("RequestBody", SanitizeBody(body)))
+            using (LogContext.PushProperty("UserName", userName))
+            using (LogContext.PushProperty("StaffId", staffId))
+            using (LogContext.PushProperty("CompanyId", companyId))
+            using (LogContext.PushProperty("CompanyDepartmentId", companyDeptId))
+            using (LogContext.PushProperty("RemoteIP", context.Connection.RemoteIpAddress?.ToString()))
+            using (LogContext.PushProperty("UserAgent", context.Request.Headers.UserAgent.ToString()))
             {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                if (context.Request.Method == HttpMethods.Post || context.Request.Method == HttpMethods.Put)
-                {
-                    context.Request.EnableBuffering();
-                    using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true);
-                    body = await reader.ReadToEndAsync();
-                    context.Request.Body.Position = 0;
-
-                    if (body.Length > MaxBodyLength)
-                        body = body.Substring(0, MaxBodyLength) + "...(truncated)";
-                }
-
-                // 清理敏感信息
-                body = SanitizeBody(body);
-                Log.Error(ex, "Unhandled exception occurred.");
-                throw;
+                Log.Information("Request completed: {Method} {Route} => {StatusCode} in {Duration}ms | In:{RequestBytes}b Out:{ResponseBytes}b",
+                    method, route, statusCode, sw.ElapsedMilliseconds, requestBytes, responseBytes);
             }
         }
     }
@@ -86,6 +98,18 @@ public class RequestLoggingMiddleware
         }
 
         return body;
+    }
+
+    private static async Task<string> ReadBodyAsync(HttpContext ctx)
+    {
+        if (!(ctx.Request.Method == HttpMethods.Post || ctx.Request.Method == HttpMethods.Put))
+            return string.Empty;
+
+        ctx.Request.EnableBuffering();
+        using var sr = new StreamReader(ctx.Request.Body, Encoding.UTF8, leaveOpen: true);
+        var text = await sr.ReadToEndAsync();
+        ctx.Request.Body.Position = 0;
+        return text.Length <= MaxBody ? text : text[..MaxBody] + "...(truncated)";
     }
 }
 
