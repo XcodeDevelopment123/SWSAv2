@@ -1,6 +1,4 @@
-﻿using SWSA.MvcPortal.Entities;
-using System.CodeDom;
-
+﻿
 namespace SWSA.MvcPortal.Commons.Constants;
 
 public class AppSettings
@@ -31,17 +29,14 @@ public class SessionKeys
 
 public class FileSettings
 {
-    public string LocalDomain { get; set; }
-    public string CloudDomain { get; set; }
+    public string LocalDomain { get; set; } = string.Empty;
+    public string CloudDomain { get; set; } = string.Empty;
 }
-
 
 public class WappySettings 
 {
     public string Url { get; set; } = string.Empty;
     public string ApiToken { get; set; } = string.Empty;
-
-
 }
 
 public class MessagingTemplateCode

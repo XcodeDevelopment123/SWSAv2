@@ -1,10 +1,8 @@
 ﻿using Quartz;
 using Serilog;
-using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Commons.Quartz;
-
 
 public class QuartzJobListener(IServiceScopeFactory scopeFactory) : IJobListener
 {

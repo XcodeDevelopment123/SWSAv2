@@ -12,7 +12,6 @@ namespace SWSA.MvcPortal.Commons.Quartz.Services;
 /// <summary>
 /// You will no need to change this scheduler service, except you know what need to change and correct
 /// </summary>
-
 public class JobSchedulerService(
     IScheduler scheduler,
     IServiceProvider serviceProvider
@@ -22,7 +21,7 @@ public class JobSchedulerService(
     {
         var executionResolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
 
-        var (ctx, job, trigger) = executionResolver.BuildAll(request, ScheduledJobType.AssignmentDueSoon);
+        var (ctx, job, trigger) = executionResolver.BuildAll(request, type);
         await scheduler.ScheduleJob(job, trigger);
     }
 

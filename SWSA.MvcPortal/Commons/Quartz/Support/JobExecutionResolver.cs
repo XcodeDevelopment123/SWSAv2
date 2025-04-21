@@ -17,7 +17,6 @@ public interface IJobExecutionResolver
     IJobDetail CreateJob(IJobRequest? request, ScheduledJobType type);
     ITrigger CreateTrigger(IJobRequest? request, ScheduledJobType type);
 
-
     /// <summary>
     /// 一次性构建包含 JobDetail 与 Trigger 的调度上下文
     /// </summary>

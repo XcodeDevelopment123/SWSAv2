@@ -113,8 +113,6 @@ public class RequestLoggingMiddleware
     }
 }
 
-
-
 public static class RequestLoggingMiddlewareExtensions
 {
     public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder builder)

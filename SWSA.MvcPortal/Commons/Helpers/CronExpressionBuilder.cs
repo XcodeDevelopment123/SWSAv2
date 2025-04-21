@@ -1,7 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities;
-
-namespace SWSA.MvcPortal.Commons.Helpers;
+﻿namespace SWSA.MvcPortal.Commons.Helpers;
 /// <summary>
 /// A utility class for building Quartz-compatible Cron expressions.
 /// Use the provided methods for common patterns, or use Build() for custom expressions.

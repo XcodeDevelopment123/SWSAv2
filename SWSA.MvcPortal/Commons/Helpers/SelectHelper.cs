@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
-
     public static List<SelectListItem> GetEnumSelectList<TEnum>(TEnum? selected = null, string defaultText = "Please select")
         where TEnum : struct, Enum
     {
@@ -17,11 +15,11 @@ public class SelectHelper
     public static List<SelectListItem> GetYesNoSelection(bool? yesOrNo)
     {
         return new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Please select", Value = "", Selected = yesOrNo == null,Disabled=true },
-        new SelectListItem { Text = "Yes", Value = "true", Selected = yesOrNo == true },
-        new SelectListItem { Text = "No", Value = "false", Selected = yesOrNo  == false }
-    };
+        {
+            new SelectListItem { Text = "Please select", Value = "", Selected = yesOrNo == null,Disabled=true },
+            new SelectListItem { Text = "Yes", Value = "true", Selected = yesOrNo == true },
+            new SelectListItem { Text = "No", Value = "false", Selected = yesOrNo  == false }
+        };
     }
 
     public static List<SelectListItem> GetOwnerPositionTypes(PositionType? type)

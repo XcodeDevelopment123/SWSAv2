@@ -1,5 +1,4 @@
 ﻿using SWSA.MvcPortal.Commons.Constants;
-using System.Runtime.Serialization;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 

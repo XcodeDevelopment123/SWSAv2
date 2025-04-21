@@ -1,223 +1,198 @@
-# 📘 Quartz Job 架构说明（中文）
+# Quartz Job Extension & Structure Guide
 
-## 🧩 架构角色简述
+## 简介 Overview
 
-### 🏭 Factory（工厂）
+Quartz 是一个强大的 .NET 分组件用于程序性的任务调度和定时执行。本项目采用带有构建结构的 Quartz 扩展设计，便于后续维护和扩展新任务。
 
-- **职责：** 负责管理 `JobRequest` 参数、生成 Job 实例、Trigger 调度设定。
-- **细节说明：**
-  - 透过 `CreateJob()` 方法传入参数（JobDataMap）
-  - 在 `CreateTrigger()` 中设定是否立即执行 (`StartNow()`)、是否重复（可扩展为 Cron）
-  - 每个 Job 对应一个 Factory，具有清晰的责任边界
+## 项目结构 Project Structure
 
-```csharp
-public override IJobDetail CreateJob(IJobRequest? request)
-{
-    var cast = request as GenerateReportJobRequest ?? throw new ArgumentException("Invalid request type.");
+### ① BaseJobFactory
 
-    var map = new JobDataMap();
-    map.AddGenerateReportRequest(cast);
+- 默认设置与 Job 构造过程的基类
+- 禁止修改，除非确定其作用
+- 如需特殊行为，可 `override` 重写子类方法
 
-    return JobBuilder.Create<GenerateAssignmentReportJob>()
-        .WithIdentity(JobKeys.GenerateAssignmentReportJobKey)
-        .UsingJobData(map)
-        .Build();
-}
+### ② QuartzJobFactory
 
-public override ITrigger CreateTrigger(IJobRequest? request)
-{
-    return TriggerBuilder.Create()
-        .WithIdentity($"trigger_{Guid.NewGuid()}", QuartzGroupKeys.ReportGroup)
-        .StartNow()
-        .ForJob(JobKeys.GenerateAssignmentReportJobKey)
-        .Build();
-}
-```
+- 支持 DI （依赖注入）能力的工厂类
+- 禁止修改
 
-### 🧠 Job（任务）
+### ③ Jobs Folder
 
-- **职责：** 作为任务执行的核心，接受注入服务并执行逻辑
-- **说明：**
-  - `Job.Execute()` 是执行入口，通常调用 Service 层方法
-  - 通过 DI 注入业务 Service 以及日志工具
+- 每一个工作任务主体逻辑所在
+- 使用 DI 获取服务或仓库执行逻辑
 
-### 🔧 Service（服务）- 以后需求/确定了才做， 目前直接在Job执行
+### ④ Requests Folder
 
-- **职责：** 封装 Job 的业务逻辑
-- **说明：**
-  - 提供如数据库查询、通知发送、报表生成等业务实现
-  - Job 只负责触发，Service 负责执行
+- 对于需要传递参数的任务，创建独立的 JobRequest 类
+- 继承基类并增加自定义属性
 
----
+### ⑤ Services Folder
 
-## 🧱 Job 注册与组织结构
+- 将逻辑抽离为 Job Service 便于重用/单独调用
+- Job 调用 service.方法，而 service 只连 repo/第三方 API
 
-### 一对一绑定关系
+### ⑥ JobSchedulerService
 
-- 一个 Job → 一个 Factory
-- 每新增一个 Job，需要同时新增：
-  - Job class
-  - Job factory class
-  - JobType enum entry
-  - JobKey static entry（用于 Identity）
+- Quartz 主调度器类
+- 禁止修改
 
-### 分组（Group）分类
+### ⑦ Support Folder
 
-- 使用 GroupName 做逻辑分类
-- 例子：
-  - `notificationGroup`：系统通知类 Job
-  - `reportGroup`：生成报表类 Job
+包含各类帮助类:
 
----
+#### JobBuildContext
 
-## ⏱ 调度策略
+- 全局基础参数管理
+- 禁止随意增加非全局性值
 
-### 🕹 用户可自定义触发时间
+#### JobConstants
 
-- 使用 `ScheduleJob(request, JobType.XXX)`
-- 支持用户提交时间参数（如执行时间、频率）
+- 定义 Job 中用到的 JobKey/ScheduleType/Group
 
-### ⚙️ 系统背景作业
+#### JobExecutionResolver
 
-- 使用 `ScheduleBackgroundJob()`
-- 在系统启动时注册固定任务（如：提醒、监控）
+- 处理 DB 中的任务设置 -> 实际 Job 映射
+- 每新增 Job ，必须更新 GetJobKeyFromEnum()
+
+#### JobHelper / JobDataBinder
+
+- 自动将 JobRequest 中值 map 到 job 执行时用
+
+#### JobRequestMapper
+
+- 从 context 转换到 job request
+
+#### JobMetadataRegistry
+
+- 新 Job 必须在 Register()中注册 (key, factory, request)
+- 禁止修改其他部分
+
+#### QuartzJobListener
+
+- 全局 job 执行监听器（开始/失败/结束）
+- 可扩展添加全局行为
 
 ---
 
-## 🚨 注意事项
+## 扩展新 Job 流程 Extension Workflow
 
-1. `IJobFactory` 必须启用作用域 (`IServiceScopeFactory`) 来支持 Scoped Job 的注入
-2. 所有 Job 都应为 `Scoped`，避免使用 Singleton Job
-3. 使用 JobDataMap 传参时，值必须为基本类型（如 int, string, datetime）
-4. Trigger 可以扩展为 CronTrigger 支持周期性作业
-5. 注册新 Job 时需更新：
-   - `JobKeys.cs`
-   - `JobType.cs`
-   - `IJobRequest` 实现类
-   - 对应 Factory 和 Job 本体
-
----
-
-## ✅ 推荐文件命名
-
-| 类型        | 文件名示例                                   |
-| --------- | --------------------------------------- |
-| Job       | `GenerateAssignmentReportJob.cs`        |
-| Factory   | `GenerateAssignmentReportJobFactory.cs` |
-| Request   | `GenerateReportJobRequest.cs`           |
-| Service   | `AssignmentDueSoonJobService.cs`        |
-| Constants | `JobKeys.cs`, `JobType.cs`              |
+1. 定义 **ScheduledJobType** (enum)
+2. 更新 **JobConstants/JobExecutionResolver** 里的 JobKey
+3. 新增 **Job Request** 文件（如需传参）
+4. 在 **Jobs** 文件夹中创建新 job
+5. 如需，新增应用性工厂类 (**Factory**)
+6. **JobMetadataRegistry.Register()** 注册 jobKey, factory, request
+7. 在 **JobExecutionResolver.GetJobKeyFromEnum()** 添加 enum 和 key name
+8. 在 **DI 注入配置** 中注册:
+   - Factory = `AddTransient`
+   - Job = `AddScoped`
 
 ---
 
-# 📘 Quartz Job Architecture Overview (English)
+## 第三方文档 Third-Party Documentation
 
-## 🧩 Architecture Roles
-
-### 🏭 Factory
-
-- **Responsibilities:**
-  - Manage `JobRequest` parameters
-  - Build `JobDetail` and assign `JobDataMap`
-  - Create and configure `Trigger` (start time, repeat or not)
-
-```csharp
-public override IJobDetail CreateJob(IJobRequest? request)
-{
-    var cast = request as GenerateReportJobRequest ?? throw new ArgumentException("Invalid request type.");
-
-    var map = new JobDataMap();
-    map.AddGenerateReportRequest(cast);
-
-    return JobBuilder.Create<GenerateAssignmentReportJob>()
-        .WithIdentity(JobKeys.GenerateAssignmentReportJobKey)
-        .UsingJobData(map)
-        .Build();
-}
-
-public override ITrigger CreateTrigger(IJobRequest? request)
-{
-    return TriggerBuilder.Create()
-        .WithIdentity($"trigger_{Guid.NewGuid()}", QuartzGroupKeys.ReportGroup)
-        .StartNow()
-        .ForJob(JobKeys.GenerateAssignmentReportJobKey)
-        .Build();
-}
-```
-
-### 🧠 Job
-
-- **Responsibilities:** Core execution unit triggered by Quartz
-- **Details:**
-  - Implement `IJob.Execute()`
-  - Use DI to inject services and loggers
-  - Delegate business logic to Job Service
-
-### 🔧 Job Service
-
-- **Responsibilities:**
-  - Implement actual business logic (e.g., DB operations, notifications)
-  - Keep Job class slim and decoupled from business rules
+- [Quartz.NET 官方文档 (v3.x)](https://www.quartz-scheduler.net/documentation/)
+  > Covers architecture, job and trigger setup, listeners, DI, etc.
 
 ---
 
-## 🧱 Job Registration & Structure
+# Quartz Job Extension & Structure Guide
 
-### One-to-One Binding
+## Overview
 
-- One job ⇆ One factory
-- New job requires:
-  - Job class
-  - Factory class
-  - New `JobType` enum entry
-  - New `JobKey` static entry
+Quartz is a powerful .NET component for programmatic task scheduling and timed execution. This project uses the Quartz extension design with a build structure to facilitate subsequent maintenance and expansion of new tasks.
 
-### Group Categorization
+## Project Structure
 
-- Job groups help organize job purposes:
-  - `notificationGroup`: System-level background tasks
-  - `reportGroup`: Report generation, data exports
+### ① BaseJobFactory
+
+- Base class for default settings and job construction process
+- Modification prohibited unless its function is determined
+- If special behavior is required, `override` can be used to rewrite the subclass method
+
+### ② QuartzJobFactory
+
+- Factory class that supports DI (dependency injection) capabilities
+- Modification prohibited
+
+### ③ Jobs Folder
+
+- The main logic of each work task is located
+- Use DI to obtain service or warehouse execution logic
+
+### ④ Requests Folder
+
+- For tasks that need to pass parameters, create an independent JobRequest class
+- Inherit the base class and add custom properties
+
+### ⑤ Services Folder
+
+- Extract the logic into Job Service for easy reuse/separate call
+- Job calls service. method, and service only connects to repo/third-party API
+
+### ⑥ JobSchedulerService
+
+- Quartz main scheduler class
+- Modification prohibited
+
+### ⑦ Support Folder
+
+Contains various helper classes:
+
+#### JobBuildContext
+
+- Global basic parameter management
+- Do not add non-global values ​​at will
+
+#### JobConstants
+
+- Define JobKey/ScheduleType/Group used in Job
+
+#### JobExecutionResolver
+
+- Process task settings in DB -> actual Job mapping
+- GetJobKeyFromEnum() must be updated for each new Job
+
+#### JobHelper / JobDataBinder
+
+- Automatically map the value in JobRequest to the job execution
+
+#### JobRequestMapper
+
+- Convert from context to job request
+
+#### JobMetadataRegistry
+
+- New Job must be registered in Register() (key, factory, request)
+- Do not modify other parts
+
+#### QuartzJobListener
+
+- Global job execution listener (start/failure/end)
+- Can be extended to add global behavior
 
 ---
 
-## ⏱ Scheduling Strategy
+## Extend new Job Process Extension Workflow
 
-### 🕹 User-triggered jobs
+1. Define **ScheduledJobType** (enum)
+2. Update the JobKey in **JobConstants/JobExecutionResolver**
+3. Add **Job Request** file (if you need to pass parameters)
+4. Create a new job in the **Jobs** folder
+5. If necessary, add an application factory class (**Factory**)
+6. **JobMetadataRegistry.Register()** register jobKey, factory, request
+7. Add enum and key name in **JobExecutionResolver.GetJobKeyFromEnum()**
+8. Register in **DI injection configuration**:
 
-- Use `ScheduleJob(request, JobType.X)`
-- Users can control job timing (e.g., set time, one-off)
-
-### ⚙️ Background jobs
-
-- Use `ScheduleBackgroundJob()`
-- Executed automatically during app boot or periodic intervals
-
----
-
-## 🚨 Important Notes
-
-1. Use `IServiceScopeFactory` in your `QuartzJobFactory` to resolve scoped services
-2. Do not resolve jobs directly from root provider
-3. All jobs must be registered as `Scoped`
-4. `JobDataMap` must only contain primitive types (int, string, etc.)
-5. When creating a new job:
-   - Add key in `JobKeys.cs`
-   - Add enum in `JobType.cs`
-   - Create job class + factory + request DTO
+- Factory = `AddTransient`
+- Job = `AddScoped`
 
 ---
 
-## ✅ Suggested File Naming
+## Third-Party Documentation
 
-| Type      | Example Filename                        |
-| --------- | --------------------------------------- |
-| Job       | `GenerateAssignmentReportJob.cs`        |
-| Factory   | `GenerateAssignmentReportJobFactory.cs` |
-| Request   | `GenerateReportJobRequest.cs`           |
-| Service   | `AssignmentDueSoonJobService.cs`        |
-| Constants | `JobKeys.cs`, `JobType.cs`              |
+- [Quartz.NET Official Documentation (v3.x)](https://www.quartz-scheduler.net/documentation/)
+  > Covers architecture, job and trigger setup, listeners, DI, etc.
 
 ---
-
-This documentation summarizes how to use Quartz in a modular, extensible, and scalable architecture. For updates, follow the pattern and always isolate Factory/Job/Service cleanly.
-

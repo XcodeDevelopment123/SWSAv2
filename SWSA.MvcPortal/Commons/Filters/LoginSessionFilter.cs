@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Services.Interfaces;
-using Microsoft.IdentityModel.Tokens;
 
 namespace SWSA.MvcPortal.Commons.Filters;
-
 
 public class LoginSessionFilter(
     IServiceProvider serviceProvider

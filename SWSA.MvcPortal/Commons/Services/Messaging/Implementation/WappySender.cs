@@ -7,8 +7,6 @@ namespace SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 public class WappySender(HttpClient client) : IMessageSender
 {
     public MessagingChannel Channel => MessagingChannel.Wappy;
-
-
     public async Task<MessagingResult> SendAsync(MessageEnvelope message)
     {
         try

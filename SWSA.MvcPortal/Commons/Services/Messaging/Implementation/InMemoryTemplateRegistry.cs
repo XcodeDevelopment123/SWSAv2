@@ -35,7 +35,3 @@ public class InMemoryTemplateRegistry : ITemplateRegistry
             : Array.Empty<string>();
     }
 }
-
-// - 不再单纯用 templateCode 对应通道和字段，改为 (templateCode, channel) 精确绑定
-// - 支持同一模板代码在不同通道下有不同字段要求
-// - 保持接口简洁，无破坏性变动

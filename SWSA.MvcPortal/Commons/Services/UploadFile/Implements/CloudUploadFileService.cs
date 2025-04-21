@@ -2,11 +2,10 @@
 
 namespace SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
 
-public class CloudUploadFileService(IConfiguration config,
-    IHttpClientFactory clientFactory
+public class CloudUploadFileService(HttpClient client
     )
 {
-    private readonly HttpClient client = clientFactory.CreateClient("Cloud service client"); //Shoud setup at dependency injector
+ //Shoud setup at dependency injector
 
     public async Task<string> UploadAsync(IFormFile file, string subfolder)
     {

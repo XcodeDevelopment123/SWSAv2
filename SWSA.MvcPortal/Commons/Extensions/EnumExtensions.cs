@@ -32,7 +32,4 @@ public static class EnumExtensions
 
         return $"{GetIntValue(enumValue)} ({GetDisplayName(enumValue)})";
     }
-
-
-
 }

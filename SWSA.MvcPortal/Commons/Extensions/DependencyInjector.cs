@@ -25,7 +25,6 @@ using SWSA.MvcPortal.Commons.Quartz.Config;
 using SWSA.MvcPortal.Commons.Quartz;
 using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
-using Microsoft.Extensions.DependencyInjection;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
@@ -148,7 +147,6 @@ public static class DependencyInjector
         services.AddScoped<LocalUploadFileService>();
         services.AddScoped<CloudUploadFileService>();
 
-
         //Messaging service
         services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
         services.AddSingleton<IMessageDispatcher, DefaultDispatcher>();
@@ -178,7 +176,11 @@ public static class DependencyInjector
     {
         services.Configure<WappySettings>(configuration.GetSection(nameof(WappySettings)));
 
-        services.AddHttpClient();
+        services.AddHttpClient<CloudUploadFileService>((serviceProvider, client) =>
+        {
+            //var options = serviceProvider.GetRequiredService<IOptions<{SettingsFromAppsetting.json}>>();
+            //Other base url,  header request
+        });
         //services.AddHttpClient("clientName", client =>
         //  {
         //      client.BaseAddress = new Uri("baseUrl");
@@ -193,7 +195,6 @@ public static class DependencyInjector
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token} ");
 
         });
-
     }
 
     public static IServiceCollection AddQuartzJobs(this IServiceCollection services, IConfiguration configuration)
@@ -240,7 +241,6 @@ public static class DependencyInjector
             });
         }
 
-    
         services.AddSingleton<IJobMetadataRegistry, JobMetadataRegistry>();
         services.AddSingleton<IJobExecutionResolver, JobExecutionResolver>();
 
@@ -259,6 +259,5 @@ public static class DependencyInjector
 
         return services;
     }
-
 }
 

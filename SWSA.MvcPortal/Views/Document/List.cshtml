@@ -40,7 +40,7 @@
                         {
                             <tr>
                                 <td>@doc.FlowType</td>
-                                <td>@DateLabelHelper.GetDateOnlyLabel(doc.DocumentDate)</td>
+                                <td>@doc.DocumentDate.ToFormattedString()</td>
                                 <td>@doc.DocumentType.GetDisplayName()</td>
                                 <td>
                                     <a target="_blank" href="@doc.DownloadLink" title="Download">
