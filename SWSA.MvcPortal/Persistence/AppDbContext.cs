@@ -87,6 +87,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithMany(c => c.ScheduledJobs)
             .HasForeignKey(u => u.UserId)
             .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(c => c.JobKey);
+
+            entity.HasIndex(c => new { c.JobGroup, c.JobKey }).IsUnique();
         });
 
         base.OnModelCreating(modelBuilder);

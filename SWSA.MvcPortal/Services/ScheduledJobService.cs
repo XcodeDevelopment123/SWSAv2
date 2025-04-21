@@ -2,6 +2,9 @@
 
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.ScheduledJobs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -15,7 +18,24 @@ IUserContext userContext,
 IScheduledJobRepository repo
     ) : IScheduledJobService
 {
-   
+    public async Task<List<ScheduledJobVM>> GetAllScheduledJobs()
+    {
+        var data = await repo.GetAllAsync();
+        return mapper.Map<List<ScheduledJobVM>>(data);
+    }
 
+    public async Task UpdateExecuteTimeAsync(string jobkey)
+    {
+        var job = await repo.GetScheduledByJobKeyAsync(jobkey);
+        if (job == null)
+        {
+            Log.Error($"[Job] job key not found, update failed :{jobkey}");
+            return;
+        }
+
+        job.LastUpdatedAt = DateTime.Now;
+        repo.Update(job);
+        await repo.SaveChangesAsync();
+    }
 
 }

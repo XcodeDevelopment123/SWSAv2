@@ -142,7 +142,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
-        services.AddScoped<IJobSchedulerService, JobSchedulerService>();
+        services.AddScoped<IScheduledJobService, ScheduledJobService>();
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();
@@ -221,19 +221,26 @@ public static class DependencyInjector
             services.AddSingleton<ISchedulerFactory>(_ => new StdSchedulerFactory(properties));
             // Quartz needs a DI-enabled JobFactory
             services.AddSingleton<IJobFactory, QuartzJobFactory>();
+            services.AddSingleton<IJobListener, QuartzJobListener>();
+
 
             // Register IScheduler with injected JobFactory and start
             services.AddScoped<IScheduler>(provider =>
             {
                 var factory = provider.GetRequiredService<ISchedulerFactory>();
                 var scheduler = factory.GetScheduler().Result;
+
                 scheduler.JobFactory = provider.GetRequiredService<IJobFactory>();
-                scheduler.ListenerManager.AddJobListener(new QuartzJobListener());
-                scheduler.Start().Wait();
+
+                var listener = provider.GetRequiredService<IJobListener>();
+                scheduler.ListenerManager.AddJobListener(listener);
+                scheduler.Start().GetAwaiter().GetResult();
+
                 return scheduler;
             });
         }
 
+    
         services.AddSingleton<IJobMetadataRegistry, JobMetadataRegistry>();
         services.AddSingleton<IJobExecutionResolver, JobExecutionResolver>();
 

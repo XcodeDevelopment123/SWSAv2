@@ -1,5 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Quartz.Requests;
-using SWSA.MvcPortal.Commons.Quartz.Support;
+﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Quartz.Requests;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 
@@ -10,5 +10,5 @@ public interface IJobSchedulerService
     Task ClearSpecificJobByKey(string jobKey);
     Task ClearTriggersByGroup(string groupName);
     Task ScheduleBackgroundJob();
-    Task ScheduleJob(IJobRequest? request, QuratzJobType type);
+    Task ScheduleJob(IJobRequest? request, ScheduledJobType type);
 }

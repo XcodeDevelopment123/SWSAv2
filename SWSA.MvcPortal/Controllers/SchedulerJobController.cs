@@ -3,19 +3,23 @@ using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
+using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("scheduler-jobs")]
-public class ReminderController(
-     IJobSchedulerService scheduler,
-     IJobMetadataRegistry registry
-    ) : Controller
+
+public class SchedulerJobController(
+ IJobSchedulerService scheduler,
+ IJobMetadataRegistry registry,
+ IScheduledJobService service
+) : BaseController
 {
     [Route("")]
     public async Task<IActionResult> List()
     {
-        return View();
+        var data = await service.GetAllScheduledJobs();
+        return View(data);
     }
 
     [HttpPost("schedule")]

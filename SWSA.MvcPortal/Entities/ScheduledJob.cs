@@ -39,5 +39,6 @@ public class ScheduledJob
     [ForeignKey(nameof(UserId))]
     public int? UserId { get; set; } //If null , that is System Default
     public User? User { get; set; } = default!;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? LastUpdatedAt { get; set;}
 }

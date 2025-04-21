@@ -1,4 +1,5 @@
 ﻿using Quartz;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Factories;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Entities;
@@ -13,19 +14,19 @@ public interface IJobExecutionResolver
     IJobDetail CreateJob(ScheduledJob jobEntity);
     ITrigger CreateTrigger(ScheduledJob jobEntity);
 
-    IJobDetail CreateJob(IJobRequest? request, QuratzJobType type);
-    ITrigger CreateTrigger(IJobRequest? request, QuratzJobType type);
+    IJobDetail CreateJob(IJobRequest? request, ScheduledJobType type);
+    ITrigger CreateTrigger(IJobRequest? request, ScheduledJobType type);
 
 
     /// <summary>
     /// 一次性构建包含 JobDetail 与 Trigger 的调度上下文
     /// </summary>
-    (JobBuildContext Context, IJobDetail Job, ITrigger Trigger) BuildAll(IJobRequest? request, QuratzJobType type);
+    (JobBuildContext Context, IJobDetail Job, ITrigger Trigger) BuildAll(IJobRequest? request, ScheduledJobType type);
 
     /// <summary>
     /// 从 request + job type 构建 JobBuildContext，统一 JobKey 命名规则
     /// </summary>
-    JobBuildContext BuildContext(IJobRequest? request, QuratzJobType type);
+    JobBuildContext BuildContext(IJobRequest? request, ScheduledJobType type);
 }
 
 public class JobExecutionResolver : IJobExecutionResolver
@@ -37,7 +38,7 @@ public class JobExecutionResolver : IJobExecutionResolver
         _registry = registry;
     }
 
-    public (JobBuildContext Context, IJobDetail Job, ITrigger Trigger) BuildAll(IJobRequest? request, QuratzJobType type)
+    public (JobBuildContext Context, IJobDetail Job, ITrigger Trigger) BuildAll(IJobRequest? request, ScheduledJobType type)
     {
         var context = BuildContext(request, type);
         var jobKey = GetJobKeyFromEnum(type);
@@ -74,21 +75,21 @@ public class JobExecutionResolver : IJobExecutionResolver
         return factory.CreateTrigger(context);
     }
 
-    public IJobDetail CreateJob(IJobRequest? request, QuratzJobType type)
+    public IJobDetail CreateJob(IJobRequest? request, ScheduledJobType type)
     {
         var context = BuildContext(request, type);
         var factory = ResolveFactory(context.JobKey.Name);
         return factory.CreateJob(context);
     }
 
-    public ITrigger CreateTrigger(IJobRequest? request, QuratzJobType type)
+    public ITrigger CreateTrigger(IJobRequest? request, ScheduledJobType type)
     {
         var context = BuildContext(request, type);
         var factory = ResolveFactory(context.JobKey.Name);
         return factory.CreateTrigger(context);
     }
 
-    public JobBuildContext BuildContext(IJobRequest? request, QuratzJobType type)
+    public JobBuildContext BuildContext(IJobRequest? request, ScheduledJobType type)
     {
         var baseKeyName = GetJobKeyFromEnum(type);
         var baseKey = new JobKey(baseKeyName);
@@ -111,10 +112,10 @@ public class JobExecutionResolver : IJobExecutionResolver
             : throw new InvalidOperationException($"Factory not found for {jobKey}");
     }
 
-    private string GetJobKeyFromEnum(QuratzJobType type) => type switch
+    private string GetJobKeyFromEnum(ScheduledJobType type) => type switch
     {
-        QuratzJobType.GenerateAssignmentReport => QuartzJobKeys.GenerateAssignmentReportJobKey.Name,
-        QuratzJobType.AssignmentDueSoon => QuartzJobKeys.AssignmentDueSoonJobKey.Name,
+        ScheduledJobType.GenerateAssignmentReport => QuartzJobKeys.GenerateAssignmentReportJobKey.Name,
+        ScheduledJobType.AssignmentDueSoon => QuartzJobKeys.AssignmentDueSoonJobKey.Name,
         _ => throw new NotImplementedException($"JobKey mapping not found for {type}")
     };
 }

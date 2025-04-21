@@ -9,4 +9,5 @@ public class ControllerNames
     public const string Document = "Document";
     public const string CompanyWork = "CompanyWork";
     public const string Notification = "Notification";
+    public const string SchedulerJob = "SchedulerJob";
 }

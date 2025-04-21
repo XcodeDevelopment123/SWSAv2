@@ -11,4 +11,5 @@ public interface IScheduledJobRepository : IRepositoryBase<ScheduledJob>
 {
     // Define your method here
     Task<List<ScheduledJob>> GetDefaultAndEnabledJobs();
+    Task<ScheduledJob> GetScheduledByJobKeyAsync(string jobkey);
 }

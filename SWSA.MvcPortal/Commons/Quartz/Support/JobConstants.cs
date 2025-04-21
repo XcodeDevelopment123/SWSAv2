@@ -1,5 +1,6 @@
 ﻿using Quartz;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Support;
 
@@ -8,22 +9,7 @@ namespace SWSA.MvcPortal.Commons.Quartz.Support;
 /// </summary>
 public class QuartzJobKeys
 {
-    public static readonly JobKey AssignmentDueSoonJobKey = new JobKey("assignmentDueSoonJob", QuartzGroupKeys.NotificationGroup);
-    public static readonly JobKey GenerateAssignmentReportJobKey = new JobKey("generateAssignmentReportJob", QuartzGroupKeys.ReportGroup);
-
+    public static readonly JobKey AssignmentDueSoonJobKey = new JobKey(nameof(ScheduledJobType.AssignmentDueSoon), QuartzGroupKeys.NotificationGroup);
+    public static readonly JobKey GenerateAssignmentReportJobKey = new JobKey(nameof(ScheduledJobType.GenerateAssignmentReport), QuartzGroupKeys.ReportGroup);
 }
 
-public enum QuratzJobType
-{
-    //Notification group
-    AssignmentDueSoon = 100,
-
-    //Report group
-
-    /// <summary>
-    /// Required use GenerateReportJobRequest as IJobRequest
-    /// </summary>
-    GenerateAssignmentReport = 200
-
-    //Other 
-}

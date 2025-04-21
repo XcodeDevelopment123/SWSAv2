@@ -1,5 +1,4 @@
 ﻿using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -16,7 +15,7 @@ public static class EnumExtensions
             .GetField(enumValue.ToString())?
             .GetCustomAttribute<DisplayAttribute>();
 
-        return attribute?.Name ?? SplitCamelCase(enumValue.ToString());
+        return attribute?.Name ?? enumValue.ToString().SplitCamelCase();
     }
     public static int GetIntValue(this Enum enumValue)
     {
@@ -34,10 +33,6 @@ public static class EnumExtensions
         return $"{GetIntValue(enumValue)} ({GetDisplayName(enumValue)})";
     }
 
-    private static string SplitCamelCase(string input)
-    {
-        return System.Text.RegularExpressions.Regex.Replace(input, "(\\B[A-Z])", " $1");
-    }
 
 
 }

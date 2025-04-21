@@ -1,0 +1,75 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.ScheduledJobs
+@model List<ScheduledJobVM>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3> Scheduled Task List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="scheduledTaskDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Job</th>
+                            <th>Run at</th>
+                            <th>Last execute at</th>
+                            <th>Is enabled</th>
+                            <th>Created By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model)
+                        {
+                            <tr>
+                                <td>@(job.JobKey.Split("_")[0].SplitCamelCase())</td>
+                                <td>
+                                    @job.ToReadableSchedule()
+                                </td>
+                                <td>@job.LastUpdatedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
+                                <td>@(job.IsEnabled ? "Running" : "Disabled")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(job.StaffId))
+                                    {
+                                        <a href="/users/@job.StaffId/overview"> @job.CreatedBy</a>
+                                    }
+                                    else
+                                    {
+                                        @job.CreatedBy
+                                    }
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Job</th>
+                            <th>Run at</th>
+                            <th>Last execute at</th>
+                            <th>Is enabled</th>
+                            <th>Created By</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+    <script src="~/js/shceduled-jobs/list-job.js" asp-append-version="true"></script>
+}

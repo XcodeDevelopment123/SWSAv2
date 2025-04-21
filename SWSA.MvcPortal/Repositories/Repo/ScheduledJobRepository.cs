@@ -15,6 +15,12 @@ public class ScheduledJobRepository(AppDbContext db) : RepositoryBase<ScheduledJ
         return await db.Set<ScheduledJob>().Where(c => !c.IsCustom).ToListAsync();
     }
 
+    public async Task<ScheduledJob> GetScheduledByJobKeyAsync(string jobkey)
+    {
+        var find = await db.Set<ScheduledJob>()
+                .FirstOrDefaultAsync(c => c.JobKey == jobkey);
+        return find!;
+    }
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<ScheduledJob>> BuildQueryAsync()
     {

@@ -1,10 +1,12 @@
 ﻿using Quartz;
 using Serilog;
+using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Commons.Quartz;
 
 
-public class QuartzJobListener : IJobListener
+public class QuartzJobListener(IServiceScopeFactory scopeFactory) : IJobListener
 {
     public string Name => "GlobalJobListener";
 
@@ -26,7 +28,7 @@ public class QuartzJobListener : IJobListener
         return Task.CompletedTask;
     }
 
-    public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default)
+    public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException? jobException, CancellationToken cancellationToken = default)
     {
         if (jobException != null)
         {
@@ -44,6 +46,8 @@ public class QuartzJobListener : IJobListener
                 context.JobRunTime.TotalMilliseconds);
         }
 
-        return Task.CompletedTask;
+        using var scope = scopeFactory.CreateScope();
+        var jobService = scope.ServiceProvider.GetRequiredService<IScheduledJobService>();
+        await jobService.UpdateExecuteTimeAsync(context.JobDetail.Key.Name);
     }
 }

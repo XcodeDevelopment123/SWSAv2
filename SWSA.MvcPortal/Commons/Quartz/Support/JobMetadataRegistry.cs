@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Factories;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using System.Text.Json;
@@ -8,7 +9,7 @@ namespace SWSA.MvcPortal.Commons.Quartz.Support;
 public interface IJobMetadataRegistry
 {
     bool TryGetFactory(string jobKey, out IJobBaseFactory factory);
-    bool TryGetQuartzJobType(string jobKey, out QuratzJobType type);
+    bool TryGetQuartzJobType(string jobKey, out ScheduledJobType type);
     bool RequiresPayload(string jobKey);
     bool ValidatePayload(string jobKey, JsonElement payloadJson, out string? error);
     IJobRequest? DeserializeRequest(string jobKey, string json);
@@ -34,13 +35,13 @@ public class JobMetadataRegistry : IJobMetadataRegistry
     private readonly Dictionary<string, Func<IJobBaseFactory>> _factories = new();
     private readonly Dictionary<string, Func<string, IJobRequest?>> _deserializers = new();
     private readonly HashSet<string> _jobsRequirePayload = new();
-    private readonly Dictionary<string, QuratzJobType> _jobKeyToType = new();
+    private readonly Dictionary<string, ScheduledJobType> _jobKeyToType = new();
 
     private void Register()
     {
         // === Types
-        _jobKeyToType[QuartzJobKeys.AssignmentDueSoonJobKey.Name] = QuratzJobType.AssignmentDueSoon;
-        _jobKeyToType[QuartzJobKeys.GenerateAssignmentReportJobKey.Name] = QuratzJobType.GenerateAssignmentReport;
+        _jobKeyToType[QuartzJobKeys.AssignmentDueSoonJobKey.Name] = ScheduledJobType.AssignmentDueSoon;
+        _jobKeyToType[QuartzJobKeys.GenerateAssignmentReportJobKey.Name] = ScheduledJobType.GenerateAssignmentReport;
 
         // === Factories
         _factories[QuartzJobKeys.AssignmentDueSoonJobKey.Name] = () =>
@@ -74,7 +75,7 @@ public class JobMetadataRegistry : IJobMetadataRegistry
             : null;
     }
 
-    public bool TryGetQuartzJobType(string jobKey, out QuratzJobType type)
+    public bool TryGetQuartzJobType(string jobKey, out ScheduledJobType type)
     {
         return _jobKeyToType.TryGetValue(jobKey, out type);
     }

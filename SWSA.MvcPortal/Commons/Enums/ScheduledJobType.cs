@@ -1,0 +1,17 @@
+﻿namespace SWSA.MvcPortal.Commons.Enums;
+
+
+public enum ScheduledJobType
+{
+    //Notification group
+    AssignmentDueSoon = 100,
+
+    //Report group
+
+    /// <summary>
+    /// Required use GenerateReportJobRequest as IJobRequest
+    /// </summary>
+    GenerateAssignmentReport = 200
+
+    //Other 
+}

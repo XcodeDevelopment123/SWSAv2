@@ -1,6 +1,7 @@
 ﻿using Quartz;
 using Quartz.Impl.Matchers;
 using Serilog;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
@@ -17,11 +18,11 @@ public class JobSchedulerService(
     IServiceProvider serviceProvider
     ) : IJobSchedulerService
 {
-    public async Task ScheduleJob(IJobRequest? request, QuratzJobType type)
+    public async Task ScheduleJob(IJobRequest? request, ScheduledJobType type)
     {
         var executionResolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
 
-        var (ctx, job, trigger) = executionResolver.BuildAll(request, QuratzJobType.AssignmentDueSoon);
+        var (ctx, job, trigger) = executionResolver.BuildAll(request, ScheduledJobType.AssignmentDueSoon);
         await scheduler.ScheduleJob(job, trigger);
     }
 
