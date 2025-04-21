@@ -26,6 +26,7 @@ using SWSA.MvcPortal.Commons.Quartz;
 using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using Microsoft.Extensions.DependencyInjection;
+using SWSA.MvcPortal.Commons.Quartz.Support;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -110,6 +111,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
+        services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
     }
 
     public static void ConfigureAppService(this IServiceCollection services, IConfiguration config)
@@ -140,6 +142,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
+        services.AddScoped<IJobSchedulerService, JobSchedulerService>();
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();
@@ -159,8 +162,6 @@ public static class DependencyInjector
 
         // Background 消费服务
         services.AddHostedService<MessageQueueWorker>();
-
-
     }
 
     public static void AddSeedData(this IServiceCollection services)
@@ -169,6 +170,7 @@ public static class DependencyInjector
         services.AddTransient<ISeeder, CompanyTypeSeeder>();
         services.AddTransient<ISeeder, DepartmentSeeder>();
         services.AddTransient<ISeeder, MsicCodeSeeder>();
+        services.AddTransient<ISeeder, ScheduledJobSeeder>();
         services.AddTransient<SeederManager>();
     }
 
@@ -231,6 +233,9 @@ public static class DependencyInjector
                 return scheduler;
             });
         }
+
+        services.AddSingleton<IJobMetadataRegistry, JobMetadataRegistry>();
+        services.AddSingleton<IJobExecutionResolver, JobExecutionResolver>();
 
         // Job-specific factories (your IJobBaseFactory design)
         services.AddTransient<AssignmentDueSoonJobFactory>();

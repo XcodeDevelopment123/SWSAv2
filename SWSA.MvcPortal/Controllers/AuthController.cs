@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
@@ -8,13 +7,11 @@ namespace SWSA.MvcPortal.Controllers;
 
 [AllowAnonymous]
 public class AuthController(
-    IAuthService service,
-    IUserService userService
+    IAuthService service
     ) : BaseController
 {
     public IActionResult Login()
     {
-
         return View();
     }
 

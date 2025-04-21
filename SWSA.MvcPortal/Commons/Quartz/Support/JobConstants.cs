@@ -3,6 +3,9 @@ using SWSA.MvcPortal.Commons.Constants;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Support;
 
+/// <summary>
+///  When you have create new job, u must define the key to the QuartzJobKeys const value
+/// </summary>
 public class QuartzJobKeys
 {
     public static readonly JobKey AssignmentDueSoonJobKey = new JobKey("assignmentDueSoonJob", QuartzGroupKeys.NotificationGroup);

@@ -283,7 +283,7 @@
                                         <a href="/companies/create" class="nav-link @(currentController== ControllerNames.Company && currentAction =="Create" ?"active":"")">
                                             <i class="nav-icon fas fa-plus"></i>
                                             <p>
-                                                New Company
+                                                Add Company
                                             </p>
                                         </a>
                                     </li>
@@ -294,7 +294,7 @@
                                                 @(currentController== ControllerNames.Company && currentAction =="CompanyLP" ?"active":"")
                                     " data-target-url="/companies/{companyId}/landing-page" data-url-name="Navigate to Landing Page" data-company-id="@companyId">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Company LP</p>
+                                        <p>Assign Company LP</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -302,7 +302,7 @@
                                                 @(currentController== ControllerNames.Company && currentAction =="Department" ?"active":"")
                                     " data-target-url="/companies/{companyId}/departments" data-url-name="Navigate to Department Page" data-company-id="@companyId">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Departments</p>
+                                        <p>Assign Departments</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -310,7 +310,7 @@
                                                 @(currentController== ControllerNames.CompanyStaff ?"active":"")
                                     " data-target-url="/companies/{companyId}/staff-list" data-url-name="Navigate to Staffs Page" data-company-id="@companyId">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Staffs</p>
+                                        <p>Assign Staffs</p>
                                     </a>
                                 </li>
                             </ul>

@@ -1,11 +1,16 @@
 ﻿using Quartz;
 using Quartz.Impl.Matchers;
-using SWSA.MvcPortal.Commons.Quartz.Factories;
+using Serilog;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
+using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Services;
+
+/// <summary>
+/// You will no need to change this scheduler service, except you know what need to change and correct
+/// </summary>
 
 public class JobSchedulerService(
     IScheduler scheduler,
@@ -14,49 +19,43 @@ public class JobSchedulerService(
 {
     public async Task ScheduleJob(IJobRequest? request, QuratzJobType type)
     {
-        //Every job are require to register here
-        IJobBaseFactory jobFactory = type switch
-        {
-            QuratzJobType.GenerateAssignmentReport => serviceProvider.GetRequiredService<GenerateAssignmentReportJobFactory>(),
-            _ => throw new NotImplementedException("Job type not supported.")
-        };
+        var executionResolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
 
-        var job = jobFactory.CreateJob(request);
-        var trigger = jobFactory.CreateTrigger(request);
+        var (ctx, job, trigger) = executionResolver.BuildAll(request, QuratzJobType.AssignmentDueSoon);
         await scheduler.ScheduleJob(job, trigger);
     }
 
     public async Task ScheduleBackgroundJob()
     {
-        //Only background auto job are required to register here
-        Dictionary<JobKey, IJobBaseFactory> jobFactories = new Dictionary<JobKey, IJobBaseFactory>
-        {
-          { QuartzJobKeys.AssignmentDueSoonJobKey, serviceProvider.GetRequiredService<AssignmentDueSoonJobFactory>() },
-            // 如果你有其他作业，可以类似地添加到字典中
-        };
-        foreach (var jobFactory in jobFactories)
-        {
-            var jobKey = jobFactory.Key;
-            var factory = jobFactory.Value;
+        var scheduledJobsRepo = serviceProvider.GetRequiredService<IScheduledJobRepository>();
+        var resolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
+        var jobs = await scheduledJobsRepo.GetDefaultAndEnabledJobs();
 
-            var jobDetail = await scheduler.GetJobDetail(jobKey);
-            if (jobDetail == null)
-            {
-                // 创建 JobDetail 和 Trigger
-                var job = factory.CreateJob(null);
-                var trigger = factory.CreateTrigger(null);
-                // 调度作业
-                await scheduler.ScheduleJob(job, trigger);
-            }
+        foreach (var jobEntity in jobs)
+        {
+            var jobKey = new JobKey(jobEntity.JobKey, jobEntity.JobGroup);
+            var existing = await scheduler.GetJobDetail(jobKey);
+            if (existing != null) continue;
+
+            var job = resolver.CreateJob(jobEntity);
+            var trigger = resolver.CreateTrigger(jobEntity);
+
+            await scheduler.ScheduleJob(job, trigger);
+            Log.Information($"✅ Job scheduled: {jobEntity.JobKey}");
         }
     }
 
+    /// <summary>
+    /// 清除所有调度中的 Job（包括所有组和触发器）
+    /// </summary>
     public async Task ClearAllJobs()
     {
         await scheduler.Clear();
-        Console.WriteLine("All jobs cleared.");
+        Log.Information("🧨 All jobs and triggers cleared.");
     }
-
+    // <summary>
+    /// 根据指定 Group 名称清除所有 Job（包含其对应的 Trigger）
+    /// </summary>
     public async Task ClearJobsByGroup(string groupName)
     {
         var jobKeys = await scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(groupName));
@@ -64,10 +63,13 @@ public class JobSchedulerService(
         foreach (var jobKey in jobKeys)
         {
             await scheduler.DeleteJob(jobKey);
-            Console.WriteLine($"Job {jobKey} in group {groupName} deleted.");
+            Log.Information($"🗑 Job {jobKey} in group '{groupName}' deleted.");
         }
     }
 
+    /// <summary>
+    /// 根据指定 Group 名称清除所有 Trigger（保留 Job 本体）
+    /// </summary>
     public async Task ClearTriggersByGroup(string groupName)
     {
         var triggerKeys = await scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(groupName));
@@ -75,7 +77,64 @@ public class JobSchedulerService(
         foreach (var triggerKey in triggerKeys)
         {
             await scheduler.UnscheduleJob(triggerKey);
-            Console.WriteLine($"Trigger {triggerKey} in group {groupName} unscheduled.");
+            Log.Information($"⏱ Trigger {triggerKey} in group '{groupName}' unscheduled.");
+        }
+    }
+
+    /// <summary>
+    /// 精确清除指定 JobKey（名称匹配，支持跨组查找）
+    /// </summary>
+    public async Task ClearSpecificJobByKey(string jobKey)
+    {
+        var allJobKeys = await scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
+        var targetJobKey = allJobKeys.FirstOrDefault(jk => jk.Name.Equals(jobKey, StringComparison.OrdinalIgnoreCase));
+
+        if (targetJobKey == null)
+        {
+            Log.Information($"❌ Job '{jobKey}' not found.");
+            return;
+        }
+
+        var result = await scheduler.DeleteJob(targetJobKey);
+
+        Log.Information(result
+            ? $"✅ Job '{jobKey}' cleared."
+            : $"⚠️ Failed to clear job '{jobKey}'.");
+    }
+
+    /// <summary>
+    /// 清除所有属于用户自定义任务（默认 Group 名为 'UserJobs'）
+    /// </summary>
+    public async Task ClearAllUserJobs()
+    {
+        var userJobs = await scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals("UserJobs"));
+
+        foreach (var jobKey in userJobs)
+        {
+            await scheduler.DeleteJob(jobKey);
+            Log.Information($"🧹 Cleared user job: {jobKey.Name}");
+        }
+    }
+
+    /// <summary>
+    /// 清除已过期的一次性任务（Trigger.RepeatCount=0 且已结束）
+    /// </summary>
+    public async Task ClearExpiredOneTimeJobs()
+    {
+        var allTriggers = await scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.AnyGroup());
+
+        foreach (var triggerKey in allTriggers)
+        {
+            var trigger = await scheduler.GetTrigger(triggerKey);
+
+            if (trigger is ISimpleTrigger simpleTrigger &&
+                simpleTrigger.RepeatCount == 0 &&
+                simpleTrigger.EndTimeUtc.HasValue &&
+                simpleTrigger.EndTimeUtc.Value < DateTimeOffset.UtcNow)
+            {
+                await scheduler.UnscheduleJob(triggerKey);
+                Log.Information($"🗑 Removed expired one-time trigger: {triggerKey.Name}");
+            }
         }
     }
 }

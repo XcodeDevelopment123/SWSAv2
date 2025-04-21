@@ -1,8 +1,6 @@
 ﻿
 using Quartz;
 using Serilog;
-using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
 using SWSA.MvcPortal.Commons.Services.Messaging.TemplateData;
 using SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -60,13 +58,13 @@ public class AssignmentDueSoonJob(
                             """
                 };
 
-                await messagingService.SendAsync(
-                    MessagingChannel.Wappy,
-                    whatsapp,
-                    MessagingTemplateCode.AssignmentWorkDueSoon,
-                    TemplateDataBuilder.From(wappyMessage),
-                    "Reminder: tasks due soon"
-                );
+                //await messagingService.SendAsync(
+                //    MessagingChannel.Wappy,
+                //    whatsapp,
+                //    MessagingTemplateCode.AssignmentWorkDueSoon,
+                //    TemplateDataBuilder.From(wappyMessage),
+                //    "Reminder: tasks due soon"
+                //);
             }
 
             Log.Information($"[AssignmentDueSoonJob] {tasks.Count} due soon assignment found");

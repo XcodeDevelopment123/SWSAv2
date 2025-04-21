@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
+    internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,6 +79,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             entity.HasIndex(c => new { c.CreatedAt, c.Channel });
             entity.HasIndex(c => new { c.CreatedAt, c.TemplateCode });
+        });
+
+        modelBuilder.Entity<ScheduledJob>(entity =>
+        {
+            entity.HasOne(c => c.User)
+            .WithMany(c => c.ScheduledJobs)
+            .HasForeignKey(u => u.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
         });
 
         base.OnModelCreating(modelBuilder);

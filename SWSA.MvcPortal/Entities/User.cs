@@ -36,6 +36,8 @@ public class User
     //    return false;
     //}
 
+    public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
+
     public string ToJsonData()
     {
         return JsonConvert.SerializeObject(this);

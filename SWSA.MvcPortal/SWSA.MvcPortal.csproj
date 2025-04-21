@@ -70,7 +70,6 @@
 
   <ItemGroup>
     <Folder Include="Datas\uploads\" />
-    <Folder Include="wwwroot\assets\imgs\" />
   </ItemGroup>
 
 </Project>
