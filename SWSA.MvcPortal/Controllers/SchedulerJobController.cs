@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Quartz;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
@@ -22,8 +23,29 @@ public class SchedulerJobController(
         return View(data);
     }
 
+    [Route("{jobKey}/overview")]
+    public async Task<IActionResult> JobOverview([FromRoute] string jobKey)
+    {
+        var data = await service.GetScheduledJobByJobKey(jobKey);
+        return View(data);
+    }
+
+    [HttpPost("{jobKey}/execute")]
+    public async Task<IActionResult> ExecuteNow([FromRoute] string jobKey)
+    {
+        var result = await service.ExecuteByJobKey(jobKey);
+        return Ok(result);
+    }
+
     [HttpPost("schedule")]
-    public async Task<IActionResult> ScheduleGenericJob([FromBody] DynamicJobScheduleRequest input)
+    public async Task<IActionResult> ScheduleJob(ScheduleJobRequest req)
+    {
+        var result = await service.ScheduleJob(req);
+        return Ok(result);
+    }
+
+    [HttpPost("schedule-dynamic")]
+    public async Task<IActionResult> ScheduleGenericJob(DynamicJobScheduleRequest input)
     {
         if (!registry.TryGetQuartzJobType(input.JobKey, out var type))
             return BadRequest("❌ Unknown job key.");

@@ -6,6 +6,7 @@ using SWSA.MvcPortal.Persistence.Seeders;
 using Serilog;
 using SWSA.MvcPortal.Commons.SignalR;
 
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -17,10 +18,7 @@ try
         .AddEnvironmentVariables();
 
     // 在配置好 Configuration 和 Environment 后，立刻初始化 Serilog
-    builder.Host.UseSerilog((ctx, services, config) =>
-        config.ReadFrom.Configuration(ctx.Configuration)
-              .ReadFrom.Services(services)
-              .Enrich.FromLogContext());
+    builder.Host.AddHostService();
 
     builder.Services.AddAppSetup(builder.Configuration, builder.Environment);
     builder.Services.ConfigureSwsaDb(builder.Configuration);
@@ -33,7 +31,6 @@ try
     builder.Services.AddQuartzJobs(builder.Configuration);
     var app = builder.Build();
 
-    app.UseRequestLogging();
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
@@ -49,7 +46,7 @@ try
         await seederManager.SeedAll();
 
         var jobScheduler = scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
-        await jobScheduler.ClearAllJobs();
+        //    await jobScheduler.ClearAllJobs();
 
         await jobScheduler.ScheduleBackgroundJob();
         Console.WriteLine("Background job scheduled at system startup.");
@@ -58,8 +55,9 @@ try
     app.UseHttpsRedirection();
     app.UseStaticFiles();
 
-    app.UseSession();
     app.UseRouting();
+    app.UseSession();
+    app.UseRequestLogging();
 
     app.UseAuthorization();
 

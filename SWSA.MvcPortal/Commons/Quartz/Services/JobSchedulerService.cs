@@ -20,9 +20,13 @@ public class JobSchedulerService(
     public async Task ScheduleJob(IJobRequest? request, ScheduledJobType type)
     {
         var executionResolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
-
         var (ctx, job, trigger) = executionResolver.BuildAll(request, type);
-        await scheduler.ScheduleJob(job, trigger);
+
+        var existing = await scheduler.GetJobDetail(job.Key);
+        if (existing == null)
+        {
+            await scheduler.ScheduleJob(job, trigger);
+        }
     }
 
     public async Task ScheduleBackgroundJob()

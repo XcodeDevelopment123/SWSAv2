@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Commons.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum ScheduleType
 {
@@ -6,5 +8,6 @@ public enum ScheduleType
     Daily,
     Weekly,
     Monthly,
+    [Display(Name ="Custom Cron")]
     Cron
 }

@@ -1,11 +1,14 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.Options;
+using Serilog;
+using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 
 namespace SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 
-public class WappySender(HttpClient client) : IMessageSender
+public class WappySender(HttpClient client, IOptions<WappySettings> options) : IMessageSender
 {
+    private readonly WappySettings _settings = options.Value;
     public MessagingChannel Channel => MessagingChannel.Wappy;
     public async Task<MessagingResult> SendAsync(MessageEnvelope message)
     {
@@ -13,7 +16,7 @@ public class WappySender(HttpClient client) : IMessageSender
         {
             var payload = new
             {
-                whatsappName = message.Data["whatsappName"],
+                whatsappName = _settings.WhatsappName,
                 number = message.Recipient,
                 body = message.Data["body"],
                 isGroup = false,

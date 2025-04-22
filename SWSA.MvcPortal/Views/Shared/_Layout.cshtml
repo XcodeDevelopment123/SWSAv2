@@ -23,6 +23,7 @@
     <!-- Flatpickr -->
     <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/style.css" rel="stylesheet">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -507,6 +508,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
     <script src="~/js/commons/sweet-alert-service.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -521,14 +523,16 @@
     <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
     <!-- Flatpickr -->
     <script src="~/lib/flatpickr/flatpickr.min.js"></script>
+    <script src="~/lib/flatpickr/plugins/weekSelect/weekselect.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+  
+
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- overlayScrollbars -->
     <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
 

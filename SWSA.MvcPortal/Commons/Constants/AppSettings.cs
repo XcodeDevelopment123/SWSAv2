@@ -33,15 +33,16 @@ public class FileSettings
     public string CloudDomain { get; set; } = string.Empty;
 }
 
-public class WappySettings 
+public class WappySettings
 {
+    public string WhatsappName { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public string ApiToken { get; set; } = string.Empty;
 }
 
 public class MessagingTemplateCode
 {
-    public const string OTP= "OTP";
+    public const string OTP = "OTP";
     public const string AssignmentWorkDueSoon = "Assignment_Work_Due_Soon";
     public const string Notification = "Notification";
 }

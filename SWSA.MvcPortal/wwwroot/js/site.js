@@ -1,6 +1,6 @@
 ﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-
+/// <reference path="commons/sweet-alert-service.js" />
 // Write your JavaScript code.
 const urls = {
     "auth": "/Auth",
@@ -12,6 +12,7 @@ const urls = {
     "company_documents": "/companies/docs",
     "company_works": "/companies/works",
     "company_work_progress": "/companies/works/progress",
+    "schedule_job": "/scheduler-jobs",
     "users": "/users",
 };
 
@@ -53,6 +54,7 @@ $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
     stopLoading();
     console.error(jqxhr.responseJSON);
     Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
+    
 });
 
 
@@ -117,4 +119,11 @@ function loadToolTip() {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+}
+
+
+function getOrdinal(day) {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const v = day % 100;
+    return day + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
 }

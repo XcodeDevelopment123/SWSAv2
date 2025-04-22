@@ -1,5 +1,4 @@
 ﻿using Quartz;
-using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Entities;
 

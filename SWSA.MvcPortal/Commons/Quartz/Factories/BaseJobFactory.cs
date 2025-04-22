@@ -48,7 +48,7 @@ public abstract class BaseJobFactory : IJobBaseFactory
         if (!string.IsNullOrWhiteSpace((ctx.Request as BaseJobRequest)?.CronExpression))
             return builder.WithCronSchedule(((BaseJobRequest)ctx.Request)!.CronExpression!).Build();
 
-        return builder.WithCronSchedule(CronExpressionBuilder.DailyAt(9)).Build();
+        return builder.WithCronSchedule(CronExpressionBuilder.DailyAt("9:00")).Build();
     }
 
     private bool IsOneTimeJob(JobBuildContext ctx)

@@ -1,0 +1,21 @@
+﻿@using SWSA.MvcPortal.Models.ScheduledJobs
+@model ScheduledJobVM
+@{
+    ViewData["Title"] = "JobOverview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Job Overview</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        @await Component.InvokeAsync("ScheduleJobUpdate", Model)
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/components/schedule-job-update.js" asp-append-version="true"></script>
+}

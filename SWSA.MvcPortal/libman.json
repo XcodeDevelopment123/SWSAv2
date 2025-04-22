@@ -15,7 +15,8 @@
       "destination": "wwwroot/lib/flatpickr/",
       "files": [
         "flatpickr.min.js",
-        "flatpickr.min.css"
+        "flatpickr.min.css",
+        "plugins/weekSelect/weekSelect.min.js"
       ]
     }
   

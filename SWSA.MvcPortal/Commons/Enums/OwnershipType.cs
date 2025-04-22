@@ -11,26 +11,26 @@ public enum OwnershipType
     CorporateOwner,
 
     [Display(Name = "Majority Shareholder")]
-    Majority,
+    MajorityShareholder,
 
     [Display(Name = "Minority Shareholder")]
-    Minority,
+    MinorityShareholder,
 
     [Display(Name = "Equal Partner")]
-    Equal,
+    EqualPartner,
 
     [Display(Name = "Foreign Owner")]
-    Foreign,
+    ForeignOwner,
 
     [Display(Name = "Local Owner")]
-    Local,
+    LocalOwner,
 
     [Display(Name = "Nominee Owner")]
-    Nominee,
+    NomineeOwner,
 
     [Display(Name = "Sole Owner")]
-    Sole,
+    SoleOwner,
 
     [Display(Name = "Joint Owner")]
-    Joint
+    JointOwner
 }

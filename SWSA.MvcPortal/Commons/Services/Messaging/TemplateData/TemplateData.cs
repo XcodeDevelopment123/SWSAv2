@@ -13,6 +13,5 @@ public class NotificationTemplateData
 
 public class WappyTemplateData
 {
-    public string WhatsappName { get; set; } = null!;
     public string Body { get; set; } = null!;
 }

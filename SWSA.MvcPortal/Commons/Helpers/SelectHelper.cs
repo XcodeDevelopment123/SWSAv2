@@ -12,6 +12,16 @@ public class SelectHelper
         return ToSelectList(selected, defaultText);
     }
 
+    public static List<SelectListItem> GetEnableDisabledSelection(bool? isEnabled)
+    {
+        return new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Please select", Value = "", Selected = isEnabled == null,Disabled=true },
+            new SelectListItem { Text = "Enable", Value = "true", Selected = isEnabled == true },
+            new SelectListItem { Text = "Disable", Value = "false", Selected = isEnabled  == false }
+        };
+    }
+
     public static List<SelectListItem> GetYesNoSelection(bool? yesOrNo)
     {
         return new List<SelectListItem>

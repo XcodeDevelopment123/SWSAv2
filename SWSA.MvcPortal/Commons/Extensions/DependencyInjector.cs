@@ -26,6 +26,7 @@ using SWSA.MvcPortal.Commons.Quartz;
 using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
+using Serilog;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -34,7 +35,6 @@ public static class DependencyInjector
     public static void AddAppSetup(this IServiceCollection services, IConfigurationManager configuration, IWebHostEnvironment environment)
     {
         services.AddHttpContextAccessor();
-        services.AddScoped<IUserContext, UserContext>();
         services.AddTransient<ExceptionMiddleware>();
 
         var allowedOrigins = configuration.GetSection(AppSettings.AllowedOrigins).Get<string[]>();
@@ -82,8 +82,17 @@ public static class DependencyInjector
 
         services.AddSignalR().AddNewtonsoftJsonProtocol();
 
+        //Should at after session added
+        services.AddScoped<IUserContext, UserContext>();
     }
 
+    public static void AddHostService(this IHostBuilder host)
+    {
+        host.UseSerilog((ctx, services, config) =>
+                config.ReadFrom.Configuration(ctx.Configuration)
+                      .ReadFrom.Services(services)
+                      .Enrich.FromLogContext());
+    }
     public static void ConfigureSwsaDb(this IServiceCollection services, IConfigurationManager configuration)
     {
         string connString = configuration.GetConnectionString(AppSettings.DbConnString)!;
@@ -207,6 +216,7 @@ public static class DependencyInjector
             {
                 ["quartz.scheduler.instanceName"] = quartzConfig.Scheduler.InstanceName,
                 ["quartz.scheduler.instanceId"] = quartzConfig.Scheduler.InstanceId,
+                ["quartz.scheduler.idleWaitTime"] = quartzConfig.Scheduler.IdleWaitTime.ToString(),
                 ["quartz.threadPool.type"] = quartzConfig.ThreadPool.Type,
                 ["quartz.threadPool.maxConcurrency"] = quartzConfig.ThreadPool.MaxConcurrency.ToString(),
                 ["quartz.jobStore.type"] = quartzConfig.JobStore.Type,
@@ -214,11 +224,12 @@ public static class DependencyInjector
                 ["quartz.jobStore.dataSource"] = quartzConfig.JobStore.DataSource,
                 ["quartz.jobStore.tablePrefix"] = quartzConfig.JobStore.TablePrefix,
                 ["quartz.jobStore.misfireThreshold"] = quartzConfig.JobStore.MisfireThreshold.ToString(),
+                ["quartz.jobStore.clustered"] = quartzConfig.JobStore.Clustered.ToString(),
+                ["quartz.jobStore.acquireTriggersWithinLock"] = quartzConfig.JobStore.AcquireTriggersWithinLock.ToString(),
                 ["quartz.dataSource.default.connectionString"] = quartzConfig.DataSource.Default.ConnectionString,
                 ["quartz.dataSource.default.provider"] = quartzConfig.DataSource.Default.Provider,
-                ["quartz.serializer.type"] = "json"
+                ["quartz.serializer.type"] = quartzConfig.Serializer.Type
             };
-
             services.AddSingleton<ISchedulerFactory>(_ => new StdSchedulerFactory(properties));
             // Quartz needs a DI-enabled JobFactory
             services.AddSingleton<IJobFactory, QuartzJobFactory>();

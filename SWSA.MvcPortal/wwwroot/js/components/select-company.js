@@ -7,13 +7,12 @@
         companyTargetUrl = $(this).data('target-url');
         var urlName = $(this).data('url-name');
         var companyId = $(this).data('company-id');
-        console.log(companyId)
         if (companyId) {
             var finalUrl = companyTargetUrl.replace('{companyId}', companyId);
             window.location.href = finalUrl;
             return;
         }
-
+       Toast
 
         $(".target-url-name").text(urlName);
         $('#companyModal').modal('show');

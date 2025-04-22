@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422063816_update-schedule-jobs-last-excute-time")]
+    partial class updateschedulejobslastexcutetime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -533,6 +536,9 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<DateTime?>("LastExecuteAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("RequestPayloadJson")
                         .HasColumnType("nvarchar(max)");
 
@@ -540,9 +546,6 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("TriggerTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UserId")

@@ -19,7 +19,7 @@
                     <thead>
                         <tr>
                             <th>Job</th>
-                            <th>Run at</th>
+                            <th>Schedule at</th>
                             <th>Last execute at</th>
                             <th>Is enabled</th>
                             <th>Created By</th>
@@ -34,7 +34,7 @@
                                 <td>
                                     @job.ToReadableSchedule()
                                 </td>
-                                <td>@job.LastUpdatedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
+                                <td>@job.LastExecuteAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
                                 <td>@(job.IsEnabled ? "Running" : "Disabled")</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(job.StaffId))
@@ -47,6 +47,11 @@
                                     }
                                 </td>
                                 <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="/scheduler-jobs/@job.JobKey/overview" class="btn btn-sm btn-info mr-2" title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        </div>
                                 </td>
                             </tr>
                         }
@@ -54,7 +59,7 @@
                     <tfoot>
                         <tr>
                             <th>Job</th>
-                            <th>Run at</th>
+                            <th>Schedule at</th>
                             <th>Last execute at</th>
                             <th>Is enabled</th>
                             <th>Created By</th>

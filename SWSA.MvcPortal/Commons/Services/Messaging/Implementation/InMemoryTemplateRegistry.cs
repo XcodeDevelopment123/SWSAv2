@@ -16,7 +16,7 @@ public class InMemoryTemplateRegistry : ITemplateRegistry
     private readonly Dictionary<(string TemplateCode, MessagingChannel Channel), string[]> _templateChannelRequiredKeys = new()
     {
         [(MessagingTemplateCode.AssignmentWorkDueSoon, MessagingChannel.Email)] = new[] { "title", "content", "footer" },
-        [(MessagingTemplateCode.AssignmentWorkDueSoon, MessagingChannel.WhatsApp)] = new[] { "whatsappName", "body" },
+        [(MessagingTemplateCode.AssignmentWorkDueSoon, MessagingChannel.WhatsApp)] = new[] { "body" },
         [(MessagingTemplateCode.OTP, MessagingChannel.SMS)] = new[] { "otp" },
         [(MessagingTemplateCode.OTP, MessagingChannel.Email)] = new[] { "otp", "emailSubject" },
         [(MessagingTemplateCode.Notification, MessagingChannel.Email)] = new[] { "title", "message" },

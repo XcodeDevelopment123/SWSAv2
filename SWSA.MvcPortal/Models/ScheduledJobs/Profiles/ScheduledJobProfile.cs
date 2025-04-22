@@ -20,7 +20,10 @@ public class ScheduledJobProfile : Profile
                       return src.CreatedBy;
                   }))
                     .ForMember(dest => dest.StaffId, opt => opt.MapFrom((src, dest) => src.User?.StaffId ?? "")
-                  );
+                  )
+                  .AfterMap((src, dest) => { 
+                      dest.CronFields = dest.ParseCron();
+                  });
 
 
 

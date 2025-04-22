@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Commons.Quartz.Support;
@@ -39,14 +38,14 @@ public class ScheduledJobSeeder(AppDbContext db) : ISeeder
 
     private List<ScheduledJob> GetDefaultJobs()
     {
-
         return [
         new ()
         {
             JobKey = QuartzJobKeys.AssignmentDueSoonJobKey.Name,
             JobGroup = QuartzJobKeys.AssignmentDueSoonJobKey.Group,
+            JobType= ScheduledJobType.AssignmentDueSoon,
             ScheduleType = ScheduleType.Daily,
-            CronExpression = CronExpressionBuilder.DailyAt(9, 0),
+            CronExpression = CronExpressionBuilder.DailyAt("9:00"),
             IsEnabled = true,
             IsCustom = false,
             CreatedAt = DateTime.Now

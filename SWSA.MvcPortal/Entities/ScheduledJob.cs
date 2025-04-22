@@ -18,6 +18,7 @@ public class ScheduledJob
     /// <summary>调度类型：Once, Daily, Weekly, Monthly, Cron</summary>
 
     public ScheduleType ScheduleType { get; set; } = default!;
+    public ScheduledJobType JobType { get; set; }
 
     /// <summary>如果是 One-Time 类型，这里是执行时间</summary>
     public DateTime? TriggerTime { get; set; }
@@ -33,6 +34,7 @@ public class ScheduledJob
 
     /// <summary>序列化的请求参数（如 JobRequest）</summary>
     public string? RequestPayloadJson { get; set; }
+    public DateTime? LastExecuteAt { get; set; }
 
     /// <summary>任务创建者</summary>
     public string CreatedBy { get; set; } = "System Default"; // if userId not null, use user full name instead of default
@@ -40,5 +42,5 @@ public class ScheduledJob
     public int? UserId { get; set; } //If null , that is System Default
     public User? User { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime? LastUpdatedAt { get; set;}
+    public DateTime? UpdatedAt { get; set; }
 }

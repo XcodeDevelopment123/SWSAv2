@@ -151,7 +151,6 @@
 
     //#endregion
 
-
     //#region Owner Form 
     const $ownerForm = $("#ownerForm");
     const $btnAddOwner = $("#btnAddOwner");
@@ -279,12 +278,14 @@
         editOwner.id = $(this).data("id");
         editOwner.index = row.index();
 
+        const ownership = rowData[5];
+
         ownerFormInputs.namePerIC.val(rowData[0]);
         ownerFormInputs.icOrPassportNumber.val(rowData[1]);
         ownerFormInputs.email.val(rowData[2]);
         ownerFormInputs.phoneNumber.val(rowData[3]);
         ownerFormInputs.position.val(rowData[4]).trigger('change');
-        ownerFormInputs.ownershipType.val(rowData[5]).trigger('change');
+        ownerFormInputs.ownershipType.val(ownership.replace(" ", "")).trigger('change');
         ownerFormInputs.taxReferenceNumber.val(rowData[6]);
 
         $btnAddOwner.text("Save");
@@ -593,12 +594,12 @@
         editStaff.isEdit = true;
         editStaff.id = $(this).data("id");
         editStaff.index = row.index();
-
+  
         staffFormInputs.contactName.val(rowData[0]);
         staffFormInputs.whatsApp.val(rowData[1]);
         staffFormInputs.email.val(rowData[2]);
-        staffFormInputs.remark.val(rowData[3]);
-        staffFormInputs.position.val(rowData[4]).trigger("change");
+        staffFormInputs.position.val(rowData[3]).trigger("change");
+        staffFormInputs.remark.val(rowData[4]);
 
         $btnAddStaff.text("Save");
         $btnCancelStaff.show();
@@ -756,10 +757,10 @@
         let html =
             `
    <div class="btn-group" role="group">
-       <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="${data.contactId}" data-name="${data.contactName}" title="Edit">
+       <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="${data.staffId}" data-name="${data.contactName}" title="Edit">
            <i class="fa fa-edit"></i>
        </button>
-       <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="${data.contactId}" data-name="${data.contactName}"><i class="fa fa-trash"></i></button>
+       <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="${data.staffId}" data-name="${data.contactName}"><i class="fa fa-trash"></i></button>
    </div>
                `;
         if (editStaff.isEdit) {

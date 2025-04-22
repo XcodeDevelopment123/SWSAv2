@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421135138_update-scheduled-job-type")]
+    partial class updatescheduledjobtype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -530,7 +533,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("JobType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("LastExecuteAt")
+                    b.Property<DateTime?>("LastUpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RequestPayloadJson")
@@ -540,9 +543,6 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("TriggerTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UserId")

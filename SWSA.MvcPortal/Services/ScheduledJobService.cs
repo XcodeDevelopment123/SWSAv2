@@ -3,7 +3,12 @@
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Commons.Helpers;
+using SWSA.MvcPortal.Commons.Quartz.Requests;
+using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
+using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
 using SWSA.MvcPortal.Models.ScheduledJobs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -15,13 +20,79 @@ IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IUserContext userContext,
-IScheduledJobRepository repo
+IScheduledJobRepository repo,
+IJobSchedulerService schedulerService
     ) : IScheduledJobService
 {
     public async Task<List<ScheduledJobVM>> GetAllScheduledJobs()
     {
         var data = await repo.GetAllAsync();
         return mapper.Map<List<ScheduledJobVM>>(data);
+    }
+
+    public async Task<ScheduledJobVM> GetScheduledJobByJobKey(string jobKey)
+    {
+        var data = await repo.GetScheduledByJobKeyAsync(jobKey);
+        return mapper.Map<ScheduledJobVM>(data);
+    }
+
+    public async Task<bool> ScheduleJob(ScheduleJobRequest req)
+    {
+        var data = await repo.GetScheduledByJobKeyAsync(req.JobKey);
+        Guard.AgainstNullData(data, "Job Not Found");
+
+        if (req.ExecuteNow)
+        {
+            var executeRequest = new BaseJobRequest()
+            {
+                StartTime = DateTime.Now,
+            };
+            await schedulerService.ScheduleJob(executeRequest, data.JobType);
+            data.LastExecuteAt = DateTime.Now;
+        }
+        string cronExpression = CronExpressionBuilder.BuildCronExpression(req);
+
+        data.IsEnabled = req.IsEnabled;
+        data.ScheduleType = req.ScheduleType;
+        data.CronExpression = cronExpression;
+        data.UpdatedAt = DateTime.Now;
+        data.TriggerTime = req.ScheduleType == ScheduleType.Once ? req.TriggerTime : null;
+
+        var request = new BaseJobRequest()
+        {
+            StartTime = req.ScheduleType == ScheduleType.Once ? req.TriggerTime : null,
+            CronExpression = cronExpression,
+            IsCustom = data.IsCustom
+        };
+
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+
+        await schedulerService.ClearSpecificJobByKey(req.JobKey);
+        if (data.IsEnabled)
+        {
+            await schedulerService.ScheduleJob(request, data.JobType);
+        }
+
+        return true;
+    }
+
+    public async Task<bool> ExecuteByJobKey(string jobKey)
+    {
+        var data = await repo.GetScheduledByJobKeyAsync(jobKey);
+        Guard.AgainstNullData(data, "Job Not Found");
+
+        var request = new BaseJobRequest()
+        {
+            StartTime = DateTime.Now,
+        };
+        await schedulerService.ScheduleJob(request, data.JobType);
+
+        data.LastExecuteAt = DateTime.Now;
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task UpdateExecuteTimeAsync(string jobkey)
@@ -33,7 +104,7 @@ IScheduledJobRepository repo
             return;
         }
 
-        job.LastUpdatedAt = DateTime.Now;
+        job.LastExecuteAt = DateTime.Now;
         repo.Update(job);
         await repo.SaveChangesAsync();
     }

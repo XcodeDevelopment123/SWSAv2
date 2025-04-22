@@ -1,4 +1,9 @@
-﻿namespace SWSA.MvcPortal.Commons.Helpers;
+﻿using Quartz;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Exceptions;
+using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
+
+namespace SWSA.MvcPortal.Commons.Helpers;
 /// <summary>
 /// A utility class for building Quartz-compatible Cron expressions.
 /// Use the provided methods for common patterns, or use Build() for custom expressions.
@@ -6,74 +11,78 @@
 public static class CronExpressionBuilder
 {
     /// <summary>
-    /// Build a full 5-field cron expression.
-    /// Format: minute hour day month weekday
+    /// 尝试从 "HH:mm" 解析 hour 和 minute，默认返回 0, 0
     /// </summary>
-    /// <param name="minute">0-59</param>
-    /// <param name="hour">0-23</param>
-    /// <param name="day">1-31</param>
-    /// <param name="month">1-12</param>
-    /// <param name="weekday">0-6 (0=Sunday), use "?" when day is specified</param>
-    /// <returns>Formatted cron string</returns>
-    public static string Build(
-        string minute = "*",
-        string hour = "*",
-        string day = "*",
-        string month = "*",
-        string weekday = "*")
+    private static (int hour, int minute) ParseTime(string? time)
     {
-        return $"{minute} {hour} {day} {month} {weekday}";
+        if (string.IsNullOrWhiteSpace(time)) return (0, 0);
+
+        var parts = time.Split(":");
+        if (parts.Length != 2) return (0, 0);
+
+        bool parsedHour = int.TryParse(parts[0], out int hour);
+        bool parsedMinute = int.TryParse(parts[1], out int minute);
+
+        return (parsedHour ? hour : 0, parsedMinute ? minute : 0);
     }
 
     /// <summary>
-    /// 每天指定时间执行
+    /// 验证是否为合法的 Quartz Cron 表达式（支持 6 或 7 段格式）
     /// </summary>
-    public static string DailyAt(int hour = 9, int minute = 0)
-        => $"0 {minute} {hour} ? * *"; // 秒 分 时 日 月 星期
+    public static bool IsValid(string? cron)
+    {
+        if (string.IsNullOrWhiteSpace(cron))
+            return false;
+
+        return CronExpression.IsValidExpression(cron);
+    }
 
     /// <summary>
-    /// 每周指定星期几与时间执行（1=Sunday, 2=Monday, ..., 7=Saturday）
+    /// 每天指定时间执行 24hr
     /// </summary>
-    public static string WeeklyOn(int weekday = 2, int hour = 9, int minute = 0)
-        => $"0 {minute} {hour} ? * {weekday}";
+    public static string DailyAt(string? time)
+    {
+        var (hour, minute) = ParseTime(time);
+        return $"0 {minute} {hour} ? * *";
+    }
 
     /// <summary>
-    /// 每月指定日期与时间执行（day: 1~31）
+    /// 每周指定星期几与时间执行（DayOfWeek: 0 = Sunday, 1 = Monday, ..., 6 = Saturday）
     /// </summary>
-    public static string MonthlyAt(int day = 1, int hour = 9, int minute = 0)
-        => $"0 {minute} {hour} {day} * ?";
+    public static string WeeklyOn(DayOfWeek dayOfWeek, string? time)
+    {
+        var (hour, minute) = ParseTime(time);
+        int quartzDay = (int)dayOfWeek;
+        if (quartzDay == 0) quartzDay = 7; // Sunday in Quartz = 7
+        return $"0 {minute} {hour} ? * {quartzDay}";
+    }
 
     /// <summary>
-    /// 每 X 分钟执行一次
+    /// 每月指定日期与时间执行（day: "1" ~ "31"）
     /// </summary>
-    public static string EveryXMinutes(int interval)
-        => $"0 0/{interval} * * * ?";
+    public static string MonthlyAt(string? dayOfMonth, string? time)
+    {
+        var (hour, minute) = ParseTime(time);
+        var day = string.IsNullOrWhiteSpace(dayOfMonth) ? "1" : dayOfMonth;
+        return $"0 {minute} {hour} {day} * ?";
+    }
 
-    /// <summary>
-    /// 每 X 小时执行一次
-    /// </summary>
-    public static string EveryXHours(int interval)
-        => $"0 0 0/{interval} * * ?";
-
-    /// <summary>
-    /// 每小时的固定分钟执行（例如：每小时第15分钟执行）
-    /// </summary>
-    public static string HourlyAt(int minute = 0)
-        => $"0 {minute} * * * ?";
-
-    /// <summary>
-    /// 每分钟执行一次
-    /// </summary>
-    public static string EveryMinute()
-        => "0 * * * * ?";
-
-    /// <summary>
-    /// Usage Examples:
-    /// - CronExpressionBuilder.DailyAt(9, 0) → "0 9 * * ?" (every day 9AM)
-    /// - CronExpressionBuilder.WeeklyOn(1, 8) → "0 8 ? * 1" (every Monday 8AM)
-    /// - CronExpressionBuilder.Build("0", "12", "1", "*", "?") → every month 1st, 12PM
-    /// </summary>
-    public static void Examples() { }
+    public static string BuildCronExpression(ScheduleJobRequest req)
+    {
+        return req.ScheduleType switch
+        {
+            ScheduleType.Once => string.Empty,
+            ScheduleType.Cron => CronExpressionBuilder.IsValid(req.CronExpression)
+                ? req.CronExpression
+                : throw new BusinessLogicException("Invalid Cron Expression"),
+            ScheduleType.Daily => CronExpressionBuilder.DailyAt(req.CronFields.Time),
+            ScheduleType.Weekly => req.CronFields.DayOfWeek is not null
+                ? CronExpressionBuilder.WeeklyOn(req.CronFields.DayOfWeek.Value, req.CronFields.Time)
+                : throw new BusinessLogicException("DayOfWeek is required for weekly schedule."),
+            ScheduleType.Monthly => CronExpressionBuilder.MonthlyAt(req.CronFields.DayOfMonth, req.CronFields.Time),
+            _ => throw new NotSupportedException("Unsupported ScheduleType.")
+        };
+    }
 }
 
 //┌────────── 秒
@@ -90,7 +99,7 @@ public static class CronExpressionBuilder
 // - hour: 0~23，例如 "9" 上午九点，"*/2" 每 2 小时
 // - day: 1~31，月中的日期，例如 "1" 每月 1 日
 // - month: 1~12，例如 "1,6" 表示一月与六月
-// - weekday: 0~6，0 表示周日，使用 "?" 表示不指定（不能与 day 同时指定）
+// - weekday: 1~7，7 表示周日，使用 "?" 表示不指定（不能与 day 同时指定）
 
 // 特殊符号：
 // * 任意值, / 步长, , 多值, - 范围, ? 不指定

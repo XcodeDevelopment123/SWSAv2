@@ -43,7 +43,6 @@ public class AssignmentDueSoonJob(
 
                     var wappyMessage = new WappyTemplateData
                     {
-                        WhatsappName = staff.ContactName,
                         Body = $"""
                             [SWSA] Reminder 🕒
 
@@ -55,7 +54,6 @@ public class AssignmentDueSoonJob(
                             *This is system auto generated*
                             """
                     };
-
                     await messagingService.SendAsync(
                         MessagingChannel.Wappy,
                         whatsapp,
@@ -64,8 +62,6 @@ public class AssignmentDueSoonJob(
                         "Reminder: tasks due soon"
                     );
                 }
-
-
             }
 
             Log.Information($"[AssignmentDueSoonJob] {tasks.Count} due soon assignment found");
