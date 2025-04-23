@@ -1,7 +1,9 @@
 ﻿using CronExpressionDescriptor;
+using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
+using SWSA.MvcPortal.Commons.Quartz.Requests;
 using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Models.ScheduledJobs;
@@ -20,7 +22,8 @@ public class ScheduledJobVM
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public CronFields CronFields { get; set; }
-
+    public bool IsRequireExtraParams { get; set; }
+    public string? PayloadJson { get; set; }
     public string ToReadableSchedule()
     {
         try
@@ -120,4 +123,22 @@ public class ScheduledJobVM
         return char.ToUpper(input[0]) + input.Substring(1);
     }
 
+}
+
+public static class ScheduledJobVMExtensions
+{
+    public static T? GetJobRequest<T>(this ScheduledJobVM job) where T : BaseJobRequest, new()
+    {
+        if (string.IsNullOrWhiteSpace(job.PayloadJson))
+            return null;
+
+        try
+        {
+            return JsonConvert.DeserializeObject<T>(job.PayloadJson);
+        }
+        catch
+        {
+            return null; // 可加日志记录
+        }
+    }
 }

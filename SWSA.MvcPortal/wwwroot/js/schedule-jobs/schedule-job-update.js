@@ -5,7 +5,12 @@
         scheduleType: $("select[name='scheduleType']"),
         cronExpression: $("input[name='cronExpression']"),
         triggerTime: $("input[name='dateTimePicker']"),
-        isEnabled: $("select[name='isEnabled']")
+        isEnabled: $("select[name='isEnabled']"),
+        payloadJson: {
+            companyId: $("select[name='companyId']"),
+            month: $("input[name='month']"),
+            year: $("select[name='year']"),
+        }
     };
     let clickedButton = null;
     jobTriggerSettingForm.scheduleType.on("change", function () {
@@ -138,6 +143,21 @@
 
 
     initSelect2()
+
+    flatpickr("#month", {
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: false,
+                dateFormat: "m (F)",
+                altFormat: "m (F)",
+            })
+        ],
+        onReady: function (selectedDates, dateStr, instance) {
+            instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
+        },
+    });
+  
+
 
     flatpickr("#dateTimePicker", {
         allowInput: true,

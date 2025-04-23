@@ -9,8 +9,9 @@ public interface IScheduledJobService
     Task<List<ScheduledJobVM>> GetAllScheduledJobs();
     Task<ScheduledJobVM> GetScheduledJobByJobKey(string jobKey);
 
-    Task<bool> ScheduleJob(ScheduleJobRequest req);
+    Task<bool> UpdateScheduleJob(UpdateScheduleJobRequest req);
 
     // Define your method here
     Task UpdateExecuteTimeAsync(string jobkey);
+    Task<string> CreateScheduleJob(CreateScheduleJobRequest req);
 }

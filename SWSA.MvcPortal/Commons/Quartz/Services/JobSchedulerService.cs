@@ -17,7 +17,7 @@ public class JobSchedulerService(
     IServiceProvider serviceProvider
     ) : IJobSchedulerService
 {
-    public async Task ScheduleJob(IJobRequest? request, ScheduledJobType type)
+    public async Task<JobKey> ScheduleJob(IJobRequest? request, ScheduledJobType type)
     {
         var executionResolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
         var (ctx, job, trigger) = executionResolver.BuildAll(request, type);
@@ -27,6 +27,8 @@ public class JobSchedulerService(
         {
             await scheduler.ScheduleJob(job, trigger);
         }
+
+        return job.Key;
     }
 
     public async Task ScheduleBackgroundJob()
@@ -83,6 +85,28 @@ public class JobSchedulerService(
             await scheduler.UnscheduleJob(triggerKey);
             Log.Information($"⏱ Trigger {triggerKey} in group '{groupName}' unscheduled.");
         }
+    }
+
+    /// <summary>
+    /// 根据指定 Group 名称清除所有 Trigger（保留 Job 本体）
+    /// </summary>
+    public async Task ClearTriggersByJobkey(string jobKey)
+    {
+        var allJobKeys = await scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
+        var targetJobKey = allJobKeys.FirstOrDefault(jk => jk.Name.Equals(jobKey, StringComparison.OrdinalIgnoreCase));
+        if (targetJobKey == null)
+        {
+            Log.Information($"❌ Job '{jobKey}' not found.");
+            return;
+        }
+
+        var triggers = await scheduler.GetTriggersOfJob(targetJobKey);
+        var triggerKeys = triggers.Select(c => c.Key).ToList();
+        var result = await scheduler.UnscheduleJobs(triggerKeys);
+
+        Log.Information(result
+         ? $"✅ Job: '{jobKey}' triggers cleared."
+         : $"⚠️ Failed to clear job '{jobKey}' triggers.");
     }
 
     /// <summary>

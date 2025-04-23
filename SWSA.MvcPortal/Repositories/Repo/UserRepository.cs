@@ -12,29 +12,29 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     // Implement the method
     public async Task<List<User>> GetByActiveStatus(bool isActive)
     {
-        return await db.Users.Where(u => u.IsActive == isActive).ToListAsync();
+        return await db.Set<User>().Where(u => u.IsActive == isActive).ToListAsync();
     }
 
     public async Task<User> GetByUsernameAsync(string username)
     {
-        return await db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        return await db.Set<User>().FirstOrDefaultAsync(u => u.Username == username);
     }
 
     public async Task<User> GetByStaffIdAsync(string staffId)
     {
-        return await db.Users.FirstOrDefaultAsync(u => u.StaffId == staffId);
+        return await db.Set<User>().FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 
     public async Task<Dictionary<string, User>> GetDictionaryByStaffIdsAsync(List<string> staffIds)
     {
-        return await db.Users
+        return await db.Set<User>()
             .Where(u => staffIds.Contains(u.StaffId))
             .ToDictionaryAsync(u => u.StaffId);
     }
 
     public async Task<bool> ExistsByUsernameAsync(string username)
     {
-        return await db.Users.AnyAsync(u => u.Username == username);
+        return await db.Set<User>().AnyAsync(u => u.Username == username);
     }
 
     //Rewrite the GetAllAsync method

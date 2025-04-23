@@ -2,6 +2,7 @@
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
+using SWSA.MvcPortal.Models.ScheduledJobs;
 
 namespace SWSA.MvcPortal.Commons.Helpers;
 /// <summary>
@@ -67,19 +68,19 @@ public static class CronExpressionBuilder
         return $"0 {minute} {hour} {day} * ?";
     }
 
-    public static string BuildCronExpression(ScheduleJobRequest req)
+    public static string BuildCronExpression(CronFields cronFields, string cronExpression, ScheduleType type)
     {
-        return req.ScheduleType switch
+        return type switch
         {
             ScheduleType.Once => string.Empty,
-            ScheduleType.Cron => CronExpressionBuilder.IsValid(req.CronExpression)
-                ? req.CronExpression
+            ScheduleType.Cron => CronExpressionBuilder.IsValid(cronExpression)
+                ? cronExpression
                 : throw new BusinessLogicException("Invalid Cron Expression"),
-            ScheduleType.Daily => CronExpressionBuilder.DailyAt(req.CronFields.Time),
-            ScheduleType.Weekly => req.CronFields.DayOfWeek is not null
-                ? CronExpressionBuilder.WeeklyOn(req.CronFields.DayOfWeek.Value, req.CronFields.Time)
+            ScheduleType.Daily => CronExpressionBuilder.DailyAt(cronFields.Time),
+            ScheduleType.Weekly => cronFields.DayOfWeek is not null
+                ? CronExpressionBuilder.WeeklyOn(cronFields.DayOfWeek.Value, cronFields.Time)
                 : throw new BusinessLogicException("DayOfWeek is required for weekly schedule."),
-            ScheduleType.Monthly => CronExpressionBuilder.MonthlyAt(req.CronFields.DayOfMonth, req.CronFields.Time),
+            ScheduleType.Monthly => CronExpressionBuilder.MonthlyAt(cronFields.DayOfMonth, cronFields.Time),
             _ => throw new NotSupportedException("Unsupported ScheduleType.")
         };
     }

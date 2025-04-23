@@ -1,6 +1,9 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Quartz.Requests;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -15,10 +18,10 @@ public class ScheduledJob
     /// <summary>Quartz Job Group，如 NotificationGroup </summary>
     public string JobGroup { get; set; } = default!;
 
+    public ScheduledJobType JobType { get; set; }
     /// <summary>调度类型：Once, Daily, Weekly, Monthly, Cron</summary>
 
     public ScheduleType ScheduleType { get; set; } = default!;
-    public ScheduledJobType JobType { get; set; }
 
     /// <summary>如果是 One-Time 类型，这里是执行时间</summary>
     public DateTime? TriggerTime { get; set; }
@@ -43,4 +46,51 @@ public class ScheduledJob
     public User? User { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+}
+
+public static class ScheduledJobExtensions
+{
+    private static readonly HashSet<ScheduledJobType> _jobTypesWithExtraParams = new()
+    {
+        ScheduledJobType.GenerateAssignmentReport,
+    };
+
+    public static bool RequiresExtraPayload(this ScheduledJob job)
+        => _jobTypesWithExtraParams.Contains(job.JobType);
+
+    /// <summary>判断 Payload 是否为指定类型且所有非 Base 属性已填写</summary>
+    public static bool HasValidPayload<T>(this ScheduledJob job) where T : BaseJobRequest, new()
+    {
+        if (string.IsNullOrWhiteSpace(job.RequestPayloadJson)) return false;
+
+        T? payload;
+        try
+        {
+            payload = JsonConvert.DeserializeObject<T>(job.RequestPayloadJson);
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (payload == null) return false;
+
+        // 获取当前类的属性（排除继承自 BaseJobRequest 的属性）
+        var extraProperties = typeof(T)
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+        foreach (var prop in extraProperties)
+        {
+            var value = prop.GetValue(payload);
+
+            // 判断空值（可调整规则）
+            if (value == null) return false;
+
+            // 针对数字和枚举再加强判断
+            if (prop.PropertyType.IsValueType && Equals(value, Activator.CreateInstance(prop.PropertyType)))
+                return false;
+        }
+
+        return true;
+    }
 }

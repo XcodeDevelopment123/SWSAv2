@@ -12,12 +12,14 @@ public class RepositoryBase<T>(
     ) : IRepositoryBase<T> where T : class
 {
     private static readonly ConcurrentDictionary<Type, string> _keyNameCache = new();
+    private readonly DbSet<T> _dbSet = db.Set<T>();
+
 
     #region CRUD
     public virtual void Add(T entity)
     {
         BeforeAdd(entity);
-        db.Set<T>().Add(entity);
+        _dbSet.Add(entity);
     }
 
     public virtual void AddRange(IEnumerable<T> entities)
@@ -26,13 +28,13 @@ public class RepositoryBase<T>(
         {
             BeforeAdd(entity);
         }
-        db.Set<T>().AddRange(entities);
+        _dbSet.AddRange(entities);
     }
 
     public virtual void Remove(T entity)
     {
         BeforeRemove(entity);
-        db.Set<T>().Remove(entity);
+        _dbSet.Remove(entity);
     }
 
     public virtual void RemoveRange(IEnumerable<T> entities)
@@ -41,13 +43,13 @@ public class RepositoryBase<T>(
         {
             BeforeRemove(entity);
         }
-        db.Set<T>().RemoveRange(entities);
+        _dbSet.RemoveRange(entities);
     }
 
     public virtual void Update(T entity)
     {
         BeforeUpdate(entity);
-        db.Set<T>().Update(entity);
+        _dbSet.Update(entity);
     }
 
     public virtual void UpdateRange(IEnumerable<T> entities)
@@ -56,7 +58,7 @@ public class RepositoryBase<T>(
         {
             BeforeUpdate(entity);
         }
-        db.Set<T>().UpdateRange(entities);
+        _dbSet.UpdateRange(entities);
     }
 
     //Provide for repository rewrite the method
@@ -108,41 +110,14 @@ public class RepositoryBase<T>(
     public async Task<T?> GetByIdAsync(object id)
     {
         var query = await BuildGetByIdQueryAsync();
-        var keyName = GetPrimaryKeyName(typeof(T));
-
-        // e => EF.Property<object>(e, keyName) == id
-        var parameter = Expression.Parameter(typeof(T), "e");
-        var property = Expression.Call(
-            typeof(EF),
-            nameof(EF.Property),
-            new[] { typeof(object) },
-            parameter,
-            Expression.Constant(keyName)
-        );
-        var equals = Expression.Equal(property, Expression.Convert(Expression.Constant(id), typeof(object)));
-        var lambda = Expression.Lambda<Func<T, bool>>(equals, parameter);
-
-        return await query.FirstOrDefaultAsync(lambda);
+        return await query.FirstOrDefaultAsync(BuildKeyLambda(id));
     }
 
     public virtual async Task<T?> GetWithIncludedByIdAsync(object id)
     {
         var query = await BuildQueryWithIncludesAsync();
-        var keyName = GetPrimaryKeyName(typeof(T));
 
-        // e => EF.Property<object>(e, keyName) == id
-        var parameter = Expression.Parameter(typeof(T), "e");
-        var property = Expression.Call(
-            typeof(EF),
-            nameof(EF.Property),
-            new[] { typeof(object) },
-            parameter,
-            Expression.Constant(keyName)
-        );
-        var equals = Expression.Equal(property, Expression.Convert(Expression.Constant(id), typeof(object)));
-        var lambda = Expression.Lambda<Func<T, bool>>(equals, parameter);
-
-        return await query.FirstOrDefaultAsync(lambda);
+        return await query.FirstOrDefaultAsync(BuildKeyLambda(id));
     }
     #endregion
 
@@ -150,8 +125,7 @@ public class RepositoryBase<T>(
 
     public async Task<PagedResult<T>> GetPagedAsync(int pageIndex, int pageSize)
     {
-        var query = db.Set<T>().AsQueryable();
-
+        var query = await BuildQueryAsync();
         int totalCount = await query.CountAsync();
         var items = await query
             .Skip((pageIndex - 1) * pageSize)
@@ -197,6 +171,15 @@ public class RepositoryBase<T>(
             var key = efEntity?.FindPrimaryKey()?.Properties.FirstOrDefault()?.Name;
             return key ?? throw new InvalidOperationException($"No primary key defined for entity {type.Name}");
         });
+    }
+
+    private Expression<Func<T, bool>> BuildKeyLambda(object id)
+    {
+        var keyName = GetPrimaryKeyName(typeof(T));
+        var parameter = Expression.Parameter(typeof(T), "e");
+        var property = Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(object) }, parameter, Expression.Constant(keyName));
+        var equals = Expression.Equal(property, Expression.Convert(Expression.Constant(id), typeof(object)));
+        return Expression.Lambda<Func<T, bool>>(equals, parameter);
     }
 
     #endregion

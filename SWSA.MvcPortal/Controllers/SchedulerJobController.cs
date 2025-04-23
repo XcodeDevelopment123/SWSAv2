@@ -23,6 +23,12 @@ public class SchedulerJobController(
         return View(data);
     }
 
+    [Route("create")]
+    public async Task<IActionResult> Create()
+    {
+        return View();
+    }
+
     [Route("{jobKey}/overview")]
     public async Task<IActionResult> JobOverview([FromRoute] string jobKey)
     {
@@ -38,9 +44,9 @@ public class SchedulerJobController(
     }
 
     [HttpPost("schedule")]
-    public async Task<IActionResult> ScheduleJob(ScheduleJobRequest req)
+    public async Task<IActionResult> ScheduleJob(UpdateScheduleJobRequest req)
     {
-        var result = await service.ScheduleJob(req);
+        var result = await service.UpdateScheduleJob(req);
         return Ok(result);
     }
 

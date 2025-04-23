@@ -1,0 +1,154 @@
+﻿@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Commons.Quartz.Requests
+@using SWSA.MvcPortal.Models.ScheduledJobs
+@{
+    ViewData["Title"] = "JobOverview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var jobTypes = SelectHelper.GetEnumSelectList<ScheduledJobType>(null);
+    var scheduledType = SelectHelper.GetEnumSelectList<ScheduleType>(null);
+    var dayOfWeek = SelectHelper.GetEnumSelectList<DayOfWeek>(null);
+}
+<h3>Create new job</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="jobTriggerSettingForm">
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Job Trigger Settings</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+                    <div class="col-md-12 row" id="trigger-settings-container">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="jobType">Job Type</label>
+                                <select id="jobType" name="jobType" class="form-control select2">
+                                    @Html.RenderOptions(jobTypes)
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="scheduleType">
+                                    Schedule Type
+                                    <a href='https://crontab.guru' target='_blank' style="color:#000">
+                                        <i class="fas fa-info-circle"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           data-bs-html="true"
+                                           title="<ul class='mb-1'>
+                                        <li><b>Once</b>: Only triggers one time</li>
+                                        <li><b>Daily</b>: Triggers every day</li>
+                                        <li><b>Weekly</b>: Triggers on specified weekday(s)</li>
+                                        <li><b>Monthly</b>: Triggers on specified date(s)</li>
+                                        <li><b>Cron</b>: Custom expression (advanced users only)
+                                          <br/><small class='text-warning'>Use only if you know cron syntax.</small>
+                                          <br/><strong> Click to know more</strong>
+                                        </li>
+                                      </ul>">
+                                        </i>
+                                    </a>
+                                </label>
+                                <select id="scheduleType" name="scheduleType" class="form-control select2">
+                                    @Html.RenderOptions(scheduledType)
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="weekPickerContainer" class="col-md-4" style="display:none">
+
+                            <div class="form-group">
+                                <label for="weekPicker">Week day</label>
+                                <select id="weekPicker" name="weekPicker" class="form-control select2">
+                                    @Html.RenderOptions(dayOfWeek)
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="datePickerContainer" class="col-md-4" style="display:none">
+                            <div class="form-group">
+                                <label for="datePicker">Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="" id="datePicker" name="datePicker" class="form-control" placeholder="Select date time" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="timePickerContainer" class="col-md-4" style="display:none">
+                            <div class="form-group">
+                                <label for="timePicker">Time</label>
+                                <div class="input-group">
+                                    <input type="text" id="timePicker" name="timePicker" class="form-control" placeholder="Select date time" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="dateTimePickerContainer" class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateTimePicker">Trigger At</label>
+                                <div class="input-group">
+                                    <input type="text" id="dateTimePicker" name="dateTimePicker" class="form-control" placeholder="Select date time" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="cronInputContainer" class="col-md-6" style="display:none">
+                            <div class="form-group">
+                                <label for="cronExpression">Cron Expression</label>
+                                <input id="cronExpression" name="cronExpression" class="form-control" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group float-end" role="group">
+
+                        <!-- Schedule + Trigger -->
+                        <button type="submit" name="action" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/schedule-jobs/create-job.js" asp-append-version="true"></script>
+}

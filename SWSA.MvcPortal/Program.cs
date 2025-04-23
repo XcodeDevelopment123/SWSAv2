@@ -21,7 +21,7 @@ try
     builder.Host.AddHostService();
 
     builder.Services.AddAppSetup(builder.Configuration, builder.Environment);
-    builder.Services.ConfigureSwsaDb(builder.Configuration);
+    builder.Services.ConfigureSwsaDb(builder.Configuration, builder.Environment);
     builder.Services.AddSeedData();
     builder.Services.ConfigureHttpClientService(builder.Configuration);
     builder.Services.ConfigureAppService(builder.Configuration);

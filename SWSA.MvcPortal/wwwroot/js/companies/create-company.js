@@ -378,14 +378,16 @@
     });
 
     flatpickr("#yearEndMonth", {
-
         plugins: [
             new monthSelectPlugin({
                 shorthand: false,
                 dateFormat: "m (F)",
                 altFormat: "m (F)",
             })
-        ]
+        ],
+        onReady: function (selectedDates, dateStr, instance) {
+            instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
+        },
     });
 
     $(document).on('click', '.btn-delete-row', function () {

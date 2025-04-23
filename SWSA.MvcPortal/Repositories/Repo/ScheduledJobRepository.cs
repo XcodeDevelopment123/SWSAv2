@@ -12,6 +12,7 @@ public class ScheduledJobRepository(AppDbContext db) : RepositoryBase<ScheduledJ
     // Implement the method
     public async Task<List<ScheduledJob>> GetDefaultAndEnabledJobs()
     {
+
         return await db.Set<ScheduledJob>().Where(c => !c.IsCustom).ToListAsync();
     }
 

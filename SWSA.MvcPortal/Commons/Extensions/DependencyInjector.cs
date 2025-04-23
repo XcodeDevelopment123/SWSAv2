@@ -93,14 +93,21 @@ public static class DependencyInjector
                       .ReadFrom.Services(services)
                       .Enrich.FromLogContext());
     }
-    public static void ConfigureSwsaDb(this IServiceCollection services, IConfigurationManager configuration)
+    public static void ConfigureSwsaDb(this IServiceCollection services, IConfigurationManager configuration, IWebHostEnvironment environment)
     {
         string connString = configuration.GetConnectionString(AppSettings.DbConnString)!;
+
+
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(connString,
-                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-            .EnableSensitiveDataLogging(); //Show param in console
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+
+            if (environment.IsDevelopment())
+            {
+                options.EnableSensitiveDataLogging();
+            }
+
 
         }, ServiceLifetime.Scoped);
 
