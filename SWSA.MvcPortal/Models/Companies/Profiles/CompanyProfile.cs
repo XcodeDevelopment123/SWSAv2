@@ -10,6 +10,7 @@ public class CompanyProfile : Profile
 {
     public CompanyProfile()
     {
+        CreateMap<Company, Company>();
         CreateMap<Company, CompanyListVM>()
            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))

@@ -28,6 +28,8 @@ public class CompanyStaff
 
     public virtual Company Company { get; set; } = null!;
     public virtual CompanyDepartment? CompanyDepartment { get; set; }
+    public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
+
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }

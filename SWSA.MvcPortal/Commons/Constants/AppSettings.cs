@@ -20,6 +20,7 @@ public class QuartzGroupKeys
 
 public class SessionKeys
 {
+    public const string EntityId = "EntityId";
     public const string StaffId = "StaffId";
     public const string LoginTime = "LoginTime";
     public const string Name = "Name";

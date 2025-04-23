@@ -6,6 +6,7 @@ namespace SWSA.MvcPortal.Services;
 public class UserContext : IUserContext
 {
     public string Name { get; }
+    public int EntityId { get; }
     public string StaffId { get; }
     public int? CompanyId { get; }
     public int? CompanyDepartmentId { get; }
@@ -16,6 +17,7 @@ public class UserContext : IUserContext
     {
         var session = accessor.HttpContext?.Session;
 
+        EntityId = TryParseInt(session?.GetString(SessionKeys.EntityId)) ?? 0;
         StaffId = session?.GetString(SessionKeys.StaffId) ?? "";
         Name = session?.GetString(SessionKeys.Name) ?? "";
         CompanyId = TryParseInt(session?.GetString(SessionKeys.CompanyId));

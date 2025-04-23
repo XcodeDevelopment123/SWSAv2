@@ -37,6 +37,7 @@ public class User
     //}
 
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
+    public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
 
     public string ToJsonData()
     {

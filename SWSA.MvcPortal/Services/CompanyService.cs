@@ -6,6 +6,7 @@ using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Companies;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 namespace SWSA.MvcPortal.Services;
@@ -20,7 +21,8 @@ ICompanyMsicCodeRepository companyMsicCodeRepository,
 ICompanyDepartmentRepository companyDepartmentRepository,
 IDepartmentRepository departmentRepository,
 IMsicCodeRepository msicCodeRepository,
-IUserContext userContext
+IUserContext userContext,
+ISystemAuditLogService sysAuditService
     ) : ICompanyService
 {
 
@@ -62,6 +64,49 @@ IUserContext userContext
         return data!;
     }
 
+    public async Task<int> CreateCompany(CreateCompanyRequest req)
+    {
+        Guard.AgainstCompanyStaff(userContext);
+
+        Company cp = mapper.Map<Company>(req);
+
+        repo.Add(cp);
+        await repo.SaveChangesAsync();
+        ClearCompaniesCache();
+
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, cp.Id.ToString(), cp.Name, cp);
+        sysAuditService.LogInBackground(log);
+        return cp.Id;
+    }
+
+    public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
+    {
+        var data = await GetCompanyByIdFromCacheAsync(req.CompanyId);
+        Guard.AgainstNullData(data, "Company not found");
+        var olddata = mapper.Map<Company>(data);
+
+        data!.Name = req.CompanyName;
+        data.RegistrationNumber = req.RegistrationNumber;
+        data.EmployerNumber = req.EmployerNumber;
+        data.TaxIdentificationNumber = req.TaxIdentificationNumber;
+        data.YearEndMonth = req.YearEndMonth;
+        data.IncorporationDate = req.IncorporationDate;
+        data.Status = req.Status;
+        data.CompanyType = null!; //prevent tracking
+        data.CompanyTypeId = req.CompanyTypeId;
+
+        await SyncDepartments(data, req.DepartmentsIds?.ToHashSet() ?? new());
+        await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
+
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+        ClearCompaniesCache(data.Id);
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, olddata, data);
+        sysAuditService.LogInBackground(log);
+        return true;
+    }
+
     public async Task<Company> DeleteCompanyByIdAsync(int companyId)
     {
         Guard.AgainstCompanyStaff(userContext);
@@ -82,44 +127,10 @@ IUserContext userContext
         await repo.SaveChangesAsync();
 
         ClearCompaniesCache();
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, data);
+        sysAuditService.LogInBackground(log);
         return data!;
-    }
-
-    public async Task<int> CreateCompany(CreateCompanyRequest req)
-    {
-        Guard.AgainstCompanyStaff(userContext);
-
-        Company cp = mapper.Map<Company>(req);
-
-        repo.Add(cp);
-        await repo.SaveChangesAsync();
-
-        ClearCompaniesCache();
-        return cp.Id;
-    }
-
-    public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
-    {
-        var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
-        Guard.AgainstNullData(data, "Company not found");
-
-        data!.Name = req.CompanyName;
-        data.RegistrationNumber = req.RegistrationNumber;
-        data.EmployerNumber = req.EmployerNumber;
-        data.TaxIdentificationNumber = req.TaxIdentificationNumber;
-        data.YearEndMonth = req.YearEndMonth;
-        data.IncorporationDate = req.IncorporationDate;
-        data.Status = req.Status;
-        data.CompanyType = null!; //prevent tracking
-        data.CompanyTypeId = req.CompanyTypeId;
-
-        await SyncDepartments(data, req.DepartmentsIds?.ToHashSet() ?? new());
-        await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
-
-        repo.Update(data);
-        await repo.SaveChangesAsync();
-        ClearCompaniesCache(data.Id);
-        return true;
     }
 
     private async Task<List<Company>> GetCompaniesFromCacheAsync()

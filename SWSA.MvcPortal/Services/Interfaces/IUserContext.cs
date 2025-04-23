@@ -9,4 +9,5 @@ public interface IUserContext
     bool IsCompanyStaff { get; }
 
     DateTime LoginTime { get; }
+    int EntityId { get; }
 }

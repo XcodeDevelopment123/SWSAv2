@@ -40,6 +40,7 @@ public class AuthService(
 
         var userVM = mapper.Map<UserVM>(user);
 
+        _session.SetString(SessionKeys.EntityId, user.Id.ToString());
         _session.SetString(SessionKeys.StaffId, user.StaffId);
         _session.SetString(SessionKeys.Name, user.FullName);
         _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
@@ -72,6 +73,7 @@ public class AuthService(
 
         var staffVM = mapper.Map<CompanyStaffVM>(staff);
 
+        _session.SetString(SessionKeys.EntityId, staff.Id.ToString());
         _session.SetString(SessionKeys.StaffId, staff.StaffId);
         _session.SetString(SessionKeys.CompanyId, staff.CompanyId.ToString());
         if (staff.CompanyDepartmentId.HasValue)

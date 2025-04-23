@@ -28,6 +28,6 @@ public class Company
     public ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
     public ICollection<CompanyDepartment> Departments { get; set; } = new List<CompanyDepartment>();
     public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
-
+    public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
 
 }

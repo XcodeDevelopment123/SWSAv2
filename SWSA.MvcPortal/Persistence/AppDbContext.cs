@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
+    internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,6 +33,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
          .HasComputedColumnSql(
               "'StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
               stored: true);
+
+            entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.PerformedByUser).HasForeignKey(c => c.PerformedByUserId).OnDelete(DeleteBehavior.SetNull);
+
         });
 
         modelBuilder.Entity<Company>(entity =>
@@ -45,6 +49,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithOne(ccd => ccd.Company)
             .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
+
+            entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.Company).HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<CompanyStaff>(entity =>
@@ -55,6 +61,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
          .HasComputedColumnSql(
               "'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
               stored: true);
+
+            entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.PerformedByCompanyStaff).HasForeignKey(c => c.PerformedByCompanyStaffId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<CompanyComplianceDate>()
@@ -80,6 +88,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(c => new { c.CreatedAt, c.Channel });
             entity.HasIndex(c => new { c.CreatedAt, c.TemplateCode });
         });
+
+        //modelBuilder.Entity<SystemAuditLog>(entity =>
+        //{
+        //    entity.HasOne(e => e.PerformedByUser)
+        //        .WithMany()
+        //        .HasForeignKey(e => e.PerformedByUserId)
+        //        .OnDelete(DeleteBehavior.SetNull);
+
+        //    entity.HasOne(e => e.PerformedByCompanyStaff)
+        //        .WithMany()
+        //        .HasForeignKey(e => e.PerformedByCompanyStaffId)
+        //        .OnDelete(DeleteBehavior.SetNull);
+
+        //    entity.HasOne(e => e.Company)
+        //        .WithMany()
+        //        .HasForeignKey(e => e.CompanyId)
+        //        .OnDelete(DeleteBehavior.SetNull);
+        //});
 
         modelBuilder.Entity<ScheduledJob>(entity =>
         {

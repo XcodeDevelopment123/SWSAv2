@@ -27,6 +27,7 @@ using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using Serilog;
+using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -126,6 +127,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
+        services.AddScoped<ISystemAuditLogRepository,SystemAuditLogRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
     }
 
@@ -157,6 +159,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
+        services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
@@ -164,6 +167,7 @@ public static class DependencyInjector
         services.AddScoped<CloudUploadFileService>();
 
         //Messaging service
+        services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
         services.AddSingleton<IMessageDispatcher, DefaultDispatcher>();
         services.AddSingleton<IMessageProducer, InMemoryMessageQueue>();
@@ -176,6 +180,8 @@ public static class DependencyInjector
 
         // Background 消费服务
         services.AddHostedService<MessageQueueWorker>();
+        services.AddHostedService<AuditLogWorker>();
+
     }
 
     public static void AddSeedData(this IServiceCollection services)
