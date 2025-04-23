@@ -8,6 +8,7 @@ public class CompanyComplianceDateProfile : Profile
 {
     public CompanyComplianceDateProfile()
     {
+        CreateMap <CompanyComplianceDate, CompanyComplianceDate>();
         CreateMap <CreateCompanyComplianceDate, CompanyComplianceDate>();
     }
 }

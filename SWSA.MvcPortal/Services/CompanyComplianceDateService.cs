@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -14,7 +15,8 @@ public class CompanyComplianceDateService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-ICompanyComplianceDateRepository repo
+ICompanyComplianceDateRepository repo,
+ISystemAuditLogService sysAuditService
     ) : ICompanyComplianceDateService
 {
 
@@ -24,6 +26,9 @@ ICompanyComplianceDateRepository repo
         bool isNew = data == null;
 
         data ??= new CompanyComplianceDate();
+
+        var oldData = mapper.Map<CompanyComplianceDate>(data);
+
         data.UpdateComplianceDates(req);
 
         if (isNew)
@@ -33,12 +38,19 @@ ICompanyComplianceDateRepository repo
         }
         else
         {
-            repo.Update(data);
+            data.AccountDueDate = req.AccountDueDate;
+            data.AnniversaryDate = req.AnniversaryDate;
+            data.AGMDate = req.AGMDate;
+            data.AnnualReturnDueDate = req.AnnualReturnDueDate;
+            data.FirstYearAccountStart = req.FirstYearAccountStart;
+            data.Notes = req.Notes;
         }
 
         await repo.SaveChangesAsync();
 
         UpdateCompanyComplianceDateCache(data);
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.CompanyId.ToString(), "Company Compliance Date", oldData, data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 

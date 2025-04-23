@@ -1,6 +1,7 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.CompnayWorks
 @using SWSA.MvcPortal.Models.Users
@@ -68,7 +69,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="companyType">Company Type</label>
-                            <input readonly id="companyType" value="@cp.CompanyType.Name" class="form-control " />
+                            <input readonly id="companyType" value="@cp.CompanyType.GetDisplayName()" class="form-control " />
                         </div>
                     </div>
                     <div class="col-md-6">

@@ -8,6 +8,7 @@ public class CompanyOfficialContactProfile : Profile
 {
     public CompanyOfficialContactProfile()
     {
+        CreateMap<CompanyOfficialContact, CompanyOfficialContact>();
         CreateMap<CreateCompanyOfficialContactRequest, CompanyOfficialContact>();
     }
 }

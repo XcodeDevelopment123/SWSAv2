@@ -2,7 +2,6 @@
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
-using System.Threading.Tasks;
 
 namespace SWSA.MvcPortal.Controllers;
 
@@ -15,7 +14,6 @@ public class CompanyController(
     ICompanyOfficialContactService companyOfficialContactService,
     ICompanyDepartmentService companyDepartmentService,
     IMsicCodeService msicCodeService,
-    ICompanyTypeService companyTypeService,
     IDepartmentService departmentService,
     ICompanyStaffService companyStaffService
     ) : BaseController
@@ -44,10 +42,9 @@ public class CompanyController(
     public async Task<IActionResult> Create()
     {
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var companyTypes = await companyTypeService.GetCompanyTypesAsync();
         var departments = await departmentService.GetDepartments();
 
-        CompanyCreatePageVM vm = new(msicCodes, companyTypes, departments);
+        CompanyCreatePageVM vm = new(msicCodes, departments);
         return View(vm);
     }
 
@@ -56,10 +53,9 @@ public class CompanyController(
     {
         var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var companyTypes = await companyTypeService.GetCompanyTypesAsync();
         var departments = await departmentService.GetDepartments();
 
-        CompanyEditPageVM vm = new(cp, msicCodes, companyTypes, departments);
+        CompanyEditPageVM vm = new(cp, msicCodes, departments);
         return View(vm);
     }
 

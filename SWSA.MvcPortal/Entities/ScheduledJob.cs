@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Filters;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,26 +13,35 @@ public class ScheduledJob
     [Key]
     public int Id { get; set; }
 
+    [SystemAuditLog("Job Key")]
     /// <summary>Quartz JobKey, 如 AssignmentDueSoonJob</summary>
     public string JobKey { get; set; } = default!;
-
+   
+    [SystemAuditLog("Job Group")]
     /// <summary>Quartz Job Group，如 NotificationGroup </summary>
     public string JobGroup { get; set; } = default!;
 
+    [SystemAuditLog("Job Type")]
     public ScheduledJobType JobType { get; set; }
-    /// <summary>调度类型：Once, Daily, Weekly, Monthly, Cron</summary>
 
+    [SystemAuditLog("Schedule Type")]
+
+    /// <summary>调度类型：Once, Daily, Weekly, Monthly, Cron</summary>
     public ScheduleType ScheduleType { get; set; } = default!;
 
+    [SystemAuditLog("Trigger Time")]
     /// <summary>如果是 One-Time 类型，这里是执行时间</summary>
     public DateTime? TriggerTime { get; set; }
 
+    [SystemAuditLog("Cron Expression")]
     /// <summary>对于 Cron 类型任务，存储 Quartz Cron 表达式</summary>
     public string? CronExpression { get; set; }
 
+    [SystemAuditLog("Is Enabled")]
     /// <summary>是否启用调度</summary>
     public bool IsEnabled { get; set; } = true;
 
+    [SystemAuditLog("Is Custom Job")]
     /// <summary>是否为用户自定义</summary>
     public bool IsCustom { get; set; } = false;
 
@@ -39,6 +49,7 @@ public class ScheduledJob
     public string? RequestPayloadJson { get; set; }
     public DateTime? LastExecuteAt { get; set; }
 
+    [SystemAuditLog("Created By")]
     /// <summary>任务创建者</summary>
     public string CreatedBy { get; set; } = "System Default"; // if userId not null, use user full name instead of default
     [ForeignKey(nameof(UserId))]

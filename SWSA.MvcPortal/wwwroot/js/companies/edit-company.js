@@ -11,7 +11,7 @@
         taxIdentificationNumber: $companyForm.find('input[name="tinNumber"]'),
         yearEndMonth: $companyForm.find('input[name="yearEndMonth"]'),
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
-        companyTypeId: $companyForm.find('select[name="companyType"]'),
+        companyType: $companyForm.find('select[name="companyType"]'),
         status: $companyForm.find('select[name="companyStatus"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
         departmentsIds: $companyForm.find('select[name="departmentsIds"]')

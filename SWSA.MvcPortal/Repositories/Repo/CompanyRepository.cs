@@ -16,7 +16,6 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override Task<IQueryable<Company>> BuildQueryAsync()
     {
         var query = db.Companies
-                 .Include(c => c.CompanyType)
                  .Include(c => c.CompanyComplianceDate)
                  .Include(c => c.CompanyOwners)
                  .Include(c => c.OfficialContacts)
@@ -33,7 +32,6 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override Task<IQueryable<Company>> BuildQueryWithIncludesAsync()
     {
         var query = db.Companies
-            .Include(c => c.CompanyType)
             .Include(c => c.CompanyComplianceDate)
             .Include(c => c.CompanyOwners)
             .Include(c => c.OfficialContacts)

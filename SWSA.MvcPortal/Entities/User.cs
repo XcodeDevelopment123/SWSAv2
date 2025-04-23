@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Filters;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
@@ -8,12 +9,18 @@ public class User
     [Key]
     public int Id { get; set; }
     public string StaffId { get; set; } = null!;
+    [SystemAuditLog("Username")]
     public string Username { get; set; } = null!;
+    [SystemAuditLog("Full Name")]
     public string FullName { get; set; } = null!;
+    [SystemAuditLog("Phone Number")]
     public string PhoneNumber { get; set; } = null!;
+    [SystemAuditLog("Email Address")]
     public string Email { get; set; } = null!;
     public string HashedPassword { get; set; } = null!;
+    [SystemAuditLog("Is Active")]
     public bool IsActive { get; set; } = true;
+    [SystemAuditLog("Is Locked")]
     public bool IsLocked { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }

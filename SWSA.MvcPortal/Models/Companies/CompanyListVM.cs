@@ -15,7 +15,7 @@ public class CompanyListVM
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public CompanyStatus Status { get; set; }
-    public string CompanyType { get; set; } = null!;
+    public CompanyType CompanyType { get; set; }
     public string CompanyDirectorName { get; set; } = null!; // First Owner + Director position name
     public int ContactsCount { get; set; }  // Communication Contacts + Official Contacts
     public int DepartmentsCount { get; set; }

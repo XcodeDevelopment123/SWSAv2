@@ -16,7 +16,6 @@ IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 ICompanyRepository repo,
-ICompanyTypeRepository companyTypeRepository,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
 ICompanyDepartmentRepository companyDepartmentRepository,
 IDepartmentRepository departmentRepository,
@@ -81,9 +80,9 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
     {
-        var data = await GetCompanyByIdFromCacheAsync(req.CompanyId);
+        var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
         Guard.AgainstNullData(data, "Company not found");
-        var olddata = mapper.Map<Company>(data);
+        var oldData = mapper.Map<Company>(data);
 
         data!.Name = req.CompanyName;
         data.RegistrationNumber = req.RegistrationNumber;
@@ -92,8 +91,7 @@ ISystemAuditLogService sysAuditService
         data.YearEndMonth = req.YearEndMonth;
         data.IncorporationDate = req.IncorporationDate;
         data.Status = req.Status;
-        data.CompanyType = null!; //prevent tracking
-        data.CompanyTypeId = req.CompanyTypeId;
+        data.CompanyType = req.CompanyType;
 
         await SyncDepartments(data, req.DepartmentsIds?.ToHashSet() ?? new());
         await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
@@ -102,7 +100,7 @@ ISystemAuditLogService sysAuditService
         await repo.SaveChangesAsync();
         ClearCompaniesCache(data.Id);
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, olddata, data);
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, oldData, data);
         sysAuditService.LogInBackground(log);
         return true;
     }

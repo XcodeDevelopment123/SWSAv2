@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using SWSA.MvcPortal.Commons.Filters;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -11,6 +12,8 @@ public class CompanyDepartment
     public int CompanyId { get; set; }
     [ForeignKey(nameof(Department))]
     public int DepartmentId { get; set; }
+
+    [SystemAuditLog("Department Active Status")]
     public bool IsActive { get; set; } = true;
 
     public Company Company { get; set; } = null!;

@@ -12,6 +12,7 @@
 
     var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null);
     var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
+    var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(null);
     var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
     var staffPosition = SelectHelper.GetStaffPositionTypes(null);
 }
@@ -90,14 +91,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="companyType">Company Type</label>
-                            <select id="companyType" name="companyType" class="form-control select2">
-                                <option selected="true" value="">Please select</option>
-                                @foreach (var type in Model.CompanyType)
-                                {
-                                    <option value="@type.Id">@type.Name</option>
-                                })
-
-                            </select>
+                            <select asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
                         </div>
                     </div>
                     <div class="col-md-6">

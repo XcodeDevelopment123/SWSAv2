@@ -118,7 +118,6 @@ public static class DependencyInjector
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
         services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
-        services.AddScoped<ICompanyTypeRepository, CompanyTypeRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -151,7 +150,6 @@ public static class DependencyInjector
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
         services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
-        services.AddScoped<ICompanyTypeService, CompanyTypeService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
@@ -187,7 +185,6 @@ public static class DependencyInjector
     public static void AddSeedData(this IServiceCollection services)
     {
         services.AddTransient<ISeeder, UserSeeder>();
-        services.AddTransient<ISeeder, CompanyTypeSeeder>();
         services.AddTransient<ISeeder, DepartmentSeeder>();
         services.AddTransient<ISeeder, MsicCodeSeeder>();
         services.AddTransient<ISeeder, ScheduledJobSeeder>();

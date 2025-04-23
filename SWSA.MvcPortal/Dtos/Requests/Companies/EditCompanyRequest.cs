@@ -12,7 +12,7 @@ public class EditCompanyRequest
     public MonthOfYear? YearEndMonth { get; set; }  // Year End Month (optional)
     public DateTime? IncorporationDate { get; set; } // Incorporation Date (optional) - 成立日期
     public CompanyStatus Status { get; set; }
-    public int CompanyTypeId { get; set; }
+    public CompanyType CompanyType { get; set; }
     public List<int> MsicCodeIds { get; set; } = [];
     public List<int> DepartmentsIds { get; set; } = [];
 

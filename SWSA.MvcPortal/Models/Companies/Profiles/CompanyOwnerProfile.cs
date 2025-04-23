@@ -8,6 +8,7 @@ public class CompanyOwnerProfile : Profile
 {
     public CompanyOwnerProfile()
     {
+        CreateMap<CompanyOwner, CompanyOwner>();
         CreateMap<CreateCompanyOwnerRequest, CompanyOwner>();
     }
 }

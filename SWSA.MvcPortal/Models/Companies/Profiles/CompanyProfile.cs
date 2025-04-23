@@ -15,7 +15,6 @@ public class CompanyProfile : Profile
            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))
            .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.RegistrationNumber))
-           .ForMember(dest => dest.CompanyType, opt => opt.MapFrom(src => src.CompanyType.Name ?? AppSettings.NotAvailable))
            .ForMember(dest => dest.CompanyDirectorName, opt => opt.MapFrom((src, dest) =>
            {
                var firstOwner = src.CompanyOwners.FirstOrDefault(c => c.Position == PositionType.Director);
@@ -38,7 +37,7 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.MsicCodes, opt => opt.MapFrom(src => src.MsicCodeIds.Select(id => new CompanyMsicCode(id)).ToList()))
             .ForMember(dest => dest.Departments, opt => opt.MapFrom(src => src.DepartmentsIds.Select(id => new CompanyDepartment(id)).ToList()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CompanyName))
-            .ForMember(dest => dest.CompanyComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate))
-            ;
+            .ForMember(dest => dest.CompanyComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate)) ;
+
     }
 }
