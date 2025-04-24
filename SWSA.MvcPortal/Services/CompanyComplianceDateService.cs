@@ -49,7 +49,8 @@ ISystemAuditLogService sysAuditService
         await repo.SaveChangesAsync();
 
         UpdateCompanyComplianceDateCache(data);
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.CompanyId.ToString(), "Company Compliance Date", oldData, data);
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyComplianceDate, data.CompanyId.ToString(), "Company Compliance Date", oldData, data);
         sysAuditService.LogInBackground(log);
         return true;
     }

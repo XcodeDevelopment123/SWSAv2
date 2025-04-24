@@ -7,6 +7,7 @@ public class CompanyStaffProfile : Profile
 {
     public CompanyStaffProfile()
     {
+        CreateMap<CompanyStaff, CompanyStaff>();
         CreateMap<CompanyStaff, CompanyStaffVM>()
             .ForMember(dest => dest.HasPassword, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.HashedPassword)));
 

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Identity.Client;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -14,7 +14,8 @@ public class CompanyOwnerService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-ICompanyOwnerRepository repo
+ICompanyOwnerRepository repo,
+ISystemAuditLogService sysAuditService
     ) : ICompanyOwnerService
 {
     public async Task<int> CreateOwner(CreateCompanyOwnerRequest req)
@@ -23,6 +24,9 @@ ICompanyOwnerRepository repo
         repo.Add(data);
         await repo.SaveChangesAsync();
         UpdateCompanyOwnerCache(data);
+
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyOwner, data.CompanyId.ToString(), $"Company Owner: {data.NamePerIC}", data);
+        sysAuditService.LogInBackground(log);
         return data.Id;
     }
 
@@ -37,6 +41,7 @@ ICompanyOwnerRepository repo
             return false;
         }
 
+        var oldData = mapper.Map<CompanyOwner>(data);
         data.NamePerIC = req.NamePerIC;
         data.ICOrPassportNumber = req.ICOrPassportNumber;
         data.Position = req.Position;
@@ -48,6 +53,9 @@ ICompanyOwnerRepository repo
         repo.Update(data);
         await repo.SaveChangesAsync();
         UpdateCompanyOwnerCache(data);
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyOwner, data.CompanyId.ToString(), $"Company Owner: {data.NamePerIC}", oldData, data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 
@@ -59,6 +67,9 @@ ICompanyOwnerRepository repo
         repo.Remove(data!);
         await repo.SaveChangesAsync();
         UpdateCompanyOwnerCache(data!, true);
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, data!.CompanyId.ToString(), $"Company Owner: {data.NamePerIC}", data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 

@@ -1,9 +1,9 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -13,7 +13,8 @@ public class CompanyWorkProgressService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-ICompanyWorkProgressRepository repo
+ICompanyWorkProgressRepository repo,
+ISystemAuditLogService sysAuditService
     ) : ICompanyWorkProgressService
 {
 
@@ -21,6 +22,8 @@ ICompanyWorkProgressRepository repo
     {
         var progress = await repo.GetByIdAsync(req.ProgressId);
         Guard.AgainstNullData(progress, "Work Progress not found.");
+
+        var oldData = mapper.Map<CompanyWorkProgress>(progress);
 
         progress!.StartDate = req.StartDate;
         progress.EndDate = req.EndDate;
@@ -31,6 +34,9 @@ ICompanyWorkProgressRepository repo
 
         repo.Update(progress);
         await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, progress.WorkAssignmentId.ToString(), $"Work Assignment Progress", oldData, progress);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 

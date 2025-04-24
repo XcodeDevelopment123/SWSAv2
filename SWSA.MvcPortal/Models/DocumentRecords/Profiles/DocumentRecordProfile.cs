@@ -12,6 +12,7 @@ public class DocumentRecordProfile : Profile
 
     public DocumentRecordProfile(IOptions<FileSettings> fileSettings)
     {
+        CreateMap<DocumentRecord, DocumentRecord>();
         CreateMap<DocumentRecord, DocumentRecordVM>()
               .ForMember(dest => dest.DocumentId, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.FullName ?? AppSettings.NotAvailable))

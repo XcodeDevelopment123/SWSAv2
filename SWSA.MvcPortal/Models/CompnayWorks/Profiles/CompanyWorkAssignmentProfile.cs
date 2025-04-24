@@ -10,8 +10,9 @@ public class CompanyWorkAssignmentProfile : Profile
 {
     public CompanyWorkAssignmentProfile()
     {
+        CreateMap<CompanyWorkAssignment, CompanyWorkAssignment>();
         CreateMap<CreateCompanyWorkAssignmentRequest, CompanyWorkAssignment>()
-            .ForMember(dest => dest.AssignedStaffId, opt => opt.Ignore());
+        .ForMember(dest => dest.AssignedStaffId, opt => opt.Ignore());
 
         CreateMap<CompanyWorkAssignment, CompanyWorkListVM>()
             .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))
@@ -29,7 +30,7 @@ public class CompanyWorkAssignmentProfile : Profile
              .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
              .ForMember(dest => dest.Staff, opt => opt.MapFrom(src => src.AssignedStaff))
              .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company))
-             .ForMember(dest => dest.CompanyDepartment, opt => opt.MapFrom((src,dest) => src.AssignedStaff?.CompanyDepartment??null!))
+             .ForMember(dest => dest.CompanyDepartment, opt => opt.MapFrom((src, dest) => src.AssignedStaff?.CompanyDepartment ?? null!))
              .ForMember(dest => dest.Progress, opt => opt.MapFrom(src => src.Progress))
              ;
     }

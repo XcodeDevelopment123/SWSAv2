@@ -11,6 +11,7 @@ using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompanyStaffs;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -24,7 +25,8 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IHttpContextAccessor httpContextAccessor,
 IUserContext userContext,
-ICompanyStaffRepository repo
+ICompanyStaffRepository repo,
+ISystemAuditLogService sysAuditService
     ) : ICompanyStaffService
 {
     private readonly ISession _session =
@@ -53,6 +55,9 @@ ICompanyStaffRepository repo
         repo.Add(data);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
+
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyStaff, data.CompanyId.ToString(), $"Company staff login profile: {data.ContactName}", data);
+        sysAuditService.LogInBackground(log);
         return data.Id;
     }
 
@@ -67,6 +72,7 @@ ICompanyStaffRepository repo
             return false;
         }
 
+        var oldData = mapper.Map<CompanyStaff>(data);
         data.CompanyDepartmentId = req.CompanyDepartmentId;
         data.ContactName = req.ContactName;
         data.WhatsApp = req.WhatsApp;
@@ -77,6 +83,9 @@ ICompanyStaffRepository repo
         repo.Update(data);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyStaff, data.StaffId.ToString(), $"Company staff login profile: {data.ContactName}", oldData, data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 
@@ -86,6 +95,7 @@ ICompanyStaffRepository repo
 
         Guard.AgainstNullData(data, "Company Official Contact not found");
 
+        var oldData = mapper.Map<CompanyStaff>(data);
         if (req.EnableLogin)
         {
             if (string.IsNullOrEmpty(req.Username) || string.IsNullOrEmpty(req.Password))
@@ -107,6 +117,9 @@ ICompanyStaffRepository repo
         repo.Update(data);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
+
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyStaff, data.StaffId.ToString(), $"Company staff login profile: {data.ContactName}", oldData, data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 
@@ -118,17 +131,10 @@ ICompanyStaffRepository repo
         repo.Remove(data!);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data!, true);
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyStaff, data!.CompanyId.ToString(), $"Company staff: {data.ContactName}", data);
+        sysAuditService.LogInBackground(log);
         return true;
-    }
-
-    private void UpdateCompanyCommunicationContactCache(CompanyStaff contact, bool isRemove = false)
-    {
-        string cacheList = $"{DataCacheKey.Companies}";
-        string cacheDetailKey = $"{DataCacheKey.Companies}_{contact.CompanyId}_Details";
-        cache.Remove(cacheList);
-        cache.Remove(cacheDetailKey);
-        //TO DO: update company dto and find index update contact 
-
     }
 
     public async Task<bool> SetStaffSession(string staffId)
@@ -151,5 +157,15 @@ ICompanyStaffRepository repo
         _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
         return true;
     }
+    private void UpdateCompanyCommunicationContactCache(CompanyStaff contact, bool isRemove = false)
+    {
+        string cacheList = $"{DataCacheKey.Companies}";
+        string cacheDetailKey = $"{DataCacheKey.Companies}_{contact.CompanyId}_Details";
+        cache.Remove(cacheList);
+        cache.Remove(cacheDetailKey);
+        //TO DO: update company dto and find index update contact 
+
+    }
+
 
 }

@@ -1,12 +1,11 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -19,7 +18,8 @@ IMapper mapper,
 IUserContext userContext,
 IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
-IUserRepository userRepo
+IUserRepository userRepo,
+ISystemAuditLogService sysAuditService
     ) : IDocumentRecordService
 {
 
@@ -75,6 +75,9 @@ IUserRepository userRepo
         repo.Add(data);
 
         await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, data.Id.ToString(), $"Document: {data.AttachmentFileName}", data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 
@@ -84,6 +87,7 @@ IUserRepository userRepo
         var staffMap = await userRepo.GetDictionaryByStaffIdsAsync(staffIds);
 
         var skippedDocuments = new List<string>();
+        List<DocumentRecord> records = new List<DocumentRecord>();
 
         for (int i = 0; i < req.Documents.Count; i++)
         {
@@ -117,6 +121,11 @@ IUserRepository userRepo
         }
 
         await repo.SaveChangesAsync();
+        foreach (var doc in records)
+        {
+            var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, doc.Id.ToString(), $"Document: {doc.AttachmentFileName}", doc);
+            sysAuditService.LogInBackground(log);
+        }
         return true;
     }
 
@@ -134,6 +143,8 @@ IUserRepository userRepo
             await uploadFileService.DeleteAsync(filePath);
         }
 
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.AttachmentFileName}", doc);
+        sysAuditService.LogInBackground(log);
         return mapper.Map<DocumentRecordVM>(doc);
     }
 }

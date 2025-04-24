@@ -10,6 +10,7 @@ public class ScheduledJobProfile : Profile
     public ScheduledJobProfile()
     {
 
+        CreateMap<ScheduledJob, ScheduledJob>();
         CreateMap<ScheduledJob, ScheduledJobVM>()
                   .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom((src, dest) =>
                   {

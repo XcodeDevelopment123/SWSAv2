@@ -1,11 +1,11 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompnayWorks;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -17,10 +17,10 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IUserContext userContext,
 ICompanyWorkAssignmentRepository repo,
-ICompanyStaffRepository companyStaffRepo
+ICompanyStaffRepository companyStaffRepo,
+ISystemAuditLogService sysAuditService
     ) : ICompanyWorkAssignmentService
 {
-
     public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
     {
         var data = (await repo.GetAllAsync()).ToList();
@@ -52,11 +52,12 @@ ICompanyStaffRepository companyStaffRepo
         {
             entity.Progress = new CompanyWorkProgress();
         }
-
         entity.AssignedStaffId = staff.Id;
         repo.Add(entity);
         await repo.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, entity.Id.ToString(), $"Company Work Assignment : {entity.WorkType.GetDisplayName()}", entity);
+        sysAuditService.LogInBackground(log);
         return entity.Id;
     }
 
@@ -74,6 +75,8 @@ ICompanyStaffRepository companyStaffRepo
             task.AssignedStaffId = reqStaff.Id;
         }
 
+        var oldData = mapper.Map<CompanyWorkAssignment>(task);
+
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.WorkType = req.WorkType;
         task.ServiceScope = req.ServiceScope;
@@ -86,6 +89,8 @@ ICompanyStaffRepository companyStaffRepo
         repo.Update(task);
         await repo.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 
@@ -97,7 +102,9 @@ ICompanyStaffRepository companyStaffRepo
         repo.Remove(data!);
 
         await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, data!.Id.ToString(), $"Company Work Assignment : {data.WorkType.GetDisplayName()}", data);
+        sysAuditService.LogInBackground(log);
         return data!;
     }
-
 }

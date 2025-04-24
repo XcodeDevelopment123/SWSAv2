@@ -4,6 +4,13 @@ public enum SystemAuditModule
 {
     ScheduleJob,
     Company,
+    CompanyComplianceDate,
+    CompanyOfficialContact,
+    CompanyOwner,
+    CompanyStaff,
+    CompanyWorkAssignment,
+    DocumentRecord,
+    User
 }
 
 public enum SystemAuditActionType

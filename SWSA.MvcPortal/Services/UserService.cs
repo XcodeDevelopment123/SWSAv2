@@ -5,6 +5,7 @@ using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.Users;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -14,7 +15,9 @@ namespace SWSA.MvcPortal.Services;
 public class UserService(
 IUserRepository repo,
 IMapper mapper,
-IHttpContextAccessor httpContextAccessor
+IHttpContextAccessor httpContextAccessor,
+ISystemAuditLogService sysAuditService,
+IUserContext userContext
 ) : IUserService
 {
     private readonly ISession _session =
@@ -53,10 +56,10 @@ IHttpContextAccessor httpContextAccessor
         var hashPassword = PasswordHasher.Hash(req.Password);
         var user = mapper.Map<User>(req);
         user.HashedPassword = hashPassword;
-
         repo.Add(user);
         await repo.SaveChangesAsync();
-
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.User, user.StaffId.ToString(), $"User: {user.FullName}", user);
+        sysAuditService.LogInBackground(log);
         return user.StaffId;
     }
 
@@ -64,6 +67,8 @@ IHttpContextAccessor httpContextAccessor
     {
         var user = await repo.GetByStaffIdAsync(req.StaffId);
         Guard.AgainstNullData(user, "User not found");
+
+        var oldData = mapper.Map<User>(user);
 
         user.FullName = req.FullName;
         user.Email = req.Email;
@@ -78,6 +83,9 @@ IHttpContextAccessor httpContextAccessor
         repo.Update(user);
         await repo.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.User, user.StaffId.ToString(), $"User: {user.FullName}", oldData, user);
+        sysAuditService.LogInBackground(log);
+
         return true;
     }
 
@@ -86,8 +94,14 @@ IHttpContextAccessor httpContextAccessor
         var data = await repo.GetByStaffIdAsync(staffId);
         Guard.AgainstNullData(data, "User not found");
 
+        if (data.StaffId == userContext.StaffId)
+            throw new BusinessLogicException("You cannot delete yourself");
+
         repo.Remove(data!);
         await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.User, data!.StaffId.ToString(), $"User: {data.FullName}", data);
+        sysAuditService.LogInBackground(log);
 
         return mapper.Map<UserVM>(data);
     }

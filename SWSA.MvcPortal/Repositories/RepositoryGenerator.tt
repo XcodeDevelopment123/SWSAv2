@@ -43,8 +43,7 @@
    if (!File.Exists(interfaceFilePath)) // **文件不存在时才写入**
             {
             // 生成 Repository Interface（放在 Domain\Repositories）
-            string interfaceCode = $@"
-using System;
+            string interfaceCode = $@"using System;
 using System.Threading.Tasks;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Repositories.Interfaces;
@@ -65,9 +64,7 @@ public interface I{entityName}Repository : IRepositoryBase<{entityName}>
               if (!File.Exists(implementationFilePath)) // **文件不存在时才写入**
             {
             // 生成 Repository 实现（放在 Infrastructure\Repositories）
-            string implementationCode = $@"
-
-using Microsoft.EntityFrameworkCore;
+            string implementationCode = $@"using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
