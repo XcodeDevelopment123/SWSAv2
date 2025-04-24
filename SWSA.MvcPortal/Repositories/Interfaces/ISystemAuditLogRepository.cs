@@ -10,4 +10,5 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface ISystemAuditLogRepository : IRepositoryBase<SystemAuditLog>
 {
     // Define your method here
+    Task<string> GetChangeSumamryJsonById(int id);
 }

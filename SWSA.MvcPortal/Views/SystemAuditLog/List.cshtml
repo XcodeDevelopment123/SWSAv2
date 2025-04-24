@@ -1,0 +1,143 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.SystemAuditLogs
+@model List<SystemAuditLogListVM>
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3> System Audit Log List</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="logsDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Performed At</th>
+                            <th>Title</th>
+                            <th>Action</th>
+                            <th>Performed By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@log.PerformedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
+                                <td>
+                                    <a href="@log.NavigateUrl" target="_blank">
+                                        @log.EntityName
+                                    </a>
+                                </td>
+                                <td>@log.ActionType.GetDisplayName()</td>
+                                <td>@log.PerformedBy</td>
+                                <td>
+                                    <a class="btn btn-sm btn-info mr-2 view-log-btn" title="View" data-id="@log.LogId">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Performed At</th>
+                            <th>Title</th>
+                            <th>Action</th>
+                            <th>Performed By</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="auditLogModal" tabindex="-1" aria-labelledby="auditLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="auditLogModalLabel">
+                    Action Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="systemAuditLogForm" class="row">
+                    <div class="col-md-6" >
+                        <div class="form-group">
+                            <label for="performedAt">Performed At</label>
+                            <div class="input-group">
+                                <input disabled type="text" value="" id="performedAt" name="performedAt" class="form-control" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="performedBy">Performed by</label>
+                            <input readonly id="performedBy" name="performedBy" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="logId">Log Id</label>
+                            <input readonly id="logId" name="logId" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input readonly id="title" name="title" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="actionType">Action</label>
+                            <input readonly id="actionType" name="actionType" class="form-control" />
+                        </div>
+                    </div>
+
+                </form>
+                <div class="divider-line"></div>
+
+                <table id="auditLogSummaryTable" class="display table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Changed</th>
+                            <th>Old</th>
+                            <th>New</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_DatatablesScriptsPartial" />
+    <script src="~/js/sys-audit-logs/list-log.js" asp-append-version="true"></script>
+}

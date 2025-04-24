@@ -28,6 +28,7 @@ using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using Serilog;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
+using Newtonsoft.Json.Converters;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -58,6 +59,7 @@ public static class DependencyInjector
            .AddNewtonsoftJson(options =>
            {
                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+               options.SerializerSettings.Converters.Add(new StringEnumConverter());
            });
 
         services.AddSession(options =>
@@ -126,7 +128,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
-        services.AddScoped<ISystemAuditLogRepository,SystemAuditLogRepository>();
+        services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
     }
 

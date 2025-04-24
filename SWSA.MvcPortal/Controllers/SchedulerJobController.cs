@@ -8,7 +8,6 @@ using SWSA.MvcPortal.Services.Interfaces;
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("scheduler-jobs")]
-
 public class SchedulerJobController(
  IJobSchedulerService scheduler,
  IJobMetadataRegistry registry,

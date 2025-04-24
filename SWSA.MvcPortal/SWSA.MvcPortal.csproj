@@ -71,7 +71,6 @@
 
   <ItemGroup>
     <Folder Include="Datas\uploads\" />
-    <Folder Include="Models\SystemAuditLogs\Profiles\" />
   </ItemGroup>
 
 </Project>

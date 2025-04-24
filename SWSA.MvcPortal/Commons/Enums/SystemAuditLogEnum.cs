@@ -1,7 +1,11 @@
-﻿namespace SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Filters;
+
+namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum SystemAuditModule
 {
+    [EnumIgnore]
+    Unknown = 0,
     ScheduleJob,
     Company,
     CompanyComplianceDate,
@@ -15,6 +19,8 @@ public enum SystemAuditModule
 
 public enum SystemAuditActionType
 {
+    [EnumIgnore]
+    Unknown = 0,
     Create,
     Update,
     Delete,

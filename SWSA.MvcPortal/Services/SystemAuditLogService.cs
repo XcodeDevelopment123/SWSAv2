@@ -1,13 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Commons.Services.SystemAuditLog;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace SWSA.MvcPortal.Services;
@@ -15,9 +16,24 @@ namespace SWSA.MvcPortal.Services;
 public class SystemAuditLogService(
 IUserContext userContext,
 IServiceProvider serviceProvider,
-IBackgroundTaskQueue queue
+ISystemAuditLogRepository repo,
+IBackgroundTaskQueue queue,
+IMapper mapper
     ) : ISystemAuditLogService
 {
+    public async Task<List<SystemAuditLogListVM>> GetLogs()
+    {
+        var data = await repo.GetAllAsync();
+        return mapper.Map<List<SystemAuditLogListVM>>(data);
+    }
+
+    public async Task<SystemAuditLogVM> GetLogById(int id)
+    {
+        var data = await repo.GetByIdAsync(id);
+        Guard.AgainstNullData(data, "System Audit Log not found");
+
+        return mapper.Map<SystemAuditLogVM>(data);
+    }
 
     public void LogInBackground(SystemAuditLogEntry entry)
     {
@@ -50,7 +66,7 @@ IBackgroundTaskQueue queue
     {
         if (oldVal == null || newVal == null) return null;
 
-        var dict = new Dictionary<string, string[]>();
+        var dict = new Dictionary<string, ChangeSummaryVM>();
         var props = oldVal.GetType().GetProperties();
 
         foreach (var prop in props)
@@ -66,10 +82,10 @@ IBackgroundTaskQueue queue
             var newStr = ConvertToDisplayString(newValue);
 
             if (oldStr != newStr)
-                dict[displayName] = new[] { oldStr ?? "", newStr ?? "" };
+                dict[displayName] = new ChangeSummaryVM(displayName, oldStr, newStr);
         }
 
-        return dict.Count > 0 ? JsonConvert.SerializeObject(dict) : null;
+        return dict.Count > 0 ? JsonConvert.SerializeObject(dict.Values) : null;
     }
 
 

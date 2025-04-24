@@ -13,6 +13,7 @@ const urls = {
     "company_works": "/companies/works",
     "company_work_progress": "/companies/works/progress",
     "schedule_job": "/scheduler-jobs",
+    "system_audit_log": "/sys-audit-logs",
     "users": "/users",
 };
 
@@ -84,16 +85,24 @@ function getFormData(formInputs) {
 
         const $input = formInputs[key];
 
-        // 针对 select[multiple] 处理数组，其它默认用 .val()
-        if ($input.is('select[multiple]')) {
-            formData[key] = $input.val() || []; // 确保 null 转为 []
+        if ($input instanceof jQuery) {
+            // select[multiple]
+            if ($input.is('select[multiple]')) {
+                formData[key] = $input.val() || [];
+            }
+            // file input
+            else if ($input.is('input[type="file"]')) {
+                const file = $input[0].files[0];
+                formData[key] = file ?? null;
+            }
+            // 普通 input/select
+            else {
+                formData[key] = $input.val();
+            }
         }
-        else if ($input.is('input[type="file"]')) {
-            const file = $input[0].files[0];
-            formData[key] = file ?? null;
-        }
-        else {
-            formData[key] = $input.val();
+        // 递归处理嵌套结构
+        else if (typeof $input === 'object' && $input !== null) {
+            formData[key] = getFormData($input);
         }
     }
 
@@ -126,4 +135,20 @@ function getOrdinal(day) {
     const suffixes = ["th", "st", "nd", "rd"];
     const v = day % 100;
     return day + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+}
+
+
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+function ConvertTimeFormat(dateString, format = "DD-MM-YYYY hh:mm A") {
+    if (!dateString)
+        return null;
+
+    var momentDate = moment(dateString);
+    var formattedDate = momentDate.format(format);
+
+    return formattedDate;
 }

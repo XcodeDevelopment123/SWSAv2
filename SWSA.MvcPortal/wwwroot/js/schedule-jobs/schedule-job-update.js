@@ -157,8 +157,6 @@
         },
     });
   
-
-
     flatpickr("#dateTimePicker", {
         allowInput: true,
         enableTime: true,

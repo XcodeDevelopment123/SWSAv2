@@ -1,5 +1,13 @@
 ﻿$(function () {
+    const selectedDocId = getQueryParam("docId");
+
     const documentTable = $("#documentTable").DataTable({
+        columnDefs: [
+            {
+                targets: [0],
+                visible: false,
+            },
+        ],
         "paging": true,
         "lengthChange": false,
         "searching": true,
@@ -7,9 +15,15 @@
         "info": true,
         "autoWidth": false,
         "responsive": true,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+         initComplete: function () {
+            if (selectedDocId) {
+                const api = this.api();
+                $('.dataTables_filter input[type="search"]').val(selectedDocId).trigger('input');
+                api.search(`DocId-${selectedDocId}`).draw();
+            }
+        }
     }).buttons().container().appendTo('#documentTable_wrapper .col-md-6:eq(0)');
-
 
     $(document).on('click', '.btn-delete', function () {
         const id = $(this).data('id');

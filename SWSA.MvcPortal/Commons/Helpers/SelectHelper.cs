@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
+using SWSA.MvcPortal.Commons.Filters;
 
 namespace SWSA.MvcPortal.Commons.Helpers;
 
@@ -70,6 +71,11 @@ public class SelectHelper
 
         foreach (var value in values)
         {
+            var fieldInfo = typeof(TEnum).GetField(value.ToString());
+            var ignore = fieldInfo?.GetCustomAttributes(typeof(EnumIgnoreAttribute), false).Any() ?? false;
+            if (ignore)
+                continue;
+
             var displayName = value.GetDisplayName();
 
             selectList.Add(new SelectListItem

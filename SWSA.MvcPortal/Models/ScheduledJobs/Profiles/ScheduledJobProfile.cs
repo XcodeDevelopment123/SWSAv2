@@ -3,7 +3,6 @@ using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Models.ScheduledJobs.Profiles;
 
-
 public class ScheduledJobProfile : Profile
 {
 
@@ -27,10 +26,6 @@ public class ScheduledJobProfile : Profile
                   {
                       dest.CronFields = dest.ParseCron();
                   });
-
-
-
-
     }
 
 }

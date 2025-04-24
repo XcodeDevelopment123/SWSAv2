@@ -2,10 +2,9 @@
 
 namespace SWSA.MvcPortal.Models.SystemAuditLogs;
 
-public class SystemAuditLogVM
+public class SystemAuditLogListVM
 {
     public int LogId { get; set; }
-    public SystemAuditModule Module { get; set; }
     public SystemAuditActionType ActionType { get; set; }
     public string EntityId { get; set; } = default!;
     public string EntityName { get; set; } = default!;
@@ -13,5 +12,5 @@ public class SystemAuditLogVM
     public string PerformedBy { get; set; } = default!;
     public string? PerformedByStaffId { get; set; }
     public DateTime PerformedAt { get; set; }
-    public List<ChangeSummaryVM> ChangeSummaries { get; set; }
+
 }
