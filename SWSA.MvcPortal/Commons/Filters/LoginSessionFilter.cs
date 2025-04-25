@@ -108,6 +108,7 @@ public class LoginSessionFilter(
             ("Home", "NotFound"),
             ("Home", "Privacy"),
             ("Home", "Error"),
+            ("Auth", "KeepAlive")
         };
         var routeData = context.RouteData;
         var controller = routeData.Values["controller"]?.ToString();

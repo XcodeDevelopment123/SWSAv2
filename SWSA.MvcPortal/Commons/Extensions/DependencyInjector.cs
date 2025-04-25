@@ -29,6 +29,7 @@ using SWSA.MvcPortal.Commons.Quartz.Support;
 using Serilog;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using Newtonsoft.Json.Converters;
+using AspNetCoreRateLimit;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -84,6 +85,11 @@ public static class DependencyInjector
         .AddEnvironmentVariables();
 
         services.AddSignalR().AddNewtonsoftJsonProtocol();
+
+        //Rate limiting
+        services.Configure<IpRateLimitOptions>(configuration.GetSection("IpRateLimiting"));
+        services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        services.AddInMemoryRateLimiting();
 
         //Should at after session added
         services.AddScoped<IUserContext, UserContext>();

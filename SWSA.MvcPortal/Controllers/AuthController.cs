@@ -35,6 +35,11 @@ public class AuthController(
         return Json(result);
     }
 
+    [HttpGet("keep-alive")]
+    public IActionResult KeepAlive()
+    {
+        return NoContent();
+    }
 
     public IActionResult Logout()
     {
