@@ -34,6 +34,4 @@ public class UploadFileService(
 
         return input.Trim().Replace(" ", "_");
     }
-
-
 }

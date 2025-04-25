@@ -41,4 +41,28 @@
             "colvis"
         ]
     }).buttons().container().appendTo('#scheduledTaskDatatable_wrapper .col-md-6:eq(0)');
+
+    $(document).on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+        const row = $(this).closest('table').DataTable().row($(this).closest('tr'))
+
+        if (confirm(`Are you sure you want to delete "${name}"?`)) {
+            $.ajax({
+                url: `${urls.schedule_job}/${id}/delete`,
+                method: "DELETE",
+                success: function (res) {
+                    if (res) {
+                        Toast_Fire(ICON_SUCCESS, "Deleted", "Job deleted successfully.");
+                        row.remove().draw(false);
+                    }
+                },
+                error: (res) => {
+                    Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
+                }
+            })
+
+
+        }
+    });
 })

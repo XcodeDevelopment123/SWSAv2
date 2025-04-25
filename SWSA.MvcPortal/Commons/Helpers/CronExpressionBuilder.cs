@@ -1,7 +1,6 @@
 ﻿using Quartz;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
-using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
 using SWSA.MvcPortal.Models.ScheduledJobs;
 
 namespace SWSA.MvcPortal.Commons.Helpers;

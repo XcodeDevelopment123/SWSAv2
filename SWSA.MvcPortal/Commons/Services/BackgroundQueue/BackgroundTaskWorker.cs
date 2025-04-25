@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 
-public class AuditLogWorker(IBackgroundTaskQueue taskQueue) : BackgroundService
+public class BackgroundTaskWorker(IBackgroundTaskQueue taskQueue) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

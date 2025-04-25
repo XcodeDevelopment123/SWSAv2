@@ -25,12 +25,9 @@ public class ScheduledJobRepository(AppDbContext db) : RepositoryBase<ScheduledJ
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<ScheduledJob>> BuildQueryAsync()
     {
-        //Default query no action
-        return Task.FromResult(db.Set<ScheduledJob>().AsQueryable());
-
         // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.Set<ScheduledJob>().Include(c => c.User).AsNoTracking();
+        return Task.FromResult(query);
     }
 
     //Rewrite the GetWithIncludesAsync method

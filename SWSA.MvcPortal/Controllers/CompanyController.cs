@@ -9,13 +9,10 @@ namespace SWSA.MvcPortal.Controllers;
 public class CompanyController(
     ICompanyService service,
     ICompanyOwnerService companyOwnerService,
-    ICompanyStaffService companyCommunicationContactService,
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
-    ICompanyDepartmentService companyDepartmentService,
     IMsicCodeService msicCodeService,
-    IDepartmentService departmentService,
-    ICompanyStaffService companyStaffService
+    IDepartmentService departmentService
     ) : BaseController
 {
     [Route("")]

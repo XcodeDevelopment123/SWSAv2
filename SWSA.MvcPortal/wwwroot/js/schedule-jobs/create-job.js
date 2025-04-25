@@ -1,56 +1,22 @@
 ﻿$(function () {
     const $jobTriggerSettingForm = $("#jobTriggerSettingForm");
     const jobTriggerSettingForm = {
-        jobKey: $("input[name='jobKey']"),
+        jobType: $("select[name='jobType']"),
         scheduleType: $("select[name='scheduleType']"),
         cronExpression: $("input[name='cronExpression']"),
         triggerTime: $("input[name='dateTimePicker']"),
-        isEnabled: $("select[name='isEnabled']"),
-        payloadJson: {
-            companyId: $("select[name='companyId']"),
-            month: $("input[name='month']"),
-            year: $("select[name='year']"),
-        },
         cronFields: {
             dayOfWeek: $('select[name="weekPicker"]'),
             dayOfMonth: $('input[name="datePicker"]'),
             time: $('input[name="timePicker"]')
         }
     };
-    let clickedButton = null;
-    jobTriggerSettingForm.scheduleType.on("change", function () {
-        const value = $(this).val();
-
-        switch (value) {
-            case "Once":
-                $("#dateTimePickerContainer").show();
-                $("#timePickerContainer,#datePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
-                break;
-            case "Daily":
-                $("#timePickerContainer").show();
-                $("#dateTimePickerContainer,#datePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
-                break;
-            case "Weekly":
-                $("#timePickerContainer,#weekPickerContainer").show();
-                $("#dateTimePickerContainer,#datePickerContainer,#cronInputContainer").hide();
-                break;
-            case "Monthly":
-                $("#timePickerContainer,#datePickerContainer").show();
-                $("#dateTimePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
-                break;
-            case "Cron":
-                $("#cronInputContainer").show();
-                $("#timePickerContainer,#datePickerContainer,#weekPickerContainer,#dateTimePickerContainer").hide();
-                break;
-            default:
-                console.error("Type not found, Type:", value);
-                return;
-        }
-
-    })
 
     $jobTriggerSettingForm.validate({
         rules: {
+            jobType: {
+                required: true
+            },
             scheduleType: {
                 required: true
             },
@@ -141,42 +107,56 @@
         }
     });
 
-    $jobTriggerSettingForm.find("button[type=submit]").on("click", function () {
-        clickedButton = $(this).val();
-    });
+    jobTriggerSettingForm.scheduleType.on("change", function () {
+        const value = $(this).val();
+
+        switch (value) {
+            case "Once":
+                $("#dateTimePickerContainer").show();
+                $("#timePickerContainer,#datePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
+                break;
+            case "Daily":
+                $("#timePickerContainer").show();
+                $("#dateTimePickerContainer,#datePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
+                break;
+            case "Weekly":
+                $("#timePickerContainer,#weekPickerContainer").show();
+                $("#dateTimePickerContainer,#datePickerContainer,#cronInputContainer").hide();
+                break;
+            case "Monthly":
+                $("#timePickerContainer,#datePickerContainer").show();
+                $("#dateTimePickerContainer,#weekPickerContainer,#cronInputContainer").hide();
+                break;
+            case "Cron":
+                $("#cronInputContainer").show();
+                $("#timePickerContainer,#datePickerContainer,#weekPickerContainer,#dateTimePickerContainer").hide();
+                break;
+            default:
+                console.error("Type not found, Type:", value);
+                return;
+        }
+    })
 
     $jobTriggerSettingForm.on("submit", function (e) {
         e.preventDefault();
         if (!$jobTriggerSettingForm.valid()) return;
 
         const triggerData = getFormData(jobTriggerSettingForm);
-
-        switch (clickedButton) {
-            case "trigger":
-                $.ajax({
-                    url: `${urls.schedule_job}/${triggerData.jobKey}/execute`,
-                    method: "POST",
-                    success: function (res) {
-                        Toast_Fire(ICON_SUCCESS, "The Job is execute success");
-                    }
-                })
-                return; //End method
-            case "schedule":
-            case "schedule_trigger":
-                triggerData.executeNow = clickedButton === "schedule_trigger";
-                break;
-        }
+        console.log(triggerData);
 
         $.ajax({
-            url: `${urls.schedule_job}/schedule`,
+            url: `${urls.schedule_job}/create`,
             method: "POST",
             data: { req: triggerData },
             success: function (res) {
-                Toast_Fire(ICON_SUCCESS, "The job schedule setting has been save");
+                Toast_Fire(ICON_SUCCESS, "The job schedule setting has been create");
+                window.location.href = `/scheduler-jobs/${res}/overview` 
+
             }
         })
 
-    });
+    })
+
 
     initSelect2()
 
@@ -208,7 +188,7 @@
 
     flatpickr("#datePicker", {
         enableTime: false,
-        dateformat: "d",
+        dateFormat: "d",
         onReady: function (selectedDates, dateStr, instance) {
             instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
             updateOrdinal(instance.selectedDates, instance.input.value, instance);
@@ -217,7 +197,7 @@
     });
 
     function updateOrdinal(selectedDates, dateStr, instance) {
-        if (dateStr === 'N/A' || dateStr==='') {
+        if (dateStr === 'N/A' || dateStr === '') {
             instance.input.value = "";
             return;
         }
@@ -229,4 +209,4 @@
 
         instance.input.value = `${dayOrdinal}`;
     }
-})
+});

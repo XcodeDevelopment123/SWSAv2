@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Responses;
 using SWSA.MvcPortal.Models.CompanyStaffs;

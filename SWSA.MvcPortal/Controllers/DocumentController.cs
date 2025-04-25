@@ -11,10 +11,8 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("companies")]
 public class DocumentController(
     IDocumentRecordService service,
-    ICompanyDepartmentService companyDepartmentService,
     IUserService userService,
-    ICompanyService companyService,
-    IUploadFileService uploadFileService
+    ICompanyService companyService
     ) : BaseController
 {
     [Route("docs")]

@@ -168,10 +168,10 @@ public static class DependencyInjector
 
         //Messaging service
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-        services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
         services.AddSingleton<IMessageDispatcher, DefaultDispatcher>();
+        services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
         services.AddSingleton<IMessageProducer, InMemoryMessageQueue>();
-        services.AddSingleton<IMessageConsumer>(sp => (IMessageConsumer)sp.GetRequiredService<IMessageProducer>());
+        services.AddSingleton(sp => (IMessageConsumer)sp.GetRequiredService<IMessageProducer>());
         services.AddSingleton<IMessagingService, MessagingService>();
 
         // 注册所有 Sender（可多个）
@@ -180,7 +180,7 @@ public static class DependencyInjector
 
         // Background 消费服务
         services.AddHostedService<MessageQueueWorker>();
-        services.AddHostedService<AuditLogWorker>();
+        services.AddHostedService<BackgroundTaskWorker>();
 
     }
 

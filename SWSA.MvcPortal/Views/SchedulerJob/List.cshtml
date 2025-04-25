@@ -51,7 +51,13 @@
                                         <a href="/scheduler-jobs/@job.JobKey/overview" class="btn btn-sm btn-info mr-2" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        </div>
+                                        @if (!string.IsNullOrEmpty(job.StaffId))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@job.JobKey" data-name="@job.JobType" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }

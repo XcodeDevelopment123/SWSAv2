@@ -34,6 +34,13 @@ public class SchedulerJobController(
         return View(data);
     }
 
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(CreateScheduleJobRequest req)
+    {
+        var result = await service.CreateScheduleJob(req);
+        return Ok(result);
+    }
+
     [HttpPost("{jobKey}/execute")]
     public async Task<IActionResult> ExecuteNow([FromRoute] string jobKey)
     {
@@ -77,5 +84,12 @@ public class SchedulerJobController(
 
         await scheduler.ScheduleJob(request, type);
         return Ok("✅ Job scheduled successfully.");
+    }
+
+    [HttpDelete("{jobKey}/delete")]
+    public async Task<IActionResult> Delete([FromRoute] string jobKey)
+    {
+        var result = await service.DeleteByJobKey(jobKey);
+        return Ok(result);
     }
 }

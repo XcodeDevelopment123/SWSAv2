@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Filters;
+
+namespace SWSA.MvcPortal.Commons.Enums;
 
 
 public enum ScheduledJobType
@@ -11,6 +13,7 @@ public enum ScheduledJobType
     /// <summary>
     /// Required use GenerateReportJobRequest as IJobRequest
     /// </summary>
+    [EnumIgnore]
     GenerateAssignmentReport = 200
 
     //Other 

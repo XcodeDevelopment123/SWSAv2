@@ -31,8 +31,6 @@ public class MessagingService : IMessagingService
     }
 }
 
-
-
 // 说明：提供给 Controller/API 调用的统一入口。
 // Controller 中调用示例：
 // await _messagingService.SendAsync(ChannelType.SMS, "+60123456789", "OTP", new() { ["otp"] = "123456" });

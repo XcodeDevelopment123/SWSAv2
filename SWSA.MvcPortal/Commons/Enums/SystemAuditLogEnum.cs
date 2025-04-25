@@ -24,4 +24,5 @@ public enum SystemAuditActionType
     Create,
     Update,
     Delete,
+    Execute
 }

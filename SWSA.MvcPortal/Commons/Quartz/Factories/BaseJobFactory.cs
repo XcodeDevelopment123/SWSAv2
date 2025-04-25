@@ -11,7 +11,6 @@ public interface IJobBaseFactory
     JobKey GetJobKey();
 }
 
-
 /// <summary>
 /// You will no need to change this base job factory, except you know what need to change and correct
 /// Method CreateTrigger, could be override by child job class

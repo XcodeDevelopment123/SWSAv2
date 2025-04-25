@@ -10,6 +10,4 @@ public class CreateScheduleJobRequest
     public CronFields CronFields { get; set; }
     public string CronExpression { get; set; }
     public DateTime? TriggerTime { get; set; }
-    public string? PayloadJson { get; set; }
-
 }

@@ -3,8 +3,6 @@ using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Support;
-
-
 public static class JobRequestMapper
 {
     /// <summary>
@@ -40,7 +38,6 @@ public static class JobRequestMapper
     // factory.CreateJob(context);
     // factory.CreateTrigger(context);
 }
-
 
 public static class JobDataBinder
 {

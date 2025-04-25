@@ -14,4 +14,5 @@ public interface IScheduledJobService
     // Define your method here
     Task UpdateExecuteTimeAsync(string jobkey);
     Task<string> CreateScheduleJob(CreateScheduleJobRequest req);
+    Task<bool> DeleteByJobKey(string jobKey);
 }

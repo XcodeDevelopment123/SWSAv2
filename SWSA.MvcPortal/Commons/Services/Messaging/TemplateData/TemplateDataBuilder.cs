@@ -1,7 +1,5 @@
 ﻿namespace SWSA.MvcPortal.Commons.Services.Messaging.TemplateData;
 
-
-
 public static class TemplateDataBuilder
 {
     public static Dictionary<string, string> From<T>(T model) where T : class

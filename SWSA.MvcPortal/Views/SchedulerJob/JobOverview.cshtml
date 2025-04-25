@@ -1,4 +1,5 @@
 ﻿@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
@@ -92,7 +93,7 @@
                             <div class="form-group">
                                 <label for="datePicker">Date</label>
                                 <div class="input-group">
-                                    <input type="text" value="" value="@Model.CronFields.DayOfMonth" id="datePicker" name="datePicker" class="form-control" placeholder="Select date time" />
+                                    <input type="text" value="N/A" id="datePicker" name="datePicker" class="form-control" placeholder="Select date time" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>

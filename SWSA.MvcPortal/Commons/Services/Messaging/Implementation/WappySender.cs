@@ -43,7 +43,6 @@ public class WappySender(HttpClient client, IOptions<WappySettings> options) : I
             Log.Error(ex, msg);
             return new MessagingResult(false, msg, message);
         }
-
     }
 }
 

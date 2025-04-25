@@ -33,4 +33,9 @@ public class SystemAuditLogEntry
     {
         return new SystemAuditLogEntry(module, SystemAuditActionType.Delete, entityId, entityName, oldData, null);
     }
+
+    public static SystemAuditLogEntry Execute(SystemAuditModule module, string entityId, string? entityName)
+    {
+        return new SystemAuditLogEntry(module, SystemAuditActionType.Execute, entityId, entityName, null, null);
+    }
 }
