@@ -187,7 +187,6 @@ public static class DependencyInjector
         // Background 消费服务
         services.AddHostedService<MessageQueueWorker>();
         services.AddHostedService<BackgroundTaskWorker>();
-
     }
 
     public static void AddSeedData(this IServiceCollection services)

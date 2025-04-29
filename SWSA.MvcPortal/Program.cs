@@ -5,6 +5,7 @@ using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Persistence.Seeders;
 using Serilog;
 using SWSA.MvcPortal.Commons.SignalR;
+using AspNetCoreRateLimit;
 
 
 try
@@ -39,7 +40,7 @@ try
         app.UseHsts();
     }
     app.UseMiddleware<ExceptionMiddleware>();
-
+    app.UseIpRateLimiting();
     using (var scope = app.Services.CreateScope())
     {
         var seederManager = scope.ServiceProvider.GetRequiredService<SeederManager>();
