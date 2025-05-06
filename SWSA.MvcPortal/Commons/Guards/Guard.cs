@@ -1,4 +1,6 @@
-﻿using SWSA.MvcPortal.Commons.Exceptions;
+﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Exceptions;
+using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Commons.Guards;
 
@@ -12,12 +14,28 @@ public static class Guard
         }
     }
 
-    //public static void AgainstCrossCompanyAccess(int targetCompanyId, IUserContext user)
-    //{
-    //    if (user.IsCompanyStaff && user.CompanyId != targetCompanyId)
-    //    {
-    //        throw new BusinessLogicException("You are not authorized to access data from another company.");
-    //    }
-    //}
+    public static void AgainstNotSuperAdmin(IUserContext user)
+    {
+        if (!user.IsSuperAdmin)
+        {
+            throw new DataNotFoundException("Only Super admin can perform this action");
+        }
+    }
+
+    public static void AgainstUnauthorizedCompanyAccess(int targetCompanyId, int? targetDepartmentId, IUserContext user)
+    {
+        if (user.Role == UserRole.SuperAdmin)
+            return;
+
+
+        if (!user.AllowedCompanyIds.Contains(targetCompanyId))
+            throw new UnauthorizedAccessException("Access denied to the specified company.");
+
+        if (targetDepartmentId.HasValue &&
+            (!user.AllowedDepartments.TryGetValue(targetCompanyId, out var deptIds) || !deptIds.Contains(targetDepartmentId.Value)))
+        {
+            throw new UnauthorizedAccessException("Access denied to the specified department.");
+        }
+    }
 
 }

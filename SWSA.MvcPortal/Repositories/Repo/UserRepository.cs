@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SWSA.MvcPortal.Repositories.Repo;
 
@@ -12,24 +13,41 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     // Implement the method
     public async Task<List<User>> GetByActiveStatus(bool isActive)
     {
-        return await db.Set<User>().Where(u => u.IsActive == isActive).ToListAsync();
+        var query = await BuildQueryAsync();
+        return await query.Where(u => u.IsActive == isActive).ToListAsync();
     }
 
     public async Task<User> GetByUsernameAsync(string username)
     {
-        return await db.Set<User>().FirstOrDefaultAsync(u => u.Username == username);
+        var query = await BuildQueryAsync();
+        return await query.FirstOrDefaultAsync(u => u.Username == username);
     }
 
     public async Task<User> GetByStaffIdAsync(string staffId)
     {
-        return await db.Set<User>().FirstOrDefaultAsync(u => u.StaffId == staffId);
+        var query = await BuildQueryAsync();
+        return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
+    }
+
+    public async Task<Dictionary<string, int>> GetDictionaryIdByStaffIdsAsync(List<string> staffIds)
+    {
+        if (staffIds == null || !staffIds.Any())
+            return new Dictionary<string, int>();
+
+        var query = await BuildQueryAsync();
+        return await query
+            .Where(u => staffIds.Contains(u.StaffId))
+            .ToDictionaryAsync(u => u.StaffId, u => u.Id);
     }
 
     public async Task<Dictionary<string, User>> GetDictionaryByStaffIdsAsync(List<string> staffIds)
     {
-        return await db.Set<User>()
-            .Where(u => staffIds.Contains(u.StaffId))
-            .ToDictionaryAsync(u => u.StaffId);
+        if (staffIds == null || !staffIds.Any())
+            return new Dictionary<string, User>();
+
+        var query = await BuildQueryAsync();
+        return await query.Where(u => staffIds.Contains(u.StaffId))
+                          .ToDictionaryAsync(u => u.StaffId);
     }
 
     public async Task<bool> ExistsByUsernameAsync(string username)
@@ -40,12 +58,10 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<User>> BuildQueryAsync()
     {
-        //Default query no action
-        return Task.FromResult(db.Set<User>().AsQueryable());
-
-        // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.Set<User>()
+           .Include(c => c.CompanyDepartments)
+           .AsNoTracking();
+        return Task.FromResult(query);
     }
 
     //Add the method that want to perform before delete the entity

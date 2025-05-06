@@ -45,16 +45,14 @@ public class UserController(
         return View(data);
     }
 
-    [Route("edit")]
-    [HttpPost]
+    [HttpPost("edit")]
     public async Task<IActionResult> Edit(EditUserRequest req)
     {
         var result = await service.UpdateUserInfo(req);
         return Json(result);
     }
 
-    [Route("{staffId}/delete")]
-    [HttpDelete]
+    [HttpDelete("{staffId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] string staffId)
     {
         var result = await service.DeleteUserByIdAsync(staffId);

@@ -9,7 +9,8 @@
         email: $userForm.find('input[name="email"]'),
         password: $userForm.find('input[name="password"]'),
         rePassword: $userForm.find('input[name="rePassword"]'),
-        isActive: $userForm.find('select[name="isActive"]')
+        isActive: $userForm.find('select[name="isActive"]'),
+        role: $userForm.find('select[name="role"]')
     };
 
     $userForm.validate({
@@ -36,6 +37,9 @@
             },
             isActive: {
                 required: true
+            },
+            role: {
+                required: true
             }
         },
         messages: {
@@ -61,6 +65,9 @@
             },
             isActive: {
                 required: "Please select an active status."
+            },
+            role: {
+                required: "Please select an role."
             }
         },
         errorElement: 'span',

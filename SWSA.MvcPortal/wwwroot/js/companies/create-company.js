@@ -338,7 +338,92 @@
 
     //#endregion
 
+    //#region Handle User Form 
+    const $handleUserForm = $("#handleUserForm");
+    const handleUserFormInputs = {
+        handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
+        userDepartmentIds: $handleUserForm.find('select[name="userDepartmentIds"]'),
+    };
+
+
+    $handleUserForm.validate({
+        rules: {
+            handleStaffId: {
+                required: true
+            },
+            userDepartmentIds: {
+                required: true
+            },
+        },
+        messages: {
+            handleStaffId: {
+                required: "User is required."
+            },
+            userDepartmentIds: {
+                required: "Select at least one departments"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.hasClass('select2-hidden-accessible')) {
+                element.next('.select2-container').after(error);
+            } else {
+                element.closest('.form-group').append(error);
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $handleUserForm.on('submit', function (e) {
+        e.preventDefault();
+
+        if (!$handleUserForm.valid()) {
+            return;
+        }
+
+        const staffId = handleUserFormInputs.handleStaffId.val(); // staff ID
+        const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
+
+        const departmentIds = handleUserFormInputs.userDepartmentIds.val(); // array of IDs
+        const departmentNames = handleUserFormInputs.userDepartmentIds.find('option:selected')
+            .map(function () { return $(this).text(); })
+            .get(); // array of names
+
+        const staffData = {
+            staffId: staffId,
+            name: `${staffName}`, 
+            departmentIds: departmentIds,
+            departmentNames: departmentNames
+        };
+
+        addHandleUserRow(staffData)
+
+        handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+        handleUserFormInputs.userDepartmentIds.val("").trigger('change'); 
+        handleUserFormInputs.handleStaffId.val("").trigger('change'); 
+        $handleUserForm[0].reset();
+    });
+
+    //#endregion
+
+
     //#region Table
+    const handleUserTable = $('#handleUserTable').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true
+    });
+
     const ownerTable = $('#ownerTable').DataTable({
         paging: true,
         lengthChange: false,
@@ -395,6 +480,11 @@
         table.row($(this).closest('tr')).remove().draw(false);
     });
 
+    $(document).on('click', '#handleUserTable .btn-delete-row', function () {
+        const id = $(this).val();
+        handleUserFormInputs.handleStaffId.find(`option[value="${id}"]`).prop('disabled', false);
+    });
+
     $("#btnSubmitRequest").on('click', function (e) {
 
         if (!$companyForm.valid()) {
@@ -406,7 +496,10 @@
         companyData.companyOwners = getOwnerTableData();
         companyData.staffsContact = getStaffContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
+        companyData.handleUsers = getHandleUserTableData();
         companyData.complianceDate = getFormData(complianceDateFormInputs);
+
+        console.log(companyData);
         $.ajax({
             url: `${urls.companies}/create`,
             method: "POST",
@@ -422,6 +515,23 @@
         })
     });
 
+    function addHandleUserRow(data) {
+        const rowHtml = [
+            `<td data-staff-id="${data.staffId}">
+                ${data.name}
+            </td>`,
+            `<td data-department-ids="${data.departmentIds.join(',')}">
+                ${data.departmentNames.join(',')}
+            </td>`,
+            `<td>
+            <button type="button" class="btn btn-sm btn-danger btn-delete-row" value="${data.staffId}">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>`
+        ];
+
+        handleUserTable.row.add(rowHtml).draw(false);
+    }
 
     function addOwnerRow(data) {
         ownerTable.row.add([
@@ -506,6 +616,27 @@
                 officeTel: rowData[1],
                 email: rowData[2],
                 remark: rowData[3]
+            });
+        });
+
+        return data;
+    }
+
+    function getHandleUserTableData() {
+        const data = [];
+
+        handleUserTable.rows().every(function () {
+            const rowData = this.data();
+
+            const staffCell = $('<div>').html(rowData[0]).find('td, *[data-staff-id]');
+            const departmentCell = $('<div>').html(rowData[1]).find('td, *[data-department-ids]');
+
+            const staffId = staffCell.data('staff-id');
+            const departmentIds = departmentCell.data('department-ids');
+
+            data.push({
+                staffId: staffId,
+                departmentIds: (departmentIds || '').toString().split(',') // string => array
             });
         });
 

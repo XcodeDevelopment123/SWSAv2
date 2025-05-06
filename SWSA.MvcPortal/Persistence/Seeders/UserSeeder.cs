@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Helpers;
+﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Persistence.Seeders;
@@ -44,6 +45,7 @@ public class UserSeeder(AppDbContext db) : ISeeder
             HashedPassword = PasswordHasher.Hash("admin"),
             FullName = "SWSA Admin",
             PhoneNumber = "+60123456789",
+            Role = UserRole.SuperAdmin
         };
     }
 

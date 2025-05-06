@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Models.Users;
+﻿using SWSA.MvcPortal.Commons.Enums;
+
+namespace SWSA.MvcPortal.Models.Users;
 
 public class UserEditVM
 {
@@ -10,4 +12,5 @@ public class UserEditVM
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    public UserRole Role { get; set; }
 }

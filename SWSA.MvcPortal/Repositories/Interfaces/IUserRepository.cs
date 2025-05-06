@@ -14,4 +14,5 @@ public interface IUserRepository : IRepositoryBase<User>
     Task<bool> ExistsByUsernameAsync(string username);
     Task<List<User>> GetByActiveStatus(bool isActive);
     Task<Dictionary<string, User>> GetDictionaryByStaffIdsAsync(List<string> staffIds);
+    Task<Dictionary<string, int>> GetDictionaryIdByStaffIdsAsync(List<string> staffIds);
 }

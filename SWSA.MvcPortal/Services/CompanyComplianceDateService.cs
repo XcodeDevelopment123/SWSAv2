@@ -1,6 +1,7 @@
 ﻿
 
 using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
@@ -27,7 +28,7 @@ ISystemAuditLogService sysAuditService
 
         data ??= new CompanyComplianceDate();
 
-        var oldData = mapper.Map<CompanyComplianceDate>(data);
+        var oldData = data.DeepClone();
 
         data.UpdateComplianceDates(req);
 

@@ -19,6 +19,10 @@
 <script src="~/admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="~/admin-lte/plugins/datatables-select/js/datatables.select.min.js"></script>
 <script src="~/admin-lte/plugins/datatables-select/js/select.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
+<script>
+    $.fn.dataTable.moment('YYYY-MM-DD hh:mm A');
+</script>
 @* 
 <script>
     const table = $("#tableId").DataTable({

@@ -30,6 +30,8 @@ using Serilog;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using Newtonsoft.Json.Converters;
 using AspNetCoreRateLimit;
+using SWSA.MvcPortal.Commons.Services.Permission;
+using SWSA.MvcPortal.Commons.Services.Session;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -129,6 +131,7 @@ public static class DependencyInjector
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserCompanyDepartmentRepository, UserCompanyDepartmentRepository>();
         services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
         services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
@@ -152,6 +155,7 @@ public static class DependencyInjector
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserCompanyDepartmentService, UserCompanyDepartmentService>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICompanyStaffService, CompanyStaffService>();
         services.AddScoped<ICompanyDepartmentService, CompanyDepartmentService>();
@@ -167,6 +171,9 @@ public static class DependencyInjector
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
+
+        services.AddScoped<IUserSessionWriter, UserSessionWriter>();
+        services.AddScoped<IUserFetcher, UserFetcher>();
         //Third party service eg. sms service/ image / save file
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<LocalUploadFileService>();
@@ -179,6 +186,7 @@ public static class DependencyInjector
         services.AddSingleton<IMessageProducer, InMemoryMessageQueue>();
         services.AddSingleton(sp => (IMessageConsumer)sp.GetRequiredService<IMessageProducer>());
         services.AddSingleton<IMessagingService, MessagingService>();
+        services.AddSingleton<IPermissionRefreshTracker, MemoryPermissionRefreshTracker>();
 
         // 注册所有 Sender（可多个）
         services.AddSingleton<IMessageSender, SmsSender>();

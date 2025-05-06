@@ -1,4 +1,5 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Dtos.Requests.Users;
 
 namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 
@@ -19,4 +20,5 @@ public class CreateCompanyRequest
     public List<CreateCompanyOwnerRequest> CompanyOwners { get; set; } = [];
     public List<CreateCompanyStaffRequest> StaffsContact { get; set; } = [];
     public List<CreateCompanyOfficialContactRequest> OfficialContacts { get; set; } = [];
+    public List<CreateUserCompanyDepartmentRequest> HandleUsers { get; set; } = [];
 }

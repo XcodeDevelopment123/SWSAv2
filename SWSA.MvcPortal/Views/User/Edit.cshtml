@@ -1,101 +1,126 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Users
+@using SWSA.MvcPortal.Services.Interfaces
+@inject IUserContext UserContext
+
 @model UserVM
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var userRoles = SelectHelper.GetUserRoleList(Model.Role, UserContext.Role);
+	var yesNo = SelectHelper.GetYesNoSelection(Model.IsActive);
 }
 
 <h3>Edit User： @Model.FullName </h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <form id="userForm">
-            <!-- jquery validation -->
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">User Info</h3>
-                </div>
+	<div class="col-md-12">
+		<form id="userForm">
+			<!-- jquery validation -->
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">User Info</h3>
+				</div>
 
-                <!-- /.card-header -->
-                <!-- form start -->
-                <div class="card-body row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="Username">Staff Id</label>
-                            <input readonly value="@Model.StaffId" id="staffId" name="staffId" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="FullName">Full Name</label>
-                            <input value="@Model.FullName" id="FullName" name="fullName" class="form-control" placeholder="John Dee" />
-                        </div>
-                    </div>
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="staffId">Staff Id</label>
+							<input readonly value="@Model.StaffId" id="staffId" name="staffId" class="form-control" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="Username">Username</label>
+							<input readonly value="@Model.Username" class="form-control" placeholder="JohnDee123" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="role">User Role</label>
+							@if (UserContext.StaffId == Model.StaffId)
+							{
+								<select disabled asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
+							}
+							else
+							{
+								<select asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
+							}
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="FullName">Full Name</label>
+							<input value="@Model.FullName" id="FullName" name="fullName" class="form-control" placeholder="John Dee" />
+						</div>
+					</div>
+	
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="PhoneNumber">Phone Number</label>
+							<input value="@Model.PhoneNumber" id="PhoneNumber" name="phoneNumber" class="form-control" placeholder="+6012xxxxxxx" />
+						</div>
+					</div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="PhoneNumber">Phone Number</label>
-                            <input value="@Model.PhoneNumber" id="PhoneNumber" name="phoneNumber" class="form-control" placeholder="+6012xxxxxxx" />
-                        </div>
-                    </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="Email">Email</label>
+							<input value="@Model.Email" type="email" id="Email" name="email" class="form-control" placeholder="example@gmail.com" />
+						</div>
+					</div>
+	
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="Email">Email</label>
-                            <input value="@Model.Email" type="email" id="Email" name="email" class="form-control" placeholder="example@gmail.com" />
-                        </div>
-                    </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="Password">Password
+								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Put it empty if dont want to update password."></i>
+							</label>
+							<input type="password" id="Password" name="password" class="form-control" placeholder="Enter password" />
+						</div>
+					</div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="Password">Password</label>
-                            <input type="password" id="Password" name="password" class="form-control" placeholder="Enter password" />
-                        </div>
-                    </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="RePassword">Re-enter Password</label>
+							<input type="password" id="RePassword" name="rePassword" class="form-control" placeholder="Re-enter password" />
+						</div>
+					</div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="RePassword">Re-enter Password</label>
-                            <input type="password" id="RePassword" name="rePassword" class="form-control" placeholder="Re-enter password" />
-                        </div>
-                    </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="IsActive">Is Active</label>
+							@if (UserContext.StaffId == Model.StaffId)
+							{
+								<select disabled asp-items="yesNo" id="IsActive" name="isActive" class="form-control select2"></select>
+							}
+							else
+							{
+								<select asp-items="yesNo" id="IsActive" name="isActive" class="form-control select2"></select>
+							}
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="IsActive">Is Active</label>
-                            <select id="IsActive" name="isActive" class="form-control select2">
-                                @if (Model.IsActive)
-                                {
-                                    <option value="true" selected>Yes</option>
-                                    <option value="false">No</option>
-                                }
-                                else
-                                {
-                                    <option value="true">Yes</option>
-                                    <option value="false" selected>No</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
+						</div>
+					</div>
 
-                </div>
-                <div class="card-footer">
-                    <!-- /.card-body -->
-                    <div class="float-end">
-                        <button type="submit" id="btnSubmitRequest" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <!-- /.card -->
-    </div>
+				</div>
+				<div class="card-footer">
+					<!-- /.card-body -->
+					<div class="float-end">
+						<button type="submit" id="btnSubmitRequest" class="btn btn-primary">Save</button>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- /.card -->
+	</div>
 
 
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/users/edit-user.js" asp-append-version="true"></script>
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/users/edit-user.js" asp-append-version="true"></script>
     }

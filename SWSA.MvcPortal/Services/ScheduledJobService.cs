@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using Quartz;
 using Serilog;
@@ -77,7 +78,7 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetScheduledByJobKeyAsync(req.JobKey);
         Guard.AgainstNullData(data, "Job Not Found");
-        var oldData = mapper.Map<ScheduledJob>(data);
+        var oldData = data.DeepClone();
 
         if (req.ExecuteNow)
         {

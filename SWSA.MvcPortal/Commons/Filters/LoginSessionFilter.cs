@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Commons.Services.Session;
+using SWSA.MvcPortal.Commons.Services.Permission;
+using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Commons.Filters;
 
@@ -40,15 +43,30 @@ public class LoginSessionFilter(
             return;
         }
 
+        //If this user require to refresh session to update permission / other information
+        var result =await TryRefreshSession(httpContext, userContext) ;
+        if (!result) //User are require, but find user by staff id failed
+        {
+            RedirectLoginPage(context);
+            return;
+        }
+    
         var loginTimeStr = session.GetString(SessionKeys.LoginTime);
 
         if (DateTime.TryParse(loginTimeStr, out var loginTime))
         {
-            //
+            //early refresh session, prevent token expired
             if ((DateTime.Now - loginTime).TotalMinutes > 20)
             {
-                var userService = serviceProvider.GetRequiredService<IUserService>();
-                await userService.SetUserSession(userContext.StaffId);
+                var sessionWriter = serviceProvider.GetRequiredService<IUserSessionWriter>();
+                var userFetcher = serviceProvider.GetRequiredService<IUserFetcher>();
+                var user = await userFetcher.GetByStaffId(userContext.StaffId);
+                if(user == null)
+                {
+                    RedirectLoginPage(context);
+                    return;
+                }
+                sessionWriter.Write(user!);
             }
         }
         await next();
@@ -121,6 +139,22 @@ public class LoginSessionFilter(
         }
 
         return false;
+    }
+
+    private async Task<bool> TryRefreshSession(HttpContext httpContext, IUserContext userContext)
+    {
+        var refreshTracker = httpContext.RequestServices.GetRequiredService<IPermissionRefreshTracker>();
+        if (!refreshTracker.IsRefreshNeeded(userContext.StaffId)) return true;
+
+        var userFetcher = httpContext.RequestServices.GetRequiredService<IUserFetcher>();
+        var sessionWriter = httpContext.RequestServices.GetRequiredService<IUserSessionWriter>();
+        var user = await userFetcher.GetByStaffId(userContext.StaffId);
+
+        if (user == null) return false;
+
+        sessionWriter.Write(user);
+        refreshTracker.Clear(userContext.StaffId);
+        return true;
     }
 
 }

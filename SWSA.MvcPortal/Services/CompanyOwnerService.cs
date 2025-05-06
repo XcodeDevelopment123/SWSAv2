@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Guards;
@@ -41,7 +42,7 @@ ISystemAuditLogService sysAuditService
             return false;
         }
 
-        var oldData = mapper.Map<CompanyOwner>(data);
+        var oldData = data.DeepClone();
         data.NamePerIC = req.NamePerIC;
         data.ICOrPassportNumber = req.ICOrPassportNumber;
         data.Position = req.Position;

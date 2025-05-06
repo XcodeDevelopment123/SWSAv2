@@ -73,5 +73,6 @@ try
 }
 catch (Exception ex)
 {
+    Log.Error(ex, "Error");
     Log.Fatal(ex, "Application failed to start");
 }

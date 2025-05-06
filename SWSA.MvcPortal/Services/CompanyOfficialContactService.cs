@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Guards;
@@ -42,7 +43,7 @@ ISystemAuditLogService sysAuditService
             return false;
         }
 
-        var oldData = mapper.Map<CompanyOfficialContact>(data);
+        var oldData = data.DeepClone();
         data.Address = req.Address;
         data.OfficeTel = req.OfficeTel;
         data.Email = req.Email;

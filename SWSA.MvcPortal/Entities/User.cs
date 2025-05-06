@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Filters;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,7 +25,8 @@ public class User
     public bool IsLocked { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }
-
+    [SystemAuditLog("User Role")]
+    public UserRole Role { get; set; } = UserRole.Staff;
 
     //public bool Login(string password)
     //{
@@ -45,6 +47,7 @@ public class User
 
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
+    public virtual ICollection<UserCompanyDepartment> CompanyDepartments { get; set; }
 
     public string ToJsonData()
     {

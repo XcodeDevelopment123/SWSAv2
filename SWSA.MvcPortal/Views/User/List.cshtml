@@ -1,92 +1,101 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Models.Users
 @using SWSA.MvcPortal.Services.Interfaces
 @inject IUserContext UserContext;
 @model List<UserListVM>
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-   
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <h3> User List</h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- /.card -->
+	<div class="col-md-12">
+		<!-- /.card -->
 
-        <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="userDatatable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Staff Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Is Active</th>
-                            <th>Is Locked</th>
-                            <th>Last Login Time</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var cp in Model)
-                        {
-                            <tr>
-                                <td>@cp.StaffId</td>
-                                <td>@cp.FullName</td>
-                                <td>@cp.Email</td>
-                                <td>@cp.PhoneNumber</td>
-                                <td>@(cp.IsActive ? "Active" : "Inactive")</td>
-                                <td>@(cp.IsLocked ? "Locked" : AppSettings.NotAvailable)</td>
-                                <td>@(cp.LastLoginAt?.ToString("yyyy-MM-dd hh:mm tt") ?? AppSettings.NotAvailable)</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="/users/@cp.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        <a href="/users/@cp.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="userDatatable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Staff Id</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone Number</th>
+							<th>Is Active</th>
+							<th>Is Locked</th>
+							<th>Last Login Time</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var user in Model)
+						{
+							<tr>
+								<td>@user.StaffId</td>
+								<td>
+									@user.FullName
+									<p style="margin:0">(@user.Role.GetDisplayName())</p>
+								</td>
+								<td>@user.Email</td>
+								<td>@user.PhoneNumber</td>
+								<td>@(user.IsActive ? "Active" : "Inactive")</td>
+								<td>@(user.IsLocked ? "Locked" : AppSettings.NotAvailable)</td>
+								<td>@(user.LastLoginAt?.ToString("yyyy-MM-dd hh:mm tt") ?? AppSettings.NotAvailable)</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/users/@user.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
 
-                                        @if (UserContext?.StaffId != cp.StaffId)
-                                        {
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.StaffId" data-name="@cp.FullName" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        }
-            
-                                    </div>
-                                </td>
+										@if (user.StaffId == UserContext?.StaffId || UserContext?.IsSuperAdmin==true)
+										{
+											<a href="/users/@user.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+												<i class="fa fa-edit"></i>
+											</a>
+										}
 
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Staff Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Is Active</th>
-                            <th>Is Locked</th>
-                            <th>Last Login Time</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
+
+										@if (UserContext?.StaffId != user.StaffId && UserContext?.IsSuperAdmin == true)
+										{
+											<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@user.StaffId" data-name="@user.FullName" title="Delete">
+												<i class="fa fa-trash"></i>
+											</button>
+										}
+
+									</div>
+								</td>
+
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Staff Id</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone Number</th>
+							<th>Is Active</th>
+							<th>Is Locked</th>
+							<th>Last Login Time</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_DatatablesScriptsPartial" />
+	<partial name="_DatatablesScriptsPartial" />
 
-    <script src="~/js/users/list-user.js" asp-append-version="true"></script>
+	<script src="~/js/users/list-user.js" asp-append-version="true"></script>
 }

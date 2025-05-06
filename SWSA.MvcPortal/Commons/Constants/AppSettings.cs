@@ -24,8 +24,10 @@ public class SessionKeys
     public const string StaffId = "StaffId";
     public const string LoginTime = "LoginTime";
     public const string Name = "Name";
-    public const string CompanyId = "CompanyId"; // Use for company staff login 
-    public const string CompanyDepartmentId = "CompanyDepartmentId"; // Use for company staff login 
+    public const string UserRole = "UserRole";
+    public const string AllowedCompanyIds = "AllowedCompanyIds";
+    public const string AllowedDepartments = "AllowedDepartments";
+
 }
 
 public class FileSettings

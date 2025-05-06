@@ -1,13 +1,18 @@
 ﻿using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Commons.Services.Permission;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
+using SWSA.MvcPortal.Dtos.Requests.Users;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Repositories.Repo;
 using SWSA.MvcPortal.Services.Interfaces;
 namespace SWSA.MvcPortal.Services;
 
@@ -19,8 +24,11 @@ ICompanyRepository repo,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
 IDepartmentRepository departmentRepository,
 IMsicCodeRepository msicCodeRepository,
+IUserCompanyDepartmentRepository userCompanyDepartmentRepository,
+IUserRepository userRepository,
 IUserContext userContext,
-ISystemAuditLogService sysAuditService
+ISystemAuditLogService sysAuditService,
+IPermissionRefreshTracker permissionRefreshTracker
     ) : ICompanyService
 {
 
@@ -46,12 +54,42 @@ ISystemAuditLogService sysAuditService
 
     public async Task<int> CreateCompany(CreateCompanyRequest req)
     {
+        if (userContext.IsSuperAdmin && req.HandleUsers.Count == 0)
+            throw new BusinessLogicException("Please select at least one user to handle this company");
+
         Company cp = mapper.Map<Company>(req);
 
-        repo.Add(cp);
-        await repo.SaveChangesAsync();
-        ClearCompaniesCache();
+        await repo.BeginTransactionAsync();
+        try
+        {
+            repo.Add(cp);
+            await repo.SaveChangesAsync();
 
+            //Process handle user associated
+            var staffIds = req.HandleUsers.Select(x => x.StaffId).ToHashSet();
+            var userIds = await userRepository.GetDictionaryIdByStaffIdsAsync([.. staffIds]);
+            var allUserCompanyDepartments = new List<UserCompanyDepartment>();
+            foreach (var handleUser in req.HandleUsers)
+            {
+                var userId = userIds[handleUser.StaffId];
+                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser, cp.Id, userId);
+                allUserCompanyDepartments.AddRange(entities);
+
+                permissionRefreshTracker.MarkRefreshNeeded(handleUser.StaffId);
+            }
+
+            userCompanyDepartmentRepository.AddRange(allUserCompanyDepartments);
+            await userCompanyDepartmentRepository.SaveChangesAsync();
+
+            await repo.CommitTransactionAsync();
+        }
+        catch
+        {
+            await repo.RollbackTransactionAsync();
+            throw;
+        }
+
+        ClearCompaniesCache();
         var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, cp.Id.ToString(), cp.Name, cp);
         sysAuditService.LogInBackground(log);
         return cp.Id;
@@ -61,7 +99,7 @@ ISystemAuditLogService sysAuditService
     {
         var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
         Guard.AgainstNullData(data, "Company not found");
-        var oldData = mapper.Map<Company>(data);
+        var oldData = data.DeepClone();
 
         data!.Name = req.CompanyName;
         data.RegistrationNumber = req.RegistrationNumber;

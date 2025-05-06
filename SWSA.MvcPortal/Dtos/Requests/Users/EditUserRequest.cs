@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Dtos.Requests.Users;
+﻿using SWSA.MvcPortal.Commons.Enums;
+
+namespace SWSA.MvcPortal.Dtos.Requests.Users;
 
 public class EditUserRequest
 {
@@ -8,4 +10,5 @@ public class EditUserRequest
     public string PhoneNumber { get; set; }  = null!;
     public string? Password { get; set; }  = null!;
     public bool IsActive { get; set; }
+    public UserRole Role { get; set; }  
 }

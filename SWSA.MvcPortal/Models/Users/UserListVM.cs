@@ -1,4 +1,6 @@
-﻿namespace SWSA.MvcPortal.Models.Users;
+﻿using SWSA.MvcPortal.Commons.Enums;
+
+namespace SWSA.MvcPortal.Models.Users;
 
 public class UserListVM
 {
@@ -9,4 +11,5 @@ public class UserListVM
     public bool IsActive { get; set; }
     public bool IsLocked { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    public UserRole Role { get; set; }
 }

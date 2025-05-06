@@ -33,6 +33,14 @@ public class SelectHelper
         };
     }
 
+    public static List<SelectListItem> GetUserRoleList(UserRole? role,UserRole loggedUserRole)
+    {
+        if (loggedUserRole != UserRole.SuperAdmin)
+            return ToSelectList(role, filter: x => x != UserRole.SuperAdmin);
+
+        return ToSelectList(role);
+    }
+
     public static List<SelectListItem> GetOwnerPositionTypes(PositionType? type)
     {
         return ToSelectList<PositionType>(type,

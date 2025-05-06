@@ -12,7 +12,8 @@ public class CompanyController(
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
-    IDepartmentService departmentService
+    IDepartmentService departmentService,
+    IUserService userService
     ) : BaseController
 {
     [Route("")]
@@ -40,8 +41,8 @@ public class CompanyController(
     {
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
         var departments = await departmentService.GetDepartments();
-
-        CompanyCreatePageVM vm = new(msicCodes, departments);
+        var users = await userService.GetUserSelectionAsync();
+        CompanyCreatePageVM vm = new(msicCodes, departments, users);
         return View(vm);
     }
 

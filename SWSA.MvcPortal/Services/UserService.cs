@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using SWSA.MvcPortal.Commons.Constants;
+using Force.DeepCloner;
+
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Helpers;
@@ -15,15 +16,10 @@ namespace SWSA.MvcPortal.Services;
 public class UserService(
 IUserRepository repo,
 IMapper mapper,
-IHttpContextAccessor httpContextAccessor,
 ISystemAuditLogService sysAuditService,
 IUserContext userContext
 ) : IUserService
 {
-    private readonly ISession _session =
-     httpContextAccessor.HttpContext?.Session
-     ?? throw new InvalidOperationException("Session is not available.");
-
 
     public async Task<List<UserListVM>> GetUsersAsync()
     {
@@ -48,6 +44,8 @@ IUserContext userContext
 
     public async Task<string> CreateUser(CreateUserRequest req)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         if (await repo.ExistsByUsernameAsync(req.Username))
         {
             throw new BusinessLogicException("Username already exists");
@@ -65,15 +63,23 @@ IUserContext userContext
 
     public async Task<bool> UpdateUserInfo(EditUserRequest req)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var user = await repo.GetByStaffIdAsync(req.StaffId);
         Guard.AgainstNullData(user, "User not found");
 
-        var oldData = mapper.Map<User>(user);
+        //User cannot edit own role
+        if (user.StaffId == userContext.StaffId && req.Role != user.Role)
+            throw new BusinessLogicException("You cannot edit your own role");
+
+        var oldData = user.DeepClone();
 
         user.FullName = req.FullName;
         user.Email = req.Email;
         user.PhoneNumber = req.PhoneNumber;
         user.IsActive = req.IsActive;
+        user.Role = req.Role;
+
         if (!string.IsNullOrEmpty(req.Password))
         {
             var hashPassword = PasswordHasher.Hash(req.Password);
@@ -91,6 +97,8 @@ IUserContext userContext
 
     public async Task<UserVM> DeleteUserByIdAsync(string staffId)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var data = await repo.GetByStaffIdAsync(staffId);
         Guard.AgainstNullData(data, "User not found");
 
@@ -106,19 +114,4 @@ IUserContext userContext
         return mapper.Map<UserVM>(data);
     }
 
-    public async Task<bool> SetUserSession(string staffId)
-    {
-        var user = await repo.GetByStaffIdAsync(staffId);
-        if (user == null)
-        {
-            return false;
-        }
-
-        var userVM = mapper.Map<UserVM>(user);
-
-        _session.SetString(SessionKeys.StaffId, user.StaffId);
-        _session.SetString(SessionKeys.Name, user.FullName);
-        _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
-        return true;
-    }
 }

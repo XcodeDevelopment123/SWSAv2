@@ -79,8 +79,9 @@ IMapper mapper
             var oldStr = ConvertToDisplayString(oldValue);
             var newStr = ConvertToDisplayString(newValue);
 
-            if (oldStr != newStr)
+            if (oldStr != newStr || oldStr == null)
                 dict[displayName] = new ChangeSummaryVM(displayName, oldStr, newStr);
+
         }
 
         return dict.Count > 0 ? JsonConvert.SerializeObject(dict.Values) : null;

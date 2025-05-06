@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Helpers;
+using SWSA.MvcPortal.Commons.Services.Session;
 using SWSA.MvcPortal.Dtos.Responses;
 using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
@@ -11,7 +13,8 @@ namespace SWSA.MvcPortal.Services;
 public class AuthService(
     IUserRepository userRepo,
     IMapper mapper,
-    IHttpContextAccessor httpContextAccessor
+    IHttpContextAccessor httpContextAccessor,
+    IUserSessionWriter userSessionWriter
     ) : IAuthService
 {
     private readonly ISession _session =
@@ -35,18 +38,14 @@ public class AuthService(
             user.HashedPassword = PasswordHasher.Hash(password);
         }
 
-        var userVM = mapper.Map<UserVM>(user);
-
-        _session.SetString(SessionKeys.EntityId, user.Id.ToString());
-        _session.SetString(SessionKeys.StaffId, user.StaffId);
-        _session.SetString(SessionKeys.Name, user.FullName);
-        _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
+        userSessionWriter.Write(user);
 
         user.LastLoginAt = DateTime.Now;
         userRepo.Update(user);
         await userRepo.SaveChangesAsync();
         return new LoginResult().Success(user.StaffId);
     }
+
     public void Logout()
     {
         _session.Clear();
