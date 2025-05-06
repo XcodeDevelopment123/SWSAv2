@@ -20,8 +20,6 @@ ICompanyDepartmentRepository repo
 {
     public async Task<List<CompanyDepartment>> GetByCompanyId(int companyId)
     {
-        Guard.AgainstCrossCompanyAccess(companyId, userContext);
-
         var data = (await repo.GetByCompanyId(companyId)).ToList();
         return data;
     }

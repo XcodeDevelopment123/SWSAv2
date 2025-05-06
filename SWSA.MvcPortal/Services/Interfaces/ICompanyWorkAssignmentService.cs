@@ -1,6 +1,4 @@
-﻿
-
-using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
+﻿using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompnayWorks;
 

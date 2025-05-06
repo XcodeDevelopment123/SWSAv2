@@ -49,7 +49,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
 
-            entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.Company).HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<CompanyStaff>(entity =>
@@ -61,7 +60,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
               "'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
               stored: true);
 
-            entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.PerformedByCompanyStaff).HasForeignKey(c => c.PerformedByCompanyStaffId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<CompanyComplianceDate>()

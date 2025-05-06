@@ -7,100 +7,97 @@
 
 @model List<DocumentRecordVM>
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3> Document List</h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- /.card -->
+	<div class="col-md-12">
+		<!-- /.card -->
 
-        <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="documentTable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Doc Id</th>
-                            <th>Flow</th>
-                            <th>Date</th>
-                            <th>Document Type</th>
-                            <th>File</th>
-                            <th>Company</th>
-                            <th>Department</th>
-                            <th>Handle Staff</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var doc in Model)
-                        {
-                            <tr >
-                                <td>DocId-@doc.DocumentId</td>
-                                <td>@doc.FlowType</td>
-                                <td>@doc.DocumentDate.ToFormattedString()</td>
-                                <td>@doc.DocumentType.GetDisplayName()</td>
-                                <td>
-                                    <a target="_blank" href="@doc.DownloadLink" title="Download">
-                                        @doc.AttachmentFileName
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/companies/@doc.CompanyId/overview" title="company overview">
-                                        @doc.CompanyName
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="#" title="department overview">
-                                        @doc.DepartmentName
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
-                                        @doc.StaffName @(UserContext.StaffId == doc.HandledByStaffId ? "(You)" : "")
-                                    </a>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a target="_blank" href="@doc.ViewLink" class="btn btn-sm btn-info mr-2" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        @if (!UserContext.IsCompanyStaff)
-                                        {
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Doc Id</th>
-                            <th>Flow</th>
-                            <th>Date</th>
-                            <th>Document Type</th>
-                            <th>File</th>
-                            <th>Company</th>
-                            <th>Department</th>
-                            <th>Handle Staff</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="documentTable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Doc Id</th>
+							<th>Flow</th>
+							<th>Date</th>
+							<th>Document Type</th>
+							<th>File</th>
+							<th>Company</th>
+							<th>Department</th>
+							<th>Handle Staff</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var doc in Model)
+						{
+							<tr>
+								<td>DocId-@doc.DocumentId</td>
+								<td>@doc.FlowType</td>
+								<td>@doc.DocumentDate.ToFormattedString()</td>
+								<td>@doc.DocumentType.GetDisplayName()</td>
+								<td>
+									<a target="_blank" href="@doc.DownloadLink" title="Download">
+										@doc.AttachmentFileName
+									</a>
+								</td>
+								<td>
+									<a href="/companies/@doc.CompanyId/overview" title="company overview">
+										@doc.CompanyName
+									</a>
+								</td>
+								<td>
+									<a href="#" title="department overview">
+										@doc.DepartmentName
+									</a>
+								</td>
+								<td>
+									<a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
+										@doc.StaffName @(UserContext.StaffId == doc.HandledByStaffId ? "(You)" : "")
+									</a>
+								</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a target="_blank" href="@doc.ViewLink" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
+											<i class="fa fa-trash"></i>
+										</button>
+
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Doc Id</th>
+							<th>Flow</th>
+							<th>Date</th>
+							<th>Document Type</th>
+							<th>File</th>
+							<th>Company</th>
+							<th>Department</th>
+							<th>Handle Staff</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_DatatablesScriptsPartial" />
-    <script src="~/js/documents/list-document.js" asp-append-version="true"></script>
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/documents/list-document.js" asp-append-version="true"></script>
 }

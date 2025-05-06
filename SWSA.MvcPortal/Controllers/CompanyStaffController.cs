@@ -30,7 +30,7 @@ public class CompanyStaffController(
     [HttpPost]
     public async Task<IActionResult> CreateStaffContact(CreateCompanyStaffRequest req)
     {
-        var result = await service.CreateContact(req);
+        var result = await service.CreateStaff(req);
         return Json(true);
     }
 
@@ -38,15 +38,7 @@ public class CompanyStaffController(
     [HttpPost]
     public async Task<IActionResult> EditStaffContact(EditCompanyStaffInfoRequest req)
     {
-        var result = await service.EditContact(req);
-        return Json(true);
-    }
-
-    [Route("staffs/edit-login-profile")]
-    [HttpPost]
-    public async Task<IActionResult> UpdatStaffLogin(EditCompanyStaffLoginProfileRequest req)
-    {
-        var result = await service.EditLoginProfile(req);
+        var result = await service.EditStaff(req);
         return Json(true);
     }
 
@@ -54,7 +46,7 @@ public class CompanyStaffController(
     [HttpDelete]
     public async Task<IActionResult> DeleteStaffContact([FromRoute] string contactId)
     {
-        var result = await service.DeleteContact(contactId);
+        var result = await service.DeleteStaff(contactId);
         return Json(true);
     }
 }

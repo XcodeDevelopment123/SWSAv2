@@ -10,9 +10,7 @@
 
     var cp = Model.Company;
 
-
     var staffPosition = SelectHelper.GetStaffPositionTypes(Model.Position);
-    var isLoginEnable = SelectHelper.GetYesNoSelection(Model.IsLoginEnabled);
 
     if (Model.HasPassword)
     {
@@ -174,70 +172,6 @@
                             <div class="form-group">
                                 <label for="staffRemark">Remark</label>
                                 <input id="staffRemark" name="staffRemark" value="@Model.Remark" class="form-control " placeholder="(Optional)" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary float-end">Save</button>
-                </div>
-
-            </div>
-            <!-- /.card -->
-        </form>
-    </div>
-
-    <div class="col-md-12">
-        <form id="staffLoginProfile">
-            <!-- jquery validation -->
-            <div class="card card-secondary ">
-                <div class="card-header">
-                    <h3 class="card-title">Staff Login Profile</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
-
-                <div class="card-body " style="display:block">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="enableLogin">Is Login Enable</label>
-                                <select asp-items="@isLoginEnable" id="enableLogin" name="enableLogin" class="form-control select2">  </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="username">
-                                    Username
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Use for login."></i>
-                                </label>
-                                <input @(Model.IsLoginEnabled ? "" : "disabled") id="username" name="username" value="@Model.Username" class="form-control " placeholder="John Dee" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="Password">
-                                    Password
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Password is required if didn't set before."></i>
-
-                                </label>
-                                <input @(Model.IsLoginEnabled ? "" : "disabled") type="password" id="Password" name="password" value="@(Model.HasPassword?AppSettings.DisplayPassword:"")" class="form-control" placeholder="Enter password" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="RePassword">Re-enter Password</label>
-                                <input @(Model.IsLoginEnabled ? "" : "disabled") type="password" id="RePassword" name="rePassword" class="form-control" placeholder="Re-enter password" />
                             </div>
                         </div>
                     </div>

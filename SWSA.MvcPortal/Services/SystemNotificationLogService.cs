@@ -26,8 +26,6 @@ ISystemNotificationLogRepository repo
 
     public async Task AddLog(MessagingResult result)
     {
-        Guard.AgainstCompanyStaff(userContext);
-
         var log = new SystemNotificationLog
         {
             Channel = result.MessageEnvelope.Channel,

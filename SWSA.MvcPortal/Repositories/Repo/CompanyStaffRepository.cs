@@ -21,19 +21,6 @@ public class CompanyStaffRepository(AppDbContext db) : RepositoryBase<CompanySta
         return find!;
     }
 
-    public async Task<CompanyStaff> GetByUsernameAsync(string username)
-    {
-        var find = await db.CompanyStaffs
-            .FirstOrDefaultAsync(c => c.Username == username);
-        return find!;
-    }
-
-    public async Task<bool> ExistUsernameInCompanyExcludingStaffId(int companyId, string username,string excludeStaffId)
-    {
-        return await db.CompanyStaffs
-            .AnyAsync(c => c.CompanyId == companyId && c.Username == username && c.StaffId != excludeStaffId);
-    }
-
     public async Task<List<CompanyStaff>> GetAllByCompanyIdAsync(int companyId)
     {
         var data = await db.CompanyStaffs

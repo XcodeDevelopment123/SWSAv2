@@ -7,563 +7,555 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SWSA</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - SWSA</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
-    <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
-    <!-- Flatpickr -->
-    <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/style.css" rel="stylesheet">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SWSA.MvcPortal.styles.css" asp-append-version="true" />
-    <!-- Select2 -->
-    <link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
-    <link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Font Awesome Icons -->
+	<link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
+	<!-- Ionicons -->
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
+	<link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+	<!-- Flatpickr -->
+	<link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/weekSelect/style.css" rel="stylesheet">
+	<!-- overlayScrollbars -->
+	<link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/SWSA.MvcPortal.styles.css" asp-append-version="true" />
+	<!-- Select2 -->
+	<link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 
 
 @{
-    var currentController = ViewData["controller"]!.ToString();
-    var currentAction = ViewData["action"]!.ToString();
-    var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-
-    var companyId = UserContext.CompanyId;
+	var currentController = ViewData["controller"]!.ToString();
+	var currentAction = ViewData["action"]!.ToString();
+	var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
 
-    <div class="wrapper">
+	<div class="wrapper">
 
-        <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="~/admin-lte/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-        </div>
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__shake" src="~/admin-lte/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
 
-        <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/home" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
-            </ul>
+		<!-- Navbar -->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+			<!-- Left navbar links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="/home" class="nav-link">Home</a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="#" class="nav-link">Contact</a>
+				</li>
+			</ul>
 
-            <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <!-- Navbar Search -->
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                        <i class="fas fa-search"></i>
-                    </a>
-                    <div class="navbar-search-block">
-                        <form class="form-inline">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-navbar" type="submit">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </li>
+			<!-- Right navbar links -->
+			<ul class="navbar-nav ml-auto">
+				<!-- Navbar Search -->
+				<li class="nav-item">
+					<a class="nav-link" data-widget="navbar-search" href="#" role="button">
+						<i class="fas fa-search"></i>
+					</a>
+					<div class="navbar-search-block">
+						<form class="form-inline">
+							<div class="input-group input-group-sm">
+								<input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+								<div class="input-group-append">
+									<button class="btn btn-navbar" type="submit">
+										<i class="fas fa-search"></i>
+									</button>
+									<button class="btn btn-navbar" type="button" data-widget="navbar-search">
+										<i class="fas fa-times"></i>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</li>
 
-                <!-- Messages Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/admin-lte/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Brad Diesel
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/admin-lte/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        John Pierce
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/admin-lte/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Nora Silvester
-                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-                    </div>
-                </li>
-                <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-                        <i class="fas fa-th-large"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.navbar -->
-        <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="https://adminlte.io/" class="brand-link" target="_blank">
-                <img src="~/admin-lte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
-            </a>
+				<!-- Messages Dropdown Menu -->
+				<li class="nav-item dropdown">
+					<a class="nav-link" data-toggle="dropdown" href="#">
+						<i class="far fa-comments"></i>
+						<span class="badge badge-danger navbar-badge">3</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+						<a href="#" class="dropdown-item">
+							<!-- Message Start -->
+							<div class="media">
+								<img src="~/admin-lte/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+								<div class="media-body">
+									<h3 class="dropdown-item-title">
+										Brad Diesel
+										<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+									</h3>
+									<p class="text-sm">Call me whenever you can...</p>
+									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+								</div>
+							</div>
+							<!-- Message End -->
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<!-- Message Start -->
+							<div class="media">
+								<img src="~/admin-lte/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+								<div class="media-body">
+									<h3 class="dropdown-item-title">
+										John Pierce
+										<span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+									</h3>
+									<p class="text-sm">I got your message bro</p>
+									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+								</div>
+							</div>
+							<!-- Message End -->
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<!-- Message Start -->
+							<div class="media">
+								<img src="~/admin-lte/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+								<div class="media-body">
+									<h3 class="dropdown-item-title">
+										Nora Silvester
+										<span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+									</h3>
+									<p class="text-sm">The subject goes here</p>
+									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+								</div>
+							</div>
+							<!-- Message End -->
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+					</div>
+				</li>
+				<!-- Notifications Dropdown Menu -->
+				<li class="nav-item dropdown">
+					<a class="nav-link" data-toggle="dropdown" href="#">
+						<i class="far fa-bell"></i>
+						<span class="badge badge-warning navbar-badge">15</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+						<span class="dropdown-item dropdown-header">15 Notifications</span>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fas fa-envelope mr-2"></i> 4 new messages
+							<span class="float-right text-muted text-sm">3 mins</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fas fa-users mr-2"></i> 8 friend requests
+							<span class="float-right text-muted text-sm">12 hours</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fas fa-file mr-2"></i> 3 new reports
+							<span class="float-right text-muted text-sm">2 days</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+						<i class="fas fa-expand-arrows-alt"></i>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+						<i class="fas fa-th-large"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- /.navbar -->
+		<!-- Main Sidebar Container -->
+		<aside class="main-sidebar sidebar-dark-primary elevation-4">
+			<!-- Brand Logo -->
+			<a href="https://adminlte.io/" class="brand-link" target="_blank">
+				<img src="~/admin-lte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+				<span class="brand-text font-weight-light">AdminLTE 3</span>
+			</a>
 
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="~/admin-lte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">@(UserContext.Name ?? AppSettings.NotAvailable)</a>
-                    </div>
-                </div>
+			<!-- Sidebar -->
+			<div class="sidebar">
+				<!-- Sidebar user panel (optional) -->
+				<div class="user-panel mt-3 pb-3 mb-3 d-flex">
+					<div class="image">
+						<img src="~/admin-lte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+					</div>
+					<div class="info">
+						<a href="#" class="d-block">@(UserContext.Name ?? AppSettings.NotAvailable)</a>
+					</div>
+				</div>
 
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+				<!-- SidebarSearch Form -->
+				<div class="form-inline">
+					<div class="input-group" data-widget="sidebar-search">
+						<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+						<div class="input-group-append">
+							<button class="btn btn-sidebar">
+								<i class="fas fa-search fa-fw"></i>
+							</button>
+						</div>
+					</div>
+				</div>
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
-                        <li class="nav-item  @(currentController==ControllerNames.Dashboard ? "menu-is-opening menu-open":"")">
-                            <a href="#" class="nav-link @(currentController==ControllerNames.Dashboard ? "active":"")">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style=@(currentController == ControllerNames.Dashboard ? @"display:block" : "display:none")>
-                                <li class="nav-item">
-                                    <a href="/dashboard/overall" class="nav-link @(currentController == ControllerNames.Dashboard && currentAction =="Overall" ? "active" : "")">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Overall</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Secretary</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Account</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+				<!-- Sidebar Menu -->
+				<nav class="mt-2">
+					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+						<!-- Add icons to the links using the .nav-icon class
+						with font-awesome or any other icon font library -->
+						<li class="nav-item  @(currentController==ControllerNames.Dashboard ? "menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController==ControllerNames.Dashboard ? "active":"")">
+								<i class="nav-icon fas fa-tachometer-alt"></i>
+								<p>
+									Dashboard
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style=@(currentController == ControllerNames.Dashboard ? @"display:block" : "display:none")>
+								<li class="nav-item">
+									<a href="/dashboard/overall" class="nav-link @(currentController == ControllerNames.Dashboard && currentAction =="Overall" ? "active" : "")">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Overall</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Secretary</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Account</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                        <li class="nav-header">Companies</li>
+						<li class="nav-header">Companies</li>
 
-                        <li class="nav-item @(companyNav.Contains(currentController!) ?"menu-is-opening menu-open":"")">
-                            <a href="#" class="nav-link @(companyNav.Contains(currentController!) ?"active":"")">
-                                <i class="fas fa-building nav-icon"></i>
-                                <p>
-                                    Company
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style="@(companyNav.Contains(currentController!) ? @"display:block" : "display:none")">
+						<li class="nav-item @(companyNav.Contains(currentController!) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(companyNav.Contains(currentController!) ?"active":"")">
+								<i class="fas fa-building nav-icon"></i>
+								<p>
+									Company
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(companyNav.Contains(currentController!) ? @"display:block" : "display:none")">
 
-                                @if (!UserContext.IsCompanyStaff)
-                                {
-                                    <li class="nav-item">
-                                        <a href="/companies" class="nav-link @(currentController== ControllerNames.Company && currentAction =="List" ?"active":"")">
-                                            <i class="nav-icon fas fa-list"></i>
-                                            <p>
-                                                List
-                                                @* <span class="badge badge-info right">2</span> *@
-                                            </p>
-                                        </a>
-                                    </li>
+								<li class="nav-item">
+									<a href="/companies" class="nav-link @(currentController== ControllerNames.Company && currentAction =="List" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+											@* <span class="badge badge-info right">2</span> *@
+										</p>
+									</a>
+								</li>
 
-                                    <li class="nav-item">
-                                        <a href="/companies/create" class="nav-link @(currentController== ControllerNames.Company && currentAction =="Create" ?"active":"")">
-                                            <i class="nav-icon fas fa-plus"></i>
-                                            <p>
-                                                Add Company
-                                            </p>
-                                        </a>
-                                    </li>
-                                }
+								<li class="nav-item">
+									<a href="/companies/create" class="nav-link @(currentController== ControllerNames.Company && currentAction =="Create" ?"active":"")">
+										<i class="nav-icon fas fa-plus"></i>
+										<p>
+											Add Company
+										</p>
+									</a>
+								</li>
 
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link open-company-modal
+								<li class="nav-item">
+									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.Company && currentAction =="CompanyLP" ?"active":"")
-                                    " data-target-url="/companies/{companyId}/landing-page" data-url-name="Navigate to Landing Page" data-company-id="@companyId">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Assign Company LP</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link open-company-modal
+									" data-target-url="/companies/{companyId}/landing-page" data-url-name="Navigate to Landing Page">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p>Assign Company LP</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.Company && currentAction =="Department" ?"active":"")
-                                    " data-target-url="/companies/{companyId}/departments" data-url-name="Navigate to Department Page" data-company-id="@companyId">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Assign Departments</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link open-company-modal
+									" data-target-url="/companies/{companyId}/departments" data-url-name="Navigate to Department Page">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p>Assign Departments</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.CompanyStaff ?"active":"")
-                                    " data-target-url="/companies/{companyId}/staff-list" data-url-name="Navigate to Staffs Page" data-company-id="@companyId">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Assign Staffs</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+									" data-target-url="/companies/{companyId}/staff-list" data-url-name="Navigate to Staffs Page">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p>Assign Staffs</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                        <li class="nav-item @(currentController== ControllerNames.Document ?"menu-is-opening menu-open":"")">
-                            <a href="#" class="nav-link @(currentController== ControllerNames.Document ?"active":"")">
-                                <i class="fas fa-file-alt nav-icon"></i>
-                                <p>
-                                    Documents
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.Document ? @"display:block" : "display:none")">
+						<li class="nav-item @(currentController== ControllerNames.Document ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController== ControllerNames.Document ?"active":"")">
+								<i class="fas fa-file-alt nav-icon"></i>
+								<p>
+									Documents
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Document ? @"display:block" : "display:none")">
 
-                                <li class="nav-item">
-                                    <a href="/companies/docs" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
-                                        <i class="nav-icon fas fa-list"></i>
-                                        <p>
-                                            List
-                                        </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link open-company-modal
+								<li class="nav-item">
+									<a href="/companies/docs" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")
-                                    " data-target-url="/companies/{companyId}/docs/create" data-url-name="Create documents for" data-company-id="@companyId">
-                                        <i class="nav-icon fas fa-plus"></i>
-                                        New Document
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+									" data-target-url="/companies/{companyId}/docs/create" data-url-name="Create documents for">
+										<i class="nav-icon fas fa-plus"></i>
+										New Document
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                        <li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
-                            <a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
-                                <i class="fas fa-clipboard-list nav-icon"></i>
-                                <p>
-                                    Tasks
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
-                                <li class="nav-item">
-                                    <a href="/companies/works/overview" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="Overview" ?"active":"")">
-                                        <i class="nav-icon fas fa-calendar-alt"></i>
-                                        <p>
-                                            Overview
-                                        </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
-                                        <i class="nav-icon fas fa-list"></i>
-                                        <p>
-                                            List
-                                        </p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link open-company-modal
+						<li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
+								<i class="fas fa-clipboard-list nav-icon"></i>
+								<p>
+									Tasks
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
+								<li class="nav-item">
+									<a href="/companies/works/overview" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="Overview" ?"active":"")">
+										<i class="nav-icon fas fa-calendar-alt"></i>
+										<p>
+											Overview
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.CompanyWork && currentAction =="Create" ?"active":"")
-                                    " data-target-url="/companies/{companyId}/works/create" data-url-name="Create new work for" data-company-id="@companyId">
-                                        <i class="nav-icon fas fa-plus"></i>
-                                        <p>
-                                            New work
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+									" data-target-url="/companies/{companyId}/works/create" data-url-name="Create new work for">
+										<i class="nav-icon fas fa-plus"></i>
+										<p>
+											New work
+										</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                        @if (!UserContext.IsCompanyStaff)
-                        {
-                            <li class="nav-header">Users & Systems</li>
+						<li class="nav-header">Users & Systems</li>
 
-                            <li class="nav-item @(currentController== ControllerNames.User ?"menu-is-opening menu-open":"")">
-                                <a href="#" class="nav-link @(currentController== ControllerNames.User ?"active":"")">
-                                    <i class="fas fa-users nav-icon"></i>
-                                    <p>
-                                        Users
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
+						<li class="nav-item @(currentController== ControllerNames.User ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController== ControllerNames.User ?"active":"")">
+								<i class="fas fa-users nav-icon"></i>
+								<p>
+									Users
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
 
-                                    <li class="nav-item">
-                                        <a href="/users" class="nav-link @(currentController== ControllerNames.User && currentAction =="List" ?"active":"")">
-                                            <i class="nav-icon fas fa-list"></i>
-                                            <p>
-                                                List
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction =="Create" ?"active":"")">
-                                            <i class="nav-icon fas fa-plus"></i>
-                                            <p>
-                                                New User
-                                            </p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+								<li class="nav-item">
+									<a href="/users" class="nav-link @(currentController== ControllerNames.User && currentAction =="List" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction =="Create" ?"active":"")">
+										<i class="nav-icon fas fa-plus"></i>
+										<p>
+											New User
+										</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-list"></i>
-                                    <p>
-                                        MSIC
+					@* 	<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-list"></i>
+								<p>
+									MSIC
 
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-list"></i>
-                                    <p>
-                                        Department
-                                    </p>
-                                </a>
-                            </li>
+								</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-list"></i>
+								<p>
+									Department
+								</p>
+							</a>
+						</li> *@
 
-                            <li class="nav-item">
-                                <a href="/notifications/logs" class="nav-link @(currentController== ControllerNames.Notification ?"active":"")">
-                                    <i class="nav-icon fas fa-bell"></i>
-                                    <p>
-                                        System Notification
-                                    </p>
-                                </a>
-                            </li>
+						<li class="nav-item">
+							<a href="/notifications/logs" class="nav-link @(currentController== ControllerNames.Notification ?"active":"")">
+								<i class="nav-icon fas fa-bell"></i>
+								<p>
+									System Notification
+								</p>
+							</a>
+						</li>
 
-                            <li class="nav-item">
-                                <a href="/sys-audit-logs" class="nav-link @(currentController== ControllerNames.SystemAuditLog ?"active":"")">
-                                    <i class="nav-icon fas fa-history"></i>
-                                    <p>
-                                        System Audit Log
-                                    </p>
-                                </a>
-                            </li>
+						<li class="nav-item">
+							<a href="/sys-audit-logs" class="nav-link @(currentController== ControllerNames.SystemAuditLog ?"active":"")">
+								<i class="nav-icon fas fa-history"></i>
+								<p>
+									System Audit Log
+								</p>
+							</a>
+						</li>
 
-                            <li class="nav-item @(currentController== ControllerNames.SchedulerJob ?"menu-is-opening menu-open":"")">
-                                <a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
-                                    <i class="nav-icon fas fa-clock"></i>                                    <p>
-                                        Scheduled Task                            
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
+						<li class="nav-item @(currentController== ControllerNames.SchedulerJob ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
+								<i class="nav-icon fas fa-clock"></i>                                    <p>
+									Scheduled Task
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
 
-                                    <li class="nav-item">
-                                        <a href="/scheduler-jobs" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "List" ?"active":"")">
-                                            <i class="nav-icon fas fa-list"></i>
-                                            <p>
-                                                List
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/scheduler-jobs/create" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "Create" ?"active":"")">
-                                            <i class="nav-icon fas fa-plus"></i>
-                                            <p>
-                                                Add new task
-                                            </p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
+								<li class="nav-item">
+									<a href="/scheduler-jobs" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "List" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/scheduler-jobs/create" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "Create" ?"active":"")">
+										<i class="nav-icon fas fa-plus"></i>
+										<p>
+											Add new task
+										</p>
+									</a>
+								</li>
+							</ul>
+						</li>
 
-                        <li class="nav-item">
-                            <a href="/auth/logout" class="nav-link">
-                                <i class="nav-icon fas fa-sign-out-alt"></i>
-                                <p class="text">Logout</p>
-                            </a>
-                        </li>
+						<li class="nav-item">
+							<a href="/auth/logout" class="nav-link">
+								<i class="nav-icon fas fa-sign-out-alt"></i>
+								<p class="text">Logout</p>
+							</a>
+						</li>
 
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
-            </div>
-            <!-- /.sidebar -->
-        </aside>
+					</ul>
+				</nav>
+				<!-- /.sidebar-menu -->
+			</div>
+			<!-- /.sidebar -->
+		</aside>
 
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
 
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
 
-                    @RenderBody()
+					@RenderBody()
 
-                </div><!-- /.container-fluid -->
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
+				</div><!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
 
 
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-            All rights reserved.
-            <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 3.2.0
-            </div>
-        </footer>
+		<footer class="main-footer">
+			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+			All rights reserved.
+			<div class="float-right d-none d-sm-inline-block">
+				<b>Version</b> 3.2.0
+			</div>
+		</footer>
 
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-    </div>
-    <!-- ./wrapper -->
-
-
-    <div id="globalLoadingOverlay" class="overlay d-none">
-        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-    </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
-    <script src="~/js/commons/sweet-alert-service.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/admin-lte/dist/js/adminlte.min.js"></script>
-    <!-- daterangepicker -->
-    <script src="~/admin-lte/plugins/moment/moment.min.js"></script>
-    <script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Select2 -->
-    <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
-    <!-- Flatpickr -->
-    <script src="~/lib/flatpickr/flatpickr.min.js"></script>
-    <script src="~/lib/flatpickr/plugins/weekSelect/weekselect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
 
 
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
-    <!-- overlayScrollbars -->
-    <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
+	<div id="globalLoadingOverlay" class="overlay d-none">
+		<i class="fas fa-2x fa-sync-alt fa-spin"></i>
+	</div>
 
-    @await RenderSectionAsync("Scripts", required: false)
-    @await Component.InvokeAsync("SelectCompany")
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+	<script src="~/js/commons/sweet-alert-service.js" asp-append-version="true"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="~/admin-lte/dist/js/adminlte.min.js"></script>
+	<!-- daterangepicker -->
+	<script src="~/admin-lte/plugins/moment/moment.min.js"></script>
+	<script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<!-- Select2 -->
+	<script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
+	<!-- Flatpickr -->
+	<script src="~/lib/flatpickr/flatpickr.min.js"></script>
+	<script src="~/lib/flatpickr/plugins/weekSelect/weekselect.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+
+	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+	<script>
+		$.widget.bridge('uibutton', $.ui.button)
+	</script>
+	<!-- overlayScrollbars -->
+	<script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+	@await Component.InvokeAsync("SelectCompany")
 
 </body>
 </html>

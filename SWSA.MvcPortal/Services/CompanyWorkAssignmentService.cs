@@ -37,7 +37,6 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-        Guard.AgainstCrossCompanyAccess(data!.CompanyId, userContext);
 
         return mapper.Map<CompanyWorkVM>(data);
     }

@@ -1,5 +1,4 @@
-﻿
-using SWSA.MvcPortal.Dtos.Requests.Users;
+﻿using SWSA.MvcPortal.Dtos.Requests.Users;
 using SWSA.MvcPortal.Models.Users;
 
 namespace SWSA.MvcPortal.Services.Interfaces;

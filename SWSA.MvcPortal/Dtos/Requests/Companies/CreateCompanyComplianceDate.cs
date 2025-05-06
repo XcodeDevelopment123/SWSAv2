@@ -1,5 +1,4 @@
-﻿
-namespace SWSA.MvcPortal.Dtos.Requests.Companies;
+﻿namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 
 public class CreateCompanyComplianceDate
 {

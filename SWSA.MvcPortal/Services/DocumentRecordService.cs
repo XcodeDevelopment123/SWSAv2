@@ -34,16 +34,11 @@ ISystemAuditLogService sysAuditService
         var data = await repo.GetByIdAsync(id);
         Guard.AgainstNullData(data, "DocumentRecord not found");
 
-        //Department should have value
-        if (data?.Department != null)
-            Guard.AgainstCrossCompanyAccess(data!.Department.CompanyId, userContext);
-
         return mapper.Map<DocumentRecordVM>(data!);
     }
 
     public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId)
     {
-        Guard.AgainstCrossCompanyAccess(companyId, userContext);
         var data = await repo.GetDocumentRecordsByCompanyId(companyId);
         return mapper.Map<List<DocumentRecordVM>>(data);
     }

@@ -13,12 +13,3 @@ public class EditCompanyStaffInfoRequest
     public string? Remark { get; set; } = null!;
     public PositionType Position { get; set; } = PositionType.Staff;
 }
-
-
-public class EditCompanyStaffLoginProfileRequest
-{
-    public string StaffId { get; set; }
-    public bool EnableLogin { get; set; } = false;
-    public string? Username { get; set; } = null!;
-    public string? Password { get; set; } = null!;
-}

@@ -8,10 +8,8 @@ public class UserContext : IUserContext
     public string Name { get; }
     public int EntityId { get; }
     public string StaffId { get; }
-    public int? CompanyId { get; }
-    public int? CompanyDepartmentId { get; }
+
     public DateTime LoginTime { get; }
-    public bool IsCompanyStaff => CompanyId.HasValue;
 
     public UserContext(IHttpContextAccessor accessor)
     {
@@ -20,8 +18,6 @@ public class UserContext : IUserContext
         EntityId = TryParseInt(session?.GetString(SessionKeys.EntityId)) ?? 0;
         StaffId = session?.GetString(SessionKeys.StaffId) ?? "";
         Name = session?.GetString(SessionKeys.Name) ?? "";
-        CompanyId = TryParseInt(session?.GetString(SessionKeys.CompanyId));
-        CompanyDepartmentId = TryParseInt(session?.GetString(SessionKeys.CompanyDepartmentId));
         LoginTime = DateTime.TryParse(session?.GetString(SessionKeys.LoginTime), out var time)
             ? time
             : DateTime.MinValue;

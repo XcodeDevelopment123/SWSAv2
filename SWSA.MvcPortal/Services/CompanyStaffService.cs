@@ -23,33 +23,26 @@ public class CompanyStaffService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
-IHttpContextAccessor httpContextAccessor,
 IUserContext userContext,
 ICompanyStaffRepository repo,
 ISystemAuditLogService sysAuditService
     ) : ICompanyStaffService
 {
-    private readonly ISession _session =
-   httpContextAccessor.HttpContext?.Session
-   ?? throw new InvalidOperationException("Session is not available.");
     public async Task<CompanyStaffVM> GetStaffByStaffId(string staffId)
     {
         var data = await repo.GetByStaffId(staffId);
         Guard.AgainstNullData(data, "Company staff not found");
-        Guard.AgainstCrossCompanyAccess(data.CompanyId, userContext);
 
         return mapper.Map<CompanyStaffVM>(data);
     }
 
     public async Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId)
     {
-        Guard.AgainstCrossCompanyAccess(companyId, userContext);
-
         var data = await repo.GetAllByCompanyIdAsync(companyId);
         return mapper.Map<List<CompanyStaffVM>>(data); ;
     }
 
-    public async Task<int> CreateContact(CreateCompanyStaffRequest req)
+    public async Task<int> CreateStaff(CreateCompanyStaffRequest req)
     {
         var data = mapper.Map<CompanyStaff>(req);
         repo.Add(data);
@@ -61,7 +54,7 @@ ISystemAuditLogService sysAuditService
         return data.Id;
     }
 
-    public async Task<bool> EditContact(EditCompanyStaffInfoRequest req)
+    public async Task<bool> EditStaff(EditCompanyStaffInfoRequest req)
     {
         var data = await repo.GetByStaffId(req.StaffId);
 
@@ -89,41 +82,7 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<bool> EditLoginProfile(EditCompanyStaffLoginProfileRequest req)
-    {
-        var data = await repo.GetByStaffId(req.StaffId);
-
-        Guard.AgainstNullData(data, "Company Official Contact not found");
-
-        var oldData = mapper.Map<CompanyStaff>(data);
-        if (req.EnableLogin)
-        {
-            if (string.IsNullOrEmpty(req.Username) || string.IsNullOrEmpty(req.Password))
-                throw new BusinessLogicException("Username and password cannot be empty");
-
-            if (await repo.ExistUsernameInCompanyExcludingStaffId(data.CompanyId, req.Username, data.StaffId))
-                throw new BusinessLogicException("Username already exists");
-
-            data.IsLoginEnabled = true;
-            data.Username = req.Username;
-            if (!string.IsNullOrEmpty(req.Password) && req.Password != AppSettings.DisplayPassword)
-                data.HashedPassword = PasswordHasher.Hash(req.Password);
-        }
-        else
-        {
-            data.IsLoginEnabled = false;
-        }
-
-        repo.Update(data);
-        await repo.SaveChangesAsync();
-        UpdateCompanyCommunicationContactCache(data);
-
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyStaff, data.StaffId.ToString(), $"Company staff login profile: {data.ContactName}", oldData, data);
-        sysAuditService.LogInBackground(log);
-        return true;
-    }
-
-    public async Task<bool> DeleteContact(string staffId)
+    public async Task<bool> DeleteStaff(string staffId)
     {
         var data = await repo.GetByStaffId(staffId);
         Guard.AgainstNullData(data, "Company Communication Contact not found");
@@ -137,26 +96,6 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<bool> SetStaffSession(string staffId)
-    {
-        var staff = await repo.GetByStaffId(staffId);
-        if (staff == null)
-        {
-            return false;
-        }
-
-        var staffVM = mapper.Map<CompanyStaffVM>(staff);
-
-        _session.SetString(SessionKeys.StaffId, staff.StaffId);
-        _session.SetString(SessionKeys.CompanyId, staff.CompanyId.ToString());
-        if (staff.CompanyDepartmentId.HasValue)
-        {
-            _session.SetString(SessionKeys.CompanyDepartmentId, staff.CompanyDepartmentId.ToString() ?? "");
-        }
-        _session.SetString(SessionKeys.Name, staffVM.ContactName);
-        _session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
-        return true;
-    }
     private void UpdateCompanyCommunicationContactCache(CompanyStaff contact, bool isRemove = false)
     {
         string cacheList = $"{DataCacheKey.Companies}";
@@ -166,6 +105,4 @@ ISystemAuditLogService sysAuditService
         //TO DO: update company dto and find index update contact 
 
     }
-
-
 }

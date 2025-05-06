@@ -14,11 +14,6 @@ public class SystemAuditLog
     public string? NavigateUrl { get; set; }               // 可导航详情页路径，如 "/jobs/details/abc"
     public string PerformedBy { get; set; } = default!;
     public int? PerformedByUserId { get; set; }
-    public int? PerformedByCompanyStaffId { get; set; }
-    public int? CompanyId { get; set; }
     public DateTime PerformedAt { get; set; } = DateTime.Now;
-
     public User? PerformedByUser { get; set; }
-    public CompanyStaff? PerformedByCompanyStaff { get; set; }
-    public Company? Company { get; set; }
 }

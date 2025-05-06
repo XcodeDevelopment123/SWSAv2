@@ -53,8 +53,6 @@ public class RequestLoggingMiddleware
 
         var userName = userContext?.Name ?? "System / Anonymous";
         var staffId = userContext?.StaffId ?? "-";
-        var companyId = userContext?.CompanyId?.ToString() ?? "-";
-        var companyDeptId = userContext?.CompanyDepartmentId?.ToString() ?? "-";
 
         try
         {
@@ -73,8 +71,6 @@ public class RequestLoggingMiddleware
             using (LogContext.PushProperty("RequestBody", SanitizeBody(body)))
             using (LogContext.PushProperty("UserName", userName))
             using (LogContext.PushProperty("StaffId", staffId))
-            using (LogContext.PushProperty("CompanyId", companyId))
-            using (LogContext.PushProperty("CompanyDepartmentId", companyDeptId))
             using (LogContext.PushProperty("RemoteIP", context.Connection.RemoteIpAddress?.ToString()))
             using (LogContext.PushProperty("UserAgent", context.Request.Headers.UserAgent.ToString()))
             {

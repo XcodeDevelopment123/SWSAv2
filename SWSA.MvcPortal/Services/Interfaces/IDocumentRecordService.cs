@@ -1,6 +1,4 @@
-﻿
-
-using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
+﻿using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
 

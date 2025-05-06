@@ -3,202 +3,195 @@
 @inject IUserContext UserContext
 @model Company
 @{
-    ViewData["Title"] = "CompanyDepartment";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "CompanyDepartment";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var companyDepartment = Model.Departments;
+	var companyDepartment = Model.Departments;
 
-    // Check if user is a company staff, then should only see active departments
-    List<CompanyDepartment> cpDpts = UserContext.IsCompanyStaff ? companyDepartment.Where(c => c.IsActive).ToList()
-    : companyDepartment.ToList();
+	// Check if user is a company staff, then should only see active departments
+	List<CompanyDepartment> cpDpts = companyDepartment.ToList();
 
-    List<CompanyStaff> unassignDepartmentStaff = Model.CompanyStaffs
-                .Where(staff => !staff.CompanyDepartmentId.HasValue)
-                .ToList();
-    var cardColors = new[] { "card-primary", "card-info", "card-warning", "card-secondary", "card-dark" };
-    var rnd = new Random();
+	List<CompanyStaff> unassignDepartmentStaff = Model.CompanyStaffs
+				.Where(staff => !staff.CompanyDepartmentId.HasValue)
+				.ToList();
+	var cardColors = new[] { "card-primary", "card-info", "card-warning", "card-secondary", "card-dark" };
+	var rnd = new Random();
 
 
 }
 <h3> Company Department Staffs</h3>
 
 <div class="row">
-    @if (unassignDepartmentStaff.Count > 0)
-    {
-        <div class="alert alert-warning">
-            <strong>Warning!</strong> There are some staffs that are not assigned to any department.
-        </div>
-        <div class="col-md-12">
-            <!-- /.card -->
-            <div class="card card-danger">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        Unassigned Department
+	@if (unassignDepartmentStaff.Count > 0)
+	{
+		<div class="alert alert-warning">
+			<strong>Warning!</strong> There are some staffs that are not assigned to any department.
+		</div>
+		<div class="col-md-12">
+			<!-- /.card -->
+			<div class="card card-danger">
+				<div class="card-header">
+					<h3 class="card-title">
+						Unassigned Department
 
-                    </h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table class="table table-bordered table-striped staff-datatable">
-                        <thead>
-                            <tr>
-                                <th>Staff Id</th>
-                                <th>Name</th>
-                                <th>
-                                    Contact
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
-                                </th>
-                                <th>Position</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var stf in unassignDepartmentStaff)
-                            {
-                                <tr>
-                                    <td>@stf.StaffId</td>
-                                    <td>@stf.ContactName</td>
-                                    <td>
-                                        <p class="mb-0">@stf.Email</p>
-                                        <p>@stf.WhatsApp</p>
-                                    </td>
-                                    <td>@stf.Position</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="/companies/staffs/@stf.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            <a href="/companies/staffs/@stf.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-
-
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@stf.StaffId" data-name="@stf.ContactName" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Staff Id</th>
-                                <th>Name</th>
-                                <th>
-                                    Contact
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
-                                </th>
-                                <th>Position</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-
-    }
+					</h3>
+				</div>
+				<!-- /.card-header -->
+				<div class="card-body">
+					<table class="table table-bordered table-striped staff-datatable">
+						<thead>
+							<tr>
+								<th>Staff Id</th>
+								<th>Name</th>
+								<th>
+									Contact
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
+								</th>
+								<th>Position</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var stf in unassignDepartmentStaff)
+							{
+								<tr>
+									<td>@stf.StaffId</td>
+									<td>@stf.ContactName</td>
+									<td>
+										<p class="mb-0">@stf.Email</p>
+										<p>@stf.WhatsApp</p>
+									</td>
+									<td>@stf.Position</td>
+									<td>
+										<div class="btn-group" role="group">
+											<a href="/companies/staffs/@stf.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+												<i class="fa fa-eye"></i>
+											</a>
+											<a href="/companies/staffs/@stf.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+												<i class="fa fa-edit"></i>
+											</a>
 
 
+											<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@stf.StaffId" data-name="@stf.ContactName" title="Delete">
+												<i class="fa fa-trash"></i>
+											</button>
 
-    @foreach (var department in cpDpts)
-    {
-        var randomColor = cardColors[rnd.Next(cardColors.Length)];
-        <div class="col-md-6">
-            <!-- /.card -->
-            <div class="card @randomColor">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        @department.Department.Name
-                        @{
-                            if (!UserContext.IsCompanyStaff)
-                            {
-                                if (department.IsActive)
-                                {
-                                    <span class="badge badge-success">Active</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-danger">Inactive</span>
-                                }
-                            }
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Staff Id</th>
+								<th>Name</th>
+								<th>
+									Contact
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
+								</th>
+								<th>Position</th>
+								<th>Action</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<!-- /.card-body -->
+			</div>
+			<!-- /.card -->
+		</div>
 
-                        }
-
-                    </h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table class="table table-bordered table-striped staff-datatable">
-                        <thead>
-                            <tr>
-                                <th>Staff Id</th>
-                                <th>Name</th>
-                                <th>
-                                    Contact
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
-                                </th>
-                                <th>Position</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var stf in department.CompanyStaffs)
-                            {
-                                <tr>
-                                    <td>@stf.StaffId</td>
-                                    <td>@stf.ContactName</td>
-                                    <td>
-                                        <p class="mb-0">@stf.Email</p>
-                                        <p>@stf.WhatsApp</p>
-                                    </td>
-                                    <td>@stf.Position</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="/companies/staffs/@stf.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            <a href="/companies/staffs/@stf.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
+	}
 
 
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@stf.StaffId" data-name="@stf.ContactName" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
 
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Staff Id</th>
-                                <th>Name</th>
-                                <th>
-                                    Contact
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
-                                </th>
-                                <th>Position</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-    }
+	@foreach (var department in cpDpts)
+	{
+		var randomColor = cardColors[rnd.Next(cardColors.Length)];
+		<div class="col-md-6">
+			<!-- /.card -->
+			<div class="card @randomColor">
+				<div class="card-header">
+					<h3 class="card-title">
+						@department.Department.Name
+						@if (department.IsActive)
+						{
+							<span class="badge badge-success">Active</span>
+						}
+						else
+						{
+							<span class="badge badge-danger">Inactive</span>
+						}
+
+					</h3>
+				</div>
+				<!-- /.card-header -->
+				<div class="card-body">
+					<table class="table table-bordered table-striped staff-datatable">
+						<thead>
+							<tr>
+								<th>Staff Id</th>
+								<th>Name</th>
+								<th>
+									Contact
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
+								</th>
+								<th>Position</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var stf in department.CompanyStaffs)
+							{
+								<tr>
+									<td>@stf.StaffId</td>
+									<td>@stf.ContactName</td>
+									<td>
+										<p class="mb-0">@stf.Email</p>
+										<p>@stf.WhatsApp</p>
+									</td>
+									<td>@stf.Position</td>
+									<td>
+										<div class="btn-group" role="group">
+											<a href="/companies/staffs/@stf.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
+												<i class="fa fa-eye"></i>
+											</a>
+											<a href="/companies/staffs/@stf.StaffId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+												<i class="fa fa-edit"></i>
+											</a>
+
+
+											<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@stf.StaffId" data-name="@stf.ContactName" title="Delete">
+												<i class="fa fa-trash"></i>
+											</button>
+
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Staff Id</th>
+								<th>Name</th>
+								<th>
+									Contact
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Email and whatsapp."></i>
+								</th>
+								<th>Position</th>
+								<th>Action</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<!-- /.card-body -->
+			</div>
+			<!-- /.card -->
+		</div>
+	}
 
 
 </div>
 @section Scripts {
-    <partial name="_DatatablesScriptsPartial" />
-    <script src="~/js/companies/overall-department.js" asp-append-version="true"></script>
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/companies/overall-department.js" asp-append-version="true"></script>
 }

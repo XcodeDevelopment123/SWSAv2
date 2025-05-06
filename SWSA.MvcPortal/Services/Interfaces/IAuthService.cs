@@ -6,5 +6,4 @@ public interface IAuthService
 {
     Task<LoginResult> Login(string username, string password);
     void Logout();
-    Task<LoginResult> PartnerLogin(string username, string password);
 }

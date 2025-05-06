@@ -52,9 +52,7 @@ IMapper mapper
                 NavigateUrl = url,
                 ChangeSummaryJson = BuildChangeSummary(entry.OldData, entry.NewData),
                 PerformedBy = userContext.Name,
-                PerformedByCompanyStaffId = userContext.IsCompanyStaff ? userContext.EntityId : null,
-                PerformedByUserId = !userContext.IsCompanyStaff ? userContext.EntityId : null,
-                CompanyId = userContext.IsCompanyStaff ? userContext.CompanyId : null,
+                PerformedByUserId = userContext.EntityId,
                 PerformedAt = DateTime.Now
             };
             repo.Add(log);

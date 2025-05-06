@@ -44,7 +44,6 @@ ISystemAuditLogService sysAuditService
     {
         var user = await userRepo.GetByStaffIdAsync(userContext.StaffId);
         Guard.AgainstNullData(user, "User not found");
-        Guard.AgainstCompanyStaff(userContext);
 
         string cronExpression = CronExpressionBuilder.BuildCronExpression(req.CronFields, req.CronExpression, req.ScheduleType);
         var triggerTime = req.ScheduleType == ScheduleType.Once ? req.TriggerTime : null;

@@ -24,11 +24,6 @@ public class CompanyStaff
 
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-    // Optional (Login Profile)
-    [SystemAuditLog("Username")]
-    public string? Username { get; set; } = null!;
-    public string? HashedPassword { get; set; } = null!;
-    public bool IsLoginEnabled { get; set; } = false;
 
     [ForeignKey(nameof(CompanyDepartmentId))]
     public int? CompanyDepartmentId { get; set; }

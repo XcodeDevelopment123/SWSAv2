@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Dtos.Requests.Companies;
 
 namespace SWSA.MvcPortal.Entities;
 

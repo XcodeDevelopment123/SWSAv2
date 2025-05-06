@@ -47,16 +47,8 @@ public class LoginSessionFilter(
             //
             if ((DateTime.Now - loginTime).TotalMinutes > 20)
             {
-                if (userContext.IsCompanyStaff)
-                {
-                    var staffService = serviceProvider.GetRequiredService<ICompanyStaffService>();
-                    await staffService.SetStaffSession(userContext.StaffId);
-                }
-                else
-                {
-                    var userService = serviceProvider.GetRequiredService<IUserService>();
-                    await userService.SetUserSession(userContext.StaffId);
-                }
+                var userService = serviceProvider.GetRequiredService<IUserService>();
+                await userService.SetUserSession(userContext.StaffId);
             }
         }
         await next();
