@@ -16,11 +16,19 @@ IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 ICompanyOwnerRepository repo,
-ISystemAuditLogService sysAuditService
+ISystemAuditLogService sysAuditService,
+IUserContext userContext
     ) : ICompanyOwnerService
 {
     public async Task<int> CreateOwner(CreateCompanyOwnerRequest req)
     {
+        if (!req.CompanyId.HasValue)
+        {
+            throw new BadHttpRequestException("CompanyId is required");
+        }
+
+        Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+
         var data = mapper.Map<CompanyOwner>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
@@ -33,6 +41,8 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> EditOwner(EditCompanyOwnerRequest req)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+
         var data = await repo.GetByIdAsync(req.OwnerId);
 
         Guard.AgainstNullData(data, "Company Owner not found");
@@ -64,6 +74,7 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByIdAsync(ownerId);
         Guard.AgainstNullData(data, "Company Owner not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
         repo.Remove(data!);
         await repo.SaveChangesAsync();

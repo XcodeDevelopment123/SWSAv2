@@ -44,13 +44,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
              .WithMany(u => u.CompanyDepartments)
              .HasForeignKey(ucd => ucd.UserId)
              .OnDelete(DeleteBehavior.Cascade);
-
-            entity
-            .HasOne(ucd => ucd.Company)
-            .WithMany()
-            .HasForeignKey(ucd => ucd.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
             entity
             .HasOne(ucd => ucd.Department)
             .WithMany()

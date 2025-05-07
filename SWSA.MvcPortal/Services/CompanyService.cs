@@ -12,7 +12,6 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
-using SWSA.MvcPortal.Repositories.Repo;
 using SWSA.MvcPortal.Services.Interfaces;
 namespace SWSA.MvcPortal.Services;
 
@@ -34,18 +33,21 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<List<CompanyListVM>> GetCompaniesAsync()
     {
-        var data = await GetCompaniesFromCacheAsync();
+        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+            : await repo.GetCompaniesByUserId(userContext.EntityId);
         return mapper.Map<List<CompanyListVM>>(data);
     }
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
-        var data = await GetCompaniesFromCacheAsync();
+        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+            : await repo.GetCompaniesByUserId(userContext.EntityId);
         return mapper.Map<List<CompanySelectionVM>>(data);
     }
 
     public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
         var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
@@ -54,7 +56,7 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<int> CreateCompany(CreateCompanyRequest req)
     {
-        if (userContext.IsSuperAdmin && req.HandleUsers.Count == 0)
+        if (req.HandleUsers.Count == 0)
             throw new BusinessLogicException("Please select at least one user to handle this company");
 
         Company cp = mapper.Map<Company>(req);
@@ -97,6 +99,8 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+
         var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
         Guard.AgainstNullData(data, "Company not found");
         var oldData = data.DeepClone();
@@ -124,6 +128,8 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<Company> DeleteCompanyByIdAsync(int companyId)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+
         var data = await GetCompanyByIdFromCacheAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 

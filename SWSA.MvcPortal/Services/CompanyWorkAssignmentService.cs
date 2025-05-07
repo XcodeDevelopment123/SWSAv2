@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Extensions;
@@ -25,13 +26,15 @@ ISystemAuditLogService sysAuditService
 {
     public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
     {
-        var data = (await repo.GetAllAsync()).ToList();
+        var data = userContext.IsSuperAdmin? [.. await repo.GetAllAsync()]
+            : await repo.GetByCompanyIds(userContext.AllowedCompanyIds);
         return mapper.Map<List<CompanyWorkListVM>>(data);
     }
 
     public async Task<List<CompanyWorkCalendarVM>> GetWorkCalendarEvents()
     {
-        var data = await repo.GetAllAsync();
+        var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()]
+         : await repo.GetByCompanyIds(userContext.AllowedCompanyIds);
         return data.Select(CompanyWorkCalendarVM.FromTask).ToList();
     }
 
@@ -39,12 +42,14 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-
+        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId,null, userContext);
         return mapper.Map<CompanyWorkVM>(data);
     }
 
     public async Task<int> CreateCompanyWorkAssignment(CreateCompanyWorkAssignmentRequest req)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
+
         var staff = await companyStaffRepo.GetByStaffId(req.AssignedStaffId);
         Guard.AgainstNullData(staff, "Company Staff not found");
 
@@ -64,8 +69,10 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> EditCompanyWorkAssignment(EditCompanyWorkAssignmentRequest req)
     {
+
         var task = await repo.GetByIdAsync(req.TaskId);
         Guard.AgainstNullData(task, "Company Work Assignment not found");
+        Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
 
         var reqStaff = await companyStaffRepo.GetByStaffId(req.AssignedStaffId);
         Guard.AgainstNullData(reqStaff, "Company Staff not found");
@@ -99,6 +106,7 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
         repo.Remove(data!);
 

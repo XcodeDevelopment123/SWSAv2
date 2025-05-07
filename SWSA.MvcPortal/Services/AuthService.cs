@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Commons.Services.Session;
 using SWSA.MvcPortal.Dtos.Responses;
-using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -50,5 +47,4 @@ public class AuthService(
     {
         _session.Clear();
     }
-
 }

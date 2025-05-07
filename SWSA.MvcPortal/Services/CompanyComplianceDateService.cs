@@ -4,6 +4,7 @@ using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
@@ -17,12 +18,14 @@ IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 ICompanyComplianceDateRepository repo,
+IUserContext userContext,
 ISystemAuditLogService sysAuditService
     ) : ICompanyComplianceDateService
 {
 
     public async Task<bool> SaveComplianceDate(EditCompanyComplianceDate req)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
         var data = await repo.GetByCompanyId(req.CompanyId);
         bool isNew = data == null;
 

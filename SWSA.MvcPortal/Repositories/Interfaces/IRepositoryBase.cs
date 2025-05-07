@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Models;
+﻿using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 

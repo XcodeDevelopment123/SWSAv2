@@ -10,4 +10,5 @@ public interface ICompanyDepartmentRepository : IRepositoryBase<CompanyDepartmen
 {
     // Define your method here
     Task<List<CompanyDepartment>> GetByCompanyId(int companyId);
+    Task<List<CompanyDepartment>> GetByIdsAsync(List<int> ids);
 }

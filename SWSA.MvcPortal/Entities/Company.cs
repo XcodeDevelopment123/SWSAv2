@@ -43,5 +43,6 @@ public class Company
     public ICollection<CompanyDepartment> Departments { get; set; } = new List<CompanyDepartment>();
     public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
+    public virtual ICollection<UserCompanyDepartment> UserCompanyDepartments { get; set; } = new List<UserCompanyDepartment>();
 
 }

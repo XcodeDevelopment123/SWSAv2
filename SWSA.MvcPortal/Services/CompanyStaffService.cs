@@ -33,18 +33,27 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByStaffId(staffId);
         Guard.AgainstNullData(data, "Company staff not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
 
         return mapper.Map<CompanyStaffVM>(data);
     }
 
     public async Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+
         var data = await repo.GetAllByCompanyIdAsync(companyId);
         return mapper.Map<List<CompanyStaffVM>>(data); ;
     }
 
     public async Task<int> CreateStaff(CreateCompanyStaffRequest req)
     {
+        if (!req.CompanyId.HasValue)
+        {
+            throw new BadHttpRequestException("CompanyId is required");
+        }
+        Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+
         var data = mapper.Map<CompanyStaff>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
@@ -57,9 +66,15 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> EditStaff(EditCompanyStaffInfoRequest req)
     {
+        if (!req.CompanyId.HasValue)
+        {
+            throw new BadHttpRequestException("CompanyId is required");
+        }
+        Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+
         var data = await repo.GetByStaffId(req.StaffId);
 
-        Guard.AgainstNullData(data, "Company Official Contact not found");
+        Guard.AgainstNullData(data, "Company Staff not found");
 
         if (data!.CompanyId != req.CompanyId)
         {
@@ -86,7 +101,9 @@ ISystemAuditLogService sysAuditService
     public async Task<bool> DeleteStaff(string staffId)
     {
         var data = await repo.GetByStaffId(staffId);
-        Guard.AgainstNullData(data, "Company Communication Contact not found");
+
+        Guard.AgainstNullData(data, "Company Staff not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
 
         repo.Remove(data!);
         await repo.SaveChangesAsync();

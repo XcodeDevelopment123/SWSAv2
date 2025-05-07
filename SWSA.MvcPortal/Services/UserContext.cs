@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Services.Permission;
-using SWSA.MvcPortal.Commons.Services.Session;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Services;
@@ -16,7 +14,6 @@ public class UserContext : IUserContext
     public UserRole Role { get; }
 
     public List<int> AllowedCompanyIds { get; }
-
     public Dictionary<int, List<int>> AllowedDepartments { get; }
 
     public UserContext(IHttpContextAccessor accessor)

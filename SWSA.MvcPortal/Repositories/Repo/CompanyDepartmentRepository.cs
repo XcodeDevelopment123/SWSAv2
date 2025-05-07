@@ -11,12 +11,21 @@ public class CompanyDepartmentRepository(AppDbContext db) : RepositoryBase<Compa
 {
 
     // Implement the method
+    public async Task<List<CompanyDepartment>> GetByIdsAsync(List<int> ids)
+    {
+        var query = await BuildQueryAsync();
+        if (ids.Count == 1)
+        {
+            var id = ids.First();
+            return await query.Where(x => x.Id == id).ToListAsync();
+        }
+        return await query.Where(x => ids.Contains(x.Id)).ToListAsync();
+    }
+
     public async Task<List<CompanyDepartment>> GetByCompanyId(int companyId)
     {
-        return await db.Set<CompanyDepartment>()
-            .Include(x => x.Company)
-            .Include(x => x.CompanyStaffs)
-            .Include(x => x.Department)
+        var query = await BuildQueryAsync();
+        return await query
             .Where(x => x.CompanyId == companyId)
             .ToListAsync();
     }
@@ -24,12 +33,12 @@ public class CompanyDepartmentRepository(AppDbContext db) : RepositoryBase<Compa
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<CompanyDepartment>> BuildQueryAsync()
     {
-        //Default query no action
-        return Task.FromResult(db.Set<CompanyDepartment>().AsQueryable());
-
-        // Do you query here
-        // var query = db.TableNames.AsNoTracking();
-        // return Task.FromResult(query);    
+        var query = db.Set<CompanyDepartment>()
+            .Include(x => x.Company)
+            .Include(x => x.CompanyStaffs)
+            .Include(x => x.Department)
+            .AsNoTracking();
+        return Task.FromResult(query);
     }
 
     //Rewrite the GetWithIncludesAsync method

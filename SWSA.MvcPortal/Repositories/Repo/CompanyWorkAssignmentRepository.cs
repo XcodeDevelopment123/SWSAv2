@@ -11,6 +11,17 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
 {
 
     // Implement the method
+    public async Task<List<CompanyWorkAssignment>> GetByCompanyIds(List<int> companyIds)
+    {
+        var query = await BuildQueryAsync();
+        if (companyIds.Count == 1)
+        {
+            var id = companyIds[0];
+            return await query.Where(c => c.CompanyId == id).ToListAsync();
+        }
+
+        return await query.Where(c => companyIds.Contains(c.CompanyId)).ToListAsync();
+    }
 
     public Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7)
     {

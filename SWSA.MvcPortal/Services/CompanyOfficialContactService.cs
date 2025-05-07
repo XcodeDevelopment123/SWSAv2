@@ -22,6 +22,13 @@ ISystemAuditLogService sysAuditService
 {
     public async Task<int> CreateContact(CreateCompanyOfficialContactRequest req)
     {
+        if (!req.CompanyId.HasValue)
+        {
+            throw new BadHttpRequestException("CompanyId is required");
+        }
+
+        Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+
         var data = mapper.Map<CompanyOfficialContact>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
@@ -34,6 +41,11 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> EditContact(EditCompanyOfficialContactRequest req)
     {
+        if (req.CompanyId.HasValue)
+        {
+            Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+        }
+
         var data = await repo.GetByIdAsync(req.ContactId);
 
         Guard.AgainstNullData(data, "Company Official Contact not found");

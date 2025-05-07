@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Force.DeepCloner;
-
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Helpers;

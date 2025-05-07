@@ -12,46 +12,39 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
 {
 
     // Implement the method
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyIds(List<int> companyIds)
+    {
+        var query = await BuildQueryAsync();
+        if (companyIds.Count == 1)
+        {
+            var companyId = companyIds.First();
+            return await query.Where(c => c.Department != null && c.Department.CompanyId == companyId).ToListAsync();
+        }
+        return await query.Where(c => c.Department != null && companyIds.Contains(c.Department.CompanyId)).ToListAsync();
+    }
+
     public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyId(int companyId)
     {
-        var data = await db.DocumentRecords
-                .AsNoTracking()
-                .Include(c => c.Department) //For company department
-                .ThenInclude(c => c.Department) //Public setting
-                .Include(c => c.Department) 
-                .ThenInclude(c => c.Company) 
-                .Include(c => c.HandledByStaff) //For staff
-                .Where(c => c.Department != null && !c.Department.Company.IsDeleted && c.Department.CompanyId == companyId)
-                .ToListAsync();
-        return data;
+        var query = await BuildQueryAsync();
+        return await query
+            .Where(c => c.Department != null && c.Department.CompanyId == companyId)
+            .ToListAsync();
     }
 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyDepartmentId(int companyDepartmentId)
     {
-        var data = await db.DocumentRecords
-          .AsNoTracking()
-          .Include(c => c.Department) //For company department
-          .ThenInclude(c => c.Department) //Public setting
-          .Include(c => c.Department)
-          .ThenInclude(c => c.Company)
-          .Include(c => c.HandledByStaff) //For staff
-          .Where(c => c.CompanyDepartmentId == companyDepartmentId && c.Department != null && !c.Department.Company.IsDeleted)
-          .ToListAsync();
-        return data;
+        var query = await BuildQueryAsync();
+        return await query
+           .Where(c => c.Department != null && c.CompanyDepartmentId == companyDepartmentId)
+           .ToListAsync();
     }
 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId)
     {
-        var data = await db.DocumentRecords
-            .AsNoTracking()
-            .Include(c => c.HandledByStaff)
-            .Include(c => c.Department)
-            .ThenInclude(c => c.Company) 
-            .Where(c => c.HandledByStaff != null && c.HandledByStaff.StaffId == staffId 
-                     && c.Department != null && !c.Department.Company.IsDeleted)
-            .ToListAsync();
-
-        return data;
+        var query = await BuildQueryAsync();
+        return await query
+           .Where(c => c.HandledByStaff != null && c.HandledByStaff.StaffId == staffId)
+           .ToListAsync();
     }
 
     //Rewrite the GetAllAsync method

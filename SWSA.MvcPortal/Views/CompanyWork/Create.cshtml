@@ -143,10 +143,13 @@
                             <div class="form-group">
                                 <label for="handledByStaffId">Handled By</label>
                                 <select id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
-                                    <option disabled value="">Please select</option>
                                     @if (staffSelections.Count == 0)
                                     {
                                         <option disabled value="">No staff available in company</option>
+                                    }
+                                    else
+                                    {
+                                        <option disabled value="">Please select</option>
                                     }
                                     @foreach (var staff in staffSelections)
                                     {

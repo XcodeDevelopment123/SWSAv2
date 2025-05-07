@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Threading.Tasks;
-using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Repositories.Interfaces;
+﻿using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -13,5 +9,6 @@ public interface IDocumentRecordRepository : IRepositoryBase<DocumentRecord>
 
     // Define your method here
     Task<List<DocumentRecord>> GetDocumentRecordsByCompanyId(int companyId);
+    Task<List<DocumentRecord>> GetDocumentRecordsByCompanyIds(List<int> companyIds);
     Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId);
 }

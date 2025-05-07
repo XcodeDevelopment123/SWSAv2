@@ -29,6 +29,6 @@ public class DocumentRecord
     // File attachment info
     public string? AttachmentFileName { get; set; } = null!;
     public string? AttachmentFilePath { get; set; } = null!;
-    public CompanyDepartment? Department { get; set; } = null!;
+    public CompanyDepartment Department { get; set; } = null!;
     public User HandledByStaff { get; set; } = null!;
 }

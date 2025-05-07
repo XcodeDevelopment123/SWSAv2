@@ -20,6 +20,8 @@ ICompanyDepartmentRepository repo
 {
     public async Task<List<CompanyDepartment>> GetByCompanyId(int companyId)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+
         var data = (await repo.GetByCompanyId(companyId)).ToList();
         return data;
     }

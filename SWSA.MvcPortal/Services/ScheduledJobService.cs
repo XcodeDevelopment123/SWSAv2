@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
-using Quartz;
 using Serilog;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
@@ -31,18 +30,23 @@ ISystemAuditLogService sysAuditService
 {
     public async Task<List<ScheduledJobVM>> GetAllScheduledJobs()
     {
+        Guard.AgainstNotSuperAdmin(userContext);
         var data = await repo.GetAllAsync();
         return mapper.Map<List<ScheduledJobVM>>(data);
     }
 
     public async Task<ScheduledJobVM> GetScheduledJobByJobKey(string jobKey)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var data = await repo.GetScheduledByJobKeyAsync(jobKey);
         return mapper.Map<ScheduledJobVM>(data);
     }
 
     public async Task<string> CreateScheduleJob(CreateScheduleJobRequest req)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var user = await userRepo.GetByStaffIdAsync(userContext.StaffId);
         Guard.AgainstNullData(user, "User not found");
 
@@ -76,6 +80,8 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> UpdateScheduleJob(UpdateScheduleJobRequest req)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var data = await repo.GetScheduledByJobKeyAsync(req.JobKey);
         Guard.AgainstNullData(data, "Job Not Found");
         var oldData = data.DeepClone();
@@ -120,6 +126,8 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> ExecuteByJobKey(string jobKey)
     {
+        Guard.AgainstNotSuperAdmin(userContext);
+
         var data = await repo.GetScheduledByJobKeyAsync(jobKey);
         Guard.AgainstNullData(data, "Job Not Found");
 
@@ -139,6 +147,24 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
+    public async Task<bool> DeleteByJobKey(string jobKey)
+    {
+        Guard.AgainstNotSuperAdmin(userContext);
+
+        var data = await repo.GetScheduledByJobKeyAsync(jobKey);
+        Guard.AgainstNullData(data, "Job Not Found");
+
+        repo.Remove(data);
+        await repo.SaveChangesAsync();
+
+        await schedulerService.ClearSpecificJobByKey(jobKey);
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyStaff, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
+        sysAuditService.LogInBackground(log);
+        return true;
+    }
+
+    //For logging use, no need check access permission
     public async Task UpdateExecuteTimeAsync(string jobkey)
     {
         var job = await repo.GetScheduledByJobKeyAsync(jobkey);
@@ -151,20 +177,5 @@ ISystemAuditLogService sysAuditService
         job.LastExecuteAt = DateTime.Now;
         repo.Update(job);
         await repo.SaveChangesAsync();
-    }
-
-    public async Task<bool> DeleteByJobKey(string jobKey)
-    {
-        var data = await repo.GetScheduledByJobKeyAsync(jobKey);
-        Guard.AgainstNullData(data, "Job Not Found");
-
-        repo.Remove(data);
-        await repo.SaveChangesAsync();
-
-        await schedulerService.ClearSpecificJobByKey(jobKey);
-
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyStaff, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
-        sysAuditService.LogInBackground(log);
-        return true;
     }
 }

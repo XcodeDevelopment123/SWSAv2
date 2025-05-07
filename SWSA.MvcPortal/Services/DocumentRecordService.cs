@@ -19,13 +19,15 @@ IUserContext userContext,
 IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
 IUserRepository userRepo,
+ICompanyDepartmentRepository companyDepartmentRepo,
 ISystemAuditLogService sysAuditService
     ) : IDocumentRecordService
 {
 
     public async Task<List<DocumentRecordVM>> GetDocumentRecords()
     {
-        var data = (await repo.GetAllAsync()).ToList();
+        var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()] :
+            await repo.GetDocumentRecordsByCompanyIds(userContext.AllowedCompanyIds);
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
@@ -33,12 +35,14 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByIdAsync(id);
         Guard.AgainstNullData(data, "DocumentRecord not found");
-
+        Guard.AgainstUnauthorizedCompanyAccess(data!.Department!.CompanyId, data.Department.DepartmentId, userContext);
         return mapper.Map<DocumentRecordVM>(data!);
     }
 
     public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+
         var data = await repo.GetDocumentRecordsByCompanyId(companyId);
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
@@ -46,11 +50,19 @@ ISystemAuditLogService sysAuditService
     public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId)
     {
         var data = await repo.GetDocumentRecordsByCompanyDepartmentId(companyDepartmentId);
+        if (data.Count > 0)
+        {
+            var firstItem = data.First();
+            Guard.AgainstUnauthorizedCompanyAccess(firstItem!.Department!.CompanyId, firstItem.Department.DepartmentId, userContext);
+        }
+
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
     public async Task<bool> CreateDocument(CreateDocumentRecordRequest doc, IFormFile files)
     {
+        Guard.AgainstUnauthorizedCompanyAccess(doc.CompanyId, null, userContext);
+
         var flowType = doc.FlowType.ToString().ToLower();
 
         var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
@@ -78,14 +90,23 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> CreateDocuments(CreateDocumentRecordListRequest req, List<IFormFile> files)
     {
+        var companyDepartmentIds = req.Documents.Select(d => d.CompanyDepartmentId).Distinct().ToList();
+        var companyDepartments = await companyDepartmentRepo.GetByIdsAsync(companyDepartmentIds);
+
+        //Checking if the user has access to the company departments
+        foreach (var companyDepartment in companyDepartments)
+        {
+            Guard.AgainstUnauthorizedCompanyAccess(companyDepartment.CompanyId, companyDepartment.DepartmentId, userContext);
+        }
+
         var staffIds = req.Documents.Select(d => d.HandledByStaffId).Distinct().ToList();
         var staffMap = await userRepo.GetDictionaryByStaffIdsAsync(staffIds);
-
         var skippedDocuments = new List<string>();
-        List<DocumentRecord> records = new List<DocumentRecord>();
 
+        List<DocumentRecord> records = new List<DocumentRecord>();
         for (int i = 0; i < req.Documents.Count; i++)
         {
+
             var doc = req.Documents[i];
             if (!staffMap.TryGetValue(doc.HandledByStaffId, out var staff))
             {
@@ -127,7 +148,9 @@ ISystemAuditLogService sysAuditService
     public async Task<DocumentRecordVM> DeleteDocumentById(int docId)
     {
         var doc = await repo.GetByIdAsync(docId);
+
         Guard.AgainstNullData(doc, "Document not found");
+        Guard.AgainstUnauthorizedCompanyAccess(doc!.Department.CompanyId, doc.Department.DepartmentId, userContext);
 
         repo.Remove(doc!);
         await repo.SaveChangesAsync();
