@@ -42,6 +42,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
                  .Include(c => c.CompanyOwners)
                  .Include(c => c.OfficialContacts)
                  .Include(c => c.CompanyStaffs)
+                 .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
                  .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
                  .Include(c => c.Departments).ThenInclude(cd => cd.Department)
                  .Where(c => !c.IsDeleted)
@@ -58,6 +59,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.CompanyOwners)
             .Include(c => c.OfficialContacts)
             .Include(c => c.CompanyStaffs)
+            .Include(c => c.UserCompanyDepartments).ThenInclude(u=>u.User)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Include(c => c.Departments).ThenInclude(cd => cd.Department)
             .Where(c => !c.IsDeleted);

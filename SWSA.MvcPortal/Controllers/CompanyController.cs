@@ -52,8 +52,9 @@ public class CompanyController(
         var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
         var departments = await departmentService.GetDepartments();
+        var users = await userService.GetUserSelectionAsync();
 
-        CompanyEditPageVM vm = new(cp, msicCodes, departments);
+        CompanyEditPageVM vm = new(cp, msicCodes, departments, users);
         return View(vm);
     }
 
@@ -101,7 +102,7 @@ public class CompanyController(
     public async Task<IActionResult> CreateOwner(CreateCompanyOwnerRequest req)
     {
         var result = await companyOwnerService.CreateOwner(req);
-        return Json(true);
+        return Json(result);
     }
 
     [Route("owner/edit")]
@@ -125,7 +126,7 @@ public class CompanyController(
     public async Task<IActionResult> CreateOfficeContact(CreateCompanyOfficialContactRequest req)
     {
         var result = await companyOfficialContactService.CreateContact(req);
-        return Json(true);
+        return Json(result);
     }
 
     [Route("official-contact/edit")]

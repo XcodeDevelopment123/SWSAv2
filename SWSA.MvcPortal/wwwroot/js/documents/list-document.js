@@ -1,6 +1,6 @@
 ﻿$(function () {
     const selectedDocId = getQueryParam("docId");
-
+    
     const documentTable = $("#documentTable").DataTable({
         columnDefs: [
             {

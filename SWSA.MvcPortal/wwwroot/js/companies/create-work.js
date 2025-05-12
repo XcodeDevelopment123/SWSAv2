@@ -1,4 +1,5 @@
-﻿$(function () {
+﻿
+$(function () {
     const $taskForm = $("#taskForm");
 
     const taskFormInputs = {
@@ -10,7 +11,6 @@
         internalNote: $taskForm.find('input[name="internalNote"]'),    
         companyId:$("#companyId")
     };
-
 
     $taskForm.validate({
         rules: {

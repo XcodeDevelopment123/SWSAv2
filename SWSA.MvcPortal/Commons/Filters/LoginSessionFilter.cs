@@ -114,10 +114,11 @@ public class LoginSessionFilter(
     {
         List<(string, string)> IgnoreList = new()
         {
-            ("Home", "AccessDenied"),
-            ("Home", "NotFound"),
-            ("Home", "Privacy"),
-            ("Home", "Error"),
+            ("Errors", "AccessDenied"),
+            ("Errors", "NotFound"),
+            ("Errors", "Privacy"),
+            ("Errors", "Error"),
+            ("Errors", "ServerError"),
             ("Auth", "KeepAlive")
         };
         var routeData = context.RouteData;

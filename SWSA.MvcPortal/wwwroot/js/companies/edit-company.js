@@ -105,7 +105,6 @@
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.companyId = $companyId.val();
-        console.log(companyData)
         $.ajax({
             url: `${urls.companies}/edit`,
             method: "POST",
@@ -247,6 +246,8 @@
             method: "POST",
             data: { req: ownerData },
             success: function (res) {
+
+                ownerData.ownerId = editOwner.isEdit ? editOwner.id : res;
                 addOrUpdateOwnerRow(ownerData);
 
                 if (!editOwner.isEdit) {
@@ -417,7 +418,8 @@
             url: apiUrl,
             method: "POST",
             data: { req: contactData },
-            success: function () {
+            success: function (res) {
+                contactData.contactId = editOfficialContact.isEdit ? editOfficialContact.id : res;
                 addOrUpdateOfficialContactRow(contactData);
 
                 Toast_Fire(ICON_SUCCESS, "Success", editOfficialContact.isEdit ? "Contact saved successfully." : "Contact added successfully.");
@@ -575,9 +577,11 @@
             url: apiUrl,
             method: "POST",
             data: { req: staffData },
-            success: function () {
+            success: function (res) {
+
+                staffData.staffId = editStaff.isEdit ? editStaff.id : res;
                 addOrUpdateStaffContactRow(staffData);
-                Toast_Fire(ICON_SUCCESS, "Success", editStaff.isEdit ? "Contact saved successfully." : "Contact added successfully.");
+                Toast_Fire(ICON_SUCCESS, "Success", editStaff.isEdit ? "Staff saved successfully." : "Staff added successfully.");
                 $btnCancelStaff.trigger("click");
             },
             error: function () {
@@ -594,7 +598,7 @@
         editStaff.isEdit = true;
         editStaff.id = $(this).data("id");
         editStaff.index = row.index();
-  
+
         staffFormInputs.contactName.val(rowData[0]);
         staffFormInputs.whatsApp.val(rowData[1]);
         staffFormInputs.email.val(rowData[2]);
@@ -649,7 +653,177 @@
 
     //#endregion
 
+    //#region Handle User Form 
+    const $handleUserForm = $("#handleUserForm");
+    const $btnAddHandleUser = $("#btnAddHandleUser");
+    const $btnCancelHandleUser = $("#btnCancelHandleUser");
+
+    const handleUserFormInputs = {
+        handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
+        userDepartmentIds: $handleUserForm.find('select[name="userDepartmentIds"]'),
+    };
+
+    let editHandleUser = {
+        isEdit: false,
+        index: -1,
+        staffId: ""
+    };
+
+
+    $handleUserForm.validate({
+        rules: {
+            handleStaffId: {
+                required: true
+            },
+            userDepartmentIds: {
+                required: true
+            },
+        },
+        messages: {
+            handleStaffId: {
+                required: "User is required."
+            },
+            userDepartmentIds: {
+                required: "Select at least one departments"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.hasClass('select2-hidden-accessible')) {
+                element.next('.select2-container').after(error);
+            } else {
+                element.closest('.form-group').append(error);
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $handleUserForm.on('submit', function (e) {
+        e.preventDefault();
+
+        if (!$handleUserForm.valid()) {
+            return;
+        }
+
+        const staffId = editHandleUser.isEdit ?editHandleUser.staffId: handleUserFormInputs.handleStaffId.val(); // staff ID
+        const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
+
+        const departmentIds = handleUserFormInputs.userDepartmentIds.val(); // array of IDs
+        const departmentNames = handleUserFormInputs.userDepartmentIds.find('option:selected')
+            .map(function () { return $(this).text(); })
+            .get(); // array of names
+
+        const staffData = {
+            staffId: staffId,
+            name: `${staffName}`,
+            departmentIds: departmentIds,
+            departmentNames: departmentNames,
+            companyId: $companyId.val()
+        };
+
+        const apiUrl = editHandleUser.isEdit
+            ? `${urls.companies}/${$companyId.val()}/handle-users/edit`
+            : `${urls.companies}/${$companyId.val()}/handle-users/create`;
+
+        $.ajax({
+            url: apiUrl,
+            method: "POST",
+            data: { req: staffData },
+            success: function (res) {
+                staffData.staffId = editHandleUser.isEdit ? editHandleUser.staffId : res;
+                addOrUpdateHandleUserRow(staffData);
+                Toast_Fire(ICON_SUCCESS, "Success", editStaff.isEdit ? "handle user saved successfully." : "handle user added successfully.");
+                handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+
+
+                $btnCancelHandleUser.trigger("click");
+            },
+            error: function () {
+                Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
+            }
+        });
+    });
+
+    $(document).on("click", ".btn-edit-handle-user", function () {
+        const row = handleUserTable.row($(this).closest("tr"));
+        const rowData = row.data();
+        row.select();
+
+        editHandleUser.isEdit = true;
+        editHandleUser.staffId = $(this).data("staff-id");
+        editHandleUser.index = row.index();
+
+        handleUserFormInputs.handleStaffId.prop("disabled", true).val($(this).data("staff-id")).trigger("change");
+        handleUserFormInputs.userDepartmentIds.val($(this).data("department-ids")).trigger("change");
+
+        $btnAddHandleUser.text("Save");
+        $btnCancelHandleUser.show();
+    });
+
+    $btnCancelHandleUser.on("click", function () {
+        editHandleUser = {
+            isEdit: false,
+            index: -1,
+            staffId: ""
+        };
+
+        handleUserFormInputs.handleStaffId.prop("disabled", false).val("").trigger("change");
+        handleUserFormInputs.userDepartmentIds.val("").trigger("change");
+
+        $btnAddHandleUser.text("Add");
+        $btnCancelHandleUser.hide();
+        handleUserTable.rows().deselect();
+    });
+
+    $(document).on("click", ".btn-delete-handle-user", function () {
+        const name = $(this).data("name");
+        const staffId = $(this).data("staff-id");
+        const row = handleUserTable.row($(this).closest("tr"));
+
+        if (confirm(`Are you sure you want to delete "${name}"?`)) {
+            $.ajax({
+                url: `${urls.companies}/${$companyId.val()}/handle-users/${staffId}/delete`,
+                method: "DELETE",
+                success: function () {
+                    handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', false);
+
+                    Toast_Fire(ICON_SUCCESS, "Success", "Handle User delete successfully.");
+                    row.remove().draw(false);
+
+                    if (editHandleUser.isEdit) {
+                        $btnCancelHandleUser.trigger("click");
+                    }
+                },
+                error: function () {
+                    Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
+                }
+            });
+        }
+    });
+
+    //#endregion
+
     //#region Table
+    const handleUserTable = $('#handleUserTable').DataTable({
+        select: {
+            style: 'single',
+            selector: 'td .btn-edit-handle-user'
+        },
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true
+    });
+
     const ownerTable = $('#ownerTable').DataTable({
         select: {
             style: 'single',
@@ -816,6 +990,42 @@
                 data.remark,
                 html
             ]).draw(false);
+        }
+
+    }
+
+    function addOrUpdateHandleUserRow(data) {
+        const rowHtml = [
+            `<td>
+                ${data.name}
+            </td>`,
+            `<td>
+                ${data.departmentNames.join(', ')}
+            </td>`,
+            `<td>
+				<div class="btn-group" role="group">
+			        <button type="button" class="btn btn-sm btn-warning btn-edit-handle-user mr-2"
+						    data-staff-id="${data.staffId}"
+						    data-department-ids="[${data.departmentIds}]"
+						    title="Edit">
+						<i class="fa fa-edit"></i>
+					</button>
+					<button type="button" class="btn btn-sm btn-danger btn-delete-handle-user"
+					        data-name="${data.name}"
+					        data-staff-id="${data.staffId}">
+					    <i class="fa fa-trash"></i>
+					</button>
+		    	</div>
+			</td>`
+        ];
+
+      
+
+        if (editHandleUser.isEdit) {
+            handleUserTable.row(editHandleUser.index).data(rowHtml).draw(false);
+        }
+        else {
+            handleUserTable.row.add(rowHtml).draw(false);
         }
 
     }

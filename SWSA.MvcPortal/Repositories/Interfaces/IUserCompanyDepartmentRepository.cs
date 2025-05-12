@@ -9,4 +9,5 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface IUserCompanyDepartmentRepository : IRepositoryBase<UserCompanyDepartment>
 {
     // Define your method here
+    Task<List<UserCompanyDepartment>> GetByCompanyIdAndStaffId(int companyId, string staffId);
 }

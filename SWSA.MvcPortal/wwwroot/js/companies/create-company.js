@@ -499,7 +499,6 @@
         companyData.handleUsers = getHandleUserTableData();
         companyData.complianceDate = getFormData(complianceDateFormInputs);
 
-        console.log(companyData);
         $.ajax({
             url: `${urls.companies}/create`,
             method: "POST",

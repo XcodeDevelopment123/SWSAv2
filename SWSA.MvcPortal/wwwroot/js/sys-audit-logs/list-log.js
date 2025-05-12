@@ -1,5 +1,6 @@
 ﻿$(function () {
     const logsDatatable = $("#logsDatatable").DataTable({
+        order: [[0, 'desc']],
         "paging": true,
         "lengthChange": false,
         "searching": true,
@@ -59,7 +60,6 @@
             url: `${urls.system_audit_log}/${id}`,
             method: "GET",
             success: function (res) {
-                console.log(res);
                 $("#auditLogModal").modal("show");
                 $("#systemAuditLogForm").find("input[name='performedAt']").val(ConvertTimeFormat(res.performedAt));
                 $("#systemAuditLogForm").find("input[name='performedBy']").val(res.performedBy);

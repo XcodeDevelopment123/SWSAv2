@@ -6,13 +6,14 @@ public class CreateUserCompanyDepartmentRequest
 {
     public string StaffId { get; set; }
     public List<int> DepartmentIds { get; set; } = new();
+    public int? CompanyId { get; set; }
 }
 
 public static class UserCompanyDepartmentMapper
 {
-    public static List<UserCompanyDepartment> ToEntities(CreateUserCompanyDepartmentRequest dto, int companyId, int userId)
+    public static List<UserCompanyDepartment> ToEntities(List<int> dptIds, int companyId, int userId)
     {
-        return dto.DepartmentIds.Select(deptId => new UserCompanyDepartment
+        return dptIds.Select(deptId => new UserCompanyDepartment
         {
             UserId = userId,
             CompanyId = companyId,

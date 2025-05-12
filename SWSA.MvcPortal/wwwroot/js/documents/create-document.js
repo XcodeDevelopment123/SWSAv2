@@ -190,6 +190,7 @@
 
     })
 
+   
 
     $(document).on('click', '.btn-delete-row', function () {
         const table = $(this).closest('table').DataTable();
@@ -224,4 +225,5 @@
         return data;
     }
 })
+
 

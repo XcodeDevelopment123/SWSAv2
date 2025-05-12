@@ -74,7 +74,7 @@ IPermissionRefreshTracker permissionRefreshTracker
             foreach (var handleUser in req.HandleUsers)
             {
                 var userId = userIds[handleUser.StaffId];
-                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser, cp.Id, userId);
+                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser.DepartmentIds, cp.Id, userId);
                 allUserCompanyDepartments.AddRange(entities);
 
                 permissionRefreshTracker.MarkRefreshNeeded(handleUser.StaffId);

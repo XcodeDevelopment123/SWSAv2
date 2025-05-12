@@ -1,4 +1,3 @@
-
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Middlewares;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;

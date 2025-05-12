@@ -1,7 +1,6 @@
 ﻿$(function () {
-
     var companyTargetUrl = null;
-
+   
     $(document).on('click', '.open-company-modal', function (e) {
         e.preventDefault();
         companyTargetUrl = $(this).data('target-url');

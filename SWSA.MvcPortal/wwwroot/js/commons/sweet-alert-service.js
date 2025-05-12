@@ -1,5 +1,4 @@
-﻿
-const ICON_SUCCESS = "success";
+﻿const ICON_SUCCESS = "success";
 const ICON_ERROR = "error";
 const ICON_INFO = "info";
 const ICON_WARNING = "warning";
@@ -10,6 +9,7 @@ const CancelBtnColor = "#d33";
 
 const confirmButton = 'btn btn-primary me-3 waves-effect waves-light';
 const cancelButton = 'btn btn-label-danger waves-effect waves-light';
+
 
 const Toast = Swal.mixin({
     toast: true,

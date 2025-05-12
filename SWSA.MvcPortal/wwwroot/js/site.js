@@ -1,6 +1,5 @@
 ﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-/// <reference path="commons/sweet-alert-service.js" />
 // Write your JavaScript code.
 const urls = {
     "auth": "/Auth",
@@ -12,23 +11,23 @@ const urls = {
     "company_documents": "/companies/docs",
     "company_works": "/companies/works",
     "company_work_progress": "/companies/works/progress",
+    "company_handle_user": "/companies/handle-users",
     "schedule_job": "/scheduler-jobs",
     "system_audit_log": "/sys-audit-logs",
     "users": "/users",
 };
-
 // example use
 /**
  *  
  * $.ajax({
     url: "/api/example",
     method: "POST",
-    manualLoading: true, // ✅ 明确声明：我自己控制 loading
+    manualLoading: true, // declare, self control loading
     beforeSend: function () {
-        startLoading(); // 手动控制开始
+        startLoading(); // self control, start timing
     },
     complete: function () {
-        stopLoading(); // 手动控制结束
+        stopLoading(); // self control, end timing
     },
     success: function (res) {
         Toast_Fire(ICON_SUCCESS, "Done", "Task completed.");
@@ -50,21 +49,18 @@ $.ajaxSetup({
 });
 
 $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
-    if (jqxhr.handledError) return; 
+    if (jqxhr.handledError) return;
     //jqxhr.status === httpstatus code
     stopLoading();
     console.error(jqxhr.responseJSON);
     Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
-    
+
 });
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize all tooltips
     loadToolTip();
 });
-
 
 function extractNumbers(value) {
     const match = value.match(/\d+/g);
@@ -95,12 +91,12 @@ function getFormData(formInputs) {
                 const file = $input[0].files[0];
                 formData[key] = file ?? null;
             }
-            // 普通 input/select
+            //  input/select
             else {
                 formData[key] = $input.val();
             }
         }
-        // 递归处理嵌套结构
+
         else if (typeof $input === 'object' && $input !== null) {
             formData[key] = getFormData($input);
         }

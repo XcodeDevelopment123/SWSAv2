@@ -1,587 +1,725 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+﻿@using Newtonsoft.Json
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Companies
+@using SWSA.MvcPortal.Services.Interfaces
+@inject IUserContext UserContext
+
 @model CompanyEditPageVM
 @{
-    ViewData["Title"] = "Edit Company Profile";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Edit Company Profile";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var groupedMsicCodes = Model.MsicCodes
-       .GroupBy(m => m.CategoryReferences)
-       .ToList();
+	var groupedMsicCodes = Model.MsicCodes
+				.GroupBy(m => m.CategoryReferences)
+				.ToList();
 
-    var cp = Model.Company;
+	var cp = Model.Company;
 
-    var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.Status);
-    var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
-    var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(cp.CompanyType);
-    var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
-    var staffPosition = SelectHelper.GetStaffPositionTypes(null);
-    var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
-    var cpDepartmentIds = cp.Departments.Select(m => m.DepartmentId).ToList();
+	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.Status);
+	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
+	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(cp.CompanyType);
+	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
+	var staffPosition = SelectHelper.GetStaffPositionTypes(null);
+	var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
+	var cpDepartmentIds = cp.Departments.Select(m => m.DepartmentId).ToList();
 
-    <input type="hidden" id="companyId" value="@cp.Id" />
+	<input type="hidden" id="companyId" value="@cp.Id" />
 }
 
 <h3>Edit @cp.Name Profile</h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <form id="companyForm">
-            <!-- jquery validation -->
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Company Info</h3>
+	<div class="col-md-12">
+		<form id="handleUserForm">
+			<!-- jquery validation -->
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">Handle Users Info</h3>
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
 
-                <!-- /.card-header -->
-                <!-- form start -->
-                <div class="card-body row">
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body">
+					<table id="handleUserTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Departments</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@{
+								var userDepartments = cp.UserCompanyDepartments
+								.GroupBy(ucd => ucd.UserId)
+								.Select(g => new
+								{
+									User = g.First().User,
+									Departments = g.Select(x => new { x.Department.Name, x.Department.Id }).Distinct().ToList()
+								})
+								.ToHashSet();
+							}
+							@foreach (var user in userDepartments)
+							{
+								<tr>
+									<td>@user.User.FullName (@user.User.Role.GetDisplayName())</td>
+									<td>
+										@string.Join(", ", user.Departments.Select(c => c.Name))
+									</td>
+									<td>
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-sm btn-warning btn-edit-handle-user mr-2"
+											data-staff-id="@user.User.StaffId"
+											data-department-ids="@(JsonConvert.SerializeObject(user.Departments.Select(c => c.Id)))"
+											title="Edit">
+												<i class="fa fa-edit"></i>
+											</button>
+											<button type="button" class="btn btn-sm btn-danger btn-delete-handle-user"
+											data-name="@($"{user.User.FullName} ({user.User.Role.GetDisplayName()})")"
+											data-staff-id="@user.User.StaffId">
+												<i class="fa fa-trash"></i>
+											</button>
+										</div>
+									</td>
+								</tr>
+							}
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="companyName">Company Name*</label>
-                            <input id="companyName" name="companyName" value="@cp.Name" class="form-control " placeholder="xxx sdn.bhd." />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="regisNumber">Registration Number</label>
-                            <input id="regisNumber" name="regisNumber" value="@cp.RegistrationNumber" class="form-control " placeholder="2025041153513" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="eNumber">Employer Number (E Number)</label>
-                            <input id="eNumber" name="eNumber" value="@cp.EmployerNumber" class="form-control" placeholder="12-3456789" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tinNumber">Tax Identification Number (TIN)</label>
-                            <input id="tinNumber" name="tinNumber" value="@cp.TaxIdentificationNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="incorpDate">Incorporation Date</label>
-                            <div class="input-group">
-                                <input type="date" id="incorpDate" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" name="incorpDate" class="form-control" placeholder="Select date" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="yearEndMonth">Year End Month</label>
-                            <div class="input-group">
-                                <input type="text" id="yearEndMonth" value="@cp.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="companyType">Company Type</label>
-                            <select asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="companyStatus">Company Status</label>
-                            <select asp-items="@companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">  </select>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>
-                            <select id="msicCodesIds" name="msicCodesIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-                                @foreach (var group in groupedMsicCodes)
-                                {
-                                    <optgroup label="@group.Key">
-                                        @foreach (var msicCode in group)
-                                        {
-                                            if (cpMsicCodeIds.Contains(msicCode.Id))
-                                            {
-                                                <option selected value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
-                                            }
-                                        }
-                                    </optgroup>
-                                })
-                            </select>
-                        </div>
-                    </div>
+						</tbody>
+					</table>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="departmentsIds">Active Departments </label>
-                            <select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-                                @foreach (var department in Model.Departments)
-                                {
-                                    var findDp = cp.Departments.FirstOrDefault(m => m.DepartmentId == department.Id);
-                                    if (findDp == null || !findDp.IsActive)
-                                    {
-                                        <option value="@department.Id">@department.Name</option>
-                                    }
-                                    else
-                                    {
-                                        <option selected value="@department.Id">@department.Name</option>
-                                    }
+					@if (UserContext.IsSuperAdmin)
+					{
+						<div class="divider-line"></div>
 
-                                })
-                            </select>
-                        </div>
-                    </div>
+						<div class="row">
 
-                </div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="handleStaffId">
+										User
+										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The staff member assigned to manage this company in SWSA."></i>
+									</label>
+									<select id="handleStaffId" name="handleStaffId" class="form-control select2 ">
+										@if (Model.Users.Count == 0)
+										{
+											<option disabled value="">No swsa staff available in systems</option>
+										}
+										else
+										{
+											<option value="">Please select</option>
+										}
 
-                <div class="card-footer">
-                    <!-- /.card-body -->
-                    <div class="float-end">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            </div>
+										@foreach (var user in Model.Users)
+										{
+											if (cp.UserCompanyDepartments.Any(m => m.User.StaffId == user.StaffId))
+											{
+												<option disabled value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
+											}
+											else
+											{
+											<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>				
+											}
+										})
 
-            <!-- /.card -->
-        </form>
-    </div>
+									</select>
+								</div>
+							</div>
 
-    <div class="col-md-12">
-        <!-- jquery validation -->
-        <form id="complianceDateForm">
-            <div class="card card-secondary  collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        SSM due date
-                    </h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body" style="display:none">
-                    <div class="row">
-                        <h4>Audit Report</h4>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="userDepartmentIds">
+										User Handle Departments
+										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The selected departments are user-specific and independent of the company's department settings. Users can access them even if the company disables the department later."></i>
+									</label>
+									<select id="userDepartmentIds" name="userDepartmentIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+										@foreach (var department in Model.Departments)
+										{
+											<option value="@department.Id">@department.Name</option>
+										})
+									</select>
+								</div>
+							</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="firstYearAccountStart">First Year Account Start</label>
-                                <div class="input-group">
-                                    <input value="@cp.CompanyComplianceDate?.FirstYearAccountStart?.ToString("yyyy-MM-dd")" type="text" id="firstYearAccountStart" name="firstYearAccountStart" class="form-control" placeholder="(Optional)" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+						</div>
+					}
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="agmDate">AGM Date</label>
-                                <div class="input-group">
-                                    <input value="@cp.CompanyComplianceDate?.AGMDate?.ToString("yyyy-MM-dd")" type="text" id="agmDate" name="agmDate" class="form-control" placeholder="(Optional)" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+				</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="accountDueDate">Account Due Date</label>
-                                <div class="input-group">
-                                    <input value="@cp.CompanyComplianceDate?.AccountDueDate?.ToString("yyyy-MM-dd")" type="text" id="accountDueDate" name="accountDueDate" class="form-control" placeholder="(Optional)" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+				@if (UserContext.IsSuperAdmin)
+				{
+					<div class="card-footer">
+						<button type="button" class="btn btn-danger float-end" id="btnCancelHandleUser" style="display:none">Cancel</button>
+						<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddHandleUser">Add</button>
+					</div>
+				}
+			</div>
+		</form>
+		<!-- /.card -->
+	</div>
 
-                        <h4>Annual Return</h4>
+	<div class="col-md-12">
+		<form id="companyForm">
+			<!-- jquery validation -->
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">Company Info</h3>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="anniversaryDate">Anniversary Date</label>
-                                <div class="input-group">
-                                    <input value="@cp.CompanyComplianceDate?.AnniversaryDate?.ToString("yyyy-MM-dd")" type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="(Optional)" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="annualReturnDueDate">Annual Return Due Date</label>
-                                <div class="input-group">
-                                    <input value="@cp.CompanyComplianceDate?.AnnualReturnDueDate?.ToString("yyyy-MM-dd")" type="text" id="annualReturnDueDate" name="annualReturnDueDate" class="form-control" placeholder="(Optional)" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body row">
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="notes">Notes</label>
-                                <input value="@cp.CompanyComplianceDate?.Notes" id="notes" name="notes" class="form-control" placeholder="(Optional)" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary float-end">Save</button>
-                </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyName">Company Name*</label>
+							<input id="companyName" name="companyName" value="@cp.Name" class="form-control " placeholder="xxx sdn.bhd." />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="regisNumber">Registration Number</label>
+							<input id="regisNumber" name="regisNumber" value="@cp.RegistrationNumber" class="form-control " placeholder="2025041153513" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="eNumber">Employer Number (E Number)</label>
+							<input id="eNumber" name="eNumber" value="@cp.EmployerNumber" class="form-control" placeholder="12-3456789" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="tinNumber">Tax Identification Number (TIN)</label>
+							<input id="tinNumber" name="tinNumber" value="@cp.TaxIdentificationNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="incorpDate">Incorporation Date</label>
+							<div class="input-group">
+								<input type="date" id="incorpDate" value="@cp.IncorporationDate?.ToString("yyyy-MM-dd")" name="incorpDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="yearEndMonth">Year End Month</label>
+							<div class="input-group">
+								<input type="text" id="yearEndMonth" value="@cp.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyType">Company Type</label>
+							<select asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyStatus">Company Status</label>
+							<select asp-items="@companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">  </select>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>
+							<select id="msicCodesIds" name="msicCodesIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+								@foreach (var group in groupedMsicCodes)
+								{
+									<optgroup label="@group.Key">
+										@foreach (var msicCode in group)
+										{
+											if (cpMsicCodeIds.Contains(msicCode.Id))
+											{
+												<option selected value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
+											}
+											else
+											{
+												<option value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
+											}
+										}
+									</optgroup>
+								})
+							</select>
+						</div>
+					</div>
 
-                <!-- /.card -->
-            </div>
-        </form>
-    </div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="departmentsIds">Active Departments </label>
+							<select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+								@foreach (var department in Model.Departments)
+								{
+									var findDp = cp.Departments.FirstOrDefault(m => m.DepartmentId == department.Id);
+									if (findDp == null || !findDp.IsActive)
+									{
+										<option value="@department.Id">@department.Name</option>
+									}
+									else
+									{
+										<option selected value="@department.Id">@department.Name</option>
+									}
 
-    <div class="col-md-12">
-        <!-- jquery validation -->
-        <form id="ownerForm">
-            <div class="card card-secondary  collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Director / Owner</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
+								})
+							</select>
+						</div>
+					</div>
 
-                <div class="card-body " style="display:none">
+				</div>
 
-                    <table id="ownerTable" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>IC or Passport</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                                <th>Position</th>
-                                <th>Ownership</th>
-                                <th>Tax Refer</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var owner in cp.CompanyOwners)
-                            {
-                                <tr>
-                                    <td>@owner.NamePerIC</td>
-                                    <td>@owner.ICOrPassportNumber</td>
-                                    <td>@owner.Email</td>
-                                    <td>@owner.PhoneNumber</td>
-                                    <td>@owner.Position.GetDisplayName()</td>
-                                    <td>@owner.OwnershipType.GetDisplayName()</td>
-                                    <td>@owner.TaxReferenceNumber</td>
+				<div class="card-footer">
+					<!-- /.card-body -->
+					<div class="float-end">
+						<button type="submit" class="btn btn-primary">Save</button>
+					</div>
+				</div>
+			</div>
 
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-warning btn-edit-owner mr-2" data-id="@owner.Id" data-name="@owner.NamePerIC" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete-owner" data-id="@owner.Id" data-name="@owner.NamePerIC"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+			<!-- /.card -->
+		</form>
+	</div>
 
-                        </tbody>
-                    </table>
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<form id="complianceDateForm">
+			<div class="card card-secondary  collapsed-card">
+				<div class="card-header">
+					<h3 class="card-title">
+						SSM due date
+					</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<div class="card-body" style="display:none">
+					<div class="row">
+						<h4>Audit Report</h4>
 
-                    <div class="divider-line"></div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="firstYearAccountStart">First Year Account Start</label>
+								<div class="input-group">
+									<input value="@cp.CompanyComplianceDate?.FirstYearAccountStart?.ToString("yyyy-MM-dd")" type="text" id="firstYearAccountStart" name="firstYearAccountStart" class="form-control" placeholder="(Optional)" />
+									<div class="input-group-append">
+										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerNamePerIc">Name Per IC*</label>
-                                <input id="ownerNamePerIc" name="ownerNamePerIc" class="form-control " placeholder="JOHN DEE" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerIcOrPassword">IC Or Passport Number*</label>
-                                <input id="ownerIcOrPassword" name="ownerIcOrPassword" class="form-control " placeholder="xxx-xxx-xxx-xxx" />
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="agmDate">AGM Date</label>
+								<div class="input-group">
+									<input value="@cp.CompanyComplianceDate?.AGMDate?.ToString("yyyy-MM-dd")" type="text" id="agmDate" name="agmDate" class="form-control" placeholder="(Optional)" />
+									<div class="input-group-append">
+										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerEmail">Email</label>
-                                <input type="email" id="ownerEmail" name="ownerEmail" class="form-control " placeholder="xxx@gmail.com" />
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="accountDueDate">Account Due Date</label>
+								<div class="input-group">
+									<input value="@cp.CompanyComplianceDate?.AccountDueDate?.ToString("yyyy-MM-dd")" type="text" id="accountDueDate" name="accountDueDate" class="form-control" placeholder="(Optional)" />
+									<div class="input-group-append">
+										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerPhone">Phone Number</label>
-                                <input id="ownerPhone" name="ownerPhone" class="form-control " placeholder="+601xxxxxxxx" />
-                            </div>
-                        </div>
+						<h4>Annual Return</h4>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerPosition">Position</label>
-                                <select asp-items="@ownerPosition" id="ownerPosition" name="ownerPosition" class="form-control select2">  </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownership">Ownership</label>
-                                <select asp-items="@ownershipTypes" id="ownership" name="ownership" class="form-control select2">  </select>
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="anniversaryDate">Anniversary Date</label>
+								<div class="input-group">
+									<input value="@cp.CompanyComplianceDate?.AnniversaryDate?.ToString("yyyy-MM-dd")" type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="(Optional)" />
+									<div class="input-group-append">
+										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ownerTaxRefer">Tax Reference Number</label>
-                                <input id="ownerTaxRefer" name="ownerTaxRefer" class="form-control " placeholder="xxxxxxxxx" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    <button type="button" class="btn btn-danger float-end" id="btnCancelOwner" style="display:none">Cancel</button>
-                    <button type="submit" class="btn btn-primary float-end mr-2" id="btnAddOwner">Add</button>
-                </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="annualReturnDueDate">Annual Return Due Date</label>
+								<div class="input-group">
+									<input value="@cp.CompanyComplianceDate?.AnnualReturnDueDate?.ToString("yyyy-MM-dd")" type="text" id="annualReturnDueDate" name="annualReturnDueDate" class="form-control" placeholder="(Optional)" />
+									<div class="input-group-append">
+										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                <!-- /.card -->
-            </div>
-        </form>
-    </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="notes">Notes</label>
+								<input value="@cp.CompanyComplianceDate?.Notes" id="notes" name="notes" class="form-control" placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="submit" class="btn btn-primary float-end">Save</button>
+				</div>
 
-    <div class="col-md-12">
-        <form id="officialContactForm">
-            <!-- jquery validation -->
-            <div class="card card-secondary  collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Officials Contacts</h3>
+				<!-- /.card -->
+			</div>
+		</form>
+	</div>
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<form id="ownerForm">
+			<div class="card card-secondary  collapsed-card">
+				<div class="card-header">
+					<h3 class="card-title">Director / Owner</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
 
-                <div class="card-body" style="display:none">
-                    <table id="officialContactTable" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Address</th>
-                                <th>Official Tel</th>
-                                <th>Email</th>
-                                <th>Remark</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var officalCt in cp.OfficialContacts)
-                            {
-                                <tr>
-                                    <td>@officalCt.Address</td>
-                                    <td>@officalCt.OfficeTel</td>
-                                    <td>@officalCt.Email</td>
-                                    <td>@officalCt.Remark</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-warning btn-edit-official-ct mr-2" data-id="@officalCt.Id" data-name="@officalCt.OfficeTel" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete-official-ct" data-id="@officalCt.Id" data-name="@officalCt.OfficeTel"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+				<div class="card-body " style="display:none">
 
-                    <div class="divider-line"></div>
+					<table id="ownerTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>IC or Passport</th>
+								<th>Email</th>
+								<th>Phone Number</th>
+								<th>Position</th>
+								<th>Ownership</th>
+								<th>Tax Refer</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var owner in cp.CompanyOwners)
+							{
+								<tr>
+									<td>@owner.NamePerIC</td>
+									<td>@owner.ICOrPassportNumber</td>
+									<td>@owner.Email</td>
+									<td>@owner.PhoneNumber</td>
+									<td>@owner.Position.GetDisplayName()</td>
+									<td>@owner.OwnershipType.GetDisplayName()</td>
+									<td>@owner.TaxReferenceNumber</td>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="officialAddress">Address</label>
-                                <input id="officialAddress" name="officialAddress" class="form-control " placeholder="999,Jalan xx" />
-                            </div>
-                        </div>
+									<td>
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-sm btn-warning btn-edit-owner mr-2" data-id="@owner.Id" data-name="@owner.NamePerIC" title="Edit">
+												<i class="fa fa-edit"></i>
+											</button>
+											<button type="button" class="btn btn-sm btn-danger btn-delete-owner" data-id="@owner.Id" data-name="@owner.NamePerIC"><i class="fa fa-trash"></i></button>
+										</div>
+									</td>
+								</tr>
+							}
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="officeTel">Office Tel</label>
-                                <input id="officeTel" name="officeTel" class="form-control " placeholder="+605xxxxxxxx" />
-                            </div>
-                        </div>
+						</tbody>
+					</table>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="officialEmail">Email</label>
-                                <input type="email" id="officialEmail" name="officialEmail" class="form-control " placeholder="xxx@gmail.com" />
-                            </div>
-                        </div>
+					<div class="divider-line"></div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="officialRemark">Remark</label>
-                                <input id="officialRemark" name="officialRemark" class="form-control " placeholder="(Optional)" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    <button type="button" class="btn btn-danger float-end" id="btnCancelOfficialContact" style="display:none">Cancel</button>
-                    <button type="submit" class="btn btn-primary float-end mr-2" id="btnAddOfficialContact">Add</button>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerNamePerIc">Name Per IC*</label>
+								<input id="ownerNamePerIc" name="ownerNamePerIc" class="form-control " placeholder="JOHN DEE" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerIcOrPassword">IC Or Passport Number*</label>
+								<input id="ownerIcOrPassword" name="ownerIcOrPassword" class="form-control " placeholder="xxx-xxx-xxx-xxx" />
+							</div>
+						</div>
 
-                </div>
-            </div>
-            <!-- /.card -->
-        </form>
-    </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerEmail">Email</label>
+								<input type="email" id="ownerEmail" name="ownerEmail" class="form-control " placeholder="xxx@gmail.com" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerPhone">Phone Number</label>
+								<input id="ownerPhone" name="ownerPhone" class="form-control " placeholder="+601xxxxxxxx" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerPosition">Position</label>
+								<select asp-items="@ownerPosition" id="ownerPosition" name="ownerPosition" class="form-control select2">  </select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownership">Ownership</label>
+								<select asp-items="@ownershipTypes" id="ownership" name="ownership" class="form-control select2">  </select>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ownerTaxRefer">Tax Reference Number</label>
+								<input id="ownerTaxRefer" name="ownerTaxRefer" class="form-control " placeholder="xxxxxxxxx" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="button" class="btn btn-danger float-end" id="btnCancelOwner" style="display:none">Cancel</button>
+					<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddOwner">Add</button>
+				</div>
+
+				<!-- /.card -->
+			</div>
+		</form>
+	</div>
+
+	<div class="col-md-12">
+		<form id="officialContactForm">
+			<!-- jquery validation -->
+			<div class="card card-secondary  collapsed-card">
+				<div class="card-header">
+					<h3 class="card-title">Officials Contacts</h3>
+
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
+
+				<div class="card-body" style="display:none">
+					<table id="officialContactTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Address</th>
+								<th>Official Tel</th>
+								<th>Email</th>
+								<th>Remark</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var officalCt in cp.OfficialContacts)
+							{
+								<tr>
+									<td>@officalCt.Address</td>
+									<td>@officalCt.OfficeTel</td>
+									<td>@officalCt.Email</td>
+									<td>@officalCt.Remark</td>
+									<td>
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-sm btn-warning btn-edit-official-ct mr-2" data-id="@officalCt.Id" data-name="@officalCt.OfficeTel" title="Edit">
+												<i class="fa fa-edit"></i>
+											</button>
+											<button type="button" class="btn btn-sm btn-danger btn-delete-official-ct" data-id="@officalCt.Id" data-name="@officalCt.OfficeTel"><i class="fa fa-trash"></i></button>
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+
+					<div class="divider-line"></div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="officialAddress">Address</label>
+								<input id="officialAddress" name="officialAddress" class="form-control " placeholder="999,Jalan xx" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="officeTel">Office Tel</label>
+								<input id="officeTel" name="officeTel" class="form-control " placeholder="+605xxxxxxxx" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="officialEmail">Email</label>
+								<input type="email" id="officialEmail" name="officialEmail" class="form-control " placeholder="xxx@gmail.com" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="officialRemark">Remark</label>
+								<input id="officialRemark" name="officialRemark" class="form-control " placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="button" class="btn btn-danger float-end" id="btnCancelOfficialContact" style="display:none">Cancel</button>
+					<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddOfficialContact">Add</button>
+
+				</div>
+			</div>
+			<!-- /.card -->
+		</form>
+	</div>
 
 
-    <div class="col-md-12">
-        <form id="staffContactForm">
-            <!-- jquery validation -->
-            <div class="card card-secondary  collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Staff / Communication Contacts</h3>
+	<div class="col-md-12">
+		<form id="staffContactForm">
+			<!-- jquery validation -->
+			<div class="card card-secondary  collapsed-card">
+				<div class="card-header">
+					<h3 class="card-title">Staff / Communication Contacts</h3>
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
 
-                <div class="card-body" style="display:none">
-                    <table id="staffContactTable" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Contact Name</th>
-                                <th>Whatsapp</th>
-                                <th>Email</th>
-                                <th>Position</th>
-                                <th>Remark</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var staffCt in cp.CompanyStaffs)
-                            {
-                                <tr>
-                                    <td>@staffCt.ContactName</td>
-                                    <td>@staffCt.WhatsApp</td>
-                                    <td>@staffCt.Email</td>
-                                    <td>@staffCt.Position</td>
-                                    <td>@staffCt.Remark</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+				<div class="card-body" style="display:none">
+					<table id="staffContactTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Contact Name</th>
+								<th>Whatsapp</th>
+								<th>Email</th>
+								<th>Position</th>
+								<th>Remark</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var staffCt in cp.CompanyStaffs)
+							{
+								<tr>
+									<td>@staffCt.ContactName</td>
+									<td>@staffCt.WhatsApp</td>
+									<td>@staffCt.Email</td>
+									<td>@staffCt.Position</td>
+									<td>@staffCt.Remark</td>
+									<td>
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName" title="Edit">
+												<i class="fa fa-edit"></i>
+											</button>
+											<button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName"><i class="fa fa-trash"></i></button>
+										</div>
+									</td>
+								</tr>
+							}
 
-                        </tbody>
-                    </table>
+						</tbody>
+					</table>
 
-                    <div class="divider-line"></div>
+					<div class="divider-line"></div>
 
-                    <div class="row">
+					<div class="row">
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staffName">Contact Name</label>
-                                <input id="staffName" name="staffName" class="form-control " placeholder="John Dee" />
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="staffName">Contact Name</label>
+								<input id="staffName" name="staffName" class="form-control " placeholder="John Dee" />
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staffWhatsapp">WhatsApp</label>
-                                <input id="staffWhatsapp" name="staffWhatsapp" class="form-control " placeholder="+605xxxxxxxx" />
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="staffWhatsapp">WhatsApp</label>
+								<input id="staffWhatsapp" name="staffWhatsapp" class="form-control " placeholder="+605xxxxxxxx" />
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staffEmail">Email</label>
-                                <input type="email" id="staffEmail" name="staffEmail" class="form-control " placeholder="xxx@gmail.com" />
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="staffEmail">Email</label>
+								<input type="email" id="staffEmail" name="staffEmail" class="form-control " placeholder="xxx@gmail.com" />
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staffPosition">Position</label>
-                                <select asp-items="@staffPosition" id="staffPosition" name="staffPosition" class="form-control select2">  </select>
-                            </div>
-                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="staffPosition">Position</label>
+								<select asp-items="@staffPosition" id="staffPosition" name="staffPosition" class="form-control select2">  </select>
+							</div>
+						</div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staffRemark">Remark</label>
-                                <input id="staffRemark" name="staffRemark" class="form-control " placeholder="(Optional)" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    <button type="button" class="btn btn-danger float-end" id="btnCancelStaffContact" style="display:none">Cancel</button>
-                    <button type="submit" class="btn btn-primary float-end mr-2" id="btnAddStaffContact">Add</button>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="staffRemark">Remark</label>
+								<input id="staffRemark" name="staffRemark" class="form-control " placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="button" class="btn btn-danger float-end" id="btnCancelStaffContact" style="display:none">Cancel</button>
+					<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddStaffContact">Add</button>
 
-                </div>
-            </div>
-            <!-- /.card -->
-        </form>
-    </div>
+				</div>
+			</div>
+			<!-- /.card -->
+		</form>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <partial name="_DatatablesScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
+	<partial name="_DatatablesScriptsPartial" />
 
-    <script src="~/js/companies/edit-company.js" asp-append-version="true"></script>
-    <!-- date-range-picker -->
+	<script src="~/js/companies/edit-company.js" asp-append-version="true"></script>
+	<!-- date-range-picker -->
     }

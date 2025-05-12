@@ -142,8 +142,6 @@
         if (!$jobTriggerSettingForm.valid()) return;
 
         const triggerData = getFormData(jobTriggerSettingForm);
-        console.log(triggerData);
-
         $.ajax({
             url: `${urls.schedule_job}/create`,
             method: "POST",
