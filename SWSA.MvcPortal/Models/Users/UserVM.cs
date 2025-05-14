@@ -11,6 +11,7 @@ public class UserVM
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public bool IsActive { get; set; }
+    public bool IsSuperAdmin => Role == UserRole.SuperAdmin;
     public DateTime? LastLoginAt { get; set; }
     public UserRole Role { get; set; }
 
@@ -18,4 +19,5 @@ public class UserVM
     {
         return JsonConvert.SerializeObject(this);
     }
+
 }

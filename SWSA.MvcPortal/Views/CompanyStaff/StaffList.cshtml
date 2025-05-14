@@ -25,7 +25,6 @@
                             <th>Phone Number</th>
                             <th>Department</th>
                             <th>Position</th>
-                            <th>Account Login</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -39,7 +38,6 @@
                                 <td>@staff.WhatsApp</td>
                                 <td>@(staff.CompanyDepartment?.Department.Name ?? AppSettings.NotAvailable)</td>
                                 <td>@staff.Position.GetDisplayName()</td>
-                                <td>@(staff.IsLoginEnabled ? "Enabled" : "Disabled")</td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="/companies/staffs/@staff.StaffId/overview" class="btn btn-sm btn-info mr-2" title="View">
@@ -68,7 +66,6 @@
                             <th>Phone Number</th>
                             <th>Department</th>
                             <th>Position</th>
-                            <th>Is Login Enabled</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>

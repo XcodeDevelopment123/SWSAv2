@@ -1,49 +1,225 @@
-﻿@model SWSA.MvcPortal.Models.Users.UserVM
+﻿@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@model SWSA.MvcPortal.Models.Users.UserOverviewVM
 
 @{
-    ViewData["Title"] = "Overview";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Overview";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	var yesNo = SelectHelper.GetYesNoSelection(Model.IsActive);
+	var assignedTask = Model.AssignedWorks;
+	var assignedCompanies = Model.AssignedCompanies;
 }
+<h3>User Overview</h3>
 
-<h1>Overview</h1>
+<div class="row">
+	<div class="col-md-12">
+		<form>
+			<!-- jquery validation -->
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">User Info</h3>
 
-<div>
-    <h4>UserVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StaffId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StaffId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastLoginAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastLoginAt)
-        </dd>
-    </dl>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Staff Id</label>
+							<input readonly class="form-control" value="@Model.StaffId" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Username</label>
+							<input readonly class="form-control" value="@Model.Username" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>User Role</label>
+							<input readonly class="form-control" value="@Model.Role.GetDisplayName()" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Full Name</label>
+							<input readonly class="form-control" value="@Model.FullName" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Phone Number</label>
+							<input readonly class="form-control" value="@Model.PhoneNumber" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Email</label>
+							<input readonly class="form-control" value="@Model.Email" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="IsActive">Is Active</label>
+							<select disabled asp-items="yesNo" class="form-control select2"></select>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<!-- /.card -->
+	</div>
+
+	<div class="col-md-12">
+		<!-- /.card -->
+
+		<div class="card card-secondary collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Handled Companies</h3>
+
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+			</div>
+			<!-- /.card-header -->
+			<div class="card-body" style="display:none">
+				<table id="handleCompaniesTable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Registration Number</th>
+							<th>Year End Month</th>
+							<th>Director Name</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var cp in assignedCompanies)
+						{
+							<tr>
+								<td>@cp.CompanyName</td>
+								<td>@cp.CompanyType.GetDisplayName()</td>
+								<td>@cp.RegistrationNumber</td>
+								<td>@cp.YearEndMonth</td>
+								<td>@cp.CompanyDirectorName</td>
+								<td>@cp.Status</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Registration Number</th>
+							<th>Year End Month</th>
+							<th>Director Name</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
+
+	<div class="col-md-12">
+		<!-- /.card -->
+
+		<div class="card card-secondary collapsed-card">
+			<div class="card-header">
+				<h3 class="card-title">Assigned Task</h3>
+
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+			</div>
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="assignedTaskTable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Company Department</th>
+							<th>Work Type</th>
+							<th>Services Offer</th>
+							<th>Activity Size </th>
+							<th>Year To Do</th>
+							<th>Month To Do</th>
+							<th>Internal Note</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var task in assignedTask)
+						{
+							<tr>
+								<td>@task.CompanyName - @task.DepartmentName</td>
+								<td>@task.WorkType</td>
+								<td>@task.ServiceScope.GetDisplayName()</td>
+								<td>@task.ActivitySize.GetDisplayName()</td>
+								<td>@task.YearToDo</td>
+								<td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
+								<td>@task.InternalNote</td>
+								<td>@task.Status.GetDisplayName()</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Company Department</th>
+							<th>Work Type</th>
+							<th>Services Offer</th>
+							<th>Activity Size </th>
+							<th>Year To Do</th>
+							<th>Month To Do</th>
+							<th>Internal Note</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+@section Scripts {
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/users/overview.js" asp-append-version="true"></script>
+}

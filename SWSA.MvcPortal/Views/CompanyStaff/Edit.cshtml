@@ -11,13 +11,7 @@
     var cp = Model.Company;
 
     var staffPosition = SelectHelper.GetStaffPositionTypes(Model.Position);
-
-    if (Model.HasPassword)
-    {
-        <input id="hasPassword" name="hasPassword" value="true" type="hidden" />
-    }
     <input id="companyId" name="companyId" value="@cp.Id" type="hidden" />
-
 }
 
 

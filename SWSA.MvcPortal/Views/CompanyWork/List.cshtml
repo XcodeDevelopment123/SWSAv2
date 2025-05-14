@@ -2,91 +2,94 @@
 @using SWSA.MvcPortal.Models.CompnayWorks
 @model List<CompanyWorkListVM>
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 <h3> Task / Work List</h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- /.card -->
+	<div class="col-md-12">
+		<!-- /.card -->
 
-        <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="workDatatable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Company</th>
-                            <th>Work Type</th>
-                            <th>Services Offer</th>
-                            <th>Activity Size </th>
-                            <th>Year To Do</th>
-                            <th>Month To Do</th>
-                            <th>Status</th>
-                            <th>Internal Note</th>
-                            <th>Handle Staff</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var task in Model)
-                        {
-                            <tr>
-                                <td>@task.CompanyName</td>
-                                <td>@task.WorkType</td>
-                                <td>@task.ServiceScope.GetDisplayName()</td>
-                                <td>@task.ActivitySize.GetDisplayName()</td>
-                                <td>@task.YearToDo</td>
-                                <td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
-                                <td>@task.Status.GetDisplayName()</td>
-                                <td>@task.InternalNote</td>
-                                <td>@task.DepartmentName - @task.StaffName</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        <a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="workDatatable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Company</th>
+							<th>Department</th>
+							<th>Work Type</th>
+							<th>Services Offer</th>
+							<th>Activity Size </th>
+							<th>Year To Do</th>
+							<th>Month To Do</th>
+							<th>Internal Note</th>
+							<th>Handle Staff</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var task in Model)
+						{
+							<tr>
+								<td>@task.CompanyName</td>
+								<td>@task.DepartmentName</td>
+								<td>@task.WorkType</td>
+								<td>@task.ServiceScope.GetDisplayName()</td>
+								<td>@task.ActivitySize.GetDisplayName()</td>
+								<td>@task.YearToDo</td>
+								<td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
+								<td>@task.InternalNote</td>
+								<td>@task.StaffName</td>
+								<td>@task.Status.GetDisplayName()</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
+										<a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
 
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.ServiceScope.GetDisplayName()} for {task.CompanyName}")" title="Delete">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.ServiceScope.GetDisplayName()} for {task.CompanyName}")" title="Delete">
+											<i class="fa fa-trash"></i>
+										</button>
 
-                                    </div>
-                                </td>
+									</div>
+								</td>
 
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Company</th>
-                            <th>Work Type</th>
-                            <th>Services Offer</th>
-                            <th>Activity Size </th>
-                            <th>Year To Do</th>
-                            <th>Month To Do</th>
-                            <th>Status</th>
-                            <th>Internal Note</th>
-                            <th>Handle Staff</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Company</th>
+							<th>Department</th>
+							<th>Work Type</th>
+							<th>Services Offer</th>
+							<th>Activity Size </th>
+							<th>Year To Do</th>
+							<th>Month To Do</th>
+							<th>Internal Note</th>
+							<th>Handle Staff</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_DatatablesScriptsPartial" />
+	<partial name="_DatatablesScriptsPartial" />
 
-    <script src="~/js/companies/list-work.js" asp-append-version="true"></script>
+	<script src="~/js/companies/list-work.js" asp-append-version="true"></script>
 }

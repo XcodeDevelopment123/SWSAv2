@@ -9,6 +9,7 @@ namespace SWSA.MvcPortal.Controllers;
 public class CompanyWorkController(
     ICompanyWorkAssignmentService service,
     ICompanyWorkProgressService progressService,
+    IUserService userService,
     ICompanyService companyService
     ) : BaseController
 {
@@ -30,7 +31,8 @@ public class CompanyWorkController(
     public async Task<IActionResult> Create([FromRoute] int companyId)
     {
         var cp = await companyService.GetCompanyByIdAsync(companyId);
-        var vm = new CompanyWorkAssignmentCreatePageVM(cp);
+        var users = await userService.GetUserSelectionAsync();
+        var vm = new CompanyWorkAssignmentCreatePageVM(cp, users);
         return View(vm);
     }
 
@@ -42,7 +44,9 @@ public class CompanyWorkController(
         if (data.Company != null)
             data.Company = await companyService.GetCompanyByIdAsync(data.Company.Id);
 
-        return View(data);
+        var users = await userService.GetUserSelectionAsync();
+        var vm = new CompanyWorkAssignmentkEditPageVM(data, users);
+        return View(vm);
     }
 
     [Route("works/calendar-events")]

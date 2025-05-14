@@ -90,10 +90,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         });
 
-        modelBuilder.Entity<CompanyWorkAssignment>()
-            .HasOne(x => x.Progress)
+        modelBuilder.Entity<CompanyWorkAssignment>(entity =>
+        {
+            entity.HasOne(x => x.Progress)
             .WithOne(p => p.WorkAssignment)
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
+
+            entity.HasOne(c => c.CompanyDepartment)
+                  .WithMany()
+                  .HasForeignKey(c => c.CompanyDepartmentId)
+                  .OnDelete(DeleteBehavior.NoAction); 
+        });
+
 
         modelBuilder.Entity<SystemNotificationLog>(entity =>
         {

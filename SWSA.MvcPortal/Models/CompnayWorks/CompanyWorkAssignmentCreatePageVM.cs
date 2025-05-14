@@ -6,9 +6,10 @@ namespace SWSA.MvcPortal.Models.CompnayWorks;
 public class CompanyWorkAssignmentCreatePageVM
 {
     public Company Company { get; set; }
-
-    public CompanyWorkAssignmentCreatePageVM(Company company)
+    public List<UserSelectionVM> UserSelections { get; set; }
+    public CompanyWorkAssignmentCreatePageVM(Company company, List<UserSelectionVM> users)
     {
         Company = company;
+        UserSelections = users;
     }
 }

@@ -9,7 +9,8 @@ $(function () {
         dueDate: $taskForm.find('input[name="dueDate"]'),
         assignedStaffId: $taskForm.find('select[name="handledByStaffId"]'),
         internalNote: $taskForm.find('input[name="internalNote"]'),    
-        companyId:$("#companyId")
+        companyId:$("#companyId"),
+        companyDepartmentId: $taskForm.find('select[name="companyDepartmentId"]'),
     };
 
     $taskForm.validate({
@@ -29,6 +30,9 @@ $(function () {
             handledByStaffId: {
                 required: true
             },
+            companyDepartmentId: {
+                required: true
+            }
         },
         messages: {
             workType: {
@@ -45,6 +49,9 @@ $(function () {
             },
             handledByStaffId: {
                 required: "Please select a staff."
+            },
+            companyDepartmentId: {
+                required: "Please select a department."
             }
         },
         errorElement: 'span',

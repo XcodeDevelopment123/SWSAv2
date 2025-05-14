@@ -29,8 +29,19 @@ IUserContext userContext
 
     public async Task<List<UserSelectionVM>> GetUserSelectionAsync()
     {
-        var data = await repo.GetByActiveStatus(true);
+        List<User> data = userContext.IsSuperAdmin
+            ? await repo.GetByActiveStatus(true)
+            : [await repo.GetByIdAsync(userContext.EntityId)];
+
         return mapper.Map<List<UserSelectionVM>>(data);
+    }
+
+    public async Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId)
+    {
+        var data = await repo.GetByStaffIdAsync(staffId);
+        Guard.AgainstNullData(data, "User not found");
+
+        return mapper.Map<UserOverviewVM>(data);
     }
 
     public async Task<UserVM> GetUserByIdAsync(string staffId)

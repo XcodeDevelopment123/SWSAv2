@@ -5,28 +5,31 @@
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.CompnayWorks
 @using SWSA.MvcPortal.Models.Users
-@model CompanyWorkVM
-
+@using SWSA.MvcPortal.Services.Interfaces
+@model CompanyWorkAssignmentkEditPageVM
+@inject IUserContext UserContext
 @{
 	ViewData["Title"] = "Edit";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 
-	var cp = Model.Company;
-	var progress = Model.Progress;
+	var workVM = Model.CompanyWork;
 
-	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(Model.WorkType);
-	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(Model.ServiceScope);
-	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(Model.ActivitySize);
+	var cp = workVM.Company;
+	var cpDpt = workVM.CompanyDepartment;
+	var progress = workVM.Progress;
+	var userSelections = Model.UserSelections;
+
+	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(workVM.WorkType);
+	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(workVM.ServiceScope);
+	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(workVM.ActivitySize);
 	var workProgressStatus = SelectHelper.GetEnumSelectList<WorkProgressStatus>(progress.Status);
-	var isCompleted = SelectHelper.GetYesNoSelection(Model.IsCompleted);
-
-	var staffSelections = cp.CompanyStaffs;
+	var isCompleted = SelectHelper.GetYesNoSelection(workVM.IsCompleted);
 
 	var currentYear = DateTime.Now.Year;
 	var startYear = currentYear - 10;
 	var endYear = currentYear + 20;
 
-	<input type="hidden" id="taskId" value="@Model.TaskId" />
+	<input type="hidden" id="taskId" value="@workVM.TaskId" />
 	<input type="hidden" id="progressId" value="@progress.ProgressId" />
 
 }
@@ -58,6 +61,12 @@
 						<div class="form-group">
 							<label for="companyName">Company</label>
 							<input readonly value="@($"{cp.Name} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyDepartment">Department</label>
+							<input readonly value="@($"{cpDpt.Department.Name}")" class="form-control " placeholder="xxx sdn.bhd." />
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -139,7 +148,7 @@
 									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The deadline of the task, will apply the date month and year for the month to do and year to do"></i>
 								</label>
 								<div class="input-group">
-									<input type="text" id="dueDate" name="dueDate" value="@Model.DueDate.ToFormattedString()" class="form-control" placeholder="Select date" />
+									<input type="text" id="dueDate" name="dueDate" value="@workVM.DueDate.ToFormattedString()" class="form-control" placeholder="Select date" />
 									<div class="input-group-append">
 										<span class="input-group-text">
 											<i class="fa fa-calendar"></i>
@@ -154,7 +163,7 @@
 							<div class="form-group">
 								<label for="handledByStaffId">Handled By</label>
 								<select id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
-									@if (staffSelections.Count == 0)
+									@if (userSelections.Count == 0)
 									{
 										<option disabled value="">No staff available in company</option>
 									}
@@ -162,16 +171,15 @@
 									{
 										<option disabled value="">Please select</option>
 									}
-									@foreach (var staff in staffSelections)
+									@foreach (var user in userSelections)
 									{
-										if (staff.StaffId == Model.Staff.StaffId)
-										{
-											<option value="@staff.StaffId" selected>@staff.ContactName (@staff.Position)</option>
-										}
-										else
-										{
-											<option value="@staff.StaffId">@staff.ContactName (@staff.Position)</option>
-										}
+										<option value="@user.StaffId" selected>
+											@user.FullName
+											@if (user.StaffId == UserContext.StaffId)
+											{
+												<span>(You)</span>
+											}
+										</option>
 									})
 
 								</select>
@@ -180,7 +188,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="internalNote">Internal Note</label>
-								<input type="text" id="internalNote" value="@Model.InternalNote" name="internalNote" class="form-control" placeholder="(Optional)" />
+								<input type="text" id="internalNote" value="@workVM.InternalNote" name="internalNote" class="form-control" placeholder="(Optional)" />
 							</div>
 						</div>
 
@@ -197,7 +205,7 @@
 							<div class="form-group">
 								<label for="completedDate">Completed At</label>
 								<div class="input-group">
-									<input @(Model.IsCompleted ? "" : "disabled") type="text" id="completedDate" value="@Model.CompletedDate.ToFormattedString()" name="completedDate" class="form-control" placeholder="Select date" />
+									<input @(workVM.IsCompleted ? "" : "disabled") type="text" id="completedDate" value="@workVM.CompletedDate.ToFormattedString()" name="completedDate" class="form-control" placeholder="Select date" />
 									<div class="input-group-append">
 										<span class="input-group-text">
 											<i class="fa fa-calendar"></i>

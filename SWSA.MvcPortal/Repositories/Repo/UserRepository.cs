@@ -29,6 +29,14 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
         return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 
+    public async Task<User> GetOverviewByStaffIdAsync(string staffId)
+    {
+        var query = await BuildQueryAsync();
+        query = query.Include(c => c.SystemAuditLogs)
+                     .Include(c=>c.AssignedWorks);
+        return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
+    }
+
     public async Task<Dictionary<string, int>> GetDictionaryIdByStaffIdsAsync(List<string> staffIds)
     {
         if (staffIds == null || !staffIds.Any())

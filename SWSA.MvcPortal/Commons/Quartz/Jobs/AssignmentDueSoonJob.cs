@@ -22,13 +22,13 @@ public class AssignmentDueSoonJob(
             if (tasks.Count > 0)
             {
                 var groupedTasks = tasks
-                 .Where(t => t.AssignedStaff != null && !string.IsNullOrEmpty(t.AssignedStaff.WhatsApp))
-                 .GroupBy(t => t.AssignedStaff?.Id);
+                 .Where(t => t.AssignedUser != null && !string.IsNullOrEmpty(t.AssignedUser.PhoneNumber))
+                 .GroupBy(t => t.AssignedUser?.Id);
 
                 foreach (var group in groupedTasks)
                 {
-                    var staff = group.First().AssignedStaff!;
-                    var whatsapp = staff.GetWhatsappNumber();
+                    var user = group.First().AssignedUser!;
+                    var whatsapp = user.GetWhatsappNumber();
 
                     var taskListText = string.Join("\n\n", group.Select(ts =>
                     {

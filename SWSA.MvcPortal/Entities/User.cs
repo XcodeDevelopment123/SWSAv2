@@ -2,6 +2,7 @@
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Filters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -48,9 +49,15 @@ public class User
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
     public virtual ICollection<UserCompanyDepartment> CompanyDepartments { get; set; }
+    public virtual ICollection<CompanyWorkAssignment> AssignedWorks { get; set; }
 
     public string ToJsonData()
     {
         return JsonConvert.SerializeObject(this);
+    }
+
+    public string GetWhatsappNumber()
+    {
+        return Regex.Replace(PhoneNumber ?? "", @"\D", "");
     }
 }

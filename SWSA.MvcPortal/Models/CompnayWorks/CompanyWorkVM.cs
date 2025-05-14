@@ -1,5 +1,6 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Users;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
 
@@ -18,5 +19,5 @@ public class CompanyWorkVM
     public CompanyWorkProgressVM Progress { get; set; } = null!;
     public Company Company { get; set; } = null!;
     public CompanyDepartment CompanyDepartment { get; set; } = null!;
-    public CompanyStaff Staff { get; set; } = null!;
+    public UserVM User { get; set; } = null!;
 }

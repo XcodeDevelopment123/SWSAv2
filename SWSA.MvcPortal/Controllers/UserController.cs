@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.Users;
+using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
@@ -20,7 +21,7 @@ public class UserController(
     [Route("{staffId}/overview")]
     public async Task<IActionResult> Overview([FromRoute] string staffId)
     {
-        var data = await service.GetUserByIdAsync(staffId);
+        var data = await service.GetUserOverviewVMAsync(staffId);
         return View(data);
     }
 

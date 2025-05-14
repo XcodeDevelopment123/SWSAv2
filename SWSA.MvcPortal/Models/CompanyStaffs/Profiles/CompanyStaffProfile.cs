@@ -8,5 +8,6 @@ public class CompanyStaffProfile : Profile
     public CompanyStaffProfile()
     {
         CreateMap<CompanyStaff, CompanyStaff>();
+        CreateMap<CompanyStaff, CompanyStaffVM>();
     }
 }

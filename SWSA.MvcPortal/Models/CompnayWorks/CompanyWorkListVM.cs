@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
 

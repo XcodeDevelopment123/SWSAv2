@@ -7,6 +7,7 @@ public class CreateCompanyWorkAssignmentRequest
     public WorkType WorkType { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public int CompanyId { get; set; }
+    public int CompanyDepartmentId { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     public DateTime DueDate { get; set; }
     public string AssignedStaffId { get; set; } = null!;
