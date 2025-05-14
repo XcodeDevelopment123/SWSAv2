@@ -44,8 +44,6 @@
     });
     logsDatatable.buttons().container().appendTo('#logsDatatable_wrapper .col-md-6:eq(0)');
 
-
-
     flatpickr("#performedAt");
 
     var auditLogDatatable = $("#auditLogSummaryTable").DataTable({
@@ -75,6 +73,5 @@
 
             }
         })
-
     })
 })

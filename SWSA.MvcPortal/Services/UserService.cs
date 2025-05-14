@@ -36,9 +36,18 @@ IUserContext userContext
         return mapper.Map<List<UserSelectionVM>>(data);
     }
 
+    public async Task<List<UserSelectionVM>> GetUserSelectionByCompanyIdAsync(int companyId)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+        var data = await repo.GetUserByCompanyId(companyId);
+
+        return mapper.Map<List<UserSelectionVM>>(data);
+    }
+
+
     public async Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId)
     {
-        var data = await repo.GetByStaffIdAsync(staffId);
+        var data = await repo.GetOverviewByStaffIdAsync(staffId);
         Guard.AgainstNullData(data, "User not found");
 
         return mapper.Map<UserOverviewVM>(data);

@@ -10,6 +10,7 @@ public interface IUserService
     Task<UserVM> GetUserByIdAsync(string staffId);
     Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId);
     Task<List<UserListVM>> GetUsersAsync();
+    Task<List<UserSelectionVM>> GetUserSelectionByCompanyIdAsync(int companyId);
     Task<List<UserSelectionVM>> GetUserSelectionAsync();
     Task<bool> UpdateUserInfo(EditUserRequest req);
 }
