@@ -27,7 +27,7 @@ public class DocumentController(
     {
         var cp = await companyService.GetCompanyByIdAsync(companyId);
         var dpts = cp.Departments.ToList();
-        var staff = await userService.GetUserSelectionAsync();
+        var staff = await userService.GetUserSelectionByCompanyIdAsync(companyId);
         var vm = new DocumentRecordCreatePageVM(cp, dpts, staff);
         return View(vm);
     }
