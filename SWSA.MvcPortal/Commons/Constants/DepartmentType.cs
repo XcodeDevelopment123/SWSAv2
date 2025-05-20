@@ -1,6 +1,6 @@
 ﻿namespace SWSA.MvcPortal.Commons.Constants;
 
-public static class Departments
+public static class DepartmentType
 {
     public const string Audit = "Audit";
     public const string Tax = "Tax";

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Filters;
@@ -11,6 +12,18 @@ public class SelectHelper
         where TEnum : struct, Enum
     {
         return ToSelectList(selected, defaultText);
+    }
+
+    public static List<SelectListItem> GetDepartments(string? type)
+    {
+        return new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Please select", Value = "", Selected = type == null, Disabled=true },
+            new SelectListItem { Text = DepartmentType.Account, Value = DepartmentType.Account, Selected = type == DepartmentType.Account },
+            new SelectListItem { Text = DepartmentType.Audit, Value = DepartmentType.Audit, Selected = type == DepartmentType.Audit },
+            new SelectListItem { Text = DepartmentType.Tax, Value = DepartmentType.Tax, Selected = type == DepartmentType.Tax },
+            new SelectListItem { Text = DepartmentType.Secretary, Value = DepartmentType.Secretary, Selected = type == DepartmentType.Secretary },
+        };
     }
 
     public static List<SelectListItem> GetEnableDisabledSelection(bool? isEnabled)
@@ -33,7 +46,7 @@ public class SelectHelper
         };
     }
 
-    public static List<SelectListItem> GetUserRoleList(UserRole? role,UserRole loggedUserRole)
+    public static List<SelectListItem> GetUserRoleList(UserRole? role, UserRole loggedUserRole)
     {
         if (loggedUserRole != UserRole.SuperAdmin)
             return ToSelectList(role, filter: x => x != UserRole.SuperAdmin);

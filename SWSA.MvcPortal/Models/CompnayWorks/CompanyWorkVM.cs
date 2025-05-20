@@ -18,6 +18,5 @@ public class CompanyWorkVM
     public DateTime? CompletedDate { get; set; }
     public CompanyWorkProgressVM Progress { get; set; } = null!;
     public Company Company { get; set; } = null!;
-    public CompanyDepartment CompanyDepartment { get; set; } = null!;
     public UserVM User { get; set; } = null!;
 }

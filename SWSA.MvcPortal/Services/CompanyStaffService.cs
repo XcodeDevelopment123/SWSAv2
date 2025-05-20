@@ -82,7 +82,6 @@ ISystemAuditLogService sysAuditService
         }
 
         var oldData = data.DeepClone();
-        data.CompanyDepartmentId = req.CompanyDepartmentId;
         data.ContactName = req.ContactName;
         data.WhatsApp = req.WhatsApp;
         data.Email = req.Email;

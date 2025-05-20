@@ -19,8 +19,7 @@ IUserContext userContext,
 ISystemAuditLogService sysAuditService,
 IUserCompanyDepartmentRepository repo,
 IUserRepository userRepo,
-ICompanyRepository companyRepo,
-IDepartmentRepository departmentRepo
+ICompanyRepository companyRepo
     ) : IUserCompanyDepartmentService
 {
 
@@ -37,27 +36,29 @@ IDepartmentRepository departmentRepo
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
-        var departments = await departmentRepo.GetAllAsync();
-        var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
+        ///TODO : Use Department name to check
 
-        var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
-        if (existing.Count > 0)
-        {
-            throw new BusinessLogicException("The user is already assigned to this company. Please use the update function instead of create.");
-        }
+        //var departments = await departmentRepo.GetAllAsync();
+        //var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
 
-        var newEntities = UserCompanyDepartmentMapper.ToEntities(req.DepartmentIds, companyId, user.Id);
-        repo.AddRange(newEntities);
-        await repo.SaveChangesAsync();
+        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
+        //if (existing.Count > 0)
+        //{
+        //    throw new BusinessLogicException("The user is already assigned to this company. Please use the update function instead of create.");
+        //}
 
-        ClearCompaniesCache(companyId);
+        //var newEntities = UserCompanyDepartmentMapper.ToEntities(req.DepartmentIds, companyId, user.Id);
+        //repo.AddRange(newEntities);
+        //await repo.SaveChangesAsync();
 
-        var deptNamesNew = newEntities.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
+        //ClearCompaniesCache(companyId);
 
-        var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
+        //var deptNamesNew = newEntities.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
 
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Assigned handle user {user.FullName}",  newObject);
-        sysAuditService.LogInBackground(log);
+        //var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
+
+        //var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Assigned handle user {user.FullName}",  newObject);
+        //sysAuditService.LogInBackground(log);
 
         return req.StaffId;
     }
@@ -70,46 +71,48 @@ IDepartmentRepository departmentRepo
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
-        var departments = await departmentRepo.GetAllAsync();
-        var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
+        ///TODO : Use Department name to check
 
-        var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
-        var existingDeptIds = existing.Select(e => e.DepartmentId).ToHashSet();
-        var reqDeptIds = req.DepartmentIds.Distinct().ToHashSet();
+        //var departments = await departmentRepo.GetAllAsync();
+        //var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
 
-        var newDeptIds = req.DepartmentIds.Where(id => !existingDeptIds.Contains(id)).Distinct().ToList();
-        var newEntities = UserCompanyDepartmentMapper.ToEntities(newDeptIds, companyId, user.Id);
-        var removeEntities = existing.Where(e => !reqDeptIds.Contains(e.DepartmentId)).ToList();
+        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
+        //var existingDeptIds = existing.Select(e => e.DepartmentId).ToHashSet();
+        //var reqDeptIds = req.DepartmentIds.Distinct().ToHashSet();
 
-        //If no remove / add, return true, do not process to log and save
-        if (newEntities.Count == 0 && removeEntities.Count == 0)
-        {
-            return true;
-        }
+        //var newDeptIds = req.DepartmentIds.Where(id => !existingDeptIds.Contains(id)).Distinct().ToList();
+        //var newEntities = UserCompanyDepartmentMapper.ToEntities(newDeptIds, companyId, user.Id);
+        //var removeEntities = existing.Where(e => !reqDeptIds.Contains(e.DepartmentId)).ToList();
 
-        if (removeEntities.Count != 0)
-        {
-            repo.RemoveRange(removeEntities);
-        }
-        if(newEntities.Count != 0)
-        {
-            repo.AddRange(newEntities);
-        }
+        ////If no remove / add, return true, do not process to log and save
+        //if (newEntities.Count == 0 && removeEntities.Count == 0)
+        //{
+        //    return true;
+        //}
 
-        await repo.SaveChangesAsync();
+        //if (removeEntities.Count != 0)
+        //{
+        //    repo.RemoveRange(removeEntities);
+        //}
+        //if(newEntities.Count != 0)
+        //{
+        //    repo.AddRange(newEntities);
+        //}
 
-        ClearCompaniesCache(companyId);
+        //await repo.SaveChangesAsync();
 
-        var deptNamesOld = existing.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
+        //ClearCompaniesCache(companyId);
 
-        var finalDeptIds = reqDeptIds;
-        var deptNamesNew = finalDeptIds.Where(departmentDict.ContainsKey).Select(e => departmentDict[e]).ToList();
+        //var deptNamesOld = existing.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
 
-        var oldObject = new UserCompanyDepartmentAuditVM(deptNamesOld);
-        var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
+        //var finalDeptIds = reqDeptIds;
+        //var deptNamesNew = finalDeptIds.Where(departmentDict.ContainsKey).Select(e => departmentDict[e]).ToList();
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Update handle user {user.FullName}", oldObject, newObject);
-        sysAuditService.LogInBackground(log);
+        //var oldObject = new UserCompanyDepartmentAuditVM(deptNamesOld);
+        //var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
+
+        //var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Update handle user {user.FullName}", oldObject, newObject);
+        //sysAuditService.LogInBackground(log);
 
         return true;
     }
@@ -120,19 +123,21 @@ IDepartmentRepository departmentRepo
         var user = await userRepo.GetByStaffIdAsync(staffId);
         Guard.AgainstNullData(user, "User not found");
 
-        var existing = await repo.GetByCompanyIdAndStaffId(companyId, staffId);
-        var departmentNames = existing.Select(e => e.Department.Name).ToList();
-        var oldObject=  new UserCompanyDepartmentAuditVM(departmentNames);
+        ///TODO : Use Department name to check
 
-        if(existing.Count > 0)
-        {
-            repo.RemoveRange(existing);
-            await repo.SaveChangesAsync();
-        }
-        ClearCompaniesCache(companyId);
+        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, staffId);
+        //var departmentNames = existing.Select(e => e.Department.Name).ToList();
+        //var oldObject=  new UserCompanyDepartmentAuditVM(departmentNames);
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Removed handle user {user.FullName}", oldObject);
-        sysAuditService.LogInBackground(log);
+        //if(existing.Count > 0)
+        //{
+        //    repo.RemoveRange(existing);
+        //    await repo.SaveChangesAsync();
+        //}
+        //ClearCompaniesCache(companyId);
+
+        //var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Removed handle user {user.FullName}", oldObject);
+        //sysAuditService.LogInBackground(log);
 
         return true;
     }

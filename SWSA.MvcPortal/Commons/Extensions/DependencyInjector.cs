@@ -123,12 +123,10 @@ public static class DependencyInjector
         }, ServiceLifetime.Scoped);
 
         services.AddScoped<ICompanyStaffRepository, CompanyStaffRepository>();
-        services.AddScoped<ICompanyDepartmentRepository, CompanyDepartmentRepository>();
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
         services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
-        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserCompanyDepartmentRepository, UserCompanyDepartmentRepository>();
@@ -158,11 +156,9 @@ public static class DependencyInjector
         services.AddScoped<IUserCompanyDepartmentService, UserCompanyDepartmentService>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICompanyStaffService, CompanyStaffService>();
-        services.AddScoped<ICompanyDepartmentService, CompanyDepartmentService>();
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
         services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
-        services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
@@ -200,7 +196,6 @@ public static class DependencyInjector
     public static void AddSeedData(this IServiceCollection services)
     {
         services.AddTransient<ISeeder, UserSeeder>();
-        services.AddTransient<ISeeder, DepartmentSeeder>();
         services.AddTransient<ISeeder, MsicCodeSeeder>();
         services.AddTransient<ISeeder, ScheduledJobSeeder>();
         services.AddTransient<SeederManager>();

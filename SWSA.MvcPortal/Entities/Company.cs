@@ -40,7 +40,6 @@ public class Company
     public ICollection<CompanyOwner> CompanyOwners { get; set; } = new List<CompanyOwner>();
     public ICollection<CompanyStaff> CompanyStaffs { get; set; } = new List<CompanyStaff>();
     public ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
-    public ICollection<CompanyDepartment> Departments { get; set; } = new List<CompanyDepartment>();
     public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
     public virtual ICollection<UserCompanyDepartment> UserCompanyDepartments { get; set; } = new List<UserCompanyDepartment>();

@@ -42,8 +42,6 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
         query = query.Include(c => c.SystemAuditLogs)
                      .Include(c=>c.CompanyDepartments).ThenInclude(c=>c.Company)
                      .Include(c=>c.AssignedWorks).ThenInclude(c=>c.Company)
-                     .Include(c=>c.AssignedWorks).ThenInclude(c=>c.CompanyDepartment)
-                                                 .ThenInclude(c=>c.Department)
                      .Include(c=>c.AssignedWorks).ThenInclude(c=>c.Progress);
         return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }

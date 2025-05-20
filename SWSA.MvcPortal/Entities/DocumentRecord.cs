@@ -23,12 +23,9 @@ public class DocumentRecord
     [ForeignKey(nameof(HandledByStaff))]
     public int HandledByStaffId { get; set; }
 
-    [ForeignKey(nameof(Department))]
-    public int CompanyDepartmentId { get; set; }
   
     // File attachment info
     public string? AttachmentFileName { get; set; } = null!;
     public string? AttachmentFilePath { get; set; } = null!;
-    public CompanyDepartment Department { get; set; } = null!;
     public User HandledByStaff { get; set; } = null!;
 }

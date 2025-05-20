@@ -26,9 +26,8 @@ public class DocumentController(
     public async Task<IActionResult> Create([FromRoute] int companyId)
     {
         var cp = await companyService.GetCompanyByIdAsync(companyId);
-        var dpts = cp.Departments.ToList();
         var staff = await userService.GetUserSelectionByCompanyIdAsync(companyId);
-        var vm = new DocumentRecordCreatePageVM(cp, dpts, staff);
+        var vm = new DocumentRecordCreatePageVM(cp, staff);
         return View(vm);
     }
 

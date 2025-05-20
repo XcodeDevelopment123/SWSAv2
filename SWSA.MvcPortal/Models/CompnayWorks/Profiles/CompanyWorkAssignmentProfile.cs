@@ -20,9 +20,6 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Company.Name))
             .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.AssignedUser?.FullName ?? AppSettings.NotAvailable))
             .ForMember(dest => dest.StaffId, opt => opt.MapFrom((src, dest) => src.AssignedUser?.Id))
-            .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom((src, dest) => src.CompanyDepartment?.Id ?? 0))
-            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom((src, dest) => 
-            src.CompanyDepartment?.Department?.Name ?? AppSettings.NotAvailable))
             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
             .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown));
 
@@ -31,7 +28,6 @@ public class CompanyWorkAssignmentProfile : Profile
              .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
              .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.AssignedUser))
              .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company))
-             .ForMember(dest => dest.CompanyDepartment, opt => opt.MapFrom((src, dest) => src.CompanyDepartment ?? null!))
              .ForMember(dest => dest.Progress, opt => opt.MapFrom(src => src.Progress))
              ;
     }

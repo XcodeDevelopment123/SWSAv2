@@ -15,7 +15,6 @@
 	var workVM = Model.CompanyWork;
 
 	var cp = workVM.Company;
-	var cpDpt = workVM.CompanyDepartment;
 	var progress = workVM.Progress;
 	var userSelections = Model.UserSelections;
 
@@ -61,12 +60,6 @@
 						<div class="form-group">
 							<label for="companyName">Company</label>
 							<input readonly value="@($"{cp.Name} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="companyDepartment">Department</label>
-							<input readonly value="@($"{cpDpt.Department.Name}")" class="form-control " placeholder="xxx sdn.bhd." />
 						</div>
 					</div>
 					<div class="col-md-6">

@@ -8,14 +8,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<User> Users { get; set; }
     internal DbSet<Company> Companies { get; set; }
     internal DbSet<CompanyStaff> CompanyStaffs { get; set; }
-    internal DbSet<CompanyDepartment> CompanyDepartments { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
-    internal DbSet<Department> Departments { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
@@ -44,12 +42,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
              .WithMany(u => u.CompanyDepartments)
              .HasForeignKey(ucd => ucd.UserId)
              .OnDelete(DeleteBehavior.Cascade);
-            entity
-            .HasOne(ucd => ucd.Department)
-            .WithMany()
-            .HasForeignKey(ucd => ucd.DepartmentId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         });
 
         modelBuilder.Entity<Company>(entity =>
@@ -80,26 +72,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });
 
-
-        modelBuilder.Entity<CompanyDepartment>(entity =>
-        {
-            entity.HasMany(c => c.CompanyStaffs)
-            .WithOne(cc => cc.CompanyDepartment)
-            .HasForeignKey(cc => cc.CompanyDepartmentId)
-            .OnDelete(DeleteBehavior.SetNull); //When deleting a department, set the foreign key to null instead of deleting the contact
-
-        });
-
         modelBuilder.Entity<CompanyWorkAssignment>(entity =>
         {
             entity.HasOne(x => x.Progress)
             .WithOne(p => p.WorkAssignment)
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
-
-            entity.HasOne(c => c.CompanyDepartment)
-                  .WithMany()
-                  .HasForeignKey(c => c.CompanyDepartmentId)
-                  .OnDelete(DeleteBehavior.NoAction); 
         });
 
 

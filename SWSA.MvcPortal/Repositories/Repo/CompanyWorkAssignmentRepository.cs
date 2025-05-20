@@ -33,8 +33,6 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         return db.CompanyWorkAssignments
            .Where(c => c.DueDate >= today && c.DueDate < endDate.AddDays(1)) // 小于隔天 00:00
            .Include(c => c.Company)
-           .Include(c => c.CompanyDepartment)
-           .ThenInclude(c=>c.Department)
            .Include(c => c.AssignedUser)
            .ToListAsync();
     }
@@ -46,10 +44,9 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                   .Include(c => c.Progress)
                   .Include(c => c.Company)
-                  .Include(c=>c.CompanyDepartment)
-                  .ThenInclude(c => c.Department)
                   .Include(c => c.AssignedUser)
                   .AsNoTracking();
+
         return Task.FromResult(query);
     }
 
@@ -60,10 +57,9 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                  .Include(c => c.Progress)
                  .Include(c => c.Company)
-                 .Include(c => c.CompanyDepartment)
-                 .ThenInclude(c => c.Department)
                  .Include(c => c.AssignedUser)
                  .AsNoTracking();
+
         return Task.FromResult(query);
     }
 

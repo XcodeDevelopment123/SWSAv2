@@ -13,8 +13,6 @@ public class CompanyWorkAssignment
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
 
-    [ForeignKey(nameof(CompanyDepartment))]
-    public int CompanyDepartmentId { get; set; }
     [SystemAuditLog("Company Activity Level")]
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     [SystemAuditLog("Work Type")]
@@ -33,7 +31,6 @@ public class CompanyWorkAssignment
     public DateTime? CompletedDate { get; set; }
     public string? InternalNote { get; set; }
     public virtual Company Company { get; set; } = null!;
-    public virtual CompanyDepartment CompanyDepartment { get; set; } = null!;
     public virtual CompanyWorkProgress Progress { get; set; } = null!;
     public virtual User? AssignedUser { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;

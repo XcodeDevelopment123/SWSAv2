@@ -21,17 +21,10 @@ public class CompanyStaff
     public string? Remark { get; set; }
     [SystemAuditLog("Position")]
     public PositionType Position { get; set; } = PositionType.Staff;
-
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
-
-    [ForeignKey(nameof(CompanyDepartmentId))]
-    public int? CompanyDepartmentId { get; set; }
-
     public virtual Company Company { get; set; } = null!;
-    public virtual CompanyDepartment? CompanyDepartment { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
-
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }

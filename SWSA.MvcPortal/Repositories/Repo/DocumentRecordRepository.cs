@@ -18,24 +18,25 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
         if (companyIds.Count == 1)
         {
             var companyId = companyIds.First();
-            return await query.Where(c => c.Department != null && c.Department.CompanyId == companyId).ToListAsync();
+            ///TODO: Use department string to query
+            return await query.ToListAsync();
         }
-        return await query.Where(c => c.Department != null && companyIds.Contains(c.Department.CompanyId)).ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyId(int companyId)
     {
         var query = await BuildQueryAsync();
+        ///TODO: Use department string to query
         return await query
-            .Where(c => c.Department != null && c.Department.CompanyId == companyId)
             .ToListAsync();
     }
 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyDepartmentId(int companyDepartmentId)
     {
         var query = await BuildQueryAsync();
+        ///TODO: Use department string to query
         return await query
-           .Where(c => c.Department != null && c.CompanyDepartmentId == companyDepartmentId)
            .ToListAsync();
     }
 
@@ -55,12 +56,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
 
         // Do you query here
         var query = db.DocumentRecords
-                .Include(c => c.Department) //For company department
-                .ThenInclude(c => c.Department) //Public setting
-                .Include(c => c.Department)
-                .ThenInclude(c => c.Company)
                 .Include(c => c.HandledByStaff) //For staff
-                .Where(c => c.Department != null && !c.Department.Company.IsDeleted)
                 .AsNoTracking();
         //For staff;
         return Task.FromResult(query);
@@ -71,12 +67,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         // Do you query here
         var query = db.DocumentRecords
-                .Include(c => c.Department) //For company department
-                .ThenInclude(c => c.Department) //Public setting
-                .Include(c => c.Department)
-                .ThenInclude(c => c.Company)
                 .Include(c => c.HandledByStaff) //For staff
-                .Where(c => c.Department != null && !c.Department.Company.IsDeleted)
                 .AsNoTracking();
         //For staff;
         return Task.FromResult(query);

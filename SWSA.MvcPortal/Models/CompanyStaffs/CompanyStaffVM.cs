@@ -15,8 +15,6 @@ public class CompanyStaffVM
     public Company Company { get; set; } = null!;
     public int CompanyId { get; set; }
     public int? CompanyDepartmentId { get; set; }
-    public CompanyDepartment CompanyDepartment { get; set; } = null!;
-
     public string ToJsonData()
     {
         return JsonConvert.SerializeObject(this);

@@ -23,7 +23,6 @@
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var staffPosition = SelectHelper.GetStaffPositionTypes(null);
 	var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
-	var cpDepartmentIds = cp.Departments.Select(m => m.DepartmentId).ToList();
 
 	<input type="hidden" id="companyId" value="@cp.Id" />
 }
@@ -57,41 +56,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							@{
-								var userDepartments = cp.UserCompanyDepartments
-								.GroupBy(ucd => ucd.UserId)
-								.Select(g => new
-								{
-									User = g.First().User,
-									Departments = g.Select(x => new { x.Department.Name, x.Department.Id }).Distinct().ToList()
-								})
-								.ToHashSet();
-							}
-							@foreach (var user in userDepartments)
-							{
-								<tr>
-									<td>@user.User.FullName (@user.User.Role.GetDisplayName())</td>
-									<td>
-										@string.Join(", ", user.Departments.Select(c => c.Name))
-									</td>
-									<td>
-										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-sm btn-warning btn-edit-handle-user mr-2"
-											data-staff-id="@user.User.StaffId"
-											data-department-ids="@(JsonConvert.SerializeObject(user.Departments.Select(c => c.Id)))"
-											title="Edit">
-												<i class="fa fa-edit"></i>
-											</button>
-											<button type="button" class="btn btn-sm btn-danger btn-delete-handle-user"
-											data-name="@($"{user.User.FullName} ({user.User.Role.GetDisplayName()})")"
-											data-staff-id="@user.User.StaffId">
-												<i class="fa fa-trash"></i>
-											</button>
-										</div>
-									</td>
-								</tr>
-							}
-
+						
 						</tbody>
 					</table>
 
@@ -132,25 +97,8 @@
 									</select>
 								</div>
 							</div>
-
-							<div class="col-md-12">
-								<div class="form-group">
-									<label for="userDepartmentIds">
-										User Handle Departments
-										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The selected departments are user-specific and independent of the company's department settings. Users can access them even if the company disables the department later."></i>
-									</label>
-									<select id="userDepartmentIds" name="userDepartmentIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-										@foreach (var department in Model.Departments)
-										{
-											<option value="@department.Id">@department.Name</option>
-										})
-									</select>
-								</div>
-							</div>
-
 						</div>
 					}
-
 				</div>
 
 				@if (UserContext.IsSuperAdmin)
@@ -268,28 +216,6 @@
 							</select>
 						</div>
 					</div>
-
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="departmentsIds">Active Departments </label>
-							<select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-								@foreach (var department in Model.Departments)
-								{
-									var findDp = cp.Departments.FirstOrDefault(m => m.DepartmentId == department.Id);
-									if (findDp == null || !findDp.IsActive)
-									{
-										<option value="@department.Id">@department.Name</option>
-									}
-									else
-									{
-										<option selected value="@department.Id">@department.Name</option>
-									}
-
-								})
-							</select>
-						</div>
-					</div>
-
 				</div>
 
 				<div class="card-footer">

@@ -16,9 +16,6 @@ public class DocumentRecordProfile : Profile
         CreateMap<DocumentRecord, DocumentRecordVM>()
               .ForMember(dest => dest.DocumentId, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.FullName ?? AppSettings.NotAvailable))
-              .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom((src, dest) => src.Department?.Department?.Name ?? AppSettings.NotAvailable))
-              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.Department?.Company?.Id ?? 0))
-              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Department?.Company?.Name ?? AppSettings.NotAvailable))
               .ForMember(dest => dest.HandledByStaffId, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.StaffId ?? src.HandledByStaffId.ToString()))
               .ForMember(dest => dest.AttachmentPath, opt => opt.MapFrom((src, dest) =>
               {

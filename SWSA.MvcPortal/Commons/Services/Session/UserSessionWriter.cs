@@ -20,7 +20,7 @@ public class UserSessionWriter(IHttpContextAccessor _accessor):IUserSessionWrite
 
         var allowedDepartments = user.CompanyDepartments
             .GroupBy(c => c.CompanyId)
-            .ToDictionary(g => g.Key, g => g.Select(d => d.DepartmentId).Distinct().ToList());
+            .ToDictionary(g => g.Key, g => g.Select(d => d.Department).Distinct().ToList());
 
         session.SetString(SessionKeys.AllowedDepartments, JsonConvert.SerializeObject(allowedDepartments));
     }

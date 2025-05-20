@@ -12,7 +12,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var cp = Model.Company;
-
+	var dpts = SelectHelper.GetDepartments(null);
     var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
     var docType = SelectHelper.GetEnumSelectList<DocumentType>(null);
     var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null);
@@ -124,22 +124,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyDepartmentId">Document for department</label>
-                                <select id="companyDepartmentId" name="companyDepartmentId" class="form-control select2 ">
-                                    <option disabled value="">Please select</option>
-                                    @if (Model.CompanyDepartments.Count == 0)
-                                    {
-                                        <option selected disabled value="">No department available</option>
-                                    }
-                                    else
-                                    {
-                                        @foreach (var dp in Model.CompanyDepartments)
-                                        {
-                                            @if (dp.IsActive)
-                                            {
-                                                <option value="@dp.Id">@dp.Department?.Name</option>
-                                            }
-                                        }
-                                    }
+                                <select asp-items="dpts" id="companyDepartmentId" name="companyDepartmentId" class="form-control select2 ">
 
                                 </select>
                             </div>

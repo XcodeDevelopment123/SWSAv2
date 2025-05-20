@@ -12,7 +12,6 @@ public class CompanyController(
     ICompanyComplianceDateService companyComplianceDateService,
     ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
-    IDepartmentService departmentService,
     IUserService userService
     ) : BaseController
 {
@@ -40,9 +39,8 @@ public class CompanyController(
     public async Task<IActionResult> Create()
     {
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var departments = await departmentService.GetDepartments();
         var users = await userService.GetUserSelectionAsync();
-        CompanyCreatePageVM vm = new(msicCodes, departments, users);
+        CompanyCreatePageVM vm = new(msicCodes, users);
         return View(vm);
     }
 
@@ -51,10 +49,9 @@ public class CompanyController(
     {
         var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var departments = await departmentService.GetDepartments();
         var users = await userService.GetUserSelectionAsync();
 
-        CompanyEditPageVM vm = new(cp, msicCodes, departments, users);
+        CompanyEditPageVM vm = new(cp, msicCodes, users);
         return View(vm);
     }
 

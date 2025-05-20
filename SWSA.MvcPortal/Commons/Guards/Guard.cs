@@ -22,7 +22,7 @@ public static class Guard
         }
     }
 
-    public static void AgainstUnauthorizedCompanyAccess(int targetCompanyId, int? targetDepartmentId, IUserContext user)
+    public static void AgainstUnauthorizedCompanyAccess(int targetCompanyId, string? targetDepartment, IUserContext user)
     {
         if (user.Role == UserRole.SuperAdmin)
             return;
@@ -31,8 +31,10 @@ public static class Guard
         if (!user.AllowedCompanyIds.Contains(targetCompanyId))
             throw new UnauthorizedAccessException("Access denied to the specified company.");
 
-        if (targetDepartmentId.HasValue &&
-            (!user.AllowedDepartments.TryGetValue(targetCompanyId, out var deptIds) || !deptIds.Contains(targetDepartmentId.Value)))
+        if (string.IsNullOrEmpty(targetDepartment))
+            return;
+        
+        if (!user.AllowedDepartments.TryGetValue(targetCompanyId, out var depts) || !depts.Contains(targetDepartment))
         {
             throw new UnauthorizedAccessException("Access denied to the specified department.");
         }

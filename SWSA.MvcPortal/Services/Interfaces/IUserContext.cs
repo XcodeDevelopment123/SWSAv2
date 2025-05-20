@@ -11,5 +11,5 @@ public interface IUserContext
     UserRole Role { get; }
     bool IsSuperAdmin { get; }
     List<int> AllowedCompanyIds { get; }
-    Dictionary<int, List<int>> AllowedDepartments { get; } // CompanyId → List<DepartmentId>
+    Dictionary<int, List<string>> AllowedDepartments { get; } // CompanyId → List<string> == Department name
 }

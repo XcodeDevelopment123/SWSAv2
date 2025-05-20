@@ -19,7 +19,6 @@ IUserContext userContext,
 IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
 IUserRepository userRepo,
-ICompanyDepartmentRepository companyDepartmentRepo,
 ISystemAuditLogService sysAuditService
     ) : IDocumentRecordService
 {
@@ -35,7 +34,7 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByIdAsync(id);
         Guard.AgainstNullData(data, "DocumentRecord not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data!.Department!.CompanyId, data.Department.DepartmentId, userContext);
+        ///TODO : Check if the user has access to the company and department
         return mapper.Map<DocumentRecordVM>(data!);
     }
 
@@ -53,7 +52,7 @@ ISystemAuditLogService sysAuditService
         if (data.Count > 0)
         {
             var firstItem = data.First();
-            Guard.AgainstUnauthorizedCompanyAccess(firstItem!.Department!.CompanyId, firstItem.Department.DepartmentId, userContext);
+            ///TODO : Check if the user has access to the company and department
         }
 
         return mapper.Map<List<DocumentRecordVM>>(data);
@@ -91,13 +90,12 @@ ISystemAuditLogService sysAuditService
     public async Task<bool> CreateDocuments(CreateDocumentRecordListRequest req, List<IFormFile> files)
     {
         var companyDepartmentIds = req.Documents.Select(d => d.CompanyDepartmentId).Distinct().ToList();
-        var companyDepartments = await companyDepartmentRepo.GetByIdsAsync(companyDepartmentIds);
 
+        ///TODO : Check if the user has access to the company and department
         //Checking if the user has access to the company departments
-        foreach (var companyDepartment in companyDepartments)
-        {
-            Guard.AgainstUnauthorizedCompanyAccess(companyDepartment.CompanyId, companyDepartment.DepartmentId, userContext);
-        }
+        //foreach (var companyDepartment in companyDepartments)
+        //{
+        //}
 
         var staffIds = req.Documents.Select(d => d.HandledByStaffId).Distinct().ToList();
         var staffMap = await userRepo.GetDictionaryByStaffIdsAsync(staffIds);
@@ -150,8 +148,7 @@ ISystemAuditLogService sysAuditService
         var doc = await repo.GetByIdAsync(docId);
 
         Guard.AgainstNullData(doc, "Document not found");
-        Guard.AgainstUnauthorizedCompanyAccess(doc!.Department.CompanyId, doc.Department.DepartmentId, userContext);
-
+        ///TODO : Check if the user has access to the company and department
         repo.Remove(doc!);
         await repo.SaveChangesAsync();
 

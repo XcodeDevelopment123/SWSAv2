@@ -14,7 +14,7 @@ public class UserContext : IUserContext
     public UserRole Role { get; }
 
     public List<int> AllowedCompanyIds { get; }
-    public Dictionary<int, List<int>> AllowedDepartments { get; }
+    public Dictionary<int, List<string>> AllowedDepartments { get; }
 
     public UserContext(IHttpContextAccessor accessor)
     {
@@ -30,7 +30,7 @@ public class UserContext : IUserContext
             ? time
             : DateTime.MinValue;
         AllowedCompanyIds = DeserializeListInt(session?.GetString(SessionKeys.AllowedCompanyIds));
-        AllowedDepartments = DeserializeDictListInt(session?.GetString(SessionKeys.AllowedDepartments));
+        AllowedDepartments = DeserializeDictListString(session?.GetString(SessionKeys.AllowedDepartments));
     }
 
     public bool IsSuperAdmin => Role == UserRole.SuperAdmin;
@@ -47,11 +47,11 @@ public class UserContext : IUserContext
             : JsonConvert.DeserializeObject<List<int>>(json) ?? [];
     }
 
-    private Dictionary<int, List<int>> DeserializeDictListInt(string? json)
+    private Dictionary<int, List<string>> DeserializeDictListString(string? json)
     {
         return string.IsNullOrWhiteSpace(json)
             ? []
-            : JsonConvert.DeserializeObject<Dictionary<int, List<int>>>(json)
+            : JsonConvert.DeserializeObject<Dictionary<int, List<string>>>(json)
                 ?? [];
     }
 }

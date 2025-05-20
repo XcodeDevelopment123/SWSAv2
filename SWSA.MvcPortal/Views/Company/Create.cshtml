@@ -48,23 +48,7 @@
 								<th>Action</th>
 							</tr>
 						</thead>
-						<tbody>
-							@if (!UserContext.IsSuperAdmin)
-							{
-								<tr>
-									<td data-staff-id="@UserContext.StaffId">
-										@UserContext.Name (@UserContext.Role.GetDisplayName())
-									</td>
-									<td data-department-ids="@string.Join(", ", Model.Departments.Select(d => d.Id))">
-										@string.Join(",", Model.Departments.Select(d => d.Name))
-									</td>
-									<td>
-										<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Only super admin can remove"><i class="fa fa-trash"></i></button>
-									</td>
-								</tr>
-							}
-
-						</tbody>
+						<tbody></tbody>
 					</table>
 
 					@if (UserContext.IsSuperAdmin)
@@ -97,25 +81,8 @@
 									</select>
 								</div>
 							</div>
-
-							<div class="col-md-12">
-								<div class="form-group">
-									<label for="userDepartmentIds">
-										User Handle Departments
-										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The selected departments are user-specific and independent of the company's department settings. Users can access them even if the company disables the department later."></i>
-									</label>
-									<select id="userDepartmentIds" name="userDepartmentIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-										@foreach (var department in Model.Departments)
-										{
-											<option value="@department.Id">@department.Name</option>
-										})
-									</select>
-								</div>
-							</div>
-
 						</div>
 					}
-
 				</div>
 
 				@if (UserContext.IsSuperAdmin)
@@ -123,7 +90,7 @@
 					<div class="card-footer">
 						<button type="submit" class="btn btn-primary float-end">Add</button>
 					</div>
-				}	
+				}
 			</div>
 		</form>
 		<!-- /.card -->
@@ -221,18 +188,6 @@
 											<option value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
 										}
 									</optgroup>
-								})
-							</select>
-						</div>
-					</div>
-
-					<div class="col-md-12">
-						<div class="form-group">
-							<label for="departmentsIds">Active Departments </label>
-							<select id="departmentsIds" name="departmentsIds" class="form-control select2" multiple="multiple" style="max-width:95%">
-								@foreach (var department in Model.Departments)
-								{
-									<option value="@department.Id">@department.Name</option>
 								})
 							</select>
 						</div>

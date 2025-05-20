@@ -21,7 +21,6 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 ICompanyRepository repo,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
-IDepartmentRepository departmentRepository,
 IMsicCodeRepository msicCodeRepository,
 IUserCompanyDepartmentRepository userCompanyDepartmentRepository,
 IUserRepository userRepository,
@@ -74,7 +73,7 @@ IPermissionRefreshTracker permissionRefreshTracker
             foreach (var handleUser in req.HandleUsers)
             {
                 var userId = userIds[handleUser.StaffId];
-                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser.DepartmentIds, cp.Id, userId);
+                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser.Departments, cp.Id, userId);
                 allUserCompanyDepartments.AddRange(entities);
 
                 permissionRefreshTracker.MarkRefreshNeeded(handleUser.StaffId);
@@ -114,7 +113,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         data.Status = req.Status;
         data.CompanyType = req.CompanyType;
 
-        await SyncDepartments(data, req.DepartmentsIds?.ToHashSet() ?? new());
         await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
 
         repo.Update(data);
@@ -245,40 +243,5 @@ IPermissionRefreshTracker permissionRefreshTracker
         //Remove in db
         var msicRemoveEntities = await companyMsicCodeRepository.GetByIdsAsync(msicIdsToRemove);
         companyMsicCodeRepository.RemoveRange(msicRemoveEntities);
-    }
-
-    private async Task SyncDepartments(Company company, HashSet<int> requestDepartmentIds)
-    {
-        var companyDepartments = company.Departments;
-        var existingDepartmentIds = companyDepartments.Select(x => x.DepartmentId).ToHashSet();
-
-        var departmentIdsToAdd = requestDepartmentIds.Except(existingDepartmentIds).ToList();
-        var departmentIdsToRemove = existingDepartmentIds.Except(requestDepartmentIds).ToList();
-        var departmentIdsToRetain = existingDepartmentIds.Intersect(requestDepartmentIds).ToList();
-
-        //Only these new department that not in company
-        if (departmentIdsToAdd.Count > 0)
-        {
-            var departmentsToAddEntities = await departmentRepository.GetByIdsAsync(departmentIdsToAdd) ?? new List<Department>();
-
-            foreach (var dept in departmentsToAddEntities)
-            {
-                companyDepartments.Add(new CompanyDepartment(dept.Id));
-            }
-        }
-
-        var deptMap = companyDepartments.ToDictionary(x => x.DepartmentId);
-        foreach (var deptId in departmentIdsToRetain)
-        {
-            if (deptMap.TryGetValue(deptId, out var dept))
-                dept.SetActive();
-        }
-
-        foreach (var deptId in departmentIdsToRemove)
-        {
-            if (deptMap.TryGetValue(deptId, out var dept))
-                dept.Deactivate();
-        }
-
     }
 }

@@ -13,7 +13,8 @@
 	ViewData["Title"] = "Create";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	var cp = Model.Company;
-	var cpDpts = cp.Departments.Where(c=>c.IsActive).ToList();
+
+	var cpDpts = SelectHelper.GetDepartments(null);
 
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(null!);
 	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(null!);
@@ -142,26 +143,6 @@
 						</div>
 
 						<!-- Handled By Staff -->
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="companyDepartmentId">Company Department</label>
-								<select id="companyDepartmentId" name="companyDepartmentId" class="form-control select2 ">
-									@if (cpDpts.Count == 0)
-									{
-										<option disabled value="">No active department in company</option>
-									}
-									else
-									{
-										<option disabled value="">Please select</option>
-									}
-									@foreach (var dp in cpDpts)
-									{
-										<option value="@dp.Id">@dp.Department.Name</option>
-									})
-
-								</select>
-							</div>
-						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="handledByStaffId">Handled By</label>
