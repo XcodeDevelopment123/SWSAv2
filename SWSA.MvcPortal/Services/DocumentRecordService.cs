@@ -143,7 +143,7 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<DocumentRecordVM> DeleteDocumentById(int docId)
+    public async Task<DocumentRecordVM> Delete(int docId)
     {
         var doc = await repo.GetByIdAsync(docId);
 

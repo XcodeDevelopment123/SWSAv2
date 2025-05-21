@@ -44,7 +44,7 @@ ISystemAuditLogService sysAuditService
         return mapper.Map<CompanyWorkVM>(data);
     }
 
-    public async Task<int> CreateCompanyWorkAssignment(CreateCompanyWorkAssignmentRequest req)
+    public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
 
@@ -65,7 +65,7 @@ ISystemAuditLogService sysAuditService
         return entity.Id;
     }
 
-    public async Task<bool> EditCompanyWorkAssignment(EditCompanyWorkAssignmentRequest req)
+    public async Task<bool> Edit(EditCompanyWorkAssignmentRequest req)
     {
 
         var task = await repo.GetByIdAsync(req.TaskId);
@@ -100,7 +100,7 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<CompanyWorkAssignment> DeleteWork(int taskId)
+    public async Task<CompanyWorkAssignment> Delete(int taskId)
     {
         var data = await repo.GetByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");

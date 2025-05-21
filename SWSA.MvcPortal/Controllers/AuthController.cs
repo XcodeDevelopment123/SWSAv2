@@ -4,7 +4,6 @@ using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
 
-
 [AllowAnonymous]
 public class AuthController(
     IAuthService service
@@ -21,13 +20,6 @@ public class AuthController(
         return View();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Login(string username, string password)
-    {
-        var result = await service.Login(username, password);
-        return Json(result);
-    }
-
     [HttpGet("keep-alive")]
     public IActionResult KeepAlive()
     {
@@ -39,4 +31,14 @@ public class AuthController(
         service.Logout();
         return RedirectToAction("Login");
     }
+
+    #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpPost]
+    public async Task<IActionResult> Login(string username, string password)
+    {
+        var result = await service.Login(username, password);
+        return Json(result);
+    }
+    #endregion
 }

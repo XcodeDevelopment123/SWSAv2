@@ -4,7 +4,7 @@ using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Models.CompanyStaffs;
 
-public class CompanyStaffVM
+public class CompanyCommunicationContactVM
 {
     public string StaffId { get; set; } = null!;
     public string ContactName { get; set; } = null!;

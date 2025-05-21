@@ -38,10 +38,10 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override Task<IQueryable<Company>> BuildQueryAsync()
     {
         var query = db.Companies
-                 .Include(c => c.CompanyComplianceDate)
-                 .Include(c => c.CompanyOwners)
+                 .Include(c => c.ComplianceDate)
+                 .Include(c => c.Owners)
                  .Include(c => c.OfficialContacts)
-                 .Include(c => c.CompanyStaffs)
+                 .Include(c => c.CommunicationContacts)
                  .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
                  .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
                  .Where(c => !c.IsDeleted)
@@ -54,10 +54,10 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override Task<IQueryable<Company>> BuildQueryWithIncludesAsync()
     {
         var query = db.Companies
-            .Include(c => c.CompanyComplianceDate)
-            .Include(c => c.CompanyOwners)
+            .Include(c => c.ComplianceDate)
+            .Include(c => c.Owners)
             .Include(c => c.OfficialContacts)
-            .Include(c => c.CompanyStaffs)
+            .Include(c => c.CommunicationContacts)
             .Include(c => c.UserCompanyDepartments).ThenInclude(u=>u.User)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Where(c => !c.IsDeleted);
@@ -78,7 +78,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
     protected override async Task BeforeRemove(Company entity)
     {
         //Do you logic here
-        var findContacts = await db.CompanyStaffs
+        var findContacts = await db.CompanyCommunicationContact
             .Where(c => c.CompanyId == entity.Id)
             .ToListAsync();
         var findComplianceDate = await db.CompanyComplianceDates.Where(c => c.CompanyId == entity.Id)
@@ -86,7 +86,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
 
         if (findContacts.Count > 0)
         {
-            db.CompanyStaffs.RemoveRange(findContacts);
+            db.CompanyCommunicationContact.RemoveRange(findContacts);
         }
         if (findComplianceDate.Count > 0)
         {

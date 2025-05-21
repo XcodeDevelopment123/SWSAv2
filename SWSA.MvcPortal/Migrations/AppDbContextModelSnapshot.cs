@@ -52,9 +52,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("RegistrationNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<string>("TaxIdentificationNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -64,6 +61,45 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WhatsApp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyCommunicationContact");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyComplianceDate", b =>
@@ -94,9 +130,6 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SSMExtensionDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -212,57 +245,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("CompanyOwners");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStaff", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContactName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastLoginAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remark")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffId")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("nvarchar(450)")
-                        .HasComputedColumnSql("'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)", true);
-
-                    b.Property<string>("WhatsApp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("StaffId")
-                        .IsUnique();
-
-                    b.ToTable("CompanyStaffs");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
                     b.Property<int>("Id")
@@ -271,13 +253,31 @@ namespace SWSA.MvcPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("AGMDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("AssignedAuditUserId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AssignedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AuditMonthToDo")
                         .HasColumnType("int");
 
                     b.Property<int>("CompanyActivityLevel")
                         .HasColumnType("int");
 
+                    b.Property<string>("CompanyActivityType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyStatus")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CompletedDate")
@@ -295,6 +295,12 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsYearEndActionRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ReminderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ServiceScope")
                         .HasColumnType("int");
 
@@ -305,6 +311,8 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedAuditUserId");
 
                     b.HasIndex("AssignedUserId");
 
@@ -321,11 +329,23 @@ namespace SWSA.MvcPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("AccountSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AnnualReturnSubmittedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsBacklog")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsJobCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProgressNote")
                         .HasColumnType("nvarchar(max)");
@@ -500,9 +520,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyStaffId")
-                        .HasColumnType("int");
-
                     b.Property<string>("EntityId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -530,8 +547,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("CompanyStaffId");
 
                     b.HasIndex("PerformedByUserId");
 
@@ -667,10 +682,48 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("UserCompanyDepartment");
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentUserMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkAssignmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkAssignmentId");
+
+                    b.ToTable("WorkAssignmentUserMapping");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
+                        .WithMany("CommunicationContacts")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyComplianceDate", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithOne("CompanyComplianceDate")
+                        .WithOne("ComplianceDate")
                         .HasForeignKey("SWSA.MvcPortal.Entities.CompanyComplianceDate", "CompanyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -711,20 +764,9 @@ namespace SWSA.MvcPortal.Migrations
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOwner", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany("CompanyOwners")
+                        .WithMany("Owners")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStaff", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany("CompanyStaffs")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -732,15 +774,21 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
+                    b.HasOne("SWSA.MvcPortal.Entities.User", "AssignedAuditUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedAuditUserId");
+
                     b.HasOne("SWSA.MvcPortal.Entities.User", "AssignedUser")
-                        .WithMany("AssignedWorks")
+                        .WithMany()
                         .HasForeignKey("AssignedUserId");
 
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany()
+                        .WithMany("WorkAssignments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssignedAuditUser");
 
                     b.Navigation("AssignedUser");
 
@@ -785,10 +833,6 @@ namespace SWSA.MvcPortal.Migrations
                         .WithMany("SystemAuditLogs")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyStaff", null)
-                        .WithMany("SystemAuditLogs")
-                        .HasForeignKey("CompanyStaffId");
-
                     b.HasOne("SWSA.MvcPortal.Entities.User", "PerformedByUser")
                         .WithMany("SystemAuditLogs")
                         .HasForeignKey("PerformedByUserId")
@@ -816,31 +860,49 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Company", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentUserMapping", b =>
                 {
-                    b.Navigation("CompanyComplianceDate")
+                    b.HasOne("SWSA.MvcPortal.Entities.User", "User")
+                        .WithMany("AssignedDepartmentTasks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CompanyOwners");
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
+                        .WithMany("AssignedUsers")
+                        .HasForeignKey("WorkAssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("CompanyStaffs");
+                    b.Navigation("User");
+
+                    b.Navigation("WorkAssignment");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.Company", b =>
+                {
+                    b.Navigation("CommunicationContacts");
+
+                    b.Navigation("ComplianceDate")
+                        .IsRequired();
 
                     b.Navigation("MsicCodes");
 
                     b.Navigation("OfficialContacts");
 
+                    b.Navigation("Owners");
+
                     b.Navigation("SystemAuditLogs");
 
                     b.Navigation("UserCompanyDepartments");
-                });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStaff", b =>
-                {
-                    b.Navigation("SystemAuditLogs");
+                    b.Navigation("WorkAssignments");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
+                    b.Navigation("AssignedUsers");
+
                     b.Navigation("Progress")
                         .IsRequired();
                 });
@@ -852,7 +914,7 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.User", b =>
                 {
-                    b.Navigation("AssignedWorks");
+                    b.Navigation("AssignedDepartmentTasks");
 
                     b.Navigation("CompanyDepartments");
 

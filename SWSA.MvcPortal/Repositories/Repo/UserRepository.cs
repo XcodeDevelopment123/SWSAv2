@@ -14,8 +14,8 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     public async Task<List<User>> GetUserByCompanyId(int companyId)
     {
         var query = await BuildQueryAsync();
-        return await query.Where(u=>u.CompanyDepartments !=null 
-        && u.CompanyDepartments.Any(c=>c.CompanyId==companyId)).ToListAsync();
+        return await query.Where(u => u.CompanyDepartments != null
+        && u.CompanyDepartments.Any(c => c.CompanyId == companyId)).ToListAsync();
     }
 
     public async Task<List<User>> GetByActiveStatus(bool isActive)
@@ -40,9 +40,7 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     {
         var query = await BuildQueryAsync();
         query = query.Include(c => c.SystemAuditLogs)
-                     .Include(c=>c.CompanyDepartments).ThenInclude(c=>c.Company)
-                     .Include(c=>c.AssignedWorks).ThenInclude(c=>c.Company)
-                     .Include(c=>c.AssignedWorks).ThenInclude(c=>c.Progress);
+                     .Include(c => c.CompanyDepartments).ThenInclude(c => c.Company);
         return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 

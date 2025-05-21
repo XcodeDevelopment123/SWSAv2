@@ -4,7 +4,7 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 
 public interface ICompanyOwnerService
 {
-    Task<int> CreateOwner(CreateCompanyOwnerRequest req);
-    Task<bool> DeleteOwner(int ownerId);
-    Task<bool> EditOwner(EditCompanyOwnerRequest req);
+    Task<int> Create(CreateCompanyOwnerRequest req);
+    Task<bool> Delete(int ownerId);
+    Task<bool> Edit(EditCompanyOwnerRequest req);
 }

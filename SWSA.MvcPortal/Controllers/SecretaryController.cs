@@ -8,11 +8,12 @@ public class SecretaryController(
     ICompanyService companyService
     ) : BaseController
 {
+    #region Page/View
     [Route("companies")]
     public async Task<IActionResult> CompanyList()
     {
-        var data = await companyService.GetCompanySelectionAsync();    
+        var data = await companyService.GetCompanySelectionAsync();
         return View(data);
     }
-
+    #endregion
 }

@@ -72,7 +72,7 @@
         const staffData = getFormData(staffFormInputs);
         staffData.companyId = $("#companyId").val(); 
         $.ajax({
-            url: `${urls.company_staffs}/edit`,
+            url: `${urls.company_cm_contact}/edit`,
             method: "POST",
             data: { req: staffData },
             success: function (res) {

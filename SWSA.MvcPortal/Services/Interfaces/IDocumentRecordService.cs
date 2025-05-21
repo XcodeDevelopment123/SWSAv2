@@ -8,7 +8,7 @@ public interface IDocumentRecordService
 {
     Task<bool> CreateDocument(CreateDocumentRecordRequest doc, IFormFile files);
     Task<bool> CreateDocuments(CreateDocumentRecordListRequest req, List<IFormFile> files);
-    Task<DocumentRecordVM> DeleteDocumentById(int docId);
+    Task<DocumentRecordVM> Delete(int docId);
     Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId);
     Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId);
     Task<DocumentRecordVM> GetDocumentRecordById(int id);

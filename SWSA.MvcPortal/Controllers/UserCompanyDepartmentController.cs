@@ -9,24 +9,29 @@ public class UserCompanyDepartmentController
     (IUserCompanyDepartmentService service)
     : BaseController
 {
+    #region API/Ajax
+    [InternalAjaxOnly]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromRoute] int companyId, CreateUserCompanyDepartmentRequest req)
     {
         var result = await service.Create(companyId, req);
-        return Json(result);
+        return Ok(result);
     }
 
-    [HttpPost("edit")]
+    [InternalAjaxOnly]
+    [HttpPost("update")]
     public async Task<IActionResult> Edit([FromRoute] int companyId, EditUserCompanyDepartment req)
     {
         var result = await service.Edit(companyId, req);
-        return Json(result);
+        return Ok(result);
     }
 
+    [InternalAjaxOnly]
     [HttpDelete("{staffId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] int companyId, [FromRoute] string staffId)
     {
         var result = await service.Delete(companyId, staffId);
-        return Json(result);
+        return Ok(result);
     }
+    #endregion
 }

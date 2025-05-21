@@ -21,7 +21,6 @@ public class UserCompanyDepartmentRepository(AppDbContext db) : RepositoryBase<U
     {
         var query = db.Set<UserCompanyDepartment>()
            .Include(c => c.User)
-           .Include(c => c.Department)
            .AsNoTracking();
         return Task.FromResult(query);
     }

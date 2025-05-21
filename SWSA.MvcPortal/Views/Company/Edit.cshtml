@@ -17,11 +17,11 @@
 
 	var cp = Model.Company;
 
-	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.Status);
+	var departments = SelectHelper.GetDepartments(null);
 	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
 	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(cp.CompanyType);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
-	var staffPosition = SelectHelper.GetStaffPositionTypes(null);
+	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
 	var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
 
 	<input type="hidden" id="companyId" value="@cp.Id" />
@@ -56,7 +56,41 @@
 							</tr>
 						</thead>
 						<tbody>
-						
+							@{
+								var userDepartments = cp.UserCompanyDepartments
+								.GroupBy(ucd => ucd.UserId)
+								.Select(g => new
+								{
+									User = g.First().User,
+									Departments = g.Select(x => x.Department).Distinct().ToList()
+								})
+								.ToHashSet();
+								foreach (var user in userDepartments)
+								{
+									<tr>
+										<td>@user.User.FullName (@user.User.Role.GetDisplayName())</td>
+										<td>
+											@string.Join(", ", user.Departments)
+										</td>
+										<td>
+											<div class="btn-group" role="group">
+												<button type="button" class="btn btn-sm btn-warning btn-edit-handle-user mr-2"
+														data-staff-id="@user.User.StaffId"
+														data-departments="@(JsonConvert.SerializeObject(user.Departments))"
+														title="Edit">
+													<i class="fa fa-edit"></i>
+												</button>
+												<button type="button" class="btn btn-sm btn-danger btn-delete-handle-user"
+														data-name="@($"{user.User.FullName} ({user.User.Role.GetDisplayName()})")"
+														data-staff-id="@user.User.StaffId">
+													<i class="fa fa-trash"></i>
+												</button>
+											</div>
+										</td>
+									</tr>
+								}
+							}
+
 						</tbody>
 					</table>
 
@@ -70,7 +104,7 @@
 								<div class="form-group">
 									<label for="handleStaffId">
 										User
-										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The staff member assigned to manage this company in SWSA."></i>
+										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this company."></i>
 									</label>
 									<select id="handleStaffId" name="handleStaffId" class="form-control select2 ">
 										@if (Model.Users.Count == 0)
@@ -90,10 +124,21 @@
 											}
 											else
 											{
-											<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>				
+												<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
 											}
 										})
 
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="userDepartments">
+										User Handle Departments
+										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The selected departments are user-specific and independent of the company's department settings. Users can access them even if the company disables the department later."></i>
+									</label>
+									<select asp-items="departments" id="userDepartments" name="userDepartments" class="form-control select2" multiple="multiple" style="max-width:95%">
 									</select>
 								</div>
 							</div>
@@ -187,12 +232,6 @@
 							<select asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="companyStatus">Company Status</label>
-							<select asp-items="@companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">  </select>
-						</div>
-					</div>
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>
@@ -236,7 +275,7 @@
 			<div class="card card-secondary  collapsed-card">
 				<div class="card-header">
 					<h3 class="card-title">
-						SSM due date
+						SSM Compliance Date
 					</h3>
 					<div class="card-tools">
 						<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -253,7 +292,7 @@
 							<div class="form-group">
 								<label for="firstYearAccountStart">First Year Account Start</label>
 								<div class="input-group">
-									<input value="@cp.CompanyComplianceDate?.FirstYearAccountStart?.ToString("yyyy-MM-dd")" type="text" id="firstYearAccountStart" name="firstYearAccountStart" class="form-control" placeholder="(Optional)" />
+									<input value="@cp.ComplianceDate?.FirstYearAccountStart?.ToString("yyyy-MM-dd")" type="text" id="firstYearAccountStart" name="firstYearAccountStart" class="form-control" placeholder="(Optional)" />
 									<div class="input-group-append">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -265,7 +304,7 @@
 							<div class="form-group">
 								<label for="agmDate">AGM Date</label>
 								<div class="input-group">
-									<input value="@cp.CompanyComplianceDate?.AGMDate?.ToString("yyyy-MM-dd")" type="text" id="agmDate" name="agmDate" class="form-control" placeholder="(Optional)" />
+									<input value="@cp.ComplianceDate?.AGMDate?.ToString("yyyy-MM-dd")" type="text" id="agmDate" name="agmDate" class="form-control" placeholder="(Optional)" />
 									<div class="input-group-append">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -277,7 +316,7 @@
 							<div class="form-group">
 								<label for="accountDueDate">Account Due Date</label>
 								<div class="input-group">
-									<input value="@cp.CompanyComplianceDate?.AccountDueDate?.ToString("yyyy-MM-dd")" type="text" id="accountDueDate" name="accountDueDate" class="form-control" placeholder="(Optional)" />
+									<input value="@cp.ComplianceDate?.AccountDueDate?.ToString("yyyy-MM-dd")" type="text" id="accountDueDate" name="accountDueDate" class="form-control" placeholder="(Optional)" />
 									<div class="input-group-append">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -291,7 +330,7 @@
 							<div class="form-group">
 								<label for="anniversaryDate">Anniversary Date</label>
 								<div class="input-group">
-									<input value="@cp.CompanyComplianceDate?.AnniversaryDate?.ToString("yyyy-MM-dd")" type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="(Optional)" />
+									<input value="@cp.ComplianceDate?.AccountDueDate?.ToString("yyyy-MM-dd")" type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="(Optional)" />
 									<div class="input-group-append">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -303,7 +342,7 @@
 							<div class="form-group">
 								<label for="annualReturnDueDate">Annual Return Due Date</label>
 								<div class="input-group">
-									<input value="@cp.CompanyComplianceDate?.AnnualReturnDueDate?.ToString("yyyy-MM-dd")" type="text" id="annualReturnDueDate" name="annualReturnDueDate" class="form-control" placeholder="(Optional)" />
+									<input value="@cp.ComplianceDate?.AnniversaryDate?.ToString("yyyy-MM-dd")" type="text" id="annualReturnDueDate" name="annualReturnDueDate" class="form-control" placeholder="(Optional)" />
 									<div class="input-group-append">
 										<span class="input-group-text"><i class="fa fa-calendar"></i></span>
 									</div>
@@ -314,7 +353,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="notes">Notes</label>
-								<input value="@cp.CompanyComplianceDate?.Notes" id="notes" name="notes" class="form-control" placeholder="(Optional)" />
+								<input value="@cp.ComplianceDate?.Notes" id="notes" name="notes" class="form-control" placeholder="(Optional)" />
 							</div>
 						</div>
 					</div>
@@ -360,7 +399,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							@foreach (var owner in cp.CompanyOwners)
+							@foreach (var owner in cp.Owners)
 							{
 								<tr>
 									<td>@owner.NamePerIC</td>
@@ -540,11 +579,11 @@
 
 
 	<div class="col-md-12">
-		<form id="staffContactForm">
+		<form id="communicationContactForm">
 			<!-- jquery validation -->
 			<div class="card card-secondary  collapsed-card">
 				<div class="card-header">
-					<h3 class="card-title">Staff / Communication Contacts</h3>
+					<h3 class="card-title"> Communication Contacts</h3>
 
 					<div class="card-tools">
 						<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -556,7 +595,7 @@
 				<!-- form start -->
 
 				<div class="card-body" style="display:none">
-					<table id="staffContactTable" class="table table-bordered table-hover">
+					<table id="communicationContactTable" class="table table-bordered table-hover">
 						<thead>
 							<tr>
 								<th>Contact Name</th>
@@ -568,20 +607,20 @@
 							</tr>
 						</thead>
 						<tbody>
-							@foreach (var staffCt in cp.CompanyStaffs)
+							@foreach (var cmContact in cp.CommunicationContacts)
 							{
 								<tr>
-									<td>@staffCt.ContactName</td>
-									<td>@staffCt.WhatsApp</td>
-									<td>@staffCt.Email</td>
-									<td>@staffCt.Position</td>
-									<td>@staffCt.Remark</td>
+									<td>@cmContact.ContactName</td>
+									<td>@cmContact.WhatsApp</td>
+									<td>@cmContact.Email</td>
+									<td>@cmContact.Position</td>
+									<td>@cmContact.Remark</td>
 									<td>
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName" title="Edit">
+											<button type="button" class="btn btn-sm btn-warning btn-edit-communication-ct mr-2" data-id="@cmContact.Id" data-name="@cmContact.ContactName" title="Edit">
 												<i class="fa fa-edit"></i>
 											</button>
-											<button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="@staffCt.StaffId" data-name="@staffCt.ContactName"><i class="fa fa-trash"></i></button>
+											<button type="button" class="btn btn-sm btn-danger btn-delete-communication-ct" data-id="@cmContact.Id" data-name="@cmContact.ContactName"><i class="fa fa-trash"></i></button>
 										</div>
 									</td>
 								</tr>
@@ -596,44 +635,44 @@
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="staffName">Contact Name</label>
-								<input id="staffName" name="staffName" class="form-control " placeholder="John Dee" />
+								<label for="contactName">Contact Name</label>
+								<input id="contactName" name="contactName" class="form-control " placeholder="John Dee" />
 							</div>
 						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="staffWhatsapp">WhatsApp</label>
-								<input id="staffWhatsapp" name="staffWhatsapp" class="form-control " placeholder="+605xxxxxxxx" />
+								<label for="contactWhatsapp">WhatsApp</label>
+								<input id="contactWhatsapp" name="contactWhatsapp" class="form-control " placeholder="+605xxxxxxxx" />
 							</div>
 						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="staffEmail">Email</label>
-								<input type="email" id="staffEmail" name="staffEmail" class="form-control " placeholder="xxx@gmail.com" />
+								<label for="contactEmail">Email</label>
+								<input type="email" id="contactEmail" name="contactEmail" class="form-control " placeholder="xxx@gmail.com" />
 							</div>
 						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="staffPosition">Position</label>
-								<select asp-items="@staffPosition" id="staffPosition" name="staffPosition" class="form-control select2">  </select>
+								<label for="contactPosition">Position</label>
+								<select asp-items="@cmContactPosition" id="contactPosition" name="contactPosition" class="form-control select2">  </select>
 							</div>
 						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="staffRemark">Remark</label>
-								<input id="staffRemark" name="staffRemark" class="form-control " placeholder="(Optional)" />
+								<label for="contactRemark">Remark</label>
+								<input id="contactRemark" name="contactRemark" class="form-control " placeholder="(Optional)" />
 							</div>
 						</div>
 					</div>
 				</div>
 				<!-- /.card-body -->
 				<div class="card-footer">
-					<button type="button" class="btn btn-danger float-end" id="btnCancelStaffContact" style="display:none">Cancel</button>
-					<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddStaffContact">Add</button>
+					<button type="button" class="btn btn-danger float-end" id="btnCancelCommunicationContact" style="display:none">Cancel</button>
+					<button type="submit" class="btn btn-primary float-end mr-2" id="btnAddCommunicationContact">Add</button>
 
 				</div>
 			</div>

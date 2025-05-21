@@ -159,7 +159,7 @@ ISystemAuditLogService sysAuditService
 
         await schedulerService.ClearSpecificJobByKey(jobKey);
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyStaff, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyCommunicationContact, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
         sysAuditService.LogInBackground(log);
         return true;
     }

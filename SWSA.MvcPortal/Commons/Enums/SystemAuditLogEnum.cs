@@ -11,7 +11,7 @@ public enum SystemAuditModule
     CompanyComplianceDate,
     CompanyOfficialContact,
     CompanyOwner,
-    CompanyStaff,
+    CompanyCommunicationContact,
     CompanyWorkAssignment,
     DocumentRecord,
     User

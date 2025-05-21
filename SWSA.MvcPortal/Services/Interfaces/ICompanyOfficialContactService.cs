@@ -7,7 +7,7 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 public interface ICompanyOfficialContactService
 {
     // Define your method here
-    Task<int> CreateContact(CreateCompanyOfficialContactRequest req);
-    Task<bool> EditContact(EditCompanyOfficialContactRequest req);
-    Task<bool> DeleteContact(int ownerId);
+    Task<int> Create(CreateCompanyOfficialContactRequest req);
+    Task<bool> Edit(EditCompanyOfficialContactRequest req);
+    Task<bool> Delete(int ownerId);
 }

@@ -7,7 +7,7 @@ public class CompanyStaffProfile : Profile
 {
     public CompanyStaffProfile()
     {
-        CreateMap<CompanyStaff, CompanyStaff>();
-        CreateMap<CompanyStaff, CompanyStaffVM>();
+        CreateMap<CompanyCommunicationContact, CompanyCommunicationContact>();
+        CreateMap<CompanyCommunicationContact, CompanyCommunicationContactVM>();
     }
 }

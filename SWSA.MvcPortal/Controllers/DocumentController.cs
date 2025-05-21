@@ -15,6 +15,7 @@ public class DocumentController(
     ICompanyService companyService
     ) : BaseController
 {
+    #region Page/View
     [Route("docs")]
     public async Task<IActionResult> List()
     {
@@ -30,21 +31,24 @@ public class DocumentController(
         var vm = new DocumentRecordCreatePageVM(cp, staff);
         return View(vm);
     }
+    #endregion
 
-    [Route("docs/create")]
-    [HttpPost]
-    public async Task<IActionResult> Create([FromForm] CreateDocumentRecordListRequest req, List<IFormFile> files)
+
+    #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpPost("docs/create")]
+    public async Task<IActionResult> CreateDocuments([FromForm] CreateDocumentRecordListRequest req, List<IFormFile> files)
     {
-        await service.CreateDocuments(req, files);
-
-        return Json(true);
+        var result = await service.CreateDocuments(req, files);
+        return Ok(result);
     }
 
-    [Route("docs/{docId}/delete")]
-    [HttpDelete]
+    [InternalAjaxOnly]
+    [HttpDelete("docs/{docId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] int docId)
     {
-        var result = await service.DeleteDocumentById(docId);
-        return Json(true);
-    } 
+        var result = await service.Delete(docId);
+        return Ok(result);
+    }
+    #endregion
 }

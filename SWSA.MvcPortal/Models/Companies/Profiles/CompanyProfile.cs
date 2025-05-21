@@ -17,12 +17,16 @@ public class CompanyProfile : Profile
            .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.RegistrationNumber))
            .ForMember(dest => dest.CompanyDirectorName, opt => opt.MapFrom((src, dest) =>
            {
-               var firstOwner = src.CompanyOwners.FirstOrDefault(c => c.Position == PositionType.Director);
+               var firstOwner = src.Owners.FirstOrDefault(c => c.Position == PositionType.Director);
                return firstOwner?.NamePerIC ?? AppSettings.NotAvailable;
            }))
            .ForMember(dest => dest.ContactsCount, opt => opt.MapFrom((src, dest) =>
            {
-               return src.CompanyStaffs.Count + src.OfficialContacts.Count;
+               return src.CommunicationContacts.Count + src.OfficialContacts.Count;
+           }))
+           .ForMember(dest => dest.WorkCount, opt => opt.MapFrom((src, dest) =>
+           {
+               return src.WorkAssignments.Count;
            }))
            .ForMember(dest => dest.MsicCodesCount, opt => opt.MapFrom(src => src.MsicCodes.Count));
 
@@ -32,7 +36,10 @@ public class CompanyProfile : Profile
         CreateMap<CreateCompanyRequest, Company>()
             .ForMember(dest => dest.MsicCodes, opt => opt.MapFrom(src => src.MsicCodeIds.Select(id => new CompanyMsicCode(id)).ToList()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CompanyName))
-            .ForMember(dest => dest.CompanyComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate)) ;
+            .ForMember(dest => dest.ComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate))
+            .ForMember(dest => dest.Owners, opt => opt.MapFrom(src => src.CompanyOwners))
+            
+            ;
 
     }
 }

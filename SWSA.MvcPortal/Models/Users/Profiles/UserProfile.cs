@@ -12,16 +12,14 @@ public class UserProfile : Profile
         CreateMap<User, UserEditVM>();
         CreateMap<User, UserVM>();
         CreateMap<User, UserOverviewVM>()
-           .ForMember(dest => dest.AssignedCompanies, opt => opt.MapFrom(src => 
+           .ForMember(dest => dest.AssignedCompanies, opt => opt.MapFrom(src =>
            src.CompanyDepartments
            .Select(x => x.Company)
            .GroupBy(c => c.Id)
            .Select(g => g.First()))
-           )
-           .ForMember(dest => dest.AssignedWorks, opt => opt.MapFrom(src => src.AssignedWorks));
+           );
 
-        CreateMap<User, UserSelectionVM>()
-            ;
+        CreateMap<User, UserSelectionVM>();
 
         CreateMap<CreateUserRequest, User>();
     }

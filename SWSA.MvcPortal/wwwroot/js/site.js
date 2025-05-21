@@ -6,7 +6,7 @@ const urls = {
     "companies": "/companies",
     "company_owner": "/companies/owner",
     "company_official_contact": "/companies/official-contact",
-    "company_staffs": "/companies/staffs",
+    "company_cm_contact": "/companies/cm-contact",
     "company_compliance_date": "/companies/compliance-date",
     "company_documents": "/companies/docs",
     "company_works": "/companies/works",

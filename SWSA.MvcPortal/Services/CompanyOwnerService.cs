@@ -20,7 +20,7 @@ ISystemAuditLogService sysAuditService,
 IUserContext userContext
     ) : ICompanyOwnerService
 {
-    public async Task<int> CreateOwner(CreateCompanyOwnerRequest req)
+    public async Task<int> Create(CreateCompanyOwnerRequest req)
     {
         if (!req.CompanyId.HasValue)
         {
@@ -39,7 +39,7 @@ IUserContext userContext
         return data.Id;
     }
 
-    public async Task<bool> EditOwner(EditCompanyOwnerRequest req)
+    public async Task<bool> Edit(EditCompanyOwnerRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
 
@@ -70,7 +70,7 @@ IUserContext userContext
         return true;
     }
 
-    public async Task<bool> DeleteOwner(int ownerId)
+    public async Task<bool> Delete(int ownerId)
     {
         var data = await repo.GetByIdAsync(ownerId);
         Guard.AgainstNullData(data, "Company Owner not found");

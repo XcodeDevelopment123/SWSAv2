@@ -21,8 +21,8 @@ public class CompanyListVM
     public CompanyType CompanyType { get; set; }
     public string CompanyDirectorName { get; set; } = null!; // First Owner + Director position name
     public int ContactsCount { get; set; }  // Communication Contacts + Official Contacts
-    public int DepartmentsCount { get; set; }
     public int MsicCodesCount { get; set; }
+    public int WorkCount { get; set; }
     public List<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
 
 }

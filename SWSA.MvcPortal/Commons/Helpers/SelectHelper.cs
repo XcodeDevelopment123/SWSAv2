@@ -18,7 +18,7 @@ public class SelectHelper
     {
         return new List<SelectListItem>
         {
-            new SelectListItem { Text = "Please select", Value = "", Selected = type == null, Disabled=true },
+            new SelectListItem { Text = "Please select", Value = "", Selected = false, Disabled=true },
             new SelectListItem { Text = DepartmentType.Account, Value = DepartmentType.Account, Selected = type == DepartmentType.Account },
             new SelectListItem { Text = DepartmentType.Audit, Value = DepartmentType.Audit, Selected = type == DepartmentType.Audit },
             new SelectListItem { Text = DepartmentType.Tax, Value = DepartmentType.Tax, Selected = type == DepartmentType.Tax },
@@ -60,7 +60,7 @@ public class SelectHelper
             filter: x => x == PositionType.Director || x == PositionType.Shareholder || x == PositionType.Other);
     }
 
-    public static List<SelectListItem> GetStaffPositionTypes(PositionType? type)
+    public static List<SelectListItem> GetCompanyCommunicationContactPositionTypes(PositionType? type)
     {
         return ToSelectList<PositionType>(type,
                     filter: x => x != PositionType.Director && x != PositionType.Shareholder);

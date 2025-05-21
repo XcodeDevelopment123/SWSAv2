@@ -5,6 +5,7 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("dashboard")]
 public class DashboardController : BaseController
 {
+    #region Page/View
     [Route("overall")]
     public IActionResult Overall()
     {
@@ -30,4 +31,5 @@ public class DashboardController : BaseController
     {
         return View();
     }
+    #endregion
 }

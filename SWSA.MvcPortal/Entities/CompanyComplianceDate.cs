@@ -22,8 +22,6 @@ public class CompanyComplianceDate
     public DateTime? AnniversaryDate { get; set; }
     [SystemAuditLog("Annual Return Due Date")]
     public DateTime? AnnualReturnDueDate { get; set; }
-    [SystemAuditLog("SSM Extension Date")]
-    public DateTime? SSMExtensionDate { get; set; }
 
     [SystemAuditLog("Compliance Notes")]
     public string? Notes { get; set; }

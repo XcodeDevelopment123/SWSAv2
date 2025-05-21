@@ -36,29 +36,25 @@ ICompanyRepository companyRepo
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
-        ///TODO : Use Department name to check
+        var departments = GetDepartments();
 
-        //var departments = await departmentRepo.GetAllAsync();
-        //var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
+        var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
+        if (existing.Count > 0)
+        {
+            throw new BusinessLogicException("The user is already assigned to this company. Please use the update function instead of create.");
+        }
 
-        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
-        //if (existing.Count > 0)
-        //{
-        //    throw new BusinessLogicException("The user is already assigned to this company. Please use the update function instead of create.");
-        //}
+        var newEntities = UserCompanyDepartmentMapper.ToEntities(req.Departments, companyId, user.Id);
+        repo.AddRange(newEntities);
+        await repo.SaveChangesAsync();
 
-        //var newEntities = UserCompanyDepartmentMapper.ToEntities(req.DepartmentIds, companyId, user.Id);
-        //repo.AddRange(newEntities);
-        //await repo.SaveChangesAsync();
+        ClearCompaniesCache(companyId);
 
-        //ClearCompaniesCache(companyId);
+        var deptNamesNew = newEntities.Select(e=>e.Department).Where(e => departments.Contains(e)).ToList();
+        var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
 
-        //var deptNamesNew = newEntities.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
-
-        //var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
-
-        //var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Assigned handle user {user.FullName}",  newObject);
-        //sysAuditService.LogInBackground(log);
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Assigned handle user {user.FullName}", newObject);
+        sysAuditService.LogInBackground(log);
 
         return req.StaffId;
     }
@@ -71,48 +67,44 @@ ICompanyRepository companyRepo
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
-        ///TODO : Use Department name to check
+        var departments = GetDepartments();
 
-        //var departments = await departmentRepo.GetAllAsync();
-        //var departmentDict = departments.ToDictionary(d => d.Id, d => d.Name);
+        var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
+        var existingDepts = existing.Select(e => e.Department).ToHashSet();
+        var reqDepts = req.Departments.Distinct().ToHashSet();
 
-        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, req.StaffId);
-        //var existingDeptIds = existing.Select(e => e.DepartmentId).ToHashSet();
-        //var reqDeptIds = req.DepartmentIds.Distinct().ToHashSet();
+        var newDepts = req.Departments.Where(name => !existingDepts.Contains(name)).Distinct().ToList();
+        var newEntities = UserCompanyDepartmentMapper.ToEntities(newDepts, companyId, user.Id);
+        var removeEntities = existing.Where(e => !reqDepts.Contains(e.Department)).ToList();
 
-        //var newDeptIds = req.DepartmentIds.Where(id => !existingDeptIds.Contains(id)).Distinct().ToList();
-        //var newEntities = UserCompanyDepartmentMapper.ToEntities(newDeptIds, companyId, user.Id);
-        //var removeEntities = existing.Where(e => !reqDeptIds.Contains(e.DepartmentId)).ToList();
+        //If no remove / add, return true, do not process to log and save
+        if (newEntities.Count == 0 && removeEntities.Count == 0)
+        {
+            return true;
+        }
 
-        ////If no remove / add, return true, do not process to log and save
-        //if (newEntities.Count == 0 && removeEntities.Count == 0)
-        //{
-        //    return true;
-        //}
+        if (removeEntities.Count != 0)
+        {
+            repo.RemoveRange(removeEntities);
+        }
 
-        //if (removeEntities.Count != 0)
-        //{
-        //    repo.RemoveRange(removeEntities);
-        //}
-        //if(newEntities.Count != 0)
-        //{
-        //    repo.AddRange(newEntities);
-        //}
+        if (newEntities.Count != 0)
+        {
+            repo.AddRange(newEntities);
+        }
 
-        //await repo.SaveChangesAsync();
+        await repo.SaveChangesAsync();
 
-        //ClearCompaniesCache(companyId);
+        ClearCompaniesCache(companyId);
 
-        //var deptNamesOld = existing.Where(e => departmentDict.ContainsKey(e.DepartmentId)).Select(e => departmentDict[e.DepartmentId]).ToList();
+        var deptNamesOld = existing.Select(e => e.Department).Where(name => departments.Contains(name)).ToList();
+        var deptNamesNew = reqDepts.Where(name => departments.Contains(name)).ToList();
 
-        //var finalDeptIds = reqDeptIds;
-        //var deptNamesNew = finalDeptIds.Where(departmentDict.ContainsKey).Select(e => departmentDict[e]).ToList();
+        var oldObject = new UserCompanyDepartmentAuditVM(deptNamesOld);
+        var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
 
-        //var oldObject = new UserCompanyDepartmentAuditVM(deptNamesOld);
-        //var newObject = new UserCompanyDepartmentAuditVM(deptNamesNew);
-
-        //var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Update handle user {user.FullName}", oldObject, newObject);
-        //sysAuditService.LogInBackground(log);
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Update handle user {user.FullName}", oldObject, newObject);
+        sysAuditService.LogInBackground(log);
 
         return true;
     }
@@ -123,21 +115,20 @@ ICompanyRepository companyRepo
         var user = await userRepo.GetByStaffIdAsync(staffId);
         Guard.AgainstNullData(user, "User not found");
 
-        ///TODO : Use Department name to check
 
-        //var existing = await repo.GetByCompanyIdAndStaffId(companyId, staffId);
-        //var departmentNames = existing.Select(e => e.Department.Name).ToList();
-        //var oldObject=  new UserCompanyDepartmentAuditVM(departmentNames);
+        var existing = await repo.GetByCompanyIdAndStaffId(companyId, staffId);
+        var departmentNames = existing.Select(e => e.Department).ToList();
+        var oldObject = new UserCompanyDepartmentAuditVM(departmentNames);
 
-        //if(existing.Count > 0)
-        //{
-        //    repo.RemoveRange(existing);
-        //    await repo.SaveChangesAsync();
-        //}
-        //ClearCompaniesCache(companyId);
+        if (existing.Count > 0)
+        {
+            repo.RemoveRange(existing);
+            await repo.SaveChangesAsync();
+        }
+        ClearCompaniesCache(companyId);
 
-        //var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Removed handle user {user.FullName}", oldObject);
-        //sysAuditService.LogInBackground(log);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Removed handle user {user.FullName}", oldObject);
+        sysAuditService.LogInBackground(log);
 
         return true;
     }
@@ -151,5 +142,16 @@ ICompanyRepository companyRepo
             cache.Remove($"{cacheKey}_{id}");
             cache.Remove($"{cacheKey}_{id}_Details");
         }
+    }
+
+    private List<string> GetDepartments()
+    {
+        return new List<string>
+        {
+            DepartmentType.Audit,
+            DepartmentType.Account,
+            DepartmentType.Secretary,
+            DepartmentType.Tax
+        };
     }
 }

@@ -5,5 +5,5 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 public interface ICompanyWorkProgressService
 {
     // Define your method here
-    Task<bool> EditCompanyWorkProgress(EditCompanyWorkProgressRequest req);
+    Task<bool> Edit(EditCompanyWorkProgressRequest req);
 }

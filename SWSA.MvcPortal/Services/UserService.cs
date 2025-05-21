@@ -61,7 +61,7 @@ IUserContext userContext
         return mapper.Map<UserVM>(data);
     }
 
-    public async Task<string> CreateUser(CreateUserRequest req)
+    public async Task<string> Create(CreateUserRequest req)
     {
         Guard.AgainstNotSuperAdmin(userContext);
 
@@ -80,7 +80,7 @@ IUserContext userContext
         return user.StaffId;
     }
 
-    public async Task<bool> UpdateUserInfo(EditUserRequest req)
+    public async Task<bool> Edit(EditUserRequest req)
     {
         Guard.AgainstNotSuperAdmin(userContext);
 

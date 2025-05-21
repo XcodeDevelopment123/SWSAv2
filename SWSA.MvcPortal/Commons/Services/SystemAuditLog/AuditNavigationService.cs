@@ -14,7 +14,7 @@ public static class AuditNavigationService
             SystemAuditModule.CompanyComplianceDate => $"/companies/{entityId}/overview",
             SystemAuditModule.CompanyOfficialContact => $"/companies/{entityId}/overview",
             SystemAuditModule.CompanyOwner => $"/companies/{entityId}/overview",
-            SystemAuditModule.CompanyStaff => $"/companies/staffs/{entityId}/edit",//Should be overview
+            SystemAuditModule.CompanyCommunicationContact => $"/companies/staffs/{entityId}/edit",//Should be overview
             SystemAuditModule.CompanyWorkAssignment => $"/companies/works/{entityId}/edit", //Should be overview
             SystemAuditModule.DocumentRecord => $"/companies/docs?docId={entityId}",
             SystemAuditModule.User => $"/users/{entityId}/overview",

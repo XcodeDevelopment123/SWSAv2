@@ -13,6 +13,7 @@ public class CompanyWorkController(
     ICompanyService companyService
     ) : BaseController
 {
+    #region Page/View
     [Route("works")]
     public async Task<IActionResult> List()
     {
@@ -48,46 +49,47 @@ public class CompanyWorkController(
         var vm = new CompanyWorkAssignmentkEditPageVM(data, users);
         return View(vm);
     }
+    #endregion
 
-    [Route("works/calendar-events")]
-    [HttpGet]
+    #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpGet("works/calendar-events")]
     public async Task<IActionResult> GetCalendarEvent()
     {
         var data = await service.GetWorkCalendarEvents();
-        return Json(data);
+        return Ok(data);
     }
 
-    [Route("works/create")]
-    [HttpPost]
+    [InternalAjaxOnly]
+    [HttpPost("works/create")]
     public async Task<IActionResult> Create(CreateCompanyWorkAssignmentRequest req)
     {
-        var result = await service.CreateCompanyWorkAssignment(req);
-        return Json(result);
+        var result = await service.Create(req);
+        return Ok(result);
     }
 
-    [Route("works/edit")]
-    [HttpPost]
+    [InternalAjaxOnly]
+    [HttpPost("works/update")]
     public async Task<IActionResult> Edit(EditCompanyWorkAssignmentRequest req)
     {
-        var result = await service.EditCompanyWorkAssignment(req);
-        return Json(result);
+        var result = await service.Edit(req);
+        return Ok(result);
     }
 
-
-    [Route("works/progress/edit")]
-    [HttpPost]
+    [InternalAjaxOnly]
+    [HttpPost("works/progress/edit")]
     public async Task<IActionResult> EditProgress(EditCompanyWorkProgressRequest req)
     {
-        var result = await progressService.EditCompanyWorkProgress(req);
-        return Json(result);
+        var result = await progressService.Edit(req);
+        return Ok(result);
     }
 
-    [Route("works/{taskId}/delete")]
-    [HttpDelete]
+    [InternalAjaxOnly]
+    [HttpDelete("works/{taskId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] int taskId)
     {
-        var result = await service.DeleteWork(taskId);
-        return Json(result);
+        var result = await service.Delete(taskId);
+        return Ok(result);
     }
-
+    #endregion
 }

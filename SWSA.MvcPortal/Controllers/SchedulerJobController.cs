@@ -14,6 +14,7 @@ public class SchedulerJobController(
  IScheduledJobService service
 ) : BaseController
 {
+    #region Page/View
     [Route("")]
     public async Task<IActionResult> List()
     {
@@ -22,7 +23,7 @@ public class SchedulerJobController(
     }
 
     [Route("create")]
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
         return View();
     }
@@ -33,7 +34,10 @@ public class SchedulerJobController(
         var data = await service.GetScheduledJobByJobKey(jobKey);
         return View(data);
     }
+    #endregion
 
+    #region API/Ajax
+    [InternalAjaxOnly]
     [HttpPost("create")]
     public async Task<IActionResult> Create(CreateScheduleJobRequest req)
     {
@@ -41,6 +45,7 @@ public class SchedulerJobController(
         return Ok(result);
     }
 
+    [InternalAjaxOnly]
     [HttpPost("{jobKey}/execute")]
     public async Task<IActionResult> ExecuteNow([FromRoute] string jobKey)
     {
@@ -48,6 +53,7 @@ public class SchedulerJobController(
         return Ok(result);
     }
 
+    [InternalAjaxOnly]
     [HttpPost("schedule")]
     public async Task<IActionResult> ScheduleJob(UpdateScheduleJobRequest req)
     {
@@ -55,6 +61,7 @@ public class SchedulerJobController(
         return Ok(result);
     }
 
+    [InternalAjaxOnly]
     [HttpPost("schedule-dynamic")]
     public async Task<IActionResult> ScheduleGenericJob(DynamicJobScheduleRequest input)
     {
@@ -86,10 +93,12 @@ public class SchedulerJobController(
         return Ok("✅ Job scheduled successfully.");
     }
 
+    [InternalAjaxOnly]
     [HttpDelete("{jobKey}/delete")]
     public async Task<IActionResult> Delete([FromRoute] string jobKey)
     {
         var result = await service.DeleteByJobKey(jobKey);
         return Ok(result);
     }
+    #endregion
 }

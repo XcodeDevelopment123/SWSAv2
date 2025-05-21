@@ -29,27 +29,11 @@ public class User
     [SystemAuditLog("User Role")]
     public UserRole Role { get; set; } = UserRole.Staff;
 
-    //public bool Login(string password)
-    //{
-    //    if (PasswordHasher.Verify(password, HashedPassword))
-    //    {
-    //        if (PasswordHasher.NeedsRehash(HashedPassword))
-    //        {
-
-    //            HashedPassword = PasswordHasher.Hash(password);
-    //        }
-
-    //        LastLoginAt = DateTime.Now;
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
-
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
-    public virtual ICollection<UserCompanyDepartment> CompanyDepartments { get; set; }
-    public virtual ICollection<CompanyWorkAssignment> AssignedWorks { get; set; }
+    public virtual ICollection<UserCompanyDepartment> CompanyDepartments { get; set; } //Use to define this user can access which company department
+    public virtual ICollection<WorkAssignmentUserMapping> AssignedDepartmentTasks { get; set; } = new List<WorkAssignmentUserMapping>(); // The user handle work
+
 
     public string ToJsonData()
     {

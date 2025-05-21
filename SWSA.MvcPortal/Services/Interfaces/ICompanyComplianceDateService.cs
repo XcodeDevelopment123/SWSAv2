@@ -5,5 +5,5 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 public interface ICompanyComplianceDateService
 {
     // Define your method here
-    Task<bool> SaveComplianceDate(EditCompanyComplianceDate req);
+    Task<bool> Edit(EditCompanyComplianceDate req);
 }

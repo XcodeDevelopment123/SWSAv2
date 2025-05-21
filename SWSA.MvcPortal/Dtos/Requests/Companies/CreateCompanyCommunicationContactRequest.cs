@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 
-public class CreateCompanyStaffRequest
+public class CreateCompanyCommunicationContactRequest
 {
     public int? CompanyId { get; set; }
     public string ContactName { get; set; } = null!;

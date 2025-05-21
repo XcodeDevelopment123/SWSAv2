@@ -122,7 +122,7 @@ public static class DependencyInjector
 
         }, ServiceLifetime.Scoped);
 
-        services.AddScoped<ICompanyStaffRepository, CompanyStaffRepository>();
+        services.AddScoped<ICompanyCommunicationContactRepository, CompanyCommunicationContactRepository>();
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
         services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
@@ -155,7 +155,7 @@ public static class DependencyInjector
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserCompanyDepartmentService, UserCompanyDepartmentService>();
         services.AddScoped<ICompanyService, CompanyService>();
-        services.AddScoped<ICompanyStaffService, CompanyStaffService>();
+        services.AddScoped<ICompanyCommunicationService, CompanyCommunicationContactService>();
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
         services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();

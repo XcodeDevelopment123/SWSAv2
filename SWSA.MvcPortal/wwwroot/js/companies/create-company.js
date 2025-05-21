@@ -9,9 +9,7 @@
         yearEndMonth: $companyForm.find('input[name="yearEndMonth"]'),
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
         companyType: $companyForm.find('select[name="companyType"]'),
-        status: $companyForm.find('select[name="companyStatus"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
-        departmentsIds: $companyForm.find('select[name="departmentsIds"]')
     }
 
     $companyForm.validate({
@@ -37,15 +35,9 @@
             companyType: {
                 required: true
             },
-            companyStatus: {
-                required: true
-            },
             msicCodesIds: {
                 required: true
             },
-            departmentsIds: {
-                required: false
-            }
         },
         messages: {
             companyName: {
@@ -68,9 +60,6 @@
             },
             companyType: {
                 required: "Company Type is required."
-            },
-            companyStatus: {
-                required: "Company Status is required."
             },
             msicCodesIds: {
                 required: "Please select at least one MSIC code."
@@ -264,47 +253,47 @@
 
     //#endregion
 
-    //#region Staff Contact Form 
-    const $staffForm = $("#staffContactForm");
-    const staffFormInputs = {
-        contactName: $staffForm.find('input[name="staffName"]'),
-        whatsApp: $staffForm.find('input[name="staffWhatsapp"]'),
-        email: $staffForm.find('input[name="staffEmail"]'),
-        remark: $staffForm.find('input[name="staffRemark"]'),
-        position: $staffForm.find('select[name="staffPosition"]')
+    //#region Communication Contact Form 
+    const $communicationContactForm = $("#communicationContactForm");
+    const communicationContactFormInputs = {
+        contactName: $communicationContactForm.find('input[name="contactName"]'),
+        whatsApp: $communicationContactForm.find('input[name="contactWhatsapp"]'),
+        email: $communicationContactForm.find('input[name="contactEmail"]'),
+        remark: $communicationContactForm.find('input[name="contactRemark"]'),
+        position: $communicationContactForm.find('select[name="contactPosition"]')
     };
 
-    $staffForm.validate({
+    $communicationContactForm.validate({
         rules: {
-            staffName: {
+            contactName: {
                 required: true
             },
-            staffWhatsapp: {
+            contactWhatsapp: {
                 required: true
             },
-            staffEmail: {
+            contactEmail: {
                 required: true,
                 email: true
             },
-            staffRemark: {
+            contactRemark: {
                 required: false
             },
-            staffPosition: {
+            contactPosition: {
                 required: true
             }
         },
         messages: {
-            staffName: {
+            contactName: {
                 required: "Contact Name is required."
             },
-            staffWhatsapp: {
+            contactWhatsapp: {
                 required: "WhatsApp number is required."
             },
-            staffEmail: {
+            contactEmail: {
                 required: "Email is required.",
                 email: "Please enter a valid email address."
             },
-            staffPosition: {
+            contactPosition: {
                 required: "Position is required."
             }
         },
@@ -325,15 +314,15 @@
         }
     });
 
-    $staffForm.on('submit', function (e) {
+    $communicationContactForm.on('submit', function (e) {
         e.preventDefault();
 
-        if (!$staffForm.valid()) {
+        if (!$communicationContactForm.valid()) {
             return;
         }
 
-        const staffData = getFormData(staffFormInputs);
-        addStaffContactRow(staffData)
+        const contactData = getFormData(communicationContactFormInputs);
+        addCommunicationContactRow(contactData)
     });
 
     //#endregion
@@ -342,16 +331,16 @@
     const $handleUserForm = $("#handleUserForm");
     const handleUserFormInputs = {
         handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
-        userDepartmentIds: $handleUserForm.find('select[name="userDepartmentIds"]'),
-    };
+        userDepartments: $handleUserForm.find('select[name="userDepartments"]'),
 
+    };
 
     $handleUserForm.validate({
         rules: {
             handleStaffId: {
                 required: true
             },
-            userDepartmentIds: {
+            userDepartments: {
                 required: true
             },
         },
@@ -359,8 +348,8 @@
             handleStaffId: {
                 required: "User is required."
             },
-            userDepartmentIds: {
-                required: "Select at least one departments"
+            userDepartments: {
+                required: "Select at least one department"
             },
         },
         errorElement: 'span',
@@ -389,23 +378,20 @@
 
         const staffId = handleUserFormInputs.handleStaffId.val(); // staff ID
         const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
-
-        const departmentIds = handleUserFormInputs.userDepartmentIds.val(); // array of IDs
-        const departmentNames = handleUserFormInputs.userDepartmentIds.find('option:selected')
+        const departmentNames = handleUserFormInputs.userDepartments.find('option:selected')
             .map(function () { return $(this).text(); })
             .get(); // array of names
 
         const staffData = {
             staffId: staffId,
             name: `${staffName}`, 
-            departmentIds: departmentIds,
-            departmentNames: departmentNames
+            departments: departmentNames
         };
 
         addHandleUserRow(staffData)
 
         handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
-        handleUserFormInputs.userDepartmentIds.val("").trigger('change'); 
+        handleUserFormInputs.userDepartments.val("").trigger('change');
         handleUserFormInputs.handleStaffId.val("").trigger('change'); 
         $handleUserForm[0].reset();
     });
@@ -444,11 +430,11 @@
         responsive: true
     });
 
-    const staffContactTable = $('#staffContactTable').DataTable({
+    const communicationContactTable = $('#communicationContactTable').DataTable({
         paging: true,
         lengthChange: false,
         searching: true,
-        ordering: true,
+        ordering: true, 
         info: true,
         autoWidth: false,
         responsive: true
@@ -488,13 +474,14 @@
     $("#btnSubmitRequest").on('click', function (e) {
 
         if (!$companyForm.valid()) {
+            demoSubmitCompany()
             return;
         }
 
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.companyOwners = getOwnerTableData();
-        companyData.staffsContact = getStaffContactTableData();
+        companyData.communicationContacts = getCommunicationContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
         companyData.handleUsers = getHandleUserTableData();
         companyData.complianceDate = getFormData(complianceDateFormInputs);
@@ -519,8 +506,8 @@
             `<td data-staff-id="${data.staffId}">
                 ${data.name}
             </td>`,
-            `<td data-department-ids="${data.departmentIds.join(',')}">
-                ${data.departmentNames.join(',')}
+            `<td data-departments="${data.departments.join(',')}">
+                ${data.departments.join(',')}
             </td>`,
             `<td>
             <button type="button" class="btn btn-sm btn-danger btn-delete-row" value="${data.staffId}">
@@ -545,13 +532,13 @@
         ]).draw(false);
     }
 
-    function addStaffContactRow(data) {
-        staffContactTable.row.add([
+    function addCommunicationContactRow(data) {
+        communicationContactTable.row.add([
             data.contactName,
             data.whatsApp,
             data.email,
-            data.remark,
             data.position,
+            data.remark,
             '<button type="button" class="btn btn-sm btn-danger btn-delete-row"><i class="fa fa-trash"></i></button>'
         ]).draw(false);
     }
@@ -586,10 +573,10 @@
         return data;
     }
 
-    function getStaffContactTableData() {
+    function getCommunicationContactTableData() {
         const data = [];
 
-        staffContactTable.rows().every(function () {
+        communicationContactTable.rows().every(function () {
             const rowData = this.data();
 
             data.push({
@@ -628,18 +615,84 @@
             const rowData = this.data();
 
             const staffCell = $('<div>').html(rowData[0]).find('td, *[data-staff-id]');
-            const departmentCell = $('<div>').html(rowData[1]).find('td, *[data-department-ids]');
-
+            const departmentCell = $('<div>').html(rowData[1]).find('td, *[data-departments]');
             const staffId = staffCell.data('staff-id');
-            const departmentIds = departmentCell.data('department-ids');
+            const departmentNames = departmentCell.data('departments');
 
             data.push({
                 staffId: staffId,
-                departmentIds: (departmentIds || '').toString().split(',') // string => array
+                departments: departmentNames.split(',')
             });
         });
 
         return data;
     }
 
+    //Require to select user
+    function demoSubmitCompany() {
+        const companyData = {
+            "CompanyName": "ABC Biz Solutions Sdn Bhd",
+            "RegistrationNumber": "202401234567",
+            "EmployerNumber": "E1234567890",
+            "TaxIdentificationNumber": "TIN99887766",
+            "YearEndMonth": "December",
+            "IncorporationDate": "2022-07-15T00:00:00",
+            "CompanyType": "SdnBhd",
+            "ComplianceDate": {
+                "FirstYearAccountStart": "2022-07-15T00:00:00",
+                "AGMDate": "2023-09-01T00:00:00",
+                "AccountDueDate": "2023-10-31T00:00:00",
+                "AnniversaryDate": "2023-07-15T00:00:00",
+                "AnnualReturnDueDate": "2023-11-15T00:00:00",
+                "Notes": "First year compliance schedule confirmed"
+            },
+            "MsicCodeIds": [1001, 1002],
+            "DepartmentsIds": [1, 2],
+            "CompanyOwners": [
+                {
+                    "CompanyId": null,
+                    "NamePerIC": "Tan Ah Kow",
+                    "ICOrPassportNumber": "800101-01-1234",
+                    "Position": "Director",
+                    "TaxReferenceNumber": "SG12345678",
+                    "Email": "tan.ah.kow@example.com",
+                    "PhoneNumber": "+60123456789",
+                    "OwnershipType": "IndividualOwner"
+                }
+            ],
+            "CommunicationContacts": [
+                {
+                    "CompanyId": null,
+                    "ContactName": "Alice Lee",
+                    "WhatsApp": "+60123456789",
+                    "Email": "alice@example.com",
+                    "Remark": "Handles all audit queries",
+                    "Position": "Manager"
+                }
+            ],
+            "OfficialContacts": [
+                {
+                    "CompanyId": null,
+                    "Address": "123, Jalan Example, 50450 Kuala Lumpur",
+                    "OfficeTel": "03-12345678",
+                    "Email": "admin@abcbiz.com",
+                    "Remark": "Registered office"
+                }
+            ],
+            "HandleUsers": getHandleUserTableData()
+        }
+        $.ajax({
+            url: `${urls.companies}/create`,
+            method: "POST",
+            data: companyData,
+            success: function (res) {
+                if (res) {
+                    Toast_Fire(ICON_SUCCESS, "Created", "Company created successfully.");
+                    window.location.href = `${urls.companies}/${res}/overview`;
+                }
+            },
+            error: (res) => {
+            }
+        })
+    }
 })

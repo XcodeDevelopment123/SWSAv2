@@ -20,7 +20,7 @@ ICompanyOfficialContactRepository repo,
 ISystemAuditLogService sysAuditService
     ) : ICompanyOfficialContactService
 {
-    public async Task<int> CreateContact(CreateCompanyOfficialContactRequest req)
+    public async Task<int> Create(CreateCompanyOfficialContactRequest req)
     {
         if (!req.CompanyId.HasValue)
         {
@@ -39,7 +39,7 @@ ISystemAuditLogService sysAuditService
         return data.Id;
     }
 
-    public async Task<bool> EditContact(EditCompanyOfficialContactRequest req)
+    public async Task<bool> Edit(EditCompanyOfficialContactRequest req)
     {
         if (req.CompanyId.HasValue)
         {
@@ -70,7 +70,7 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<bool> DeleteContact(int ownerId)
+    public async Task<bool> Delete(int ownerId)
     {
         var data = await repo.GetByIdAsync(ownerId);
         Guard.AgainstNullData(data, "Company Official Contact not found");

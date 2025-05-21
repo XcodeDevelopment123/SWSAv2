@@ -19,7 +19,7 @@ ISystemAuditLogService sysAuditService
     ) : ICompanyWorkProgressService
 {
 
-    public async Task<bool> EditCompanyWorkProgress(EditCompanyWorkProgressRequest req)
+    public async Task<bool> Edit(EditCompanyWorkProgressRequest req)
     {
         var progress = await repo.GetByIdAsync(req.ProgressId);
         Guard.AgainstNullData(progress, "Work Progress not found.");

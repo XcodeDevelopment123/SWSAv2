@@ -2,9 +2,9 @@
 
 namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 
-public class EditCompanyStaffInfoRequest
+public class EditCompanyCommunicationContactRequest
 {
-    public string StaffId { get; set; }
+    public int ContactId { get; set; }
     public int? CompanyId { get; set; }
     public int? CompanyDepartmentId { get; set; }
     public string ContactName { get; set; } = null!;

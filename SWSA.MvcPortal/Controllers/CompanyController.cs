@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -9,13 +8,11 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("companies")]
 public class CompanyController(
     ICompanyService service,
-    ICompanyOwnerService companyOwnerService,
-    ICompanyComplianceDateService companyComplianceDateService,
-    ICompanyOfficialContactService companyOfficialContactService,
     IMsicCodeService msicCodeService,
     IUserService userService
     ) : BaseController
 {
+    #region Page/View
     [Route("")]
     public async Task<IActionResult> List()
     {
@@ -62,98 +59,47 @@ public class CompanyController(
         var cp = await service.GetCompanyByIdAsync(companyId);
         return View(cp);
     }
+    #endregion
 
-    [Route("create")]
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateCompanyRequest req)
-    {
-        var result = await service.CreateCompany(req);
-        return Json(result);
-    }
-
-    [Route("edit")]
-    [HttpPost]
-    public async Task<IActionResult> Edit(EditCompanyRequest req)
-    {
-        var result = await service.UpdateCompanyInfo(req);
-        return Json(result);
-    }
-
-    [Route("{companyId}/delete")]
-    [HttpDelete]
-    public async Task<IActionResult> Delete([FromRoute] int companyId)
-    {
-        await service.DeleteCompanyByIdAsync(companyId);
-        return Json(true);
-    }
-
-    [Route("compliance-date/edit")]
-    [HttpPost]
-    public async Task<IActionResult> EditComplianceDate(EditCompanyComplianceDate req)
-    {
-        var result = await companyComplianceDateService.SaveComplianceDate(req);
-        return Json(true);
-    }
-
-    [Route("owner/create")]
-    [HttpPost]
-    public async Task<IActionResult> CreateOwner(CreateCompanyOwnerRequest req)
-    {
-        var result = await companyOwnerService.CreateOwner(req);
-        return Json(result);
-    }
-
-    [Route("owner/edit")]
-    [HttpPost]
-    public async Task<IActionResult> EditOwner(EditCompanyOwnerRequest req)
-    {
-        var result = await companyOwnerService.EditOwner(req);
-        return Json(true);
-    }
-
-    [Route("owner/{ownerId}/delete")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteOwner([FromRoute] int ownerId)
-    {
-        var result = await companyOwnerService.DeleteOwner(ownerId);
-        return Json(true);
-    }
-
-    [Route("official-contact/create")]
-    [HttpPost]
-    public async Task<IActionResult> CreateOfficeContact(CreateCompanyOfficialContactRequest req)
-    {
-        var result = await companyOfficialContactService.CreateContact(req);
-        return Json(result);
-    }
-
-    [Route("official-contact/edit")]
-    [HttpPost]
-    public async Task<IActionResult> EditOfficeContact(EditCompanyOfficialContactRequest req)
-    {
-        var result = await companyOfficialContactService.EditContact(req);
-        return Json(true);
-    }
-
-    [Route("official-contact/{contactId}/delete")]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteOfficeContact([FromRoute] int contactId)
-    {
-        var result = await companyOfficialContactService.DeleteContact(contactId);
-        return Json(true);
-    }
-
-    [Route("api/{companyId}")]
+    #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpGet("{companyId}")]
     public async Task<IActionResult> GetCompanyDetailById([FromRoute] int companyId)
     {
         var data = await service.GetCompanyByIdAsync(companyId);
         return Json(data);
     }
 
-    [Route("api/selections")]
+    [InternalAjaxOnly]
+    [HttpGet("selections")]
     public async Task<IActionResult> GetCompanySelectionslById()
     {
         var data = await service.GetCompanySelectionAsync();
-        return Json(data);
+        return Ok(data);
     }
+
+    [InternalAjaxOnly]
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(CreateCompanyRequest req)
+    {
+        var result = await service.Create(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("update")]
+    public async Task<IActionResult> Edit(EditCompanyRequest req)
+    {
+        var result = await service.Edit(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpDelete("{companyId}/delete")]
+    public async Task<IActionResult> Delete([FromRoute] int companyId)
+    {
+        var result = await service.Delete(companyId);
+        return Ok(result);
+    }
+    #endregion
 }

@@ -20,33 +20,24 @@ using System.ComponentModel.Design;
 
 namespace SWSA.MvcPortal.Services;
 
-public class CompanyStaffService(
+public class CompanyCommunicationContactService(
 IMemoryCache cache,
 MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IUserContext userContext,
-ICompanyStaffRepository repo,
+ICompanyCommunicationContactRepository repo,
 ISystemAuditLogService sysAuditService
-    ) : ICompanyStaffService
+    ) : ICompanyCommunicationService
 {
-    public async Task<CompanyStaffVM> GetStaffByStaffId(string staffId)
-    {
-        var data = await repo.GetByStaffId(staffId);
-        Guard.AgainstNullData(data, "Company staff not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
-
-        return mapper.Map<CompanyStaffVM>(data);
-    }
-
-    public async Task<List<CompanyStaffVM>> GetStaffsByCompanyId(int companyId)
+    public async Task<List<CompanyCommunicationContactVM>> GetCommunicationContactsByCompanyId(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
 
         var data = await repo.GetAllByCompanyIdAsync(companyId);
-        return mapper.Map<List<CompanyStaffVM>>(data); ;
+        return mapper.Map<List<CompanyCommunicationContactVM>>(data); ;
     }
 
-    public async Task<int> CreateStaff(CreateCompanyStaffRequest req)
+    public async Task<int> Create(CreateCompanyCommunicationContactRequest req)
     {
         if (!req.CompanyId.HasValue)
         {
@@ -54,17 +45,17 @@ ISystemAuditLogService sysAuditService
         }
         Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
 
-        var data = mapper.Map<CompanyStaff>(req);
+        var data = mapper.Map<CompanyCommunicationContact>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
 
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyStaff, data.CompanyId.ToString(), $"Company staff login profile: {data.ContactName}", data);
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyCommunicationContact, data.Id.ToString(), $"Company communication: {data.ContactName}", data);
         sysAuditService.LogInBackground(log);
         return data.Id;
     }
 
-    public async Task<bool> EditStaff(EditCompanyStaffInfoRequest req)
+    public async Task<bool> Edit(EditCompanyCommunicationContactRequest req)
     {
         if (!req.CompanyId.HasValue)
         {
@@ -72,7 +63,7 @@ ISystemAuditLogService sysAuditService
         }
         Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
 
-        var data = await repo.GetByStaffId(req.StaffId);
+        var data = await repo.GetByIdAsync(req.ContactId);
 
         Guard.AgainstNullData(data, "Company Staff not found");
 
@@ -92,14 +83,14 @@ ISystemAuditLogService sysAuditService
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data);
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyStaff, data.StaffId.ToString(), $"Company staff login profile: {data.ContactName}", oldData, data);
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyCommunicationContact, data.Id.ToString(), $"Company communication contact: {data.ContactName}", oldData, data);
         sysAuditService.LogInBackground(log);
         return true;
     }
 
-    public async Task<bool> DeleteStaff(string staffId)
+    public async Task<bool> Delete(int id)
     {
-        var data = await repo.GetByStaffId(staffId);
+        var data = await repo.GetByIdAsync(id);
 
         Guard.AgainstNullData(data, "Company Staff not found");
         Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
@@ -108,12 +99,12 @@ ISystemAuditLogService sysAuditService
         await repo.SaveChangesAsync();
         UpdateCompanyCommunicationContactCache(data!, true);
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyStaff, data!.CompanyId.ToString(), $"Company staff: {data.ContactName}", data);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyCommunicationContact, data!.CompanyId.ToString(), $"Company communication contact: {data.ContactName}", data);
         sysAuditService.LogInBackground(log);
         return true;
     }
 
-    private void UpdateCompanyCommunicationContactCache(CompanyStaff contact, bool isRemove = false)
+    private void UpdateCompanyCommunicationContactCache(CompanyCommunicationContact contact, bool isRemove = false)
     {
         string cacheList = $"{DataCacheKey.Companies}";
         string cacheDetailKey = $"{DataCacheKey.Companies}_{contact.CompanyId}_Details";

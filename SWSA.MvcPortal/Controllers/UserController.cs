@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.Users;
-using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
@@ -10,7 +9,7 @@ public class UserController(
     IUserService service
     ) : BaseController
 {
-
+    #region Page/View
     [Route("")]
     public async Task<IActionResult> List()
     {
@@ -31,32 +30,38 @@ public class UserController(
         return View();
     }
 
-    [Route("create")]
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateUserRequest req)
-    {
-        var result = await service.CreateUser(req);
-        return Json(result);
-    }
-
     [Route("{staffId}/edit")]
     public async Task<IActionResult> Edit([FromRoute] string staffId)
     {
         var data = await service.GetUserByIdAsync(staffId);
         return View(data);
     }
+    #endregion
 
+    #region API/Ajax
+
+    [InternalAjaxOnly]
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(CreateUserRequest req)
+    {
+        var result = await service.Create(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
     [HttpPost("edit")]
     public async Task<IActionResult> Edit(EditUserRequest req)
     {
-        var result = await service.UpdateUserInfo(req);
-        return Json(result);
+        var result = await service.Edit(req);
+        return Ok(result);
     }
 
+    [InternalAjaxOnly]
     [HttpDelete("{staffId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] string staffId)
     {
         var result = await service.DeleteUserByIdAsync(staffId);
-        return Json(result);
+        return Ok(result);
     }
+    #endregion
 }

@@ -23,7 +23,7 @@ ISystemAuditLogService sysAuditService
     ) : ICompanyComplianceDateService
 {
 
-    public async Task<bool> SaveComplianceDate(EditCompanyComplianceDate req)
+    public async Task<bool> Edit(EditCompanyComplianceDate req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
         var data = await repo.GetByCompanyId(req.CompanyId);

@@ -2,7 +2,6 @@
     const $companyId = $("#companyId");
 
     //#region Company Form 
-
     const $companyForm = $("#companyForm");
     const companyFormInputs = {
         companyName: $companyForm.find('input[name="companyName"]'),
@@ -12,9 +11,7 @@
         yearEndMonth: $companyForm.find('input[name="yearEndMonth"]'),
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
         companyType: $companyForm.find('select[name="companyType"]'),
-        status: $companyForm.find('select[name="companyStatus"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
-        departmentsIds: $companyForm.find('select[name="departmentsIds"]')
     }
 
     $companyForm.validate({
@@ -40,15 +37,9 @@
             companyType: {
                 required: true
             },
-            companyStatus: {
-                required: true
-            },
             msicCodesIds: {
                 required: true
             },
-            departmentsIds: {
-                required: false
-            }
         },
         messages: {
             companyName: {
@@ -106,7 +97,7 @@
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.companyId = $companyId.val();
         $.ajax({
-            url: `${urls.companies}/edit`,
+            url: `${urls.companies}/update`,
             method: "POST",
             data: companyData,
             success: function (res) {
@@ -136,7 +127,7 @@
         const dateData = getFormData(complianceDateFormInputs);
         dateData.companyId = $companyId.val();
         $.ajax({
-            url: `${urls.company_compliance_date}/edit`,
+            url: `${urls.company_compliance_date}/update`,
             method: "POST",
             data: { req: dateData },
             success: function (res) {
@@ -239,7 +230,7 @@
         const ownerData = getFormData(ownerFormInputs);
         ownerData.companyId = $companyId.val();
         ownerData.ownerId = editOwner.id;
-        const apiUrl = editOwner.isEdit ? `${urls.company_owner}/edit` : `${urls.company_owner}/create`;
+        const apiUrl = editOwner.isEdit ? `${urls.company_owner}/update` : `${urls.company_owner}/create`;
 
         $.ajax({
             url: apiUrl,
@@ -350,7 +341,6 @@
         remark: $officialContactForm.find('input[name="officialRemark"]')
     };
 
-
     let editOfficialContact = {
         isEdit: false,
         index: -1,
@@ -412,7 +402,7 @@
         const contactData = getFormData(officialContactFormInputs);
         contactData.companyId = $companyId.val();
         contactData.contactId = editOfficialContact.id;
-        const apiUrl = editOfficialContact.isEdit ? `${urls.company_official_contact}/edit` : `${urls.company_official_contact}/create`;
+        const apiUrl = editOfficialContact.isEdit ? `${urls.company_official_contact}/update` : `${urls.company_official_contact}/create`;
 
         $.ajax({
             url: apiUrl,
@@ -490,56 +480,56 @@
 
     //#endregion
 
-    //#region Staff Contact Form 
-    const $staffForm = $("#staffContactForm");
-    const $btnAddStaff = $("#btnAddStaffContact");
-    const $btnCancelStaff = $("#btnCancelStaffContact");
+    //#region Communication Contact Form 
+    const $communicationContactForm = $("#communicationContactForm");
+    const $btnAddCommunication = $("#btnAddCommunicationContact");
+    const $btnCancelCommunication = $("#btnCancelCommunicationContact");
 
-    const staffFormInputs = {
-        contactName: $staffForm.find('input[name="staffName"]'),
-        whatsApp: $staffForm.find('input[name="staffWhatsapp"]'),
-        email: $staffForm.find('input[name="staffEmail"]'),
-        remark: $staffForm.find('input[name="staffRemark"]'),
-        position: $staffForm.find('select[name="staffPosition"]')
+    const communicationContactFormInputs = {
+        contactName: $communicationContactForm.find('input[name="contactName"]'),
+        whatsApp: $communicationContactForm.find('input[name="contactWhatsapp"]'),
+        email: $communicationContactForm.find('input[name="contactEmail"]'),
+        remark: $communicationContactForm.find('input[name="contactRemark"]'),
+        position: $communicationContactForm.find('select[name="contactPosition"]')
     };
 
-    let editStaff = {
+    let editCommunicationContact = {
         isEdit: false,
         index: -1,
         id: ""
     };
 
-    $staffForm.validate({
+    $communicationContactForm.validate({
         rules: {
-            staffName: {
+            contactName: {
                 required: true
             },
-            staffWhatsapp: {
+            contactWhatsapp: {
                 required: true
             },
-            staffEmail: {
+            contactEmail: {
                 required: true,
                 email: true
             },
-            staffRemark: {
+            contactRemark: {
                 required: false
             },
-            staffPosition: {
+            contactPosition: {
                 required: true
             }
         },
         messages: {
-            staffName: {
+            contactName: {
                 required: "Contact Name is required."
             },
-            staffWhatsapp: {
+            contactWhatsapp: {
                 required: "WhatsApp number is required."
             },
-            staffEmail: {
+            contactEmail: {
                 required: "Email is required.",
                 email: "Please enter a valid email address."
             },
-            staffPosition: {
+            contactPosition: {
                 required: "Position is required."
             }
         },
@@ -560,29 +550,29 @@
         }
     });
 
-    $staffForm.on('submit', function (e) {
+    $communicationContactForm.on('submit', function (e) {
         e.preventDefault();
 
-        if (!$staffForm.valid()) {
+        if (!$communicationContactForm.valid()) {
             return;
         }
 
-        const staffData = getFormData(staffFormInputs);
-        staffData.companyId = $companyId.val();
-        staffData.staffId = editStaff.id;
+        const communicationData = getFormData(communicationContactFormInputs);
+        communicationData.companyId = $companyId.val();
+        communicationData.contactId = editCommunicationContact.id;
 
-        const apiUrl = editStaff.isEdit ? `${urls.company_staffs}/edit` : `${urls.company_staffs}/create`;
+        const apiUrl = editCommunicationContact.isEdit ? `${urls.company_cm_contact}/update` : `${urls.company_cm_contact}/create`;
 
         $.ajax({
             url: apiUrl,
             method: "POST",
-            data: { req: staffData },
+            data: { req: communicationData },
             success: function (res) {
 
-                staffData.staffId = editStaff.isEdit ? editStaff.id : res;
-                addOrUpdateStaffContactRow(staffData);
-                Toast_Fire(ICON_SUCCESS, "Success", editStaff.isEdit ? "Staff saved successfully." : "Staff added successfully.");
-                $btnCancelStaff.trigger("click");
+                communicationData.contactId = editCommunicationContact.isEdit ? editCommunicationContact.id : res;
+                addOrUpdateCommunicationContactRow(communicationData);
+                Toast_Fire(ICON_SUCCESS, "Success", editCommunicationContact.isEdit ? "Staff saved successfully." : "Staff added successfully.");
+                $btnCancelCommunication.trigger("click");
             },
             error: function () {
                 Toast_Fire(ICON_ERROR, "Something went wrong", "Please try again later.");
@@ -590,58 +580,58 @@
         });
     });
 
-    $(document).on("click", ".btn-edit-staff-ct", function () {
-        const row = staffContactTable.row($(this).closest("tr"));
+    $(document).on("click", ".btn-edit-communication-ct", function () {
+        const row = communicationContactTable.row($(this).closest("tr"));
         const rowData = row.data();
         row.select();
 
-        editStaff.isEdit = true;
-        editStaff.id = $(this).data("id");
-        editStaff.index = row.index();
+        editCommunicationContact.isEdit = true;
+        editCommunicationContact.id = $(this).data("id");
+        editCommunicationContact.index = row.index();
 
-        staffFormInputs.contactName.val(rowData[0]);
-        staffFormInputs.whatsApp.val(rowData[1]);
-        staffFormInputs.email.val(rowData[2]);
-        staffFormInputs.position.val(rowData[3]).trigger("change");
-        staffFormInputs.remark.val(rowData[4]);
+        communicationContactFormInputs.contactName.val(rowData[0]);
+        communicationContactFormInputs.whatsApp.val(rowData[1]);
+        communicationContactFormInputs.email.val(rowData[2]);
+        communicationContactFormInputs.position.val(rowData[3]).trigger("change");
+        communicationContactFormInputs.remark.val(rowData[4]);
 
-        $btnAddStaff.text("Save");
-        $btnCancelStaff.show();
+        $btnAddCommunication.text("Save");
+        $btnCancelCommunication.show();
     });
 
-    $btnCancelStaff.on("click", function () {
-        editStaff = {
+    $btnCancelCommunication.on("click", function () {
+        editCommunicationContact = {
             isEdit: false,
             index: -1,
             id: ""
         };
 
-        staffFormInputs.contactName.val("");
-        staffFormInputs.whatsApp.val("");
-        staffFormInputs.email.val("");
-        staffFormInputs.remark.val("");
-        staffFormInputs.position.val("").trigger("change");
+        communicationContactFormInputs.contactName.val("");
+        communicationContactFormInputs.whatsApp.val("");
+        communicationContactFormInputs.email.val("");
+        communicationContactFormInputs.remark.val("");
+        communicationContactFormInputs.position.val("").trigger("change");
 
-        $btnAddStaff.text("Add");
-        $btnCancelStaff.hide();
-        staffContactTable.rows().deselect();
+        $btnAddCommunication.text("Add");
+        $btnCancelCommunication.hide();
+        communicationContactTable.rows().deselect();
     });
 
-    $(document).on("click", ".btn-delete-staff-ct", function () {
+    $(document).on("click", ".btn-delete-communication-ct", function () {
         const id = $(this).data("id");
         const name = $(this).data("name");
-        const row = staffContactTable.row($(this).closest("tr"));
+        const row = communicationContactTable.row($(this).closest("tr"));
 
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
             $.ajax({
-                url: `${urls.company_staffs}/${id}/delete`,
+                url: `${urls.company_cm_contact}/${id}/delete`,
                 method: "DELETE",
                 success: function () {
                     Toast_Fire(ICON_SUCCESS, "Success", "Communication contact deleted successfully.");
                     row.remove().draw(false);
 
-                    if (editStaff.isEdit) {
-                        $btnCancelStaff.trigger("click");
+                    if (editCommunicationContact.isEdit) {
+                        $btnCancelCommunication.trigger("click");
                     }
                 },
                 error: function () {
@@ -660,7 +650,7 @@
 
     const handleUserFormInputs = {
         handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
-        userDepartmentIds: $handleUserForm.find('select[name="userDepartmentIds"]'),
+        userDepartments: $handleUserForm.find('select[name="userDepartments"]'),
     };
 
     let editHandleUser = {
@@ -675,7 +665,7 @@
             handleStaffId: {
                 required: true
             },
-            userDepartmentIds: {
+            userDepartments: {
                 required: true
             },
         },
@@ -683,8 +673,8 @@
             handleStaffId: {
                 required: "User is required."
             },
-            userDepartmentIds: {
-                required: "Select at least one departments"
+            userDepartments: {
+                required: "Select at least one department"
             },
         },
         errorElement: 'span',
@@ -714,21 +704,19 @@
         const staffId = editHandleUser.isEdit ?editHandleUser.staffId: handleUserFormInputs.handleStaffId.val(); // staff ID
         const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
 
-        const departmentIds = handleUserFormInputs.userDepartmentIds.val(); // array of IDs
-        const departmentNames = handleUserFormInputs.userDepartmentIds.find('option:selected')
+        const departmentNames = handleUserFormInputs.userDepartments.find('option:selected')
             .map(function () { return $(this).text(); })
             .get(); // array of names
 
         const staffData = {
             staffId: staffId,
             name: `${staffName}`,
-            departmentIds: departmentIds,
-            departmentNames: departmentNames,
+            departments: departmentNames,
             companyId: $companyId.val()
         };
 
         const apiUrl = editHandleUser.isEdit
-            ? `${urls.companies}/${$companyId.val()}/handle-users/edit`
+            ? `${urls.companies}/${$companyId.val()}/handle-users/update`
             : `${urls.companies}/${$companyId.val()}/handle-users/create`;
 
         $.ajax({
@@ -738,7 +726,7 @@
             success: function (res) {
                 staffData.staffId = editHandleUser.isEdit ? editHandleUser.staffId : res;
                 addOrUpdateHandleUserRow(staffData);
-                Toast_Fire(ICON_SUCCESS, "Success", editStaff.isEdit ? "handle user saved successfully." : "handle user added successfully.");
+                Toast_Fire(ICON_SUCCESS, "Success", editCommunicationContact.isEdit ? "handle user saved successfully." : "handle user added successfully.");
                 handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
 
 
@@ -760,7 +748,7 @@
         editHandleUser.index = row.index();
 
         handleUserFormInputs.handleStaffId.prop("disabled", true).val($(this).data("staff-id")).trigger("change");
-        handleUserFormInputs.userDepartmentIds.val($(this).data("department-ids")).trigger("change");
+        handleUserFormInputs.userDepartments.val($(this).data("departments")).trigger("change");
 
         $btnAddHandleUser.text("Save");
         $btnCancelHandleUser.show();
@@ -774,7 +762,7 @@
         };
 
         handleUserFormInputs.handleStaffId.prop("disabled", false).val("").trigger("change");
-        handleUserFormInputs.userDepartmentIds.val("").trigger("change");
+        handleUserFormInputs.userDepartments.val("").trigger("change");
 
         $btnAddHandleUser.text("Add");
         $btnCancelHandleUser.hide();
@@ -852,7 +840,7 @@
         responsive: true
     });
 
-    const staffContactTable = $('#staffContactTable').DataTable({
+    const communicationContactTable = $('#communicationContactTable').DataTable({
         select: {
             style: 'single',
             selector: 'td .btn-edit-staff-ct'
@@ -927,33 +915,33 @@
         }
     }
 
-    function addOrUpdateStaffContactRow(data) {
+    function addOrUpdateCommunicationContactRow(data) {
         let html =
             `
    <div class="btn-group" role="group">
-       <button type="button" class="btn btn-sm btn-warning btn-edit-staff-ct mr-2" data-id="${data.staffId}" data-name="${data.contactName}" title="Edit">
+       <button type="button" class="btn btn-sm btn-warning btn-edit-communication-ct mr-2" data-id="${data.contactId}" data-name="${data.contactName}" title="Edit">
            <i class="fa fa-edit"></i>
        </button>
-       <button type="button" class="btn btn-sm btn-danger btn-delete-staff-ct" data-id="${data.staffId}" data-name="${data.contactName}"><i class="fa fa-trash"></i></button>
+       <button type="button" class="btn btn-sm btn-danger btn-delete-communication-ct" data-id="${data.contactId}" data-name="${data.contactName}"><i class="fa fa-trash"></i></button>
    </div>
                `;
-        if (editStaff.isEdit) {
-            staffContactTable.row(editStaff.index).data([
+        if (editCommunicationContact.isEdit) {
+            communicationContactTable.row(editCommunicationContact.index).data([
                 data.contactName,
                 data.whatsApp,
                 data.email,
-                data.remark,
                 data.position,
+                data.remark,
                 html
             ]).draw(false);
         }
         else {
-            staffContactTable.row.add([
+            communicationContactTable.row.add([
                 data.contactName,
                 data.whatsApp,
                 data.email,
-                data.remark,
                 data.position,
+                data.remark,
                 html
             ]).draw(false);
         }
@@ -1000,13 +988,13 @@
                 ${data.name}
             </td>`,
             `<td>
-                ${data.departmentNames.join(', ')}
+                ${data.departments.join(', ')}
             </td>`,
             `<td>
 				<div class="btn-group" role="group">
 			        <button type="button" class="btn btn-sm btn-warning btn-edit-handle-user mr-2"
 						    data-staff-id="${data.staffId}"
-						    data-department-ids="[${data.departmentIds}]"
+						    data-departments="[${data.departments}]"
 						    title="Edit">
 						<i class="fa fa-edit"></i>
 					</button>

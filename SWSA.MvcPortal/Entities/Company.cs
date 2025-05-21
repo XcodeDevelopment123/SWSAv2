@@ -30,18 +30,16 @@ public class Company
     [SystemAuditLog("Incorporation Date")]
     public DateTime? IncorporationDate { get; set; }
 
-    [SystemAuditLog("Company Status")]
-    public CompanyStatus Status { get; set; }
-
     [SystemAuditLog("Company Type")]
     public CompanyType CompanyType { get; set; }
     public bool IsDeleted { get; set; }
-    public CompanyComplianceDate CompanyComplianceDate { get; set; } = null!;
-    public ICollection<CompanyOwner> CompanyOwners { get; set; } = new List<CompanyOwner>();
-    public ICollection<CompanyStaff> CompanyStaffs { get; set; } = new List<CompanyStaff>();
-    public ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
-    public ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
+    public CompanyComplianceDate ComplianceDate { get; set; } = null!;
+    public virtual ICollection<CompanyWorkAssignment> WorkAssignments { get; set; } = new List<CompanyWorkAssignment>();
+    public virtual ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
+    public virtual ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();
+    public virtual ICollection<CompanyOwner> Owners { get; set; } = new List<CompanyOwner>();
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
+    public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
     public virtual ICollection<UserCompanyDepartment> UserCompanyDepartments { get; set; } = new List<UserCompanyDepartment>();
 
 }

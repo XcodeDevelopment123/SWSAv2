@@ -8,10 +8,10 @@ namespace SWSA.MvcPortal.Services.Interfaces;
 public interface ICompanyService
 {
     Task<List<CompanyListVM>> GetCompaniesAsync();
-    Task<int> CreateCompany(CreateCompanyRequest req);
+    Task<int> Create(CreateCompanyRequest req);
     Task<Company> GetCompanyByIdAsync(int companyId);
-    Task<Company> DeleteCompanyByIdAsync(int companyId);
-    Task<bool> UpdateCompanyInfo(EditCompanyRequest req);
+    Task<Company> Delete(int companyId);
+    Task<bool> Edit(EditCompanyRequest req);
     Task<List<CompanySelectionVM>> GetCompanySelectionAsync();
     Task<List<CompanyListVM>> GetCompaniesByTypeAsync(CompanyType type);
 }

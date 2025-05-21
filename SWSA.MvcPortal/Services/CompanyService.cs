@@ -63,7 +63,7 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data!;
     }
 
-    public async Task<int> CreateCompany(CreateCompanyRequest req)
+    public async Task<int> Create(CreateCompanyRequest req)
     {
         if (req.HandleUsers.Count == 0)
             throw new BusinessLogicException("Please select at least one user to handle this company");
@@ -83,7 +83,9 @@ IPermissionRefreshTracker permissionRefreshTracker
             foreach (var handleUser in req.HandleUsers)
             {
                 var userId = userIds[handleUser.StaffId];
-                var entities = UserCompanyDepartmentMapper.ToEntities(handleUser.Departments, cp.Id, userId);
+                var noRepeatDepartments = handleUser.Departments.Select(x => x).Distinct().ToList();
+
+                var entities = UserCompanyDepartmentMapper.ToEntities(noRepeatDepartments, cp.Id, userId);
                 allUserCompanyDepartments.AddRange(entities);
 
                 permissionRefreshTracker.MarkRefreshNeeded(handleUser.StaffId);
@@ -106,7 +108,7 @@ IPermissionRefreshTracker permissionRefreshTracker
         return cp.Id;
     }
 
-    public async Task<bool> UpdateCompanyInfo(EditCompanyRequest req)
+    public async Task<bool> Edit(EditCompanyRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
 
@@ -120,7 +122,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         data.TaxIdentificationNumber = req.TaxIdentificationNumber;
         data.YearEndMonth = req.YearEndMonth;
         data.IncorporationDate = req.IncorporationDate;
-        data.Status = req.Status;
         data.CompanyType = req.CompanyType;
 
         await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
@@ -134,7 +135,7 @@ IPermissionRefreshTracker permissionRefreshTracker
         return true;
     }
 
-    public async Task<Company> DeleteCompanyByIdAsync(int companyId)
+    public async Task<Company> Delete(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
 

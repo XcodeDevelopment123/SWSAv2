@@ -7,7 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     internal DbSet<User> Users { get; set; }
     internal DbSet<Company> Companies { get; set; }
-    internal DbSet<CompanyStaff> CompanyStaffs { get; set; }
+    internal DbSet<CompanyCommunicationContact> CompanyCommunicationContact { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
@@ -46,28 +46,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasMany(c => c.CompanyStaffs)
+            entity.HasMany(c => c.CommunicationContacts)
             .WithOne(cc => cc.Company)
             .HasForeignKey(cc => cc.CompanyId)
             .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company;
 
-            entity.HasOne(c => c.CompanyComplianceDate)
+            entity.HasOne(c => c.ComplianceDate)
             .WithOne(ccd => ccd.Company)
             .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
 
         });
 
-        modelBuilder.Entity<CompanyStaff>(entity =>
-        {
-            entity.HasIndex(tc => new { tc.StaffId }).IsUnique();
-
-            entity.Property(e => e.StaffId)
-         .HasComputedColumnSql(
-              "'CP-StaffId-' + RIGHT('000000' + CAST([Id] AS VARCHAR), 6)",
-              stored: true);
-
-        });
+        modelBuilder.Entity<CompanyCommunicationContact>(entity => { });
 
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });
