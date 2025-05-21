@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -142,4 +143,17 @@ public class CompanyController(
         return Json(true);
     }
 
+    [Route("api/{companyId}")]
+    public async Task<IActionResult> GetCompanyDetailById([FromRoute] int companyId)
+    {
+        var data = await service.GetCompanyByIdAsync(companyId);
+        return Json(data);
+    }
+
+    [Route("api/selections")]
+    public async Task<IActionResult> GetCompanySelectionslById()
+    {
+        var data = await service.GetCompanySelectionAsync();
+        return Json(data);
+    }
 }

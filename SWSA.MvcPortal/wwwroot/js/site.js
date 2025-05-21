@@ -16,6 +16,7 @@ const urls = {
     "system_audit_log": "/sys-audit-logs",
     "users": "/users",
 };
+
 // example use
 /**
  *  

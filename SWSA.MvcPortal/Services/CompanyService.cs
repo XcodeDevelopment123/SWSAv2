@@ -3,6 +3,7 @@ using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
 using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Commons.Services.Permission;
@@ -34,6 +35,15 @@ IPermissionRefreshTracker permissionRefreshTracker
     {
         var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
             : await repo.GetCompaniesByUserId(userContext.EntityId);
+        return mapper.Map<List<CompanyListVM>>(data);
+    }
+
+    public async Task<List<CompanyListVM>> GetCompaniesByTypeAsync(CompanyType type)
+    {
+        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+            : await repo.GetCompaniesByUserId(userContext.EntityId);
+
+        data = [.. data.Where(data => data.CompanyType == type)];
         return mapper.Map<List<CompanyListVM>>(data);
     }
 

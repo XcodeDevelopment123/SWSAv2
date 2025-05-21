@@ -1,0 +1,216 @@
+﻿@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.Companies
+@model List<CompanySelectionVM>
+@{
+	ViewData["Title"] = "CompanyList";
+}
+<link rel="stylesheet" href="~/css/secretary-list-company.css" asp-append-version="true" />
+
+<h3> Company List</h3>
+
+<div class="row">
+	<div class=" col-md-3" style="position:relative">
+		<!-- /.card -->
+		<div class="select-company-card card card-primary">
+			<div class="card-header">
+				<h3 class="card-title">Company List</h3>
+			</div>
+
+			<div class="card-body">
+				<div class="form-inline">
+					<label>Filter:</label>
+					<div class="input-group">
+						<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+						<div class="input-group-append">
+							<button class="btn btn-sidebar">
+								<i class="fas fa-search fa-fw"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="company-selection-container">
+					@foreach (var cp in Model)
+					{
+						<div class="company-item" data-id="@cp.CompanyId">
+							<p class="company-name">
+								Company :@cp.Name
+								<span class="company-regis">(@cp.RegistrationNumber)</span>
+							</p>
+
+						</div>
+					}
+				</div>
+
+
+
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
+
+	<div class="col-md-9">
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Company Information</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="card-body row">
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="companyName">Company Name</label>
+						<input readonly id="companyName" class="form-control " placeholder="xxx sdn.bhd." />
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="companyType">Company Type</label>
+						<input readonly id="companyType" class="form-control " placeholder="sdn bhd.." />
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="yearEndMonth">Year End Month</label>
+						<input readonly id="yearEndMonth" class="form-control " placeholder="May.." />
+					</div>
+				</div>
+
+				<div class="form-info-label col-12">
+					<label>Registration</label>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="incorpDate">Incorporation Date</label>
+						<div class="input-group">
+							<input disabled type="date" id="incorpDate" class="form-control" placeholder="Select date" />
+							<div class="input-group-append">
+								<span class="input-group-text">
+									<i class="fa fa-calendar"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="regisNumber">Registration Number</label>
+						<input readonly id="regisNumber" class="form-control " placeholder="2025041153513" />
+					</div>
+				</div>
+
+				<div class="form-info-label col-12">
+					<label>Tax Reference</label>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="eNumber">Employer Number (E Number)</label>
+						<input readonly id="eNumber" class="form-control" placeholder="12-3456789" />
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="tinNumber">Tax Identification Number (TIN)</label>
+						<input readonly id="tinNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
+					</div>
+				</div>
+
+
+				<div class="form-info-label col-12">
+					<label>MSIC Code</label>
+				</div>
+
+				<table id="msicDataTable" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>Code</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Scheduling</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="card-body row">
+				<div class="form-info-label col-12">
+					<label>Work Allocation Info</label>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="companyStatus">Company Status</label>
+						<input readonly id="companyStatus" class="form-control" />
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="companyStatus">Company Status</label>
+						<input readonly id="companyStatus" class="form-control" />
+					</div>
+				</div>
+			</div>
+			<!-- /.card-body -->
+		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Company Owner's Information </h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-tool" data-card-widget="collapse">
+						<i class="fas fa-minus"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="card-body row">
+				<div class="form-info-label col-12">
+					<label>Directors' Detail</label>
+				</div>
+
+				<table id="ownerTable" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>No</th>
+							<th>Name Per IC</th>
+							<th>IC / Password Number</th>
+							<th>Tax Referrence Number</th>
+							<th>Tel/Email</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/secertarys/list-company.js" asp-append-version="true"></script>
+}

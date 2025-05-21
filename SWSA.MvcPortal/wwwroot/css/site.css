@@ -101,3 +101,15 @@ input:disabled {
     margin-bottom: 10px;
     background: #f8f9fa;
 }
+
+.form-info-label {
+
+    margin: 1rem .5rem;
+    border-bottom: solid 1.5px #e0e0e0;
+    width:calc(100% - 1rem);
+}
+
+    .form-info-label label {
+        font-size: 0.85rem;
+        margin-left: -.5rem;
+    }
