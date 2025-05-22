@@ -1,6 +1,7 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Filters;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Models.Users;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
@@ -20,6 +21,7 @@ public class CompanyWorkVM
     [SystemAuditLog("Reminder Date")]
     public DateTime? ReminderDate { get; set; }
     public CompanyWorkProgressVM Progress { get; set; } = null!;
+    public AnnualReturnSubmissionVM Submission { get; set; }
     public Company Company { get; set; } = null!;
     public UserVM User { get; set; } = null!;
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();

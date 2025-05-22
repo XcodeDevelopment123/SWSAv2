@@ -10,10 +10,6 @@ public class AnnualReturnSubmission
     [Key]
     public int Id { get; set; }
 
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
-    public virtual Company Company { get; set; } = null!;
-
     [ForeignKey(nameof(WorkAssignment))]
     public int WorkAssignmentId { get; set; }
     public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
@@ -22,7 +18,7 @@ public class AnnualReturnSubmission
     public int Year { get; set; } // e.g. 2025
 
     [SystemAuditLog("Anniversary Date")]
-    public DateTime? AnniversaryDate { get; set; } //EST 17 months from  
+    public DateTime? AnniversaryDate { get; set; } //EST 17 months from  incopr date
 
     [SystemAuditLog("Targeted AR Date")]
     public DateTime? TargetedARDate { get; set; } // 7 Month from year end
@@ -45,4 +41,22 @@ public class AnnualReturnSubmission
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+    public AnnualReturnSubmission() { }
+
+    public AnnualReturnSubmission(Company cp)
+    {
+        Year = DateTime.Now.Year;
+        if (cp.IncorporationDate.HasValue)
+            AnniversaryDate = cp.IncorporationDate.Value.AddMonths(17);
+
+        if (cp.YearEndMonth.HasValue)
+        {
+            int year = DateTime.Now.Year;
+            int month = (int)cp.YearEndMonth.Value;
+            DateTime yearEnd = new DateTime(year, month, 1);
+            TargetedARDate = yearEnd.AddMonths(7);
+        }
+    }
+
 }

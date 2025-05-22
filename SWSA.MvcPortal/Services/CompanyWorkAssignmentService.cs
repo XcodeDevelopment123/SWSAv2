@@ -19,10 +19,8 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IUserContext userContext,
 ICompanyWorkAssignmentRepository repo,
+ICompanyRepository companyRepo,
 IUserRepository userRepo,
-IWorkAssignmentAccountMonthRepository accMonthRepo,
-IWorkAssignmentAuditMonthRepository auditMonthRepo,
-IWorkAssignmentUserMappingRepository workUserRepo,
 ISystemAuditLogService sysAuditService
     ) : ICompanyWorkAssignmentService
 {
@@ -56,11 +54,13 @@ ISystemAuditLogService sysAuditService
     {
         Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
 
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
         var entity = mapper.Map<CompanyWorkAssignment>(req);
-        if (entity.Progress == null)
-        {
-            entity.Progress = new CompanyWorkProgress();
-        }
+
+        entity.Progress = new CompanyWorkProgress();
+        entity.Submission = new AnnualReturnSubmission(cp!);
 
         var allStaffIds = (req.AuditUsers?.StaffIds ?? Enumerable.Empty<string>())
                     .Concat(req.AccountUsers?.StaffIds ?? Enumerable.Empty<string>())
@@ -124,7 +124,7 @@ ISystemAuditLogService sysAuditService
             keySelector: x => x.Month,
             createEntity: month => new WorkAssignmentAuditMonth
             {
-               Month = month,
+                Month = month,
             });
 
         task.AccountPlannedMonths.SyncWithKeys(
