@@ -74,8 +74,7 @@ namespace SWSA.MvcPortal.Migrations
                         name: "FK_AnnualReturnSubmissions_CompanyWorkAssignments_WorkAssignmentId",
                         column: x => x.WorkAssignmentId,
                         principalTable: "CompanyWorkAssignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

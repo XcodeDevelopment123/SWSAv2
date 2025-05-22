@@ -837,7 +837,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
                         .WithOne("Submission")
                         .HasForeignKey("SWSA.MvcPortal.Entities.AnnualReturnSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Company");

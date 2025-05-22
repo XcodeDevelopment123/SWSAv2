@@ -75,6 +75,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
         });
 
+        modelBuilder.Entity<AnnualReturnSubmission>(entity =>
+        {
+            entity.HasOne(x => x.WorkAssignment)
+                     .WithOne(p => p.Submission)
+                     .HasForeignKey<AnnualReturnSubmission>(x => x.WorkAssignmentId)
+                     .OnDelete(DeleteBehavior.NoAction);
+        });
+
         modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
         {
             entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId, entity.Department }).IsUnique();

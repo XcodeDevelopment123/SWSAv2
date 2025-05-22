@@ -12,7 +12,7 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250522071450_update-company-strike-off-and-annual-return")]
+    [Migration("20250522071839_update-company-strike-off-and-annual-return")]
     partial class updatecompanystrikeoffandannualreturn
     {
         /// <inheritdoc />
@@ -840,7 +840,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
                         .WithOne("Submission")
                         .HasForeignKey("SWSA.MvcPortal.Entities.AnnualReturnSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Company");
