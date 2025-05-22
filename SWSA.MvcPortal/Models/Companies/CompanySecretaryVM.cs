@@ -15,7 +15,7 @@ public class CompanySecretaryVM
     public string? TaxIdentificationNumber { get; set; }
     public List<CompanyMsicCodeVM> MsicCodes { get; set; } = new List<CompanyMsicCodeVM>();
     public List<CompanyOwnerVM> Owners { get; set; } = new List<CompanyOwnerVM>();
-    public List<CompanyWorkListVM> WorkAssignments { get; set; } = new List<CompanyWorkListVM>();
+    public List<CompanyWorkVM> WorkAssignments { get; set; } = new List<CompanyWorkVM>();
 
 
 }

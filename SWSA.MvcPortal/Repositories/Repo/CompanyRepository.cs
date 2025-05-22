@@ -49,6 +49,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
                  .Include(c => c.WorkAssignments).ThenInclude(c => c.AuditPlannedMonths)
                  .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
                  .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
+                 .Include(c => c.WorkAssignments).ThenInclude(c => c.Submission)
                  .Where(c => !c.IsDeleted)
                  .AsNoTracking();
 
@@ -70,6 +71,7 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.WorkAssignments).ThenInclude(c => c.AuditPlannedMonths)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.Submission)
             .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);

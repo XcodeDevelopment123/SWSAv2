@@ -33,14 +33,14 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<List<CompanyListVM>> GetCompaniesAsync()
     {
-        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
             : await repo.GetCompaniesByUserId(userContext.EntityId);
         return mapper.Map<List<CompanyListVM>>(data);
     }
 
     public async Task<List<CompanyListVM>> GetCompaniesByTypeAsync(CompanyType type)
     {
-        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
             : await repo.GetCompaniesByUserId(userContext.EntityId);
 
         data = [.. data.Where(data => data.CompanyType == type)];
@@ -49,7 +49,7 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
-        var data = userContext.IsSuperAdmin ? await GetCompaniesFromCacheAsync()
+        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
             : await repo.GetCompaniesByUserId(userContext.EntityId);
         return mapper.Map<List<CompanySelectionVM>>(data);
     }
@@ -57,7 +57,7 @@ IPermissionRefreshTracker permissionRefreshTracker
     public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);
+        var data = await repo.GetWithIncludedByIdAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
         return data!;
@@ -66,7 +66,7 @@ IPermissionRefreshTracker permissionRefreshTracker
     public async Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);
+        var data = await repo.GetWithIncludedByIdAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
         return mapper.Map<CompanySecretaryVM>(data);
@@ -121,7 +121,7 @@ IPermissionRefreshTracker permissionRefreshTracker
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
 
-        var data = await GetCompanyWithIncludedByIdFromCacheAsync(req.CompanyId);
+        var data = await repo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(data, "Company not found");
         var oldData = data.DeepClone();
 
@@ -148,7 +148,7 @@ IPermissionRefreshTracker permissionRefreshTracker
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
 
-        var data = await GetCompanyByIdFromCacheAsync(companyId);
+        var data = await repo.GetByIdAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
         ////Remove in db

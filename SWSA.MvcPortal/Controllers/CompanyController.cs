@@ -67,7 +67,7 @@ public class CompanyController(
     public async Task<IActionResult> GetCompanyDetailById([FromRoute] int companyId)
     {
         var data = await service.GetCompanyByIdAsync(companyId);
-        return Json(data);
+        return Ok(data);
     }
 
     [InternalAjaxOnly]
@@ -75,7 +75,7 @@ public class CompanyController(
     public async Task<IActionResult> GetCompanyDetailForSecretaryById([FromRoute] int companyId)
     {
         var data = await service.GetCompanyForSecretaryVMByIdAsync(companyId);
-        return Json(data);
+        return Ok(data);
     }
 
     [InternalAjaxOnly]
