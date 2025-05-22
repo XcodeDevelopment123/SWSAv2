@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
+//For Actual Submit record & Record Client Sign/Return record
 public class AnnualReturnSubmission
 {
     [Key]
@@ -13,6 +14,10 @@ public class AnnualReturnSubmission
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = null!;
 
+    [ForeignKey(nameof(WorkAssignment))]
+    public int WorkAssignmentId { get; set; }
+    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
+
     [SystemAuditLog("Submission Year")]
     public int Year { get; set; } // e.g. 2025
 
@@ -21,6 +26,7 @@ public class AnnualReturnSubmission
 
     [SystemAuditLog("Targeted AR Date")]
     public DateTime? TargetedARDate { get; set; } // 7 Month from year end
+
 
     [SystemAuditLog("Actual Date of Annual Return")]
     public DateTime? DateOfAnnualReturn { get; set; }

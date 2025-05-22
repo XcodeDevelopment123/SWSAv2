@@ -32,8 +32,21 @@ public class Company
 
     [SystemAuditLog("Company Type")]
     public CompanyType CompanyType { get; set; }
+    [SystemAuditLog("Is Striked Off")]
+    public bool IsStrikedOff { get; set; } = false;
+
+    [SystemAuditLog("Strike Off Status")]
+    public StrikeOffStatus StrikeOffStatus { get; set; } = StrikeOffStatus.NotApplied;
+
+    [SystemAuditLog("Strike Off Effective Date")]
+    public DateTime? StrikeOffEffectiveDate { get; set; }
+
+    [SystemAuditLog("Strike Off Remarks")]
+    public string? StrikeOffRemarks { get; set; }
     public bool IsDeleted { get; set; }
+
     public CompanyComplianceDate ComplianceDate { get; set; } = null!;
+    public virtual ICollection<CompanyStrikeOffSubmission> StrikeOffSubmissions { get; set; } = new List<CompanyStrikeOffSubmission>();
     public virtual ICollection<CompanyWorkAssignment> WorkAssignments { get; set; } = new List<CompanyWorkAssignment>();
     public virtual ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
     public virtual ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();

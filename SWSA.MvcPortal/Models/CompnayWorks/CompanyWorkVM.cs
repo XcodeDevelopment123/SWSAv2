@@ -14,7 +14,7 @@ public class CompanyWorkVM
     public ServiceScope ServiceScope { get; set; }
     public string? InternalNote { get; set; }
     public bool IsYearEndTask { get; set; }
-    public DateTime? SsmExtensionDate { get; set; }
+    public DateTime? SSMExtensionDate { get; set; }
     public DateTime? AGMDate { get; set; } //Annual General Meeting
     public DateTime? ARDueDate { get; set; } //Annual Return Due Date
     [SystemAuditLog("Reminder Date")]

@@ -52,6 +52,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                   .Include(c => c.Progress)
                   .Include(c => c.Company)
+                  .Include(c => c.Submission)
                   .Include(c => c.AccountPlannedMonths)
                   .Include(c => c.AuditPlannedMonths)
                   .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
@@ -67,6 +68,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                  .Include(c => c.Progress)
                  .Include(c => c.Company)
+                 .Include(c => c.Submission)
                  .Include(c => c.AccountPlannedMonths)
                  .Include(c => c.AuditPlannedMonths)
                  .Include(c => c.AssignedUsers).ThenInclude(c => c.User)

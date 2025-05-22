@@ -49,7 +49,7 @@ namespace SWSA.MvcPortal.Migrations
                 newName: "IsYearEndTask");
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "SsmExtensionDate",
+                name: "SSMExtensionDate",
                 table: "CompanyWorkAssignments",
                 type: "datetime2",
                 nullable: true);
@@ -115,7 +115,7 @@ namespace SWSA.MvcPortal.Migrations
                 name: "WorkAssignmentAuditMonth");
 
             migrationBuilder.DropColumn(
-                name: "SsmExtensionDate",
+                name: "SSMExtensionDate",
                 table: "CompanyWorkAssignments");
 
             migrationBuilder.RenameColumn(

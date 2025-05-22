@@ -116,7 +116,7 @@ ISystemAuditLogService sysAuditService
         task.ARDueDate = req.ARDueDate;
         task.AGMDate = req.AGMDate;
         task.ReminderDate = req.ReminderDate;
-        task.SsmExtensionDate = req.SsmExtensionDate;
+        task.SSMExtensionDate = req.SSMExtensionDate;
         task.UpdatedAt = DateTime.Now;
 
         task.AuditPlannedMonths.SyncWithKeys(

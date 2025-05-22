@@ -11,12 +11,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
+    internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
     internal DbSet<WorkAssignmentAuditMonth> WorkAssignmentAuditMonths { get; set; }
     internal DbSet<WorkAssignmentAccountMonth> WorkAssignmentAccountMonths { get; set; }
     internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
+    internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }

@@ -295,7 +295,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("ServiceScope")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("SsmExtensionDate")
+                    b.Property<DateTime?>("SSMExtensionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")

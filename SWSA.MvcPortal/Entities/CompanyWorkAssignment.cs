@@ -14,8 +14,7 @@ public class CompanyWorkAssignment
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = null!;
     [SystemAuditLog("Work Type")]
-    public WorkType WorkType { get; set; } // e.g. Annual Return, Audit Filing
-
+    public WorkType WorkType { get; set; } 
     [SystemAuditLog("Company Activity Level")]
     public CompanyActivityLevel CompanyActivityLevel { get; set; } // SSM-compliant business size
 
@@ -32,7 +31,7 @@ public class CompanyWorkAssignment
     public bool IsYearEndTask { get; set; } // YE to do
 
     [SystemAuditLog("SSM Extension Date")]
-    public DateTime? SsmExtensionDate { get; set; }
+    public DateTime? SSMExtensionDate { get; set; }
 
     [SystemAuditLog("Annual General Meeting Date")]
     public DateTime? AGMDate { get; set; } //Annual General Meeting
@@ -44,6 +43,7 @@ public class CompanyWorkAssignment
     public DateTime? ReminderDate { get; set; }
 
     public virtual CompanyWorkProgress? Progress { get; set; }
+    public virtual AnnualReturnSubmission? Submission { get; set; }
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
     public virtual ICollection<WorkAssignmentAccountMonth> AccountPlannedMonths { get; set; } = new List<WorkAssignmentAccountMonth>();
     public virtual ICollection<WorkAssignmentAuditMonth> AuditPlannedMonths { get; set; } = new List<WorkAssignmentAuditMonth>();

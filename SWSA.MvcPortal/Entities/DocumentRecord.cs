@@ -12,7 +12,7 @@ public class DocumentRecord
     [SystemAuditLog("Document Date")]
     public DateTime DocumentDate { get; set; }   // Date Received (for Incoming) or Date Returned (for Outgoing)
     [SystemAuditLog("Document Flow Type")]
-    public DocumentFlowType FlowType { get; set; } // Incoming or Outgoing  
+    public DocumentFlowType DocumentFlow  { get; set; } // Incoming or Outgoing  
     [SystemAuditLog("Document Type")]
     public DocumentType DocumentType { get; set; }
     [SystemAuditLog("Bag or Box Count")]

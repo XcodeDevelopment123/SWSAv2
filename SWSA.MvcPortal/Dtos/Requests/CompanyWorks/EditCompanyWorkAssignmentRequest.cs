@@ -10,7 +10,7 @@ public class EditCompanyWorkAssignmentRequest
     public bool IsYearEndTask { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
-    public DateTime? SsmExtensionDate { get; set; }
+    public DateTime? SSMExtensionDate { get; set; }
     public DateTime? AGMDate { get; set; } //Annual General Meeting
     public DateTime? ARDueDate { get; set; } //Annual Return Due Date
     public DateTime? ReminderDate { get; set; }
