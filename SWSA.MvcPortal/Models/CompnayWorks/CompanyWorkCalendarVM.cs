@@ -27,7 +27,8 @@ public class CompanyWorkCalendarVM
             _ => 0
         };
 
-        int daysLeft = (task.DueDate.Date - DateTime.Today).Days;
+        //      int daysLeft = (task.DueDate.Date - DateTime.Today).Days;
+        int daysLeft = 1;
         int lightness = Math.Clamp(70 - daysLeft * 3, 35, 70);
         int hash = task.Id.GetHashCode();
         int saturation = 60 + (Math.Abs(hash) % 20);
@@ -44,7 +45,7 @@ public class CompanyWorkCalendarVM
         {
             TaskId = task.Id.ToString(),
             Title = $"{task.ServiceScope} - {task.Company.Name}",
-            Start = task.DueDate.Date,
+            Start = DateTime.Today,
             AllDay = true,
             BackgroundColor = bg,
             BorderColor = border,

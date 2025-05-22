@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521092252_update-work-assignment-setting")]
+    partial class updateworkassignmentsetting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,11 +271,20 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("CompanyStatus")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InternalNote")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsYearEndTask")
                         .HasColumnType("bit");
@@ -306,6 +318,12 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AccountSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AnnualReturnSubmittedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -654,7 +672,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("UserCompanyDepartment");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentAccountMonth", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentAccountingMonth", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -672,7 +690,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("CompanyWorkAssignmentId");
 
-                    b.ToTable("WorkAssignmentAccountMonths");
+                    b.ToTable("WorkAssignmentAccountingMonth");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentAuditMonth", b =>
@@ -693,7 +711,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("CompanyWorkAssignmentId");
 
-                    b.ToTable("WorkAssignmentAuditMonths");
+                    b.ToTable("WorkAssignmentAuditMonth");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentUserMapping", b =>
@@ -706,7 +724,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.Property<string>("Department")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -718,10 +736,9 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WorkAssignmentId", "UserId", "Department")
-                        .IsUnique();
+                    b.HasIndex("WorkAssignmentId");
 
-                    b.ToTable("WorkAssignmentUserMappings");
+                    b.ToTable("WorkAssignmentUserMapping");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
@@ -863,10 +880,10 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentAccountMonth", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentAccountingMonth", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "CompanyWorkAssignment")
-                        .WithMany("AccountPlannedMonths")
+                        .WithMany("AccountingPlannedMonths")
                         .HasForeignKey("CompanyWorkAssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -926,13 +943,14 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
-                    b.Navigation("AccountPlannedMonths");
+                    b.Navigation("AccountingPlannedMonths");
 
                     b.Navigation("AssignedUsers");
 
                     b.Navigation("AuditPlannedMonths");
 
-                    b.Navigation("Progress");
+                    b.Navigation("Progress")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.MsicCode", b =>

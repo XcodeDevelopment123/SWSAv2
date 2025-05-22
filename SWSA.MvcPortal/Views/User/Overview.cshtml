@@ -179,12 +179,12 @@
 						@foreach (var task in assignedTask)
 						{
 							<tr>
-								<td>@task.CompanyName - @task.DepartmentName</td>
+								<td>@task.CompanyName</td>
 								<td>@task.WorkType</td>
 								<td>@task.ServiceScope.GetDisplayName()</td>
 								<td>@task.ActivitySize.GetDisplayName()</td>
-								<td>@task.YearToDo</td>
-								<td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
+								<td>-</td>
+								<td>-</td>
 								<td>@task.InternalNote</td>
 								<td>@task.Status.GetDisplayName()</td>
 								<td>

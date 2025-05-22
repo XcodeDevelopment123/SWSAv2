@@ -14,4 +14,5 @@ public interface ICompanyService
     Task<bool> Edit(EditCompanyRequest req);
     Task<List<CompanySelectionVM>> GetCompanySelectionAsync();
     Task<List<CompanyListVM>> GetCompaniesByTypeAsync(CompanyType type);
+    Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId);
 }

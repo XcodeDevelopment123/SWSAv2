@@ -13,6 +13,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
+    internal DbSet<WorkAssignmentAuditMonth> WorkAssignmentAuditMonths { get; set; }
+    internal DbSet<WorkAssignmentAccountMonth> WorkAssignmentAccountMonths { get; set; }
+    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
@@ -68,6 +71,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasOne(x => x.Progress)
             .WithOne(p => p.WorkAssignment)
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
+        });
+
+        modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
+        {
+            entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId, entity.Department }).IsUnique();
         });
 
 

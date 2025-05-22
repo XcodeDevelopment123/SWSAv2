@@ -14,7 +14,6 @@ public class CompanyProfile : Profile
         CreateMap<Company, CompanyListVM>()
            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))
-           .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.RegistrationNumber))
            .ForMember(dest => dest.CompanyDirectorName, opt => opt.MapFrom((src, dest) =>
            {
                var firstOwner = src.Owners.FirstOrDefault(c => c.Position == PositionType.Director);
@@ -37,9 +36,11 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.MsicCodes, opt => opt.MapFrom(src => src.MsicCodeIds.Select(id => new CompanyMsicCode(id)).ToList()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CompanyName))
             .ForMember(dest => dest.ComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate))
-            .ForMember(dest => dest.Owners, opt => opt.MapFrom(src => src.CompanyOwners))
-            
-            ;
+            .ForMember(dest => dest.Owners, opt => opt.MapFrom(src => src.CompanyOwners));
 
+        CreateMap<Company, CompanySecretaryVM>()
+   .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
+   .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))
+   .ForMember(dest=>dest.WorkAssignments,opt=>opt.MapFrom(src=>src.WorkAssignments));
     }
 }

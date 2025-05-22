@@ -71,6 +71,14 @@ public class CompanyController(
     }
 
     [InternalAjaxOnly]
+    [HttpGet("{companyId}/secretary")]
+    public async Task<IActionResult> GetCompanyDetailForSecretaryById([FromRoute] int companyId)
+    {
+        var data = await service.GetCompanyForSecretaryVMByIdAsync(companyId);
+        return Json(data);
+    }
+
+    [InternalAjaxOnly]
     [HttpGet("selections")]
     public async Task<IActionResult> GetCompanySelectionslById()
     {

@@ -14,12 +14,13 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	var cp = Model.Company;
 
-	var cpDpts = SelectHelper.GetDepartments(null);
-
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(null!);
 	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(null!);
 	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
-	var userSelections = Model.UserSelections;
+	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null!);
+	var monthOfYear = SelectHelper.GetEnumSelectList<MonthOfYear>(0);
+	
+	var isYearEndToDo = SelectHelper.GetYesNoSelection(null!);
 	var currentYear = DateTime.Now.Year;
 	var startYear = currentYear - 10;
 	var endYear = currentYear + 20;
@@ -75,6 +76,20 @@
 							<input readonly id="companyType" value="@cp.CompanyType.GetDisplayName()" class="form-control " />
 						</div>
 					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="yearEndMonth">Year End Month</label>
+							<div class="input-group">
+								<input readonly type="text" id="yearEndMonth" value="@cp.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 
 			</div>
@@ -84,21 +99,39 @@
 
 	<div class="col-md-12">
 		<!-- jquery validation -->
-		<form id="taskForm">
-			<div class="card card-secondary">
-				<div class="card-header">
-					<h3 class="card-title">Task / Work</h3>
-				</div>
-				<!-- /.card-header -->
-				<!-- form start -->
+		<div class="card card-secondary">
+			<div class="card-header">
+				<h3 class="card-title">Task / Work</h3>
+			</div>
+			<!-- /.card-header -->
+			<!-- form start -->
 
-				<div class="card-body">
-
+			<div class="card-body">
+				<form id="taskForm">
 					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Work Allocation Info</label>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="companyStatus">Company Status</label>
+								<select asp-items="companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="workType">Work Type</label>
-								<select asp-items="workTypes" id="flowType" name="workType" class="form-control select2">
+								<select asp-items="workTypes" id="workType" name="workType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="isYearEndTask">Year End To Do</label>
+								<select asp-items="isYearEndToDo" id="isYearEndTask" name="isYearEndTask" class="form-control select2">
 								</select>
 							</div>
 						</div>
@@ -121,66 +154,206 @@
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="dueDate">
-									Due Date
-									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The deadline of the task, will apply the date month and year for the month to do and year to do"></i>
-								</label>
-								<div class="input-group">
-									<input type="text" id="dueDate" name="dueDate" class="form-control" placeholder="Select date" />
-									<div class="input-group-append">
-										<span class="input-group-text">
-											<i class="fa fa-calendar"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- Handled By Staff -->
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="handledByStaffId">Handled By</label>
-								<select id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
-									@if (userSelections.Count == 0)
-									{
-										<option disabled value="">No user handle this company</option>
-									}
-									else
-									{
-										<option disabled value="">Please select</option>
-									}
-									@foreach (var user in userSelections)
-									{
-										<option value="@user.StaffId">
-											@user.FullName
-											@if (user.StaffId == UserContext.StaffId)
-											{
-												<span>(You)</span>
-											}
-										</option>
-									})
-
-								</select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
 								<label for="internalNote">Internal Note</label>
 								<input type="text" id="internalNote" name="internalNote" class="form-control" placeholder="(Optional)" />
 							</div>
 						</div>
-					</div>
-				</div>
-				<!-- /.card-body -->
-				<div class="card-footer ">
-					<button id="btnSubmitRequest" class="btn btn-primary float-end">Submit</button>
-				</div>
 
-				<!-- /.card -->
+						@* 		<div class="form-info-label col-12">
+							<label>SSM AR Due dates
+								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Default auto calculate from company compliance date"></i>
+
+							</label>
+						</div>
+ *@
+
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<form id="auditUserForm">
+					<div class="row">
+
+						<div class="form-info-label col-12">
+							<label>
+								Audit Work Info
+								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select month and assign user to handle"></i>
+							</label>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="auditMonthToDo">
+									Month To Do
+								</label>
+								<select asp-items="monthOfYear" id="auditMonthToDo" name="monthToDo" class="form-control select2" multiple="multiple" style="max-width:95%">
+								</select>
+							</div>
+						</div>
+
+						<table id="auditUserTable" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>User</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (!UserContext.IsSuperAdmin)
+								{
+									<tr>
+										<td data-staff-id="@UserContext.StaffId">
+											@UserContext.Name (@UserContext.Role.GetDisplayName())
+										</td>
+
+										<td>
+											<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Only super admin can remove"><i class="fa fa-trash"></i></button>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+
+						@if (UserContext.IsSuperAdmin)
+						{
+							<div class="divider-line"></div>
+
+							<div class="row">
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="auditUserStaffId">
+											User
+											<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this audit work."></i>
+										</label>
+										<select id="auditUserStaffId" name="staffId" class="form-control select2 ">
+											@if (Model.AuditUserSelections.Count == 0)
+											{
+												<option disabled value="">No user are handling audit of this company</option>
+											}
+											else
+											{
+												<option value="">Please select</option>
+											}
+
+											@foreach (var user in Model.AuditUserSelections)
+											{
+												<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
+											})
+
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-12">
+
+								<button type="submit" class="btn btn-primary float-end">Add</button>
+
+							</div>
+						}
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<form id="accountUserForm">
+					<div class="row">
+
+						<div class="form-info-label col-12">
+							<label>
+								Account Work Info
+								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select month and assign user to handle"></i>
+							</label>
+						</div>
+
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="accountMonthToDo">
+									Month To Do
+								</label>
+								<select asp-items="monthOfYear" id="accountMonthToDo" name="monthToDo" class="form-control select2" multiple="multiple" style="max-width:95%">
+								</select>
+							</div>
+						</div>
+
+						<table id="accountUserTable" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>User</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (!UserContext.IsSuperAdmin)
+								{
+									<tr>
+										<td data-staff-id="@UserContext.StaffId">
+											@UserContext.Name (@UserContext.Role.GetDisplayName())
+										</td>
+
+										<td>
+											<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Only super admin can remove"><i class="fa fa-trash"></i></button>
+										</td>
+									</tr>
+								}
+
+							</tbody>
+						</table>
+
+						@if (UserContext.IsSuperAdmin)
+						{
+							<div class="divider-line"></div>
+
+							<div class="row">
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="accountUserStaffId">
+											User
+											<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this account work."></i>
+										</label>
+										<select id="accountUserStaffId" name="staffId" class="form-control select2 ">
+											@if (Model.AccountingUserSelections.Count == 0)
+											{
+												<option disabled value="">No user are handling account of this company</option>
+											}
+											else
+											{
+												<option value="">Please select</option>
+											}
+
+											@foreach (var user in Model.AccountingUserSelections)
+											{
+												<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
+											})
+
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+
+								<button type="submit" class="btn btn-primary float-end">Add</button>
+							</div>
+						}
+					</div>
+				</form>
 			</div>
-		</form>
+		</div>
+		<!-- /.card-body -->
+		<!-- /.card -->
 	</div>
+
+	<div class="col-md-12">
+		<!-- /.card-body -->
+		<div class="float-end">
+			<button id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+		</div>
+	</div>
+
+
+
 </div>
+
 
 
 

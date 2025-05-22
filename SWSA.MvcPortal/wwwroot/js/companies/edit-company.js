@@ -729,7 +729,6 @@
                 Toast_Fire(ICON_SUCCESS, "Success", editCommunicationContact.isEdit ? "handle user saved successfully." : "handle user added successfully.");
                 handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
 
-
                 $btnCancelHandleUser.trigger("click");
             },
             error: function () {

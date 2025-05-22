@@ -21,47 +21,49 @@ public class AssignmentDueSoonJob(
             var tasks = await companyWorkAssignmentRepository.GetDueSoonAssignments();
             if (tasks.Count > 0)
             {
-                var groupedTasks = tasks
-                 .Where(t => t.AssignedUser != null && !string.IsNullOrEmpty(t.AssignedUser.PhoneNumber))
-                 .GroupBy(t => t.AssignedUser?.Id);
 
-                foreach (var group in groupedTasks)
-                {
-                    var user = group.First().AssignedUser!;
-                    var whatsapp = user.GetWhatsappNumber();
+                ///TODO : Uncomment and implement the logic to send WhatsApp messages
+                //var groupedTasks = tasks
+                // .Where(t => t.AssignedUser != null && !string.IsNullOrEmpty(t.AssignedUser.PhoneNumber))
+                // .GroupBy(t => t.AssignedUser?.Id);
 
-                    var taskListText = string.Join("\n\n", group.Select(ts =>
-                    {
-                        var daysLeft = (ts.DueDate.Date - DateTime.Today).Days;
-                        return $"""
-                            *Task:* {ts.ServiceScope}
-                            *Task ID:* {ts.Id}
-                            *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
-                            *Due Date:* {ts.DueDate:yyyy-MM-dd} ({daysLeft} day{(daysLeft == 1 ? "" : "s")} left)
-                            """;
-                    }));
+                //foreach (var group in groupedTasks)
+                //{
+                //    var user = group.First().AssignedUser!;
+                //    var whatsapp = user.GetWhatsappNumber();
 
-                    var wappyMessage = new WappyTemplateData
-                    {
-                        Body = $"""
-                            [SWSA] Reminder 🕒
+                //    var taskListText = string.Join("\n\n", group.Select(ts =>
+                //    {
+                //        var daysLeft = (ts.DueDate.Date - DateTime.Today).Days;
+                //        return $"""
+                //            *Task:* {ts.ServiceScope}
+                //            *Task ID:* {ts.Id}
+                //            *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
+                //            *Due Date:* {ts.DueDate:yyyy-MM-dd} ({daysLeft} day{(daysLeft == 1 ? "" : "s")} left)
+                //            """;
+                //    }));
 
-                            You have {group.Count()} upcoming task{(group.Count() > 1 ? "s" : "")} nearing deadline:
+                //    var wappyMessage = new WappyTemplateData
+                //    {
+                //        Body = $"""
+                //            [SWSA] Reminder 🕒
 
-                            {taskListText}
+                //            You have {group.Count()} upcoming task{(group.Count() > 1 ? "s" : "")} nearing deadline:
 
-                            Please review and take necessary action as soon as possible.
-                            *This is system auto generated*
-                            """
-                    };
-                    await messagingService.SendAsync(
-                        MessagingChannel.Wappy,
-                        whatsapp,
-                        MessagingTemplateCode.AssignmentWorkDueSoon,
-                        TemplateDataBuilder.From(wappyMessage),
-                        "Reminder: tasks due soon"
-                    );
-                }
+                //            {taskListText}
+
+                //            Please review and take necessary action as soon as possible.
+                //            *This is system auto generated*
+                //            """
+                //    };
+                //    await messagingService.SendAsync(
+                //        MessagingChannel.Wappy,
+                //        whatsapp,
+                //        MessagingTemplateCode.AssignmentWorkDueSoon,
+                //        TemplateDataBuilder.From(wappyMessage),
+                //        "Reminder: tasks due soon"
+                //    );
+                //}
             }
 
             Log.Information($"[AssignmentDueSoonJob] {tasks.Count} due soon assignment found");

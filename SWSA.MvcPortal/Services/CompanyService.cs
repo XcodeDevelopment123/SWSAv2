@@ -63,6 +63,15 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data!;
     }
 
+    public async Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+        var data = await GetCompanyWithIncludedByIdFromCacheAsync(companyId);
+        Guard.AgainstNullData(data, "Company not found");
+
+        return mapper.Map<CompanySecretaryVM>(data);
+    }
+
     public async Task<int> Create(CreateCompanyRequest req)
     {
         if (req.HandleUsers.Count == 0)

@@ -1,32 +1,33 @@
 ﻿$(function () {
+    const isSuperAdmin = $("#isSuperAdmin").val() === 'True';
     //#region Task
     const $taskForm = $("#taskForm");
 
     const taskFormInputs = {
         taskId: $("#taskId"),
+        companyStatus: $taskForm.find('select[name="companyStatus"]'),
         workType: $taskForm.find('select[name="workType"]'),
+        isYearEndTask: $taskForm.find('select[name="isYearEndTask"]'),
         serviceScope: $taskForm.find('select[name="serviceScope"]'),
         companyActivityLevel: $taskForm.find('select[name="companyActivityLevel"]'),
-        dueDate: $taskForm.find('input[name="dueDate"]'),
-        assignedStaffId: $taskForm.find('select[name="handledByStaffId"]'),
         internalNote: $taskForm.find('input[name="internalNote"]'),
-        isCompleted: $taskForm.find('select[name="isCompleted"]'),
-        completedDate: $taskForm.find('input[name="completedDate"]'),
-        companyId: $("#companyId")
+        auditMonths: $taskForm.find('select[name="auditMonths"]'),
+        accountMonths: $taskForm.find('select[name="accountMonths"]'),
+        ssmExtensionDate: $taskForm.find('input[name="ssmExtensionDate"]'),
+        agmDate: $taskForm.find('input[name="agmDate"]'),
+        arDueDate: $taskForm.find('input[name="arDueDate"]'),
+        reminderDate: $taskForm.find('input[name="reminderDate"]'),
     };
-
-    taskFormInputs.isCompleted.on("change", function () {
-        const value = $(this).val();
-        taskFormInputs.completedDate.prop("disabled", value !== "true");
-        taskFormInputs.completedDate.removeClass("is-invalid");
-        taskFormInputs.completedDate.parent().next().remove();
-        taskFormInputs.completedDate.val("").trigger("change");
-    })
-
 
     $taskForm.validate({
         rules: {
+            companyStatus: {
+                required: true
+            },
             workType: {
+                required: true
+            },
+            isYearEndTask: {
                 required: true
             },
             serviceScope: {
@@ -35,23 +36,16 @@
             companyActivityLevel: {
                 required: true
             },
-            dueDate: {
-                required: true
-            },
-            handledByStaffId: {
-                required: true
-            },
-            completedDate: {
-                required: {
-                    depends: function () {
-                        return taskFormInputs.isCompleted.val() === "true";
-                    }
-                },
-            }
         },
         messages: {
+            companyStatus: {
+                required: "Please select a company status"
+            },
             workType: {
                 required: "Work type is required."
+            },
+            isYearEndTask: {
+                required: "Please define is year end task or not"
             },
             serviceScope: {
                 required: "Service scope is required."
@@ -59,15 +53,6 @@
             companyActivityLevel: {
                 required: "Company activity level is required."
             },
-            dueDate: {
-                required: "Due date is required."
-            },
-            handledByStaffId: {
-                required: "Please select a staff."
-            },
-            completedDate: {
-                required: "Completed date is require if is completed",
-            }
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -89,13 +74,11 @@
     $taskForm.on("submit", function (e) {
         e.preventDefault();
         //Css update
-
+        const taskData = getFormData(taskFormInputs);
         if (!$taskForm.valid()) return;
 
-        const taskData = getFormData(taskFormInputs);
-
         $.ajax({
-            url: `${urls.company_works}/edit`,
+            url: `${urls.company_works}/update`,
             method: "POST",
             data: taskData,
             success: function (res) {
@@ -196,8 +179,234 @@
 
     initSelect2();
 
-    flatpickr("#completedDate,#startDate,#endDate,#dueDate", {
+    flatpickr("#ssmExtensionDate,#agmDate,#arDueDate,#reminderDate,#completedDate,#startDate,#endDate", {
         allowInput: true
     });
 
+    //#region Audit Work Form
+    const $auditUserForm = $("#auditUserForm");
+    const auditUserFormInputs = {
+        staffId: $auditUserForm.find('select[name="staffId"]'),
+    };
+    const auditUserTable = $('#auditUserTable').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: false,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true
+    });
+
+    $auditUserForm.validate({
+        rules: {
+            staffId: {
+                required: true
+            },
+        },
+        messages: {
+            staffId: {
+                required: "User is required."
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.hasClass('select2-hidden-accessible')) {
+                element.next('.select2-container').after(error);
+            } else {
+                element.closest('.form-group').append(error);
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $auditUserForm.on('submit', function (e) {
+        e.preventDefault();
+
+        if (!$auditUserForm.valid()) {
+            return;
+        }
+
+        const staffId = auditUserFormInputs.staffId.val(); // staff ID
+        const staffName = auditUserFormInputs.staffId.find('option:selected').text(); // staff 名字
+
+        const req = {
+            staffId: staffId,
+            taskId: taskFormInputs.taskId.val(),
+            department: "Audit"
+        }
+
+        $.ajax({
+            url: `${urls.company_works}/add-user`,
+            method: "POST",
+            data: req,
+            success: function (res) {
+                if (res) {
+                    Toast_Fire(ICON_SUCCESS, "Add user to handle audit work");
+                    const data = {
+                        staffId: staffId,
+                        name: `${staffName}`,
+                    };
+
+                    const rowHtml = [
+                        `<td data-staff-id="${data.staffId}">
+                ${data.name}
+                    </td>`,
+                        `<td>
+                    <button type="button" class="${isSuperAdmin ? "btn-delete-user" : ""} btn btn-sm btn-danger btn-delete-row" 
+                     data-bs-toggle="tooltip"
+                     data-department="Audit"
+                     data-bs-placement="top" title="Only super admin can remove" value="${data.staffId}">
+                    
+                     <i class="fa fa-trash"></i>
+                    </button>
+                </td>`
+                    ];
+
+                    auditUserTable.row.add(rowHtml).draw(false);
+
+                    auditUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+                    auditUserFormInputs.staffId.val("").trigger('change');
+                }
+            }
+        });
+    });
+
+    //#endregion
+
+    //#region Account Work Form
+    const $accountUserForm = $("#accountUserForm");
+    const accountUserFormInputs = {
+        staffId: $accountUserForm.find('select[name="staffId"]'),
+    };
+
+    $accountUserForm.validate({
+        rules: {
+            staffId: {
+                required: true
+            },
+        },
+        messages: {
+            staffId: {
+                required: "User is required."
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.hasClass('select2-hidden-accessible')) {
+                element.next('.select2-container').after(error);
+            } else {
+                element.closest('.form-group').append(error);
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $accountUserForm.on('submit', function (e) {
+        e.preventDefault();
+
+        if (!$accountUserForm.valid()) {
+            return;
+        }
+
+        const staffId = accountUserFormInputs.staffId.val(); // staff ID
+        const staffName = accountUserFormInputs.staffId.find('option:selected').text(); // staff 名字
+
+        const req = {
+            staffId: staffId,
+            taskId: taskFormInputs.taskId.val(),
+            department: "Account"
+        }
+
+        $.ajax({
+            url: `${urls.company_works}/add-user`,
+            method: "POST",
+            data: req,
+            success: function (res) {
+                if (res) {
+                    Toast_Fire(ICON_SUCCESS, "Add user to handle account work");
+                    const data = {
+                        staffId: staffId,
+                        name: `${staffName}`,
+                    };
+
+                    const rowHtml = [
+                        `<td data-staff-id="${data.staffId}">
+                ${data.name}
+                    </td>`,
+                        `<td>
+                    <button type="button" class="${isSuperAdmin ? "btn-delete-user" : ""} btn btn-sm btn-danger btn-delete-row" 
+                     data-bs-toggle="tooltip" data-bs-placement="top" title="Only super admin can remove"
+                     data-department="Account"
+                     value="${data.staffId}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>`
+                    ];
+
+                    accountUserTable.row.add(rowHtml).draw(false);
+
+                    accountUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+                    accountUserFormInputs.staffId.val("").trigger('change');
+                }
+            }
+        });
+    });
+
+    const accountUserTable = $('#accountUserTable').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: false,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true
+    });
+    //#endregion
+
+    $(document).on("click", ".btn-delete-user", function () {
+        const staffId = $(this).val();
+        const department = $(this).data('department');
+        const name = $(this).data('name');
+        const req = {
+            staffId: staffId,
+            taskId: taskFormInputs.taskId.val(),
+            department: department
+        }
+        const row = $(this).closest('table').DataTable().row($(this).closest('tr'))
+
+        if (confirm(`Are you sure you want to remove "${name}" from work?`)) {
+            $.ajax({
+                url: `${urls.company_works}/remove-user`,
+                data: req,
+                method: "POST",
+                success: function (res) {
+                    if (res) {
+                        Toast_Fire(ICON_SUCCESS, "Removed", "user removed successfully.");
+                        if (department === "Audit") {
+                            auditUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', false);
+                        } else if (department === "Account") {
+                            accountUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', false);
+                        }
+                        row.remove().draw(false);
+                    }
+                },
+                error: (res) => {
+                    Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
+                }
+            })
+        }
+    })
 })

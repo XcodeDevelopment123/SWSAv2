@@ -22,51 +22,48 @@ public class CompanyWorkAssignment
     [SystemAuditLog("Service Scope")]
     public ServiceScope ServiceScope { get; set; }
 
-    [SystemAuditLog("Due Date")]
-    public DateTime DueDate { get; set; } // Required submission deadline
-
-    [SystemAuditLog("Is Completed")]
-    public bool IsCompleted { get; set; } = false;
-
-    [SystemAuditLog("Completed Date")]
-    public DateTime? CompletedDate { get; set; }
-
     [SystemAuditLog("Internal Note")]
     public string? InternalNote { get; set; }
 
     [SystemAuditLog("Company Status for This Task")]
     public CompanyStatus CompanyStatus { get; set; } // Dormant, Active, etc
 
-    [SystemAuditLog("Company Activity Code")]
-    public string? CompanyActivityType { get; set; } // A, AA, SD, etc
-
     [SystemAuditLog("Is Year-End Related Task")]
-    public bool IsYearEndActionRequired { get; set; } // YE to do
+    public bool IsYearEndTask { get; set; } // YE to do
 
-    [SystemAuditLog("Month Audit Is Planned")]
-    public int? AuditMonthToDo { get; set; } // Month (1–12)
+    [SystemAuditLog("SSM Extension Date")]
+    public DateTime? SsmExtensionDate { get; set; }
 
-    [ForeignKey(nameof(AssignedUser))]
-    public int? AssignedUserId { get; set; }
-    public virtual User? AssignedUser { get; set; }
-
-    [ForeignKey(nameof(AssignedAuditUser))]
-    public int? AssignedAuditUserId { get; set; }
-
-    [SystemAuditLog("Audit Staff Assigned")]
-    public virtual User? AssignedAuditUser { get; set; }
-
-    [SystemAuditLog("AGM Date")]
-    public DateTime? AGMDate { get; set; }
+    [SystemAuditLog("Annual General Meeting Date")]
+    public DateTime? AGMDate { get; set; } //Annual General Meeting
 
     [SystemAuditLog("Annual Return Due Date")]
-    public DateTime? ARDueDate { get; set; }
+    public DateTime? ARDueDate { get; set; } //Annual Return Due Date
 
     [SystemAuditLog("Reminder Date")]
     public DateTime? ReminderDate { get; set; }
 
-    public virtual CompanyWorkProgress Progress { get; set; } = null!;
+    public virtual CompanyWorkProgress? Progress { get; set; }
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
+    public virtual ICollection<WorkAssignmentAccountMonth> AccountPlannedMonths { get; set; } = new List<WorkAssignmentAccountMonth>();
+    public virtual ICollection<WorkAssignmentAuditMonth> AuditPlannedMonths { get; set; } = new List<WorkAssignmentAuditMonth>();
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+
+    #region Audit Log Use
+    [NotMapped]
+    [SystemAuditLog("Month Accounting Is Planned")]
+    public string AccountPlannedMonths_AuditLabel { get; set; } = default!;
+    [NotMapped]
+    [SystemAuditLog("Month Audit Is Planned")]
+    public string AuditPlannedMonths_AuditLabel { get; set; } = default!;
+
+    public void GenerateAuditLabel()
+    {
+        AccountPlannedMonths_AuditLabel = string.Join(", ", AccountPlannedMonths.Select(x => x.Month.ToString()));
+        AuditPlannedMonths_AuditLabel = string.Join(", ", AuditPlannedMonths.Select(x => x.Month.ToString()));
+    }
+    #endregion
 }

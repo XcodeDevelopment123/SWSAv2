@@ -74,8 +74,10 @@
         startLoading();
         $.ajax({
             type: "GET",
-            url: `${urls.companies}/api/${companyId}`,
+            url: `${urls.companies}/${companyId}/secretary`,
             success: function (res) {
+
+                console.log(res);
                 //Load details
                 stopLoading();
 
@@ -88,7 +90,7 @@
                 $("#eNumber").val(res.employerNumber);
                 $("#tinNumber").val(res.taxIdentificationNumber);
                 reloadMsic(res.msicCodes);
-                reloadOwner(res.companyOwners);
+                reloadOwner(res.owners);
             },
             error: function () {
                 $(".company-item.active").removeClass("active");
@@ -104,8 +106,8 @@
         msicTable.clear();
         msicCodes.forEach(item => {
             msicTable.row.add([
-                item.msicCode.code,
-                item.msicCode.description
+                item.code,
+                item.description
             ]);
         });
         msicTable.draw();

@@ -44,6 +44,10 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
                  .Include(c => c.CommunicationContacts)
                  .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
                  .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
+                 .Include(c => c.WorkAssignments).ThenInclude(c => c.AccountPlannedMonths)
+                 .Include(c => c.WorkAssignments).ThenInclude(c => c.AuditPlannedMonths)
+                 .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
+                 .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
                  .Where(c => !c.IsDeleted)
                  .AsNoTracking();
 
@@ -58,8 +62,12 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.Owners)
             .Include(c => c.OfficialContacts)
             .Include(c => c.CommunicationContacts)
-            .Include(c => c.UserCompanyDepartments).ThenInclude(u=>u.User)
+            .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.AccountPlannedMonths)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.AuditPlannedMonths)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
             .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);

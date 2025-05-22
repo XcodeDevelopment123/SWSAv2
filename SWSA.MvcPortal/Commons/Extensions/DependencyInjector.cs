@@ -132,6 +132,9 @@ public static class DependencyInjector
         services.AddScoped<IUserCompanyDepartmentRepository, UserCompanyDepartmentRepository>();
         services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
         services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
+        services.AddScoped<IWorkAssignmentAccountMonthRepository, WorkAssignmentAccountMonthRepository>();
+        services.AddScoped<IWorkAssignmentAuditMonthRepository, WorkAssignmentAuditMonthRepository>();
+        services.AddScoped<IWorkAssignmentUserMappingRepository, WorkAssignmentUserMappingRepository>();
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
@@ -163,6 +166,9 @@ public static class DependencyInjector
         services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
+        services.AddScoped<IWorkAssignmentAccountMonthService, WorkAssignmentAccountMonthService>();
+        services.AddScoped<IWorkAssignmentAuditMonthService, WorkAssignmentAuditMonthService>();
+        services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();

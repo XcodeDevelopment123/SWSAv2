@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Models.CompnayWorks;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -10,6 +11,7 @@ public class CompanyWorkController(
     ICompanyWorkAssignmentService service,
     ICompanyWorkProgressService progressService,
     IUserService userService,
+    IWorkAssignmentUserMappingService workUserService,
     ICompanyService companyService
     ) : BaseController
 {
@@ -75,6 +77,41 @@ public class CompanyWorkController(
         var result = await service.Edit(req);
         return Ok(result);
     }
+
+    [InternalAjaxOnly]
+    [HttpPost("works/add-user")]
+    public async Task<IActionResult> AddWorkUser(WorkUserRequest req)
+    {
+        int id = 0;
+        if (req.Department == DepartmentType.Audit || req.Department == DepartmentType.Account)
+        {
+            id = await workUserService.AddUser(req);
+        }
+        else
+        {
+            return BadRequest("Invalid department type");
+        }
+        return Ok(id);
+    }
+
+
+    [InternalAjaxOnly]
+    [HttpPost("works/remove-user")]
+    public async Task<IActionResult> DeleteWorkUser(WorkUserRequest req)
+    {
+        bool result = false;
+        if (req.Department == DepartmentType.Audit || req.Department == DepartmentType.Account)
+        {
+            result = await workUserService.RemoveUser(req);
+        }
+        else
+        {
+            return BadRequest("Invalid department type");
+        }
+
+        return Ok(result);
+    }
+
 
     [InternalAjaxOnly]
     [HttpPost("works/progress/edit")]

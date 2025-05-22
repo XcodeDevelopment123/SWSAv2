@@ -20,14 +20,13 @@
 					<thead>
 						<tr>
 							<th>Company</th>
-							<th>Department</th>
 							<th>Work Type</th>
 							<th>Services Offer</th>
 							<th>Activity Size </th>
 							<th>Year To Do</th>
-							<th>Month To Do</th>
+							<th>Audit Month To Do</th>
+							<th>Account Month To Do</th>
 							<th>Internal Note</th>
-							<th>Handle Staff</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>
@@ -36,15 +35,17 @@
 						@foreach (var task in Model)
 						{
 							<tr>
-								<td>@task.CompanyName</td>
-								<td>@task.DepartmentName</td>
+								<td>
+									@task.CompanyName
+									<p class="m-0">(#@task.CompanyRegistrationNumber)</p>
+								</td>
 								<td>@task.WorkType</td>
 								<td>@task.ServiceScope.GetDisplayName()</td>
 								<td>@task.ActivitySize.GetDisplayName()</td>
-								<td>@task.YearToDo</td>
-								<td>@task.MonthToDo.GetDisplayNameAndNumber()</td>
+								<td>@(task.YearEndToDo ? "Yes" : "No")</td>
+								<td>@task.AuditMonthToDoLabel</td>
+								<td>@task.AccMonthToDoLabel</td>
 								<td>@task.InternalNote</td>
-								<td>@task.StaffName</td>
 								<td>@task.Status.GetDisplayName()</td>
 								<td>
 									<div class="btn-group" role="group">
@@ -68,14 +69,13 @@
 					<tfoot>
 						<tr>
 							<th>Company</th>
-							<th>Department</th>
 							<th>Work Type</th>
 							<th>Services Offer</th>
 							<th>Activity Size </th>
 							<th>Year To Do</th>
-							<th>Month To Do</th>
+							<th>Audit Month To Do</th>
+							<th>Account Month To Do</th>
 							<th>Internal Note</th>
-							<th>Handle Staff</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>

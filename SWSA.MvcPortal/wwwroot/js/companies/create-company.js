@@ -332,7 +332,6 @@
     const handleUserFormInputs = {
         handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
         userDepartments: $handleUserForm.find('select[name="userDepartments"]'),
-
     };
 
     $handleUserForm.validate({

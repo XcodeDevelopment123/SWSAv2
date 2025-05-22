@@ -17,13 +17,10 @@ public class AnnualReturnSubmission
     public int Year { get; set; } // e.g. 2025
 
     [SystemAuditLog("Anniversary Date")]
-    public DateTime? AnniversaryDate { get; set; }
-
-    [SystemAuditLog("AR Due Date")]
-    public DateTime? ARDueDate { get; set; }
+    public DateTime? AnniversaryDate { get; set; } //EST 17 months from  
 
     [SystemAuditLog("Targeted AR Date")]
-    public DateTime? TargetedARDate { get; set; }
+    public DateTime? TargetedARDate { get; set; } // 7 Month from year end
 
     [SystemAuditLog("Actual Date of Annual Return")]
     public DateTime? DateOfAnnualReturn { get; set; }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
@@ -19,12 +20,15 @@ IMapper mapper,
 IUserContext userContext,
 ICompanyWorkAssignmentRepository repo,
 IUserRepository userRepo,
+IWorkAssignmentAccountMonthRepository accMonthRepo,
+IWorkAssignmentAuditMonthRepository auditMonthRepo,
+IWorkAssignmentUserMappingRepository workUserRepo,
 ISystemAuditLogService sysAuditService
     ) : ICompanyWorkAssignmentService
 {
     public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
     {
-        var data = userContext.IsSuperAdmin? [.. await repo.GetAllAsync()]
+        var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()]
             : await repo.GetByCompanyIds(userContext.AllowedCompanyIds);
         return mapper.Map<List<CompanyWorkListVM>>(data);
     }
@@ -40,23 +44,53 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId,null, userContext);
-        return mapper.Map<CompanyWorkVM>(data);
+        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
+
+        var result = mapper.Map<CompanyWorkVM>(data);
+        result.MergeUsers();
+
+        return result;
     }
 
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
 
-        var user = await userRepo.GetByStaffIdAsync(req.AssignedStaffId);
-        Guard.AgainstNullData(user, "User not found");
-
         var entity = mapper.Map<CompanyWorkAssignment>(req);
         if (entity.Progress == null)
         {
             entity.Progress = new CompanyWorkProgress();
         }
-        entity.AssignedUserId = user.Id;
+
+        var allStaffIds = (req.AuditUsers?.StaffIds ?? Enumerable.Empty<string>())
+                    .Concat(req.AccountUsers?.StaffIds ?? Enumerable.Empty<string>())
+                    .Distinct()
+                    .ToList();
+
+        var staffIdToUserId = await userRepo.GetDictionaryIdByStaffIdsAsync(allStaffIds);
+
+        if (req.AuditUsers != null)
+        {
+            var auditUserIds = req.AuditUsers.StaffIds.Where(staffIdToUserId.ContainsKey)
+                .Select(staffId => staffIdToUserId[staffId]);
+            var auditUserEntities = WorkAssignedUsersMapper.ToEntities([.. auditUserIds], DepartmentType.Audit);
+            entity.AssignedUsers.AddRangeSafe(auditUserEntities);
+
+            var auditMonthEntities = req.AuditUsers.GetAuditMonthEntities();
+            entity.AuditPlannedMonths.AddRangeSafe(auditMonthEntities);
+        }
+
+        if (req.AccountUsers != null)
+        {
+            var accountUserIds = req.AccountUsers.StaffIds.Where(staffIdToUserId.ContainsKey)
+                     .Select(staffId => staffIdToUserId[staffId]);
+            var accountEntities = WorkAssignedUsersMapper.ToEntities([.. accountUserIds], DepartmentType.Account);
+            entity.AssignedUsers.AddRangeSafe(accountEntities);
+
+            var accountMonthEntities = req.AccountUsers.GetAccountMonthEntities();
+            entity.AccountPlannedMonths.AddRangeSafe(accountMonthEntities);
+        }
+
         repo.Add(entity);
         await repo.SaveChangesAsync();
 
@@ -67,33 +101,44 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> Edit(EditCompanyWorkAssignmentRequest req)
     {
-
-        var task = await repo.GetByIdAsync(req.TaskId);
+        var task = await repo.GetUpdateVMById(req.TaskId);
         Guard.AgainstNullData(task, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
-
-        var reqUser = await userRepo.GetByStaffIdAsync(req.AssignedStaffId);
-        Guard.AgainstNullData(reqUser, "User not found");
-
-        //update if transfer to another staff  
-        if (task!.AssignedUserId != reqUser.Id)
-        {
-            task.AssignedUserId = reqUser.Id;
-        }
 
         var oldData = task.DeepClone();
 
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.WorkType = req.WorkType;
         task.ServiceScope = req.ServiceScope;
-        task.DueDate = req.DueDate;
         task.InternalNote = req.InternalNote;
-        task.IsCompleted = req.IsCompleted;
-        task.CompletedDate = req.CompletedDate ?? null;
+        task.CompanyStatus = req.CompanyStatus;
+        task.IsYearEndTask = req.IsYearEndTask;
+        task.ARDueDate = req.ARDueDate;
+        task.AGMDate = req.AGMDate;
+        task.ReminderDate = req.ReminderDate;
+        task.SsmExtensionDate = req.SsmExtensionDate;
         task.UpdatedAt = DateTime.Now;
+
+        task.AuditPlannedMonths.SyncWithKeys(
+            newKeys: req.AuditMonths,
+            keySelector: x => x.Month,
+            createEntity: month => new WorkAssignmentAuditMonth
+            {
+               Month = month,
+            });
+
+        task.AccountPlannedMonths.SyncWithKeys(
+            newKeys: req.AccountMonths,
+            keySelector: x => x.Month,
+            createEntity: month => new WorkAssignmentAccountMonth
+            {
+                Month = month,
+            });
 
         repo.Update(task);
         await repo.SaveChangesAsync();
+
+        task.GenerateAuditLabel();
 
         var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
         sysAuditService.LogInBackground(log);
@@ -114,4 +159,5 @@ ISystemAuditLogService sysAuditService
         sysAuditService.LogInBackground(log);
         return data!;
     }
+
 }

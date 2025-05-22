@@ -15,4 +15,5 @@ public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkA
     /// <param name="day"> Default is 7 days</param>
     /// <returns></returns>
     Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7);
+    Task<CompanyWorkAssignment> GetUpdateVMById(int id);
 }

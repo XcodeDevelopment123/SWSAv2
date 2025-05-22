@@ -29,12 +29,6 @@ public class CompanyWorkProgress
     [SystemAuditLog("Progress Note")]
     public string? ProgressNote { get; set; }
 
-    [SystemAuditLog("Accounting Submission Date")]
-    public DateTime? AccountSubmitDate { get; set; }
-
-    [SystemAuditLog("Annual Return Submitted Date")]
-    public DateTime? AnnualReturnSubmittedDate { get; set; }
-
     [SystemAuditLog("Is Job Completed")]
     public bool IsJobCompleted { get; set; } = false;
 
