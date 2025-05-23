@@ -1,0 +1,188 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission
+@model CompanyStrikeOffSubmissionVM
+@{
+	ViewData["Title"] = "EditCompanyStrikeOffSubmission";
+	<input id="submissionId" value="@Model.SubmissionId" type="hidden" />
+	<input id="companyId" value="@Model.CompanyId" type="hidden" />
+}
+
+<h3>Update Strike Off Submission for @Model.CompanyName (@Model.RegistrationNumber)</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<form>
+			<!-- jquery validation -->
+			<div class="card card-primary">
+				<div class="card-header">
+					<a href="/companies/@Model.CompanyId/overview">
+						<h3 class="card-title">
+							Company Info
+
+						</h3>
+					</a>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyName">Company</label>
+							<input readonly value="@($"{Model.CompanyName} ({Model.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="incorpDate">Incorporation Date</label>
+							<div class="input-group">
+								<input disabled type="text" value="@Model.IncorporationDate?.ToFormattedString()" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyType">Company Type</label>
+							<input readonly id="companyType" value="@Model.CompanyType.GetDisplayName()" class="form-control " />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="yearEndMonth">Year End Month</label>
+							<div class="input-group">
+								<input readonly type="text" id="yearEndMonth" value="@Model.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<!-- /.card -->
+	</div>
+	<div class="col-md-12">
+		<form id="submissionForm">
+			<div class="card card-primary">
+				<div class="card-header">
+					<a href="#">
+						<h3 class="card-title">
+							Submission Info
+						</h3>
+					</a>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body row">
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="startDate">Start Date</label>
+							<div class="input-group">
+								<input disabled type="text" id="startDate" value="@Model.StartDate?.ToFormattedString()" name="startDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="completeDate">Complete Date</label>
+							<div class="input-group">
+								<input type="text" id="completeDate" value="@Model.CompleteDate?.ToFormattedString()" name="completeDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="ssmSubmissionDate">SSM Submission Date</label>
+							<div class="input-group">
+								<input type="text" id="ssmSubmissionDate" value="@Model.SSMSubmissionDate?.ToFormattedString()" name="ssmSubmissionDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="irbSubmissionDate">IRB Submission Date</label>
+							<div class="input-group">
+								<input type="text" id="irbSubmissionDate" value="@Model.IRBSubmissionDate?.ToFormattedString()" name="irbSubmissionDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="ssmStrikeOffDate">SSM StrikeOff Date</label>
+							<div class="input-group">
+								<input type="text" id="ssmStrikeOffDate" value="@Model.SSMStrikeOffDate?.ToFormattedString()" name="ssmStrikeOffDate" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="remarks">Remarks</label>
+							<input id="remarks" value="@Model.Remarks" name="remarks" class="form-control " />
+						</div>
+					</div>
+				</div>
+				<div class="card-footer ">
+					<button id="btnSubmitRequest" class="btn btn-primary float-end">Save</button>
+				</div>
+
+			</div>
+		</form>
+		<!-- /.card -->
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/secertary/edit-strike-off-submission.js" asp-append-version="true"></script>
+	<!-- date-range-picker -->
+    }

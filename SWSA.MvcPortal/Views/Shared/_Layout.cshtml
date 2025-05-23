@@ -321,7 +321,7 @@
 							<a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
 								<i class="fas fa-clipboard-list nav-icon"></i>
 								<p>
-									Tasks
+									Tasks / Work
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
@@ -368,32 +368,43 @@
 							</a>
 						</li>
 
+						<li class="nav-item">
+							<a href="/secretary-dept/companies-strike-off" class="nav-link @(
+							currentController== ControllerNames.Secretary
+							&& currentAction == "CompanyStrikeOffList"?"active":"")">
+								<i class="nav-icon fas fa-list"></i>
+								<p>
+									Company Strike Off List
+								</p>
+							</a>
+						</li>
+
 						<li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
 							<a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
 								<i class="fas fa-clipboard-list nav-icon"></i>
 								<p>
-									AR Submission
+									Submissions
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
 							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
 								<li class="nav-item">
-									<a href="/companies/works/overview" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="Overview" ?"active":"")">
-										<i class="nav-icon fas fa-calendar-alt"></i>
+									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
+										<i class="fas fa-clipboard nav-icon"></i>										
 										<p>
-											Audited Report
+											Audited Report Submission
 										</p>
 									</a>
 								</li>
+
 								<li class="nav-item">
 									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+										<i class="fas fa-clipboard nav-icon"></i>										
 										<p>
 											LLP Submission
 										</p>
 									</a>
 								</li>
-							
 							</ul>
 						</li>
 

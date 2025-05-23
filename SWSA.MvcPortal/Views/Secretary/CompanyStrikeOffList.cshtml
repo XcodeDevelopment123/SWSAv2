@@ -1,0 +1,87 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission
+@model List<CompanyStrikeOffSubmissionVM>
+@{
+	ViewData["Title"] = "CompanyStrikeOffList";
+}
+
+<h3> Company Strike Off List</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<!-- /.card -->
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="companyDatatable" class="table table-bordered table-striped table-responsive">
+					<thead>
+						<tr>
+							<th>Company Name</th>
+							<th>Registration Number</th>
+							<th>Incorporation Date</th>
+							<th>Year End Month</th>
+							<th>Start Date</th>
+							<th>Complete Date</th>
+							<th>SSM Submission Date</th>
+							<th>IRB Submission Date</th>
+							<th>SSM Strike off Date</th>
+							<th>Remarks</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var cp in Model)
+						{
+							<tr>
+								<td>@cp.CompanyName</td>
+								<td>@cp.RegistrationNumber</td>
+								<td>@cp.IncorporationDate?.ToFormattedString()</td>
+								<td>@cp.YearEndMonth?.GetDisplayName()</td>
+								<td>@cp.StartDate?.ToFormattedString()</td>
+								<td>@cp.CompleteDate?.ToFormattedString()</td>
+								<td>@cp.SSMSubmissionDate?.ToFormattedString()</td>
+								<td>@cp.IRBSubmissionDate?.ToFormattedString()</td>
+								<td>@cp.SSMStrikeOffDate?.ToFormattedString()</td>
+								<td>@cp.Remarks</td>
+
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/secretary-dept/submissions/company-strike-off/@cp.SubmissionId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.SubmissionId" data-name="@cp.CompanyName" title="Delete">
+											<i class="fa fa-trash"></i>
+										</button>
+									</div>
+								</td>
+
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Company Name</th>
+							<th>Registration Number</th>
+							<th>Incorporation Date</th>
+							<th>Year End Month</th>
+							<th>Start Date</th>
+							<th>Complete Date</th>
+							<th>SSM Submission Date</th>
+							<th>IRB Submission Date</th>
+							<th>SSM Strike off Date</th>
+							<th>Remarks</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/secertary/list-company-strike-off.js" asp-append-version="true"></script>
+}

@@ -1,5 +1,13 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.Design;
+using AutoMapper;
+using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Exceptions;
+using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
 
@@ -11,8 +19,86 @@ MemoryCacheEntryOptions cacheOptions,
 IMapper mapper,
 IUserContext userContext,
 ISystemAuditLogService sysAuditService,
-ICompanyStrikeOffSubmissionRepository repo
+ICompanyStrikeOffSubmissionRepository repo,
+ICompanyRepository companyRepo
     ) : ICompanyStrikeOffSubmissionService
 {
+    public async Task<List<CompanyStrikeOffSubmissionVM>> GetStrikeOffSubmissionVMsAsync()
+    {
+        var data = await repo.GetListVMAsync();
+        return data;
+    }
 
+    public async Task<CompanyStrikeOffSubmissionVM> GetStrikeOffSubmissionVMByIdAsync(int submissionId)
+    {
+        var data = await repo.GetVMByIdAsync(submissionId);
+        Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
+        return data;
+    }
+
+    public async Task<int> RequestSubmissionForCompany(int companyId)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+        var cp = await companyRepo.GetByIdAsync(companyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
+        var submission = await repo.GetByCompanyId(companyId);
+        if (submission != null)
+        {
+            throw new BusinessLogicException("Company already submitted for strike off");
+        }
+
+        var entity = new CompanyStrikeOffSubmission()
+        {
+            CompanyId = companyId,
+            StartDate = DateTime.Today,
+            Remarks = "Request for strike off submission",
+        };
+
+        repo.Add(entity);
+        await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Requested {cp!.Name} strike off submission", entity);
+        sysAuditService.LogInBackground(log);
+        return entity.Id;
+    }
+
+    public async Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+        var data = await repo.GetByIdAsync(req.SubmissionId);
+        Guard.AgainstNullData(data, "Submission not found");
+
+        var cp = await companyRepo.GetByIdAsync(req.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
+        var oldData = data!.DeepClone();
+
+        data!.CompleteDate = req.CompleteDate;
+        data.SSMStrikeOffDate = req.SSMStrikeOffDate;
+        data.SSMSubmissionDate = req.SSMSubmissionDate;
+        data.IRBSubmissionDate = req.IRBSubmissionDate;
+        data.Remarks = req.Remarks;
+
+        await repo.SaveChangesAsync();
+        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, req.CompanyId.ToString(), $"Updated {cp!.Name} strike off submission", oldData, data);
+        sysAuditService.LogInBackground(log);
+        return true;
+    }
+
+    public async Task<bool> DeleteSubmissionById(int submissionId)
+    {
+        var submission = await repo.GetByIdAsync(submissionId);
+        Guard.AgainstNullData(submission, "Submission not found");
+
+        var cp = await companyRepo.GetByIdAsync(submission!.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
+        repo.Remove(submission);
+        await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, submission.CompanyId.ToString(), $"Removed {cp!.Name} strike off submission", submission);
+        sysAuditService.LogInBackground(log);
+        return true;
+    }
 }

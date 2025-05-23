@@ -72,6 +72,35 @@
 
     let currentSelectCompanyId = 0;
 
+    $("#requestStrikeOffSubmission").on("click", function () {
+        if (currentSelectCompanyId === 0) {
+            Toast_Fire(ICON_ERROR, "Error", "Please select a company first.");
+            return;
+        }
+
+        const name = $("#companyName").val();
+
+        if (confirm(`Request strike off for company "${name}"?`)) {
+            $.ajax({
+                url: `${urls.secretary_dept_submission}/company-strike-off/create`,
+                type: "POST",
+                data: { companyId: currentSelectCompanyId },
+                success: function (res) {
+                    console.log(res);
+                    Toast_Fire(ICON_SUCCESS, "Success", "Request submitted successfully.");
+                },
+                error: (jqxhr) => {
+                    jqxhr.handledError = true;
+                    const errorMsg = jqxhr?.responseJSON?.error ?? "Please try again later.";
+                    Toast_Fire(ICON_ERROR, "Somethign went wrong", errorMsg);
+
+                }
+            })
+
+
+        }
+    })
+
     $(document).on('click', '.company-item', function (e) {
         const companyId = $(this).data("id");
 

@@ -14,6 +14,7 @@ const urls = {
     "company_handle_user": "/companies/handle-users",
     "schedule_job": "/scheduler-jobs",
     "system_audit_log": "/sys-audit-logs",
+    "secretary_dept_submission":"/secretary-dept/submissions",
     "users": "/users",
 };
 
