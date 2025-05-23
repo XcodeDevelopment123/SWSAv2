@@ -44,11 +44,9 @@ public class CompanyWorkController(
     public async Task<IActionResult> Edit([FromRoute] int taskId)
     {
         var data = await service.GetWorkAssignmentById(taskId);
-        if (data.Company != null)
-            data.Company = await companyService.GetCompanyByIdAsync(data.Company.Id);
-
-        var users = await userService.GetUserSelectionByCompanyIdAsync(data.Company.Id);
-        var vm = new CompanyWorkAssignmentkEditPageVM(data, users);
+        var cpInfo = await companyService.GetCompanySimpleInfoVMByIdAsync(data.CompanyId);
+        var users = await userService.GetUserSelectionByCompanyIdAsync(data.CompanyId);
+        var vm = new CompanyWorkAssignmentkEditPageVM(data, cpInfo, users);
         return View(vm);
     }
     #endregion

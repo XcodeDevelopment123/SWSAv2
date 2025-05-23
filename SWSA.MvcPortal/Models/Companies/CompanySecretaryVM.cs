@@ -8,7 +8,7 @@ public class CompanySecretaryVM
     public int CompanyId { get; set; }
     public string CompanyName { get; set; } = null!;
     public MonthOfYear? YearEndMonth { get; set; }
-
+    public CompanyType CompanyType { get; set; }
     public DateTime? IncorporationDate { get; set; }
     public string RegistrationNumber { get; set; } = null!;
     public string? EmployerNumber { get; set; }
@@ -16,6 +16,4 @@ public class CompanySecretaryVM
     public List<CompanyMsicCodeVM> MsicCodes { get; set; } = new List<CompanyMsicCodeVM>();
     public List<CompanyOwnerVM> Owners { get; set; } = new List<CompanyOwnerVM>();
     public List<CompanyWorkVM> WorkAssignments { get; set; } = new List<CompanyWorkVM>();
-
-
 }

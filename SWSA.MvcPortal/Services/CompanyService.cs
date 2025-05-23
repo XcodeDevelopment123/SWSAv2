@@ -30,29 +30,45 @@ ISystemAuditLogService sysAuditService,
 IPermissionRefreshTracker permissionRefreshTracker
     ) : ICompanyService
 {
-
-    public async Task<List<CompanyListVM>> GetCompaniesAsync()
+    #region VM Query Method 
+    public async Task<List<CompanyListVM>> GetCompanyListVMAsync()
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
-            : await repo.GetCompaniesByUserId(userContext.EntityId);
-        return mapper.Map<List<CompanyListVM>>(data);
+        var data = userContext.IsSuperAdmin ? await repo.GetListVMAsync()
+                : await repo.GetListVMByUserIdAsync(userContext.EntityId);
+        return data;
     }
 
-    public async Task<List<CompanyListVM>> GetCompaniesByTypeAsync(CompanyType type)
+    public async Task<List<CompanyListVM>> GetCompanyListByTypeAsync(CompanyType type)
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
-            : await repo.GetCompaniesByUserId(userContext.EntityId);
-
-        data = [.. data.Where(data => data.CompanyType == type)];
-        return mapper.Map<List<CompanyListVM>>(data);
+        var data = userContext.IsSuperAdmin ? await repo.GetListVMByTypeAsync(type)
+            : await repo.GetListVMByUserIdAndTypeAsync(userContext.EntityId, type);
+        return data;
     }
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetAllAsync()
-            : await repo.GetCompaniesByUserId(userContext.EntityId);
-        return mapper.Map<List<CompanySelectionVM>>(data);
+        var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMAsync()
+            : await repo.GetSelectionsVMByUserIdAsync(userContext.EntityId);
+        return data;
     }
+
+    public async Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+        var data = await repo.GetSecretaryVMByIdAsync(companyId);
+        Guard.AgainstNullData(data, "Company not found");
+
+        return data;
+    }
+
+    public async Task<CompanySimpleInfoVM> GetCompanySimpleInfoVMByIdAsync(int companyId)
+    {
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+
+        var data = await repo.GetSimpleInfoVMByIdAsync(companyId);
+        return data;
+    }
+    #endregion
 
     public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
@@ -61,15 +77,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         Guard.AgainstNullData(data, "Company not found");
 
         return data!;
-    }
-
-    public async Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await repo.GetWithIncludedByIdAsync(companyId);
-        Guard.AgainstNullData(data, "Company not found");
-
-        return mapper.Map<CompanySecretaryVM>(data);
     }
 
     public async Task<int> Create(CreateCompanyRequest req)

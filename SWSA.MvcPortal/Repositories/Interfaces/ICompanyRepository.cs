@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
@@ -12,4 +14,12 @@ public interface ICompanyRepository : IRepositoryBase<Company>
 
     // Define your method here
     Task<List<Company>> GetCompaniesByUserId(int userId);
+    Task<List<CompanyListVM>> GetListVMAsync();
+    Task<List<CompanyListVM>> GetListVMByUserIdAsync(int userId);
+    Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAsync(int userId);
+    Task<List<CompanySelectionVM>> GetSelectionsVMAsync();
+    Task<List<CompanyListVM>> GetListVMByUserIdAndTypeAsync(int userId, CompanyType type);
+    Task<List<CompanyListVM>> GetListVMByTypeAsync(CompanyType type);
+    Task<CompanySecretaryVM> GetSecretaryVMByIdAsync(int id);
+    Task<CompanySimpleInfoVM> GetSimpleInfoVMByIdAsync(int id);
 }

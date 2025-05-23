@@ -10,6 +10,7 @@ namespace SWSA.MvcPortal.Repositories.Repo;
 public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<CompanyWorkAssignment>(db), ICompanyWorkAssignmentRepository
 {
     // Implement the method
+
     public async Task<CompanyWorkAssignment> GetUpdateVMById(int id)
     {
         var query = db.Set<CompanyWorkAssignment>()

@@ -6,7 +6,7 @@ namespace SWSA.MvcPortal.Controllers;
 
 [Route("companies/cm-contact")]
 public class CompanyCommunicationContactController(
-    ICompanyCommunicationService service
+    ICompanyCommunicationContactService service
     ) : BaseController
 {
     #region API/Ajax

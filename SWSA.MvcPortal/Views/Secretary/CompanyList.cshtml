@@ -1,9 +1,13 @@
 ﻿@using SWSA.MvcPortal.Commons.Constants
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Companies
 @model List<CompanySelectionVM>
 @{
 	ViewData["Title"] = "CompanyList";
+
+	var cpType = SelectHelper.GetEnumSelectList<CompanyType>(null!);
 }
 <link rel="stylesheet" href="~/css/secretary-list-company.css" asp-append-version="true" />
 
@@ -159,19 +163,48 @@
 					<label>Work Allocation Info</label>
 				</div>
 
-				<div class="col-md-6">
-					<div class="form-group">
-						<label for="companyStatus">Company Status</label>
-						<input readonly id="companyStatus" class="form-control" />
-					</div>
-				</div>
+				<table id="workTable" class="table table-bordered table-hover table-responsive">
+					<thead>
+						<tr>
+							<th>Company Status</th>
+							<th>Activity/Size</th>
+							<th>Year End To Do</th>
+							<th>Audit Month To Do</th>
+							<th>Audit Staff(s)</th>
+							<th>Account Month To Do</th>
+							<th>Account Staff(s)</th>
+							<th>SSM Extension Date</th>
+							<th>AGM Date</th>
+							<th>AR Due Date</th>
+							<th>Reminder Date</th>
+							<th>Audit Submit Date</th>
+							<th>Account Submit Date</th>
+							<th>AR Submit Date</th>
+							<th>Job Complete / Backlog</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Active</td>
+							<td>Trading / Medium</td>
+							<td>31 Dec 2024</td>
+							<td>Feb 2025</td>
+							<td>Alice, Bob</td>
+							<td>Jan 2025</td>
+							<td>Carol</td>
+							<td>15 Mar 2025</td>
+							<td>30 Apr 2025</td>
+							<td>31 May 2025</td>
+							<td>01 May 2025</td>
+							<td>10 Feb 2025</td>
+							<td>25 Jan 2025</td>
+							<td>28 May 2025</td>
+							<td>Backlog</td>
+						</tr>
+					</tbody>
 
-				<div class="col-md-6">
-					<div class="form-group">
-						<label for="companyStatus">Company Status</label>
-						<input readonly id="companyStatus" class="form-control" />
-					</div>
-				</div>
+				</table>
+
 			</div>
 			<!-- /.card-body -->
 		</div>

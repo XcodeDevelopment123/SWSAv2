@@ -26,6 +26,19 @@
     });
     ownerTable.buttons().container().appendTo('#ownerTable_wrapper .col-md-6:eq(0)');
 
+    const workTable = $("#workTable").DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "pageLength": 5
+    });
+    workTable.buttons().container().appendTo('#workTable_wrapper .col-md-6:eq(0)');
+
     flatpickr("#incorpDate", {
         allowInput: true,
     });
@@ -79,9 +92,8 @@
 
                 console.log(res);
                 //Load details
-                stopLoading();
 
-                $("#companyName").val(res.name);
+                $("#companyName").val(res.companyName);
                 $("#companyType").val(res.companyType);
                 $("#yearEndMonth").val(res.yearEndMonth);
 
@@ -91,6 +103,8 @@
                 $("#tinNumber").val(res.taxIdentificationNumber);
                 reloadMsic(res.msicCodes);
                 reloadOwner(res.owners);
+
+                stopLoading();
             },
             error: function () {
                 $(".company-item.active").removeClass("active");

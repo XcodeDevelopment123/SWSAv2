@@ -14,7 +14,7 @@
 
 	var workVM = Model.CompanyWork;
 
-	var cp = workVM.Company;
+	var cp = Model.Company;
 	var progress = workVM.Progress;
 
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(workVM.WorkType);
@@ -34,7 +34,6 @@
 	<input type="hidden" id="taskId" value="@workVM.TaskId" />
 	<input type="hidden" id="progressId" value="@progress.ProgressId" />
 	<input type="hidden" id="isSuperAdmin" value="@UserContext.IsSuperAdmin.ToString()" />
-
 }
 
 <h3>Edit Task for @cp.Name (@cp.RegistrationNumber)</h3>
@@ -44,7 +43,7 @@
 			<!-- jquery validation -->
 			<div class="card card-primary">
 				<div class="card-header">
-					<a href="/companies/@cp.Id/overview">
+					<a href="/companies/@cp.CompanyId/overview">
 						<h3 class="card-title">
 							Company Info
 

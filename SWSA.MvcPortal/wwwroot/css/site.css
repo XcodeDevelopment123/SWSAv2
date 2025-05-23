@@ -103,13 +103,18 @@ input:disabled {
 }
 
 .form-info-label {
-
     margin: 1rem .5rem;
     border-bottom: solid 1.5px #e0e0e0;
-    width:calc(100% - 1rem);
+    width: calc(100% - 1rem);
 }
 
     .form-info-label label {
         font-size: 0.85rem;
         margin-left: -.5rem;
     }
+
+
+.table-responsive {
+    overflow-x: auto;
+    white-space: nowrap;
+}

@@ -1,6 +1,6 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Models.Companies;
 
@@ -12,17 +12,15 @@ public class CompanyListVM
     public string? EmployerNumber { get; set; } 
     public string? TaxIdentificationNumber { get; set; }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter))]
     public MonthOfYear? YearEndMonth { get; set; }
     public DateTime? IncorporationDate { get; set; }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public CompanyStatus Status { get; set; }
     public CompanyType CompanyType { get; set; }
     public string CompanyDirectorName { get; set; } = null!; // First Owner + Director position name
     public int ContactsCount { get; set; }  // Communication Contacts + Official Contacts
     public int MsicCodesCount { get; set; }
     public int WorkCount { get; set; }
-    public List<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
+    public List<CompanyMsicCodeVM> MsicCodes { get; set; } = new List<CompanyMsicCodeVM>();
 
 }

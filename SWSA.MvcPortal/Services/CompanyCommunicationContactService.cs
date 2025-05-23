@@ -27,7 +27,7 @@ IMapper mapper,
 IUserContext userContext,
 ICompanyCommunicationContactRepository repo,
 ISystemAuditLogService sysAuditService
-    ) : ICompanyCommunicationService
+    ) : ICompanyCommunicationContactService
 {
     public async Task<List<CompanyCommunicationContactVM>> GetCommunicationContactsByCompanyId(int companyId)
     {

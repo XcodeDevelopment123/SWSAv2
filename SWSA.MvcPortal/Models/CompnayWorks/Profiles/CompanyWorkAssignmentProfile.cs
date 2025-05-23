@@ -27,10 +27,8 @@ public class CompanyWorkAssignmentProfile : Profile
 
         CreateMap<CompanyWorkAssignment, CompanyWorkVM>()
              .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))
-             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
-             .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.Company))
-             .ForMember(dest => dest.Progress, opt => opt.MapFrom(src => src.Progress))
-             .ForMember(dest => dest.AssignedUsers, opt => opt.MapFrom(src => src.AssignedUsers));
+             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel));
+
 
         CreateMap<WorkAssignmentUserMapping, CompanyWorkUserVM>()
                  .ForMember(dest => dest.StaffId, opt => opt.MapFrom(src => src.User.StaffId))

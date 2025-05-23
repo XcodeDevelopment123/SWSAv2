@@ -1,7 +1,6 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Filters;
 using SWSA.MvcPortal.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Models.Companies;
@@ -10,7 +9,6 @@ public class CompanyOwnerVM
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
     [SystemAuditLog("Owner Name (per IC)")]
     public string NamePerIC { get; set; } = null!;

@@ -16,7 +16,7 @@ public class CompanyController(
     [Route("")]
     public async Task<IActionResult> List()
     {
-        var data = await service.GetCompaniesAsync();
+        var data = await service.GetCompanyListVMAsync();
         return View(data);
     }
 

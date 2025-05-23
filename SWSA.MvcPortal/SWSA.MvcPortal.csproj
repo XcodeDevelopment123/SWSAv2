@@ -14,20 +14,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="Services\ServiceGenerator.txt">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>ServiceGenerator.tt</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-
-	<ItemGroup>
 		<PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="CronExpressionDescriptor" Version="2.41.0" />
 		<PackageReference Include="DeepCloner" Version="0.10.4" />
+		<PackageReference Include="Mapster" Version="7.4.0" />
+		<PackageReference Include="Mapster.Core" Version="1.2.1" />
+		<PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="8.0.15" />
@@ -64,15 +58,21 @@
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>RepositoryGenerator.txt</LastGenOutput>
 		</None>
+		<None Update="Services\ServiceGenerator.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>ServiceGenerator.txt</LastGenOutput>
+		</None>
+		<Compile Include="Services\ServiceGenerator.txt">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ServiceGenerator.tt</DependentUpon>
+		</Compile>
 		<None Update="Repositories\RepositoryGenerator.txt">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>RepositoryGenerator.tt</DependentUpon>
 		</None>
-		<None Update="Services\ServiceGenerator.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>ServiceGenerator.txt</LastGenOutput>
-		</None>
+
 	</ItemGroup>
 
 	<ItemGroup>
