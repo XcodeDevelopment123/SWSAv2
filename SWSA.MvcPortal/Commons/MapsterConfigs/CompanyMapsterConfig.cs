@@ -41,5 +41,6 @@ public class CompanyMapsterConfig : IMapsterConfig
             .Map(dest => dest.CompanyId, src => src.Id)
             .Map(dest => dest.CompanyName, src => src.Name)
             .Map(dest => dest.WorkAssignments, src => src.WorkAssignments);
+         
     }
 }

@@ -54,28 +54,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Repositories\RepositoryGenerator.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>RepositoryGenerator.txt</LastGenOutput>
-		</None>
-		<None Update="Services\ServiceGenerator.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>ServiceGenerator.txt</LastGenOutput>
-		</None>
-		<Compile Include="Services\ServiceGenerator.txt">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>ServiceGenerator.tt</DependentUpon>
-		</Compile>
-		<None Update="Repositories\RepositoryGenerator.txt">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>RepositoryGenerator.tt</DependentUpon>
-		</None>
-
-	</ItemGroup>
-
-	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 

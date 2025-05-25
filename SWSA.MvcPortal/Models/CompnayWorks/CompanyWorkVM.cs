@@ -1,4 +1,5 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
@@ -12,6 +13,8 @@ public class CompanyWorkVM
     public CompanyActivityLevel ActivitySize { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public string? InternalNote { get; set; }
+    public string AccMonthToDoLabel => AccountPlannedMonths.GetMonthLabel();
+    public string AuditMonthToDoLabel => AuditPlannedMonths.GetMonthLabel();
     public bool IsYearEndTask { get; set; }
     public DateTime? SSMExtensionDate { get; set; }
     public DateTime? AGMDate { get; set; } //Annual General Meeting
@@ -20,9 +23,8 @@ public class CompanyWorkVM
     public CompanyWorkProgressVM Progress { get; set; } = null!;
     public AnnualReturnSubmissionVM Submission { get; set; } = null!;
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();
-    public List<CompanyWorkMonthVM> AccountPlannedMonths { get; set; } = new List<CompanyWorkMonthVM>();
-    public List<CompanyWorkMonthVM> AuditPlannedMonths { get; set; } = new List<CompanyWorkMonthVM>();
-
+    public List<MonthOfYear> AccountPlannedMonths { get; set; } = new List<MonthOfYear>();
+    public List<MonthOfYear> AuditPlannedMonths { get; set; } = new List<MonthOfYear>();
 
     public void MergeUsers()
     {

@@ -1,5 +1,6 @@
 ﻿
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.CompnayWorks;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -16,4 +17,5 @@ public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkA
     /// <returns></returns>
     Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7);
     Task<CompanyWorkAssignment> GetUpdateVMById(int id);
+    Task<CompanyWorkVM> GetWorkVMByIdAsync(int id);
 }

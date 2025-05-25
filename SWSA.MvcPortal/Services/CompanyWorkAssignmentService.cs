@@ -40,14 +40,13 @@ ISystemAuditLogService sysAuditService
 
     public async Task<CompanyWorkVM> GetWorkAssignmentById(int taskId)
     {
-        var data = await repo.GetWithIncludedByIdAsync(taskId);
+        var data = await repo.GetWorkVMByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        var result = mapper.Map<CompanyWorkVM>(data);
-        result.MergeUsers();
+        data.MergeUsers();
 
-        return result;
+        return data;
     }
 
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
@@ -106,6 +105,7 @@ ISystemAuditLogService sysAuditService
         Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
 
         var oldData = task.DeepClone();
+        oldData.GenerateAuditLabel();
 
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.WorkType = req.WorkType;

@@ -23,7 +23,6 @@ public class AnnualReturnSubmission
     [SystemAuditLog("Targeted AR Date")]
     public DateTime? TargetedARDate { get; set; } // 7 Month from year end
 
-
     [SystemAuditLog("Actual Date of Annual Return")]
     public DateTime? DateOfAnnualReturn { get; set; }
 

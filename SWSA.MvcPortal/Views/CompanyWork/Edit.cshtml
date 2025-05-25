@@ -179,7 +179,7 @@
 								<select id="auditMonthToDo" name="auditMonths" class="form-control select2" multiple="multiple" style="max-width:95%">
 									@foreach (var month in monthOfYear)
 									{
-										var isSelected = workVM.AuditPlannedMonths.Any(c => c.Month.ToString() == month.Value);
+										var isSelected = workVM.AuditPlannedMonths.Any(c => c.ToString() == month.Value);
 										<option value="@month.Value" selected="@(isSelected ? "selected" : null)">
 											@month.Text
 										</option>
@@ -196,7 +196,7 @@
 								<select id="accountMonthToDo" name="accountMonths" class="form-control select2" multiple="multiple" style="max-width:95%">
 									@foreach (var month in monthOfYear)
 									{
-										var isSelected = workVM.AccountPlannedMonths.Any(c => c.Month.ToString() == month.Value);
+										var isSelected = workVM.AccountPlannedMonths.Any(c => c.ToString() == month.Value);
 										<option value="@month.Value" selected="@(isSelected ? "selected" : null)">
 											@month.Text
 										</option>

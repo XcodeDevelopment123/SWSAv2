@@ -3,85 +3,90 @@
 @using SWSA.MvcPortal.Models.Companies
 @model List<CompanyListVM>
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h3> Company List</h3>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- /.card -->
-        <div class="card">
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="companyDatatable" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Registration Number</th>
-                            <th>Year End Month</th>
-                            <th>Incorporation Date</th>
-                            <th>Director Name</th>
-                            <th>Contacts Count</th>
-                            <th>MsicCodes Count</th>
-                            <th>Work/Task Count</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var cp in Model)
-                        {
-                            <tr>
-                                <td>@cp.CompanyName</td>
-                                <td>@cp.CompanyType.GetDisplayName()</td>
-                                <td>@cp.RegistrationNumber</td>
-                                <td>@cp.YearEndMonth</td>
-                                <td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
-                                <td>@cp.CompanyDirectorName</td>
-                                <td>@cp.ContactsCount</td>
-                                <td>@cp.MsicCodesCount</td>
-                                <td>@cp.WorkCount</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        <a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete"   data-id="@cp.CompanyId" data-name="@cp.CompanyName" title="Delete">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
+	<div class="col-md-12">
+		<!-- /.card -->
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="companyDatatable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Registration Number</th>
+							<th>Year End Month</th>
+							<th>Incorporation Date</th>
+							<th>Director Name</th>
+							<th>Contacts Count</th>
+							<th>MsicCodes Count</th>
+							<th>Work/Task Count</th>
+							<th>Is Striked Off</th>
+							<th>Strike Off Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var cp in Model)
+						{
+							<tr>
+								<td>@cp.CompanyName</td>
+								<td>@cp.CompanyType.GetDisplayName()</td>
+								<td>@cp.RegistrationNumber</td>
+								<td>@cp.YearEndMonth</td>
+								<td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
+								<td>@cp.CompanyDirectorName</td>
+								<td>@cp.ContactsCount</td>
+								<td>@cp.MsicCodesCount</td>
+								<td>@cp.WorkCount</td>
+								<td>@(cp.IsStrikedOff ? "Yes" : "No")</td>
+								<td>@cp.StrikeOffStatus.GetDisplayName()</td>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
+											<i class="fa fa-eye"></i>
+										</a>
+										<a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.CompanyId" data-name="@cp.CompanyName" title="Delete">
+											<i class="fa fa-trash"></i>
+										</button>
+									</div>
+								</td>
 
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Registration Number</th>
-                            <th>Year End Month</th>
-                            <th>Incorporation Date</th>
-                            <th>Director Name</th>
-                            <th>Contacts Count</th>
-                            <th>MsicCodes Count</th>
-                            <th>Work/Task Count</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Registration Number</th>
+							<th>Year End Month</th>
+							<th>Incorporation Date</th>
+							<th>Director Name</th>
+							<th>Contacts Count</th>
+							<th>MsicCodes Count</th>
+							<th>Work/Task Count</th>
+							<th>Strike Off Status</th>
+							<th>Action</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_DatatablesScriptsPartial" />
-    <script src="~/js/companies/list-company.js" asp-append-version="true"></script>
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/companies/list-company.js" asp-append-version="true"></script>
 }

@@ -15,6 +15,8 @@ public class CompanyListVM
     [JsonConverter(typeof(StringEnumConverter))]
     public MonthOfYear? YearEndMonth { get; set; }
     public DateTime? IncorporationDate { get; set; }
+    public StrikeOffStatus StrikeOffStatus { get; set; }
+    public bool IsStrikedOff { get; set; } = false;
 
     public CompanyType CompanyType { get; set; }
     public string CompanyDirectorName { get; set; } = null!; // First Owner + Director position name

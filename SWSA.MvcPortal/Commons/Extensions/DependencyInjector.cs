@@ -183,6 +183,26 @@ public static class DependencyInjector
         services.AddScoped<IWorkAssignmentAccountMonthService, WorkAssignmentAccountMonthService>();
         services.AddScoped<IWorkAssignmentAuditMonthService, WorkAssignmentAuditMonthService>();
         services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IAnnualReturnSubmissionService, SWSA.MvcPortal.Services.AnnualReturnSubmissionService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyCommunicationContactService, SWSA.MvcPortal.Services.CompanyCommunicationContactService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyComplianceDateService, SWSA.MvcPortal.Services.CompanyComplianceDateService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyMsicCodeService, SWSA.MvcPortal.Services.CompanyMsicCodeService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyOfficialContactService, SWSA.MvcPortal.Services.CompanyOfficialContactService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyOwnerService, SWSA.MvcPortal.Services.CompanyOwnerService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyService, SWSA.MvcPortal.Services.CompanyService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyStrikeOffSubmissionService, SWSA.MvcPortal.Services.CompanyStrikeOffSubmissionService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyWorkAssignmentService, SWSA.MvcPortal.Services.CompanyWorkAssignmentService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ICompanyWorkProgressService, SWSA.MvcPortal.Services.CompanyWorkProgressService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IDocumentRecordService, SWSA.MvcPortal.Services.DocumentRecordService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IMsicCodeService, SWSA.MvcPortal.Services.MsicCodeService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IScheduledJobService, SWSA.MvcPortal.Services.ScheduledJobService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ISystemAuditLogService, SWSA.MvcPortal.Services.SystemAuditLogService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.ISystemNotificationLogService, SWSA.MvcPortal.Services.SystemNotificationLogService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IUserCompanyDepartmentService, SWSA.MvcPortal.Services.UserCompanyDepartmentService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IUserService, SWSA.MvcPortal.Services.UserService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IWorkAssignmentAccountMonthService, SWSA.MvcPortal.Services.WorkAssignmentAccountMonthService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IWorkAssignmentAuditMonthService, SWSA.MvcPortal.Services.WorkAssignmentAuditMonthService>();
+        services.AddScoped<SWSA.MvcPortal.Services.Interfaces.IWorkAssignmentUserMappingService, SWSA.MvcPortal.Services.WorkAssignmentUserMappingService>();
         //#Service DI end
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();

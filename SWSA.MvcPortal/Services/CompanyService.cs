@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Force.DeepCloner;
+using Mapster;
 using Microsoft.Extensions.Caching.Memory;
 using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Constants;
@@ -30,7 +31,7 @@ ISystemAuditLogService sysAuditService,
 IPermissionRefreshTracker permissionRefreshTracker
     ) : ICompanyService
 {
-    #region VM Query Method 
+    #region VM/DTO Query Method 
     public async Task<List<CompanyListVM>> GetCompanyListVMAsync()
     {
         var data = userContext.IsSuperAdmin ? await repo.GetListVMAsync()

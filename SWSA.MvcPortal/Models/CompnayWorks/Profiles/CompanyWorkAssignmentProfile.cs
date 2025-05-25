@@ -22,8 +22,7 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.YearEndToDo, opt => opt.MapFrom(src => src.IsYearEndTask))
             .ForMember(dest => dest.AuditMonthToDo, opt => opt.MapFrom(src => src.AuditPlannedMonths.Select(c => c.Month)))
             .ForMember(dest => dest.AccMonthToDo, opt => opt.MapFrom(src => src.AccountPlannedMonths.Select(c => c.Month)))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown))
-            .AfterMap((src, dest) => dest.GenerateMonthLabel());
+            .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown));
 
         CreateMap<CompanyWorkAssignment, CompanyWorkVM>()
              .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.Id))

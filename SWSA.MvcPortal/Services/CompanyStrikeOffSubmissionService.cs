@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Design;
-using AutoMapper;
+﻿using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
@@ -55,10 +55,13 @@ ICompanyRepository companyRepo
             Remarks = "Request for strike off submission",
         };
 
+        cp!.StrikeOffStatus = StrikeOffStatus.Applying;
+        companyRepo.Update(cp);
+
         repo.Add(entity);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, companyId.ToString(), $"Requested {cp!.Name} strike off submission", entity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} strike off submission", entity);
         sysAuditService.LogInBackground(log);
         return entity.Id;
     }
@@ -80,8 +83,21 @@ ICompanyRepository companyRepo
         data.IRBSubmissionDate = req.IRBSubmissionDate;
         data.Remarks = req.Remarks;
 
+        if (data.CompleteDate.HasValue && data.SSMStrikeOffDate.HasValue)
+        {
+            cp!.StrikeOffStatus = StrikeOffStatus.Completed;
+            cp.StrikeOffEffectiveDate = data.SSMStrikeOffDate;
+            cp.IsStrikedOff = true;
+        }
+        else
+        {
+            cp!.StrikeOffStatus = StrikeOffStatus.Applying;
+        }
+
+        companyRepo.Update(cp);
+        repo.Update(data);
         await repo.SaveChangesAsync();
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, req.CompanyId.ToString(), $"Updated {cp!.Name} strike off submission", oldData, data);
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, req.CompanyId.ToString(), $"Updated {cp.Name} strike off submission", oldData, data);
         sysAuditService.LogInBackground(log);
         return true;
     }

@@ -1,3 +1,0 @@
-﻿// T4 模板：自动生成 Repository Interface & 实现，并注入 DI（不会覆盖已有代码）
-        // ✅ 注入完成，共添加 0 项 Repository 注册
-        

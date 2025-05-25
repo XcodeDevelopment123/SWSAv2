@@ -118,8 +118,6 @@
             type: "GET",
             url: `${urls.companies}/${companyId}/secretary`,
             success: function (res) {
-
-                console.log(res);
                 //Load details
 
                 $("#companyName").val(res.companyName);
@@ -132,7 +130,7 @@
                 $("#tinNumber").val(res.taxIdentificationNumber);
                 reloadMsic(res.msicCodes);
                 reloadOwner(res.owners);
-
+                reloadScheduling(res.workAssignments);
                 stopLoading();
             },
             error: function () {
@@ -144,6 +142,44 @@
         })
 
     })
+
+    function reloadScheduling(workAssignments) {
+        console.log(workAssignments);
+        const auditStaffsName = workAssignments.map(
+            item => item.assignedUsers
+                .filter(user => user.isAssignedToAudit)
+                .map(user => user.staffName)
+        );
+
+        const accountStaffsName = workAssignments.map(
+            item => item.assignedUsers
+                .filter(user => user.isAssignedToAccount)
+                .map(user => user.staffName)
+        );
+
+        workTable.clear();
+        workAssignments.forEach(item => {
+            const submission = item.submission;
+            workTable.row.add([
+                item.companyStatus,
+                item.activitySize,
+                item.isYearEndTask ? "Yes" : "No",
+                item.auditMonthToDoLabel,
+                auditStaffsName.join(", "),
+                item.accMonthToDoLabel,
+                accountStaffsName,
+                ConvertTimeFormat(item.ssmExtensionDate,"DD-MM-YYYY"),
+                ConvertTimeFormat(item.agmDate, "DD-MM-YYYY"),
+                ConvertTimeFormat(item.arDueDate,"DD-MM-YYYY"),
+                ConvertTimeFormat(item.reminderDate,"DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
+                item.internalNote,
+            ]);
+        });
+        workTable.draw();
+    }
 
     function reloadMsic(msicCodes) {
         msicTable.clear();
