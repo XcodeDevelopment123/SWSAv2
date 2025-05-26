@@ -61,34 +61,18 @@ ISystemAuditLogService sysAuditService
         entity.Progress = new CompanyWorkProgress();
         entity.Submission = new AnnualReturnSubmission(cp!);
 
-        var allStaffIds = (req.AuditUsers?.StaffIds ?? Enumerable.Empty<string>())
-                    .Concat(req.AccountUsers?.StaffIds ?? Enumerable.Empty<string>())
+        var allStaffIds = (req.AssignedUserIds ?? Enumerable.Empty<string>())
                     .Distinct()
                     .ToList();
 
         var staffIdToUserId = await userRepo.GetDictionaryIdByStaffIdsAsync(allStaffIds);
-
-        if (req.AuditUsers != null)
+        var assignedUserEntities = WorkAssignedUsersMapper.ToEntities([.. staffIdToUserId.Values]);
+        entity.AssignedUsers.AddRangeSafe(assignedUserEntities);
+        var monthEntities = req.Months.Select(c => new WorkAssignmentMonth()
         {
-            var auditUserIds = req.AuditUsers.StaffIds.Where(staffIdToUserId.ContainsKey)
-                .Select(staffId => staffIdToUserId[staffId]);
-            var auditUserEntities = WorkAssignedUsersMapper.ToEntities([.. auditUserIds], DepartmentType.Audit);
-            entity.AssignedUsers.AddRangeSafe(auditUserEntities);
-
-            var auditMonthEntities = req.AuditUsers.GetAuditMonthEntities();
-            entity.AuditPlannedMonths.AddRangeSafe(auditMonthEntities);
-        }
-
-        if (req.AccountUsers != null)
-        {
-            var accountUserIds = req.AccountUsers.StaffIds.Where(staffIdToUserId.ContainsKey)
-                     .Select(staffId => staffIdToUserId[staffId]);
-            var accountEntities = WorkAssignedUsersMapper.ToEntities([.. accountUserIds], DepartmentType.Account);
-            entity.AssignedUsers.AddRangeSafe(accountEntities);
-
-            var accountMonthEntities = req.AccountUsers.GetAccountMonthEntities();
-            entity.AccountPlannedMonths.AddRangeSafe(accountMonthEntities);
-        }
+            Month = c,
+        });
+        entity.PlannedMonths.AddRangeSafe(monthEntities);
 
         repo.Add(entity);
         await repo.SaveChangesAsync();
@@ -119,18 +103,10 @@ ISystemAuditLogService sysAuditService
         task.SSMExtensionDate = req.SSMExtensionDate;
         task.UpdatedAt = DateTime.Now;
 
-        task.AuditPlannedMonths.SyncWithKeys(
-            newKeys: req.AuditMonths,
+        task.PlannedMonths.SyncWithKeys(
+            newKeys: req.Months,
             keySelector: x => x.Month,
-            createEntity: month => new WorkAssignmentAuditMonth
-            {
-                Month = month,
-            });
-
-        task.AccountPlannedMonths.SyncWithKeys(
-            newKeys: req.AccountMonths,
-            keySelector: x => x.Month,
-            createEntity: month => new WorkAssignmentAccountMonth
+            createEntity: month => new WorkAssignmentMonth
             {
                 Month = month,
             });

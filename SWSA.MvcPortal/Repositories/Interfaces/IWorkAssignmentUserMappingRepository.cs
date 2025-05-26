@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -9,5 +7,5 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface IWorkAssignmentUserMappingRepository : IRepositoryBase<WorkAssignmentUserMapping>
 {
     // Define your method here
-    Task<WorkAssignmentUserMapping?> GetByUserIdAsync(int taskId, int userId, string department);
+    Task<WorkAssignmentUserMapping?> GetByUserIdAsync(int taskId, int userId);
 }

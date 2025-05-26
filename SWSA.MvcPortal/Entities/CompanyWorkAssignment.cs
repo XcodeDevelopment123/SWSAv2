@@ -45,25 +45,22 @@ public class CompanyWorkAssignment
     public virtual CompanyWorkProgress? Progress { get; set; }
     public virtual AnnualReturnSubmission? Submission { get; set; }
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
-    public virtual ICollection<WorkAssignmentAccountMonth> AccountPlannedMonths { get; set; } = new List<WorkAssignmentAccountMonth>();
-    public virtual ICollection<WorkAssignmentAuditMonth> AuditPlannedMonths { get; set; } = new List<WorkAssignmentAuditMonth>();
+    public virtual ICollection<WorkAssignmentMonth> PlannedMonths { get; set; } = new List<WorkAssignmentMonth>();
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
-
 
     #region Audit Log Use
     [NotMapped]
     [SystemAuditLog("Month Accounting Is Planned")]
     public string AccountPlannedMonths_AuditLabel { get; set; } = default!;
     [NotMapped]
-    [SystemAuditLog("Month Audit Is Planned")]
-    public string AuditPlannedMonths_AuditLabel { get; set; } = default!;
+    [SystemAuditLog("Month Is Planned")]
+    public string PlannedMonths_AuditLabel { get; set; } = default!;
 
     public void GenerateAuditLabel()
     {
-        AccountPlannedMonths_AuditLabel = string.Join(", ", AccountPlannedMonths.Select(x => x.Month.ToString()));
-        AuditPlannedMonths_AuditLabel = string.Join(", ", AuditPlannedMonths.Select(x => x.Month.ToString()));
+        PlannedMonths_AuditLabel = string.Join(", ", PlannedMonths.Select(x => x.Month.ToString()));
     }
     #endregion
 }

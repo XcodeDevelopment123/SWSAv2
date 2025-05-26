@@ -1,5 +1,4 @@
 ﻿using Mapster;
-using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompnayWorks;
 
@@ -14,9 +13,7 @@ public class WorkAssignmentUserMappingMapsterConfig : IMapsterConfig
         config.ForType<WorkAssignmentUserMapping, CompanyWorkUserVM>()
      .Map(dest => dest.StaffId, src => src.User.StaffId)
      .Map(dest => dest.StaffName, src => src.User.FullName)
-     .Map(dest => dest.Role, src => src.User.Role)
-     .Map(dest => dest.IsAssignedToAccount, src => src.Department == DepartmentType.Account)
-     .Map(dest => dest.IsAssignedToAudit, src => src.Department == DepartmentType.Audit);
+     .Map(dest => dest.Role, src => src.User.Role);
 
     }
 }

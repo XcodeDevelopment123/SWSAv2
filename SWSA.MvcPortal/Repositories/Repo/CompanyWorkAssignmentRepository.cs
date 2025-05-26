@@ -34,8 +34,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
     public async Task<CompanyWorkAssignment> GetUpdateVMById(int id)
     {
         var query = db.Set<CompanyWorkAssignment>()
-            .Include(c => c.AuditPlannedMonths)
-            .Include(c => c.AccountPlannedMonths)
+            .Include(c => c.PlannedMonths)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return await query ?? null!;
@@ -74,8 +73,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
                   .Include(c => c.Progress)
                   .Include(c => c.Company)
                   .Include(c => c.Submission)
-                  .Include(c => c.AccountPlannedMonths)
-                  .Include(c => c.AuditPlannedMonths)
+                  .Include(c => c.PlannedMonths)
                   .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                   .AsNoTracking();
 
@@ -90,8 +88,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
                  .Include(c => c.Progress)
                  .Include(c => c.Company)
                  .Include(c => c.Submission)
-                 .Include(c => c.AccountPlannedMonths)
-                 .Include(c => c.AuditPlannedMonths)
+                 .Include(c => c.PlannedMonths)
                  .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                  .AsNoTracking();
 

@@ -13,8 +13,7 @@ public class CompanyWorkVM
     public CompanyActivityLevel ActivitySize { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public string? InternalNote { get; set; }
-    public string AccMonthToDoLabel => AccountPlannedMonths.GetMonthLabel();
-    public string AuditMonthToDoLabel => AuditPlannedMonths.GetMonthLabel();
+    public string MonthToDoLabel => PlannedMonths.GetMonthLabel();
     public bool IsYearEndTask { get; set; }
     public DateTime? SSMExtensionDate { get; set; }
     public DateTime? AGMDate { get; set; } //Annual General Meeting
@@ -23,9 +22,7 @@ public class CompanyWorkVM
     public CompanyWorkProgressVM Progress { get; set; } = null!;
     public AnnualReturnSubmissionVM Submission { get; set; } = null!;
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();
-    public List<MonthOfYear> AccountPlannedMonths { get; set; } = new List<MonthOfYear>();
-    public List<MonthOfYear> AuditPlannedMonths { get; set; } = new List<MonthOfYear>();
-
+    public List<MonthOfYear> PlannedMonths { get; set; } = new List<MonthOfYear>();
     public void MergeUsers()
     {
         var mergedResult = AssignedUsers.GroupBy(x => x.StaffId)
@@ -37,8 +34,6 @@ public class CompanyWorkVM
                           StaffId = first.StaffId,
                           StaffName = first.StaffName,
                           Role = first.Role,
-                          IsAssignedToAccount = g.Any(x => x.IsAssignedToAccount),
-                          IsAssignedToAudit = g.Any(x => x.IsAssignedToAudit)
                       };
                   }).ToList();
 

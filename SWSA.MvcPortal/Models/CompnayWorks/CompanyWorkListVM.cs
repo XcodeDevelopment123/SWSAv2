@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 
@@ -17,11 +16,7 @@ public class CompanyWorkListVM
     public WorkProgressStatus Status { get; set; }
     public string? InternalNote { get; set; }
     public bool YearEndToDo { get; set; } = false;
-    public string AccMonthToDoLabel => AccMonthToDo.GetMonthLabel();
-    public string AuditMonthToDoLabel => AuditMonthToDo.GetMonthLabel();
+    public string MonthToDoLabel => MonthToDo.GetMonthLabel();
     [JsonIgnore]
-    public List<MonthOfYear> AccMonthToDo { get; set; } = [];
-    [JsonIgnore]
-    public List<MonthOfYear> AuditMonthToDo { get; set; } = [];
-
+    public List<MonthOfYear> MonthToDo { get; set; } = [];
 }

@@ -80,16 +80,8 @@ public class CompanyWorkController(
     [HttpPost("works/add-user")]
     public async Task<IActionResult> AddWorkUser(WorkUserRequest req)
     {
-        int id = 0;
-        if (req.Department == DepartmentType.Audit || req.Department == DepartmentType.Account)
-        {
-            id = await workUserService.AddUser(req);
-        }
-        else
-        {
-            return BadRequest("Invalid department type");
-        }
-        return Ok(id);
+        int result = await workUserService.AddUser(req);
+        return Ok(result);
     }
 
 
@@ -97,16 +89,7 @@ public class CompanyWorkController(
     [HttpPost("works/remove-user")]
     public async Task<IActionResult> DeleteWorkUser(WorkUserRequest req)
     {
-        bool result = false;
-        if (req.Department == DepartmentType.Audit || req.Department == DepartmentType.Account)
-        {
-            result = await workUserService.RemoveUser(req);
-        }
-        else
-        {
-            return BadRequest("Invalid department type");
-        }
-
+        bool result = await workUserService.RemoveUser(req);
         return Ok(result);
     }
 

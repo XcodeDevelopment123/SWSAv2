@@ -14,8 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
-    internal DbSet<WorkAssignmentAuditMonth> WorkAssignmentAuditMonths { get; set; }
-    internal DbSet<WorkAssignmentAccountMonth> WorkAssignmentAccountMonths { get; set; }
+    internal DbSet<WorkAssignmentMonth> WorkAssignmentMonths { get; set; }
     internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
@@ -79,7 +78,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
         {
-            entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId, entity.Department }).IsUnique();
+            entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId }).IsUnique();
         });
 
 

@@ -1,7 +1,5 @@
-﻿using System.Net.WebSockets;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
-using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Entities;
@@ -25,19 +23,15 @@ IUserRepository userRepo
     {
         Guard.AgainstNotSuperAdmin(userContext);
 
-        if (req.Department != DepartmentType.Account && req.Department != DepartmentType.Audit)
-            throw new BadHttpRequestException($"Invalid department: {req.Department}");
-
         var user = await userRepo.GetByStaffIdAsync(req.StaffId);
         Guard.AgainstNullData(user, "User not found");
 
-        var mapUser = await repo.GetByUserIdAsync(req.TaskId, user.Id, req.Department);
+        var mapUser = await repo.GetByUserIdAsync(req.TaskId, user.Id);
         if (mapUser != null)
             throw new BadHttpRequestException($"User already exists in work assignment");
 
         var entity = new WorkAssignmentUserMapping()
         {
-            Department = req.Department,
             UserId = user.Id,
             WorkAssignmentId = req.TaskId,
         };
@@ -45,7 +39,7 @@ IUserRepository userRepo
         repo.Add(entity);
         await repo.SaveChangesAsync();
         var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyWorkAssignment,
-            user.StaffId.ToString(), $"Assign {req.Department} work to User: {user.FullName}", mapUser!);
+            user.StaffId.ToString(), $"Assign work to User: {user.FullName}", mapUser!);
         sysAuditService.LogInBackground(log);
 
         return entity.Id;
@@ -54,20 +48,16 @@ IUserRepository userRepo
     public async Task<bool> RemoveUser(WorkUserRequest req)
     {
         Guard.AgainstNotSuperAdmin(userContext);
-
-        if (req.Department != DepartmentType.Account && req.Department != DepartmentType.Audit)
-            throw new BadHttpRequestException($"Invalid department: {req.Department}");
-
         var user = await userRepo.GetByStaffIdAsync(req.StaffId);
         Guard.AgainstNullData(user, "User not found");
 
-        var mapUser = await repo.GetByUserIdAsync(req.TaskId, user.Id, req.Department);
+        var mapUser = await repo.GetByUserIdAsync(req.TaskId, user.Id);
         Guard.AgainstNullData(mapUser, "User not found in work assignment");
 
         repo.Remove(mapUser!);
         await repo.SaveChangesAsync();
         var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyWorkAssignment,
-            user.StaffId.ToString(), $"Remove User: {user.FullName} from {req.Department} work", mapUser!);
+            user.StaffId.ToString(), $"Remove User: {user.FullName} from work", mapUser!);
         sysAuditService.LogInBackground(log);
 
         return true;

@@ -32,8 +32,7 @@ new SystemAuditLogMapsterConfig(),
 new SystemNotificationLogMapsterConfig(),
 new UserCompanyDepartmentMapsterConfig(),
 new UserMapsterConfig(),
-new WorkAssignmentAccountMonthMapsterConfig(),
-new WorkAssignmentAuditMonthMapsterConfig(),
+new WorkAssignmentMonthMapsterConfig(),
 new WorkAssignmentUserMappingMapsterConfig(),
             //#Mapster Config end
         };

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
 
-public class WorkAssignmentAuditMonth
+public class WorkAssignmentMonth
 {
     [Key]
     public int Id { get; set; }

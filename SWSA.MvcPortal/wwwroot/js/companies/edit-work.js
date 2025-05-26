@@ -184,9 +184,9 @@
     });
 
     //#region Audit Work Form
-    const $auditUserForm = $("#auditUserForm");
-    const auditUserFormInputs = {
-        staffId: $auditUserForm.find('select[name="staffId"]'),
+    const $workUserForm = $("#workUserForm");
+    const workUserFormInputs = {
+        staffId: $workUserForm.find('select[name="staffId"]'),
     };
     const auditUserTable = $('#auditUserTable').DataTable({
         paging: true,
@@ -198,7 +198,7 @@
         responsive: true
     });
 
-    $auditUserForm.validate({
+    $workUserForm.validate({
         rules: {
             staffId: {
                 required: true
@@ -226,15 +226,15 @@
         }
     });
 
-    $auditUserForm.on('submit', function (e) {
+    $workUserForm.on('submit', function (e) {
         e.preventDefault();
 
-        if (!$auditUserForm.valid()) {
+        if (!$workUserForm.valid()) {
             return;
         }
 
-        const staffId = auditUserFormInputs.staffId.val(); // staff ID
-        const staffName = auditUserFormInputs.staffId.find('option:selected').text(); // staff 名字
+        const staffId = workUserFormInputs.staffId.val(); // staff ID
+        const staffName = workUserFormInputs.staffId.find('option:selected').text(); // staff 名字
 
         const req = {
             staffId: staffId,
@@ -271,8 +271,8 @@
 
                     auditUserTable.row.add(rowHtml).draw(false);
 
-                    auditUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
-                    auditUserFormInputs.staffId.val("").trigger('change');
+                    workUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+                    workUserFormInputs.staffId.val("").trigger('change');
                 }
             }
         });
@@ -396,7 +396,7 @@
                     if (res) {
                         Toast_Fire(ICON_SUCCESS, "Removed", "user removed successfully.");
                         if (department === "Audit") {
-                            auditUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', false);
+                            workUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', false);
                         } else if (department === "Account") {
                             accountUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', false);
                         }

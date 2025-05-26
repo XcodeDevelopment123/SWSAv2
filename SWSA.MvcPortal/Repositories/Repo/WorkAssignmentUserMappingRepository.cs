@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
@@ -10,12 +9,11 @@ public class WorkAssignmentUserMappingRepository(AppDbContext db) : RepositoryBa
 {
 
     // Implement the method
-    public async Task<WorkAssignmentUserMapping?> GetByUserIdAsync(int taskId, int userId, string department)
+    public async Task<WorkAssignmentUserMapping?> GetByUserIdAsync(int taskId, int userId)
     {
         var query = db.Set<WorkAssignmentUserMapping>().FirstOrDefaultAsync(c =>
         c.WorkAssignmentId == taskId &&
-        c.UserId == userId &&
-        c.Department == department);
+        c.UserId == userId);
         return await query;
     }
     //Rewrite the GetAllAsync method

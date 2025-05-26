@@ -15,6 +15,5 @@ public class EditCompanyWorkAssignmentRequest
     public DateTime? ARDueDate { get; set; } //Annual Return Due Date
     public DateTime? ReminderDate { get; set; }
     public string? InternalNote { get; set; }
-    public List<MonthOfYear> AuditMonths { get; set; }
-    public List<MonthOfYear> AccountMonths { get; set; }
+    public List<MonthOfYear> Months { get; set; }
 }

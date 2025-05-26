@@ -164,7 +164,7 @@
                 item.companyStatus,
                 item.activitySize,
                 item.isYearEndTask ? "Yes" : "No",
-                item.auditMonthToDoLabel,
+                item.monthToDoLabel,
                 auditStaffsName.join(", "),
                 item.accMonthToDoLabel,
                 accountStaffsName,

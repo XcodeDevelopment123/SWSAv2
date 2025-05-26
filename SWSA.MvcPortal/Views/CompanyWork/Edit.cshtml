@@ -173,30 +173,13 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<label for="auditMonthToDo">
-									Audit Month To Do
+								<label for="monthToDo">
+									Month To Do
 								</label>
-								<select id="auditMonthToDo" name="auditMonths" class="form-control select2" multiple="multiple" style="max-width:95%">
+								<select id="monthToDo" name="Months" class="form-control select2" multiple="multiple" style="max-width:95%">
 									@foreach (var month in monthOfYear)
 									{
-										var isSelected = workVM.AuditPlannedMonths.Any(c => c.ToString() == month.Value);
-										<option value="@month.Value" selected="@(isSelected ? "selected" : null)">
-											@month.Text
-										</option>
-									}
-								</select>
-							</div>
-						</div>
-
-						<div class="col-md-12">
-							<div class="form-group">
-								<label for="accountMonthToDo">
-									Accounting Month To Do
-								</label>
-								<select id="accountMonthToDo" name="accountMonths" class="form-control select2" multiple="multiple" style="max-width:95%">
-									@foreach (var month in monthOfYear)
-									{
-										var isSelected = workVM.AccountPlannedMonths.Any(c => c.ToString() == month.Value);
+										var isSelected = workVM.PlannedMonths.Any(c => c.ToString() == month.Value);
 										<option value="@month.Value" selected="@(isSelected ? "selected" : null)">
 											@month.Text
 										</option>
@@ -294,10 +277,10 @@
 
 	<div class="col-md-12">
 		<!-- jquery validation -->
-		<form id="auditUserForm">
+		<form id="workUserForm">
 			<div class="card card-warning collapsed-card">
 				<div class="card-header">
-					<h3 class="card-title">Audit Work Handle User</h3>
+					<h3 class="card-title">Assigned User</h3>
 					<div class="card-tools">
 						<button type="button" class="btn btn-tool" data-card-widget="collapse">
 							<i class="fas fa-plus"></i>
@@ -319,8 +302,7 @@
 							</thead>
 							<tbody>
 								@{
-									var auditUsers = workVM.AssignedUsers.Where(c => c.IsAssignedToAudit);
-									@foreach (var user in auditUsers)
+									@foreach (var user in workVM.AssignedUsers)
 									{
 										<tr data-staff-id="@user.StaffId">
 											<td>
@@ -354,12 +336,12 @@
 
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="auditUserStaffId">
+										<label for="workUserStaffId">
 											User
 											<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this audit work."></i>
 										</label>
-										<select id="auditUserStaffId" name="staffId" class="form-control select2 ">
-											@if (Model.AuditUserSelections.Count == 0)
+										<select id="workUserStaffId" name="staffId" class="form-control select2 ">
+											@if (Model.UserSelections.Count == 0)
 											{
 												<option disabled value="">No user are handling audit of this company</option>
 											}
@@ -368,9 +350,9 @@
 												<option value="">Please select</option>
 											}
 
-											@foreach (var user in Model.AuditUserSelections)
+											@foreach (var user in Model.UserSelections)
 											{
-												var isSelected = workVM.AssignedUsers.Any(c => c.StaffId == user.StaffId && c.IsAssignedToAudit);
+												var isSelected = workVM.AssignedUsers.Any(c => c.StaffId == user.StaffId);
 												if (isSelected)
 												{
 													<option value="@user.StaffId" disabled>@user.FullName (@user.Role.GetDisplayName())</option>
@@ -393,115 +375,6 @@
 					<!-- /.card-body -->
 					<div class="card-footer ">
 						<button id="btnSubmitRequest" class="btn btn-primary float-end">Add</button>
-					</div>
-				}
-				<!-- /.card -->
-			</div>
-		</form>
-	</div>
-
-	<div class="col-md-12">
-		<!-- jquery validation -->
-		<form id="accountUserForm">
-			<div class="card card-warning collapsed-card">
-				<div class="card-header">
-					<h3 class="card-title">Account Work Handle User</h3>
-					<div class="card-tools">
-						<button type="button" class="btn btn-tool" data-card-widget="collapse">
-							<i class="fas fa-plus"></i>
-						</button>
-					</div>
-				</div>
-				<!-- /.card-header -->
-				<!-- form start -->
-
-				<div class="card-body" style="display:none">
-					<div class="row">
-
-						<table id="accountUserTable" class="table table-bordered table-hover">
-							<thead>
-								<tr>
-									<th>User</th>
-
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								@{
-									var accountUsers = workVM.AssignedUsers.Where(c => c.IsAssignedToAccount);
-									@foreach (var user in accountUsers)
-									{
-										<tr data-staff-id="@user.StaffId">
-											<td>
-												@user.StaffName (@user.Role.GetDisplayName()) @(UserContext.StaffId == user.StaffId ? "(You)" : "")
-											</td>
-
-											<td>
-
-												<button type="button" class="@(UserContext.IsSuperAdmin?"btn-delete-user":"") btn btn-sm btn-danger"
-														data-bs-toggle="tooltip"
-														data-bs-placement="top"
-														data-department="Account"
-														value="@user.StaffId"
-														data-name="@user.StaffName">
-													<i class="fa fa-trash"></i>
-												</button>
-											</td>
-										</tr>
-									}
-								}
-							</tbody>
-						</table>
-
-						@if (UserContext.IsSuperAdmin)
-						{
-							<div class="divider-line"></div>
-
-							<div class="row">
-
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="accountUserStaffId">
-											User
-											<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this audit work."></i>
-										</label>
-										<select id="accountUserStaffId" name="staffId" class="form-control select2 ">
-											@if (Model.AccountingUserSelections.Count == 0)
-											{
-												<option disabled value="">No user are handling account of this company</option>
-											}
-											else
-											{
-												<option value="">Please select</option>
-											}
-
-											@foreach (var user in Model.AccountingUserSelections)
-											{
-												var isSelected = workVM.AssignedUsers.Any(c => c.StaffId == user.StaffId && c.IsAssignedToAccount);
-												if (isSelected)
-												{
-													<option value="@user.StaffId" disabled>@user.FullName (@user.Role.GetDisplayName())</option>
-												}
-												else
-												{
-													<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
-												}
-											})
-
-										</select>
-									</div>
-								</div>
-							</div>
-						}
-					</div>
-				</div>
-				@if (UserContext.IsSuperAdmin)
-				{
-					<!-- /.card-body -->
-					<div class="card-footer ">
-						<button id="btnSubmitRequest" class="btn btn-primary float-end">
-							Add
-						</button>
 					</div>
 				}
 				<!-- /.card -->

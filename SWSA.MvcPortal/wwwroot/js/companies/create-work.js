@@ -114,9 +114,9 @@ $(function () {
         table.row($(this).closest('tr')).remove().draw(false);
     });
 
-    $(document).on('click', '#auditUserForm .btn-delete-row', function () {
+    $(document).on('click', '#workUserForm .btn-delete-row', function () {
         const id = $(this).val();
-        auditUserFormInputs.staffId.find(`option[value="${id}"]`).prop('disabled', false);
+        workUserFormInputs.staffId.find(`option[value="${id}"]`).prop('disabled', false);
     });
 
     $(document).on('click', '#accountUserForm .btn-delete-row', function () {
@@ -125,10 +125,10 @@ $(function () {
     });
 
     //#region Audit Work Form
-    const $auditUserForm = $("#auditUserForm");
-    const auditUserFormInputs = {
-        staffId: $auditUserForm.find('select[name="staffId"]'),
-        monthToDo: $auditUserForm.find('select[name="monthToDo"]'),
+    const $workUserForm = $("#workUserForm");
+    const workUserFormInputs = {
+        staffId: $workUserForm.find('select[name="staffId"]'),
+        monthToDo: $workUserForm.find('select[name="monthToDo"]'),
     };
     const auditUserTable = $('#auditUserTable').DataTable({
         paging: true,
@@ -140,7 +140,7 @@ $(function () {
         responsive: true
     });
 
-    $auditUserForm.validate({
+    $workUserForm.validate({
         rules: {
             staffId: {
                 required: true
@@ -168,15 +168,15 @@ $(function () {
         }
     });
 
-    $auditUserForm.on('submit', function (e) {
+    $workUserForm.on('submit', function (e) {
         e.preventDefault();
 
-        if (!$auditUserForm.valid()) {
+        if (!$workUserForm.valid()) {
             return;
         }
 
-        const staffId = auditUserFormInputs.staffId.val(); // staff ID
-        const staffName = auditUserFormInputs.staffId.find('option:selected').text(); // staff 名字
+        const staffId = workUserFormInputs.staffId.val(); // staff ID
+        const staffName = workUserFormInputs.staffId.find('option:selected').text(); // staff 名字
 
         const data = {
             staffId: staffId,
@@ -196,8 +196,8 @@ $(function () {
 
         auditUserTable.row.add(rowHtml).draw(false);
 
-        auditUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
-        auditUserFormInputs.staffId.val("").trigger('change');
+        workUserFormInputs.staffId.find(`option[value="${staffId}"]`).prop('disabled', true);
+        workUserFormInputs.staffId.val("").trigger('change');
     });
 
     //#endregion
@@ -281,7 +281,7 @@ $(function () {
     //#endregion
 
     function getAuditUserData() {
-        const months = auditUserFormInputs.monthToDo.find('option:selected')
+        const months = workUserFormInputs.monthToDo.find('option:selected')
             .map(function () { return $(this).text(); })
             .get(); // array of names
         const data = {
