@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Force.DeepCloner;
 using Microsoft.Extensions.Caching.Memory;
-using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
@@ -44,22 +43,19 @@ ISystemAuditLogService sysAuditService
         Guard.AgainstNullData(data, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        data.MergeUsers();
-
         return data;
     }
 
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
-
         var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var entity = mapper.Map<CompanyWorkAssignment>(req);
 
         entity.Progress = new CompanyWorkProgress();
-        entity.Submission = new AnnualReturnSubmission(cp!);
+        entity.ARSubmission = new AnnualReturnSubmission(cp!);
 
         var allStaffIds = (req.AssignedUserIds ?? Enumerable.Empty<string>())
                     .Distinct()
@@ -68,12 +64,7 @@ ISystemAuditLogService sysAuditService
         var staffIdToUserId = await userRepo.GetDictionaryIdByStaffIdsAsync(allStaffIds);
         var assignedUserEntities = WorkAssignedUsersMapper.ToEntities([.. staffIdToUserId.Values]);
         entity.AssignedUsers.AddRangeSafe(assignedUserEntities);
-        var monthEntities = req.Months.Select(c => new WorkAssignmentMonth()
-        {
-            Month = c,
-        });
-        entity.PlannedMonths.AddRangeSafe(monthEntities);
-
+        entity.CreateSubmissionEntity();
         repo.Add(entity);
         await repo.SaveChangesAsync();
 
@@ -89,32 +80,26 @@ ISystemAuditLogService sysAuditService
         Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
 
         var oldData = task.DeepClone();
-        oldData.GenerateAuditLabel();
 
         task.CompanyActivityLevel = req.CompanyActivityLevel;
-        task.WorkType = req.WorkType;
         task.ServiceScope = req.ServiceScope;
         task.InternalNote = req.InternalNote;
         task.CompanyStatus = req.CompanyStatus;
         task.IsYearEndTask = req.IsYearEndTask;
-        task.ARDueDate = req.ARDueDate;
-        task.AGMDate = req.AGMDate;
-        task.ReminderDate = req.ReminderDate;
-        task.SSMExtensionDate = req.SSMExtensionDate;
         task.UpdatedAt = DateTime.Now;
 
-        task.PlannedMonths.SyncWithKeys(
-            newKeys: req.Months,
-            keySelector: x => x.Month,
-            createEntity: month => new WorkAssignmentMonth
-            {
-                Month = month,
-            });
+        ///TODO: Only audit / accounting type need to sync month label
+        //task.PlannedMonths.SyncWithKeys(
+        //    newKeys: req.Months,
+        //    keySelector: x => x.Month,
+        //    createEntity: month => new WorkAssignmentMonth
+        //    {
+        //        Month = month,
+        //    });
 
         repo.Update(task);
         await repo.SaveChangesAsync();
 
-        task.GenerateAuditLabel();
 
         var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
         sysAuditService.LogInBackground(log);

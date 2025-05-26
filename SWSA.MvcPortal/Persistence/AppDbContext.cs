@@ -11,18 +11,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
-    internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
     internal DbSet<WorkAssignmentMonth> WorkAssignmentMonths { get; set; }
     internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
-    internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
     internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
+    internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
+    internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,7 +74,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
         });
 
-        modelBuilder.Entity<AnnualReturnSubmission>(entity => { });
+        modelBuilder.Entity<CompanyStrikeOffSubmission>()
+            .HasOne(x => x.WorkAssignment)
+            .WithOne(x => x.StrikeOffSubmission)
+            .HasForeignKey<CompanyStrikeOffSubmission>(x => x.WorkAssignmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<AnnualReturnSubmission>()
+            .HasOne(x => x.WorkAssignment)
+            .WithOne(x => x.ARSubmission)
+            .HasForeignKey<AnnualReturnSubmission>(x => x.WorkAssignmentId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
         {

@@ -119,8 +119,6 @@
             url: `${urls.companies}/${companyId}/secretary`,
             success: function (res) {
                 //Load details
-                console.log(res);
-
                 if (res.isStrikedOff && res.strikeOffStatus !== "Not Applied") {
                     $("#requestStrikeOffSubmission").prop("disabled", true);
                     $("#strikeOffContainer").removeClass("d-none");

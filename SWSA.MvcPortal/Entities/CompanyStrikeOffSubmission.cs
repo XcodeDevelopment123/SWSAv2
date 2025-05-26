@@ -12,8 +12,11 @@ public class CompanyStrikeOffSubmission
     [ForeignKey(nameof(Company))]
     [SystemAuditLog("Company ID")]
     public int CompanyId { get; set; }
-
     public virtual Company Company { get; set; } = null!;
+
+    [ForeignKey(nameof(WorkAssignment))]
+    public int WorkAssignmentId { get; set; }
+    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
 
     [SystemAuditLog("Strike-Off Start Date")]
     public DateTime? StartDate { get; set; }
@@ -32,4 +35,5 @@ public class CompanyStrikeOffSubmission
 
     [SystemAuditLog("Strike-Off Remarks")]
     public string? Remarks { get; set; }
+
 }

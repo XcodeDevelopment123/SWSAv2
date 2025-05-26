@@ -14,4 +14,5 @@ public enum ServiceScope
     E_Invoice,
     Retainer,
     Software,
+    Other=99,
 }

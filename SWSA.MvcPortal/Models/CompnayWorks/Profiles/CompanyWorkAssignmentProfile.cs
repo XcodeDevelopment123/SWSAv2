@@ -19,7 +19,6 @@ public class CompanyWorkAssignmentProfile : Profile
             .ForMember(dest => dest.CompanyRegistrationNumber, opt => opt.MapFrom((src, dest) => src.Company.RegistrationNumber))
             .ForMember(dest => dest.ActivitySize, opt => opt.MapFrom(src => src.CompanyActivityLevel))
             .ForMember(dest => dest.YearEndToDo, opt => opt.MapFrom(src => src.IsYearEndTask))
-            .ForMember(dest => dest.MonthToDo, opt => opt.MapFrom(src => src.PlannedMonths.Select(c => c.Month)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest) => src.Progress?.Status ?? WorkProgressStatus.Unknown));
 
         CreateMap<CompanyWorkAssignment, CompanyWorkVM>()

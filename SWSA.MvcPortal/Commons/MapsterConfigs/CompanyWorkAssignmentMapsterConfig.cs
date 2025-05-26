@@ -13,6 +13,10 @@ public class CompanyWorkAssignmentMapsterConfig : IMapsterConfig
         config.ForType<CompanyWorkAssignment, CompanyWorkVM>()
           .Map(dest => dest.TaskId, src => src.Id)
           .Map(dest => dest.ActivitySize, src => src.CompanyActivityLevel)
-          .Map(dest => dest.PlannedMonths, src => src.PlannedMonths.Select(c => c.Month));
+          .AfterMapping((src, dest) =>
+          {
+              dest.MergeUsers();
+              dest.SubmissionDetail = dest.MapDetailDto(src);
+          });
     }
 }

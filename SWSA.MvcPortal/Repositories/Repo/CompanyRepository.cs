@@ -143,10 +143,9 @@ public class CompanyRepository(AppDbContext db) : RepositoryBase<Company>(db), I
             .Include(c => c.CommunicationContacts)
             .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.PlannedMonths)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.Submission)
+            .Include(c => c.WorkAssignments).ThenInclude(c => c.ARSubmission)
             .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);

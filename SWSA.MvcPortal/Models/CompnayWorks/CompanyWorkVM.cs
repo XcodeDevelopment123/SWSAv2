@@ -1,5 +1,7 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+﻿using Mapster;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
+using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Models.CompnayWorks;
@@ -13,16 +15,11 @@ public class CompanyWorkVM
     public CompanyActivityLevel ActivitySize { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public string? InternalNote { get; set; }
-    public string MonthToDoLabel => PlannedMonths.GetMonthLabel();
     public bool IsYearEndTask { get; set; }
-    public DateTime? SSMExtensionDate { get; set; }
-    public DateTime? AGMDate { get; set; } //Annual General Meeting
-    public DateTime? ARDueDate { get; set; } //Annual Return Due Date
-    public DateTime? ReminderDate { get; set; }
     public CompanyWorkProgressVM Progress { get; set; } = null!;
-    public AnnualReturnSubmissionVM Submission { get; set; } = null!;
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();
     public List<MonthOfYear> PlannedMonths { get; set; } = new List<MonthOfYear>();
+    public object? SubmissionDetail { get; set; } = null!; // This will be the specific submission type based on WorkType
     public void MergeUsers()
     {
         var mergedResult = AssignedUsers.GroupBy(x => x.StaffId)
@@ -38,5 +35,19 @@ public class CompanyWorkVM
                   }).ToList();
 
         AssignedUsers = mergedResult;
+    }
+
+    public object MapDetailDto(CompanyWorkAssignment src)
+    {
+        switch (src.WorkType)
+        {
+            case WorkType.AnnualReturn:
+                return src.ARSubmission.Adapt<AnnualReturnSubmissionVM>();
+            case WorkType.StrikeOff:
+                return src.StrikeOffSubmission.Adapt<CompanyStrikeOffSubmissionVM>();
+            // ...
+            default:
+                return null!;
+        }
     }
 }

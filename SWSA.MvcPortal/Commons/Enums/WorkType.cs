@@ -10,5 +10,7 @@ public enum WorkType
     FormBE,
     FormB,
     Trust,
+    AnnualReturn,
+    StrikeOff,
     Others
 }

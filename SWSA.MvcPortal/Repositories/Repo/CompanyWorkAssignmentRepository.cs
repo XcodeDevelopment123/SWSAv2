@@ -20,21 +20,20 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
     #region VM Method
     public async Task<CompanyWorkVM> GetWorkVMByIdAsync(int id)
     {
-        var dtos = await BaseQuery(true)
-             .Where(c => c.Id == id)
-             .ProjectToType<CompanyWorkVM>()
-             .FirstOrDefaultAsync();
+        var entity = await BaseQuery(true)
+              .FirstOrDefaultAsync(c => c.Id == id);
 
-        return dtos!;
+        if (entity == null)
+            return null!; 
+
+        var vm = entity.Adapt<CompanyWorkVM>();
+        return vm!;
     }
-
     #endregion
-
 
     public async Task<CompanyWorkAssignment> GetUpdateVMById(int id)
     {
         var query = db.Set<CompanyWorkAssignment>()
-            .Include(c => c.PlannedMonths)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return await query ?? null!;
@@ -72,8 +71,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                   .Include(c => c.Progress)
                   .Include(c => c.Company)
-                  .Include(c => c.Submission)
-                  .Include(c => c.PlannedMonths)
+                  .Include(c => c.ARSubmission)
                   .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                   .AsNoTracking();
 
@@ -87,8 +85,7 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         var query = db.CompanyWorkAssignments
                  .Include(c => c.Progress)
                  .Include(c => c.Company)
-                 .Include(c => c.Submission)
-                 .Include(c => c.PlannedMonths)
+                 .Include(c => c.ARSubmission)
                  .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                  .AsNoTracking();
 

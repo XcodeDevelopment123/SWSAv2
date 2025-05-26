@@ -23,7 +23,10 @@ public class DocumentRecord
     [ForeignKey(nameof(HandledByStaff))]
     public int HandledByStaffId { get; set; }
 
-  
+    [ForeignKey(nameof(WorkAssignment))]
+    public int WorkAssignmentId { get; set; }
+    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
+
     // File attachment info
     public string? AttachmentFileName { get; set; } = null!;
     public string? AttachmentFilePath { get; set; } = null!;

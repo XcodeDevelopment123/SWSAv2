@@ -29,38 +29,30 @@ public class CompanyWorkAssignment
 
     [SystemAuditLog("Is Year-End Related Task")]
     public bool IsYearEndTask { get; set; } // YE to do
-
-    [SystemAuditLog("SSM Extension Date")]
-    public DateTime? SSMExtensionDate { get; set; }
-
-    [SystemAuditLog("Annual General Meeting Date")]
-    public DateTime? AGMDate { get; set; } //Annual General Meeting
-
-    [SystemAuditLog("Annual Return Due Date")]
-    public DateTime? ARDueDate { get; set; } //Annual Return Due Date
-
-    [SystemAuditLog("Reminder Date")]
-    public DateTime? ReminderDate { get; set; }
-
     public virtual CompanyWorkProgress? Progress { get; set; }
-    public virtual AnnualReturnSubmission? Submission { get; set; }
+    public virtual ICollection<DocumentRecord> Documents { get; set; } = new List<DocumentRecord>();
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
-    public virtual ICollection<WorkAssignmentMonth> PlannedMonths { get; set; } = new List<WorkAssignmentMonth>();
-
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 
-    #region Audit Log Use
-    [NotMapped]
-    [SystemAuditLog("Month Accounting Is Planned")]
-    public string AccountPlannedMonths_AuditLabel { get; set; } = default!;
-    [NotMapped]
-    [SystemAuditLog("Month Is Planned")]
-    public string PlannedMonths_AuditLabel { get; set; } = default!;
+    #region Work Type Entity (Only one)
+    public virtual AnnualReturnSubmission? ARSubmission { get; set; }
+    public virtual CompanyStrikeOffSubmission? StrikeOffSubmission { get; set; } = null!;
 
-    public void GenerateAuditLabel()
+    public void CreateSubmissionEntity()
     {
-        PlannedMonths_AuditLabel = string.Join(", ", PlannedMonths.Select(x => x.Month.ToString()));
+        switch (WorkType)
+        {
+            case WorkType.AnnualReturn:
+                ARSubmission = new AnnualReturnSubmission();
+                break;
+            case WorkType.StrikeOff:
+                StrikeOffSubmission = new CompanyStrikeOffSubmission();
+                break;
+            // Add other cases as needed
+            default:
+                throw new NotSupportedException($"WorkType {WorkType} is not supported for submission creation.");
+        }
     }
     #endregion
 }
