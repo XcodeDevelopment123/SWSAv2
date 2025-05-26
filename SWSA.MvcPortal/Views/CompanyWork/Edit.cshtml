@@ -176,7 +176,7 @@
 								<label for="monthToDo">
 									Month To Do
 								</label>
-								<select id="monthToDo" name="Months" class="form-control select2" multiple="multiple" style="max-width:95%">
+								<select id="monthToDo" name="months" class="form-control select2" multiple="multiple" style="max-width:95%">
 									@foreach (var month in monthOfYear)
 									{
 										var isSelected = workVM.PlannedMonths.Any(c => c.ToString() == month.Value);

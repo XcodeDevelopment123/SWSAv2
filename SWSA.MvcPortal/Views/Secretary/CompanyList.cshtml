@@ -42,13 +42,9 @@
 								Company :@cp.Name
 								<span class="company-regis">(@cp.RegistrationNumber)</span>
 							</p>
-
 						</div>
 					}
 				</div>
-
-
-
 			</div>
 			<!-- /.card-body -->
 		</div>
@@ -67,7 +63,6 @@
 			</div>
 
 			<div class="card-body row">
-
 				<div action=" col-md-12">
 					<button id="requestStrikeOffSubmission"class="btn btn-danger mb-2">Request Strike Off</button>
 				</div>
@@ -90,6 +85,32 @@
 						<input readonly id="yearEndMonth" class="form-control " placeholder="May.." />
 					</div>
 				</div>
+				<div class="d-none row" id="strikeOffContainer">
+					<div class="form-info-label col-12">
+						<label>Strike Off </label>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="strikeOffStatus">Strike Off Status</label>
+							<input readonly id="strikeOffStatus" class="form-control" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="strikeOffEffectiveDate">Strike Off Effective Date</label>
+							<div class="input-group">
+								<input disabled type="date" id="strikeOffEffectiveDate" class="form-control" placeholder="-" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+	
 
 				<div class="form-info-label col-12">
 					<label>Registration</label>
@@ -169,13 +190,12 @@
 				<table id="workTable" class="table table-bordered table-hover table-responsive">
 					<thead>
 						<tr>
+							<th>Work Type</th>
 							<th>Company Status</th>
 							<th>Activity/Size</th>
 							<th>Year End To Do</th>
-							<th>Audit Month To Do</th>
-							<th>Audit Staff(s)</th>
-							<th>Account Month To Do</th>
-							<th>Account Staff(s)</th>
+							<th>Month To Do</th>
+							<th>Staff(s)</th>
 							<th>SSM Extension Date</th>
 							<th>AGM Date</th>
 							<th>AR Due Date</th>

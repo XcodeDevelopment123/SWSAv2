@@ -13,6 +13,9 @@ public class CompanySecretaryVM
     public string RegistrationNumber { get; set; } = null!;
     public string? EmployerNumber { get; set; }
     public string? TaxIdentificationNumber { get; set; }
+    public bool IsStrikedOff { get; set; } = false;
+    public StrikeOffStatus StrikeOffStatus { get; set; } = StrikeOffStatus.NotApplied;
+    public DateTime? StrikeOffEffectiveDate { get; set; }
     public List<CompanyMsicCodeVM> MsicCodes { get; set; } = new List<CompanyMsicCodeVM>();
     public List<CompanyOwnerVM> Owners { get; set; } = new List<CompanyOwnerVM>();
     public List<CompanyWorkVM> WorkAssignments { get; set; } = new List<CompanyWorkVM>();

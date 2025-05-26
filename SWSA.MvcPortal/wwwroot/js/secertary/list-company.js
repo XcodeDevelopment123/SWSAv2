@@ -39,7 +39,7 @@
     });
     workTable.buttons().container().appendTo('#workTable_wrapper .col-md-6:eq(0)');
 
-    flatpickr("#incorpDate", {
+    flatpickr("#incorpDate,#strikeOffEffectiveDate", {
         allowInput: true,
     });
     //#endregion init table and date
@@ -119,6 +119,19 @@
             url: `${urls.companies}/${companyId}/secretary`,
             success: function (res) {
                 //Load details
+                console.log(res);
+
+                if (res.isStrikedOff && res.strikeOffStatus !== "Not Applied") {
+                    $("#requestStrikeOffSubmission").prop("disabled", true);
+                    $("#strikeOffContainer").removeClass("d-none");
+                    $("#strikeOffStatus").val(res.strikeOffStatus);
+                    $("#strikeOffEffectiveDate").val(ConvertTimeFormat(res.strikeOffEffectiveDate, "DD-MM-YYYY")).trigger("change");
+                } else {
+                    $("#strikeOffStatus").val("");
+                    $("#strikeOffEffectiveDate").val("").trigger("change");
+                    $("#strikeOffContainer").addClass("d-none");
+                    $("#requestStrikeOffSubmission").prop("disabled", false);
+                }
 
                 $("#companyName").val(res.companyName);
                 $("#companyType").val(res.companyType);
@@ -144,37 +157,27 @@
     })
 
     function reloadScheduling(workAssignments) {
-        console.log(workAssignments);
-        const auditStaffsName = workAssignments.map(
-            item => item.assignedUsers
-                .filter(user => user.isAssignedToAudit)
-                .map(user => user.staffName)
-        );
-
-        const accountStaffsName = workAssignments.map(
-            item => item.assignedUsers
-                .filter(user => user.isAssignedToAccount)
-                .map(user => user.staffName)
-        );
-
+        console.log(workAssignments)
         workTable.clear();
         workAssignments.forEach(item => {
             const submission = item.submission;
+            const staffsName = item.assignedUsers
+                .map(user => user.staffName);
+
             workTable.row.add([
+                item.workType,
                 item.companyStatus,
                 item.activitySize,
                 item.isYearEndTask ? "Yes" : "No",
                 item.monthToDoLabel,
-                auditStaffsName.join(", "),
-                item.accMonthToDoLabel,
-                accountStaffsName,
-                ConvertTimeFormat(item.ssmExtensionDate,"DD-MM-YYYY"),
+                staffsName,
+                ConvertTimeFormat(item.ssmExtensionDate, "DD-MM-YYYY"),
                 ConvertTimeFormat(item.agmDate, "DD-MM-YYYY"),
-                ConvertTimeFormat(item.arDueDate,"DD-MM-YYYY"),
-                ConvertTimeFormat(item.reminderDate,"DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn,"DD-MM-YYYY"),
+                ConvertTimeFormat(item.arDueDate, "DD-MM-YYYY"),
+                ConvertTimeFormat(item.reminderDate, "DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
+                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
                 item.internalNote,
             ]);
         });
