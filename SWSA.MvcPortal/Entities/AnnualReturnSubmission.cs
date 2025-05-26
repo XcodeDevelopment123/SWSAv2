@@ -1,19 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SWSA.MvcPortal.Commons.Filters;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Entities.ValueOfObject;
 
 namespace SWSA.MvcPortal.Entities;
 
 //For Actual Submit record & Record Client Sign/Return record
-public class AnnualReturnSubmission
+public class AnnualReturnSubmission : BaseSubmission
 {
-    [Key]
-    public int Id { get; set; }
-
-    [ForeignKey(nameof(WorkAssignment))]
-    public int WorkAssignmentId { get; set; }
-    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
-
     [SystemAuditLog("Submission Year")]
     public int Year { get; set; } // e.g. 2025
 
@@ -34,12 +26,6 @@ public class AnnualReturnSubmission
 
     [SystemAuditLog("Date Returned by Client")]
     public DateTime? DateReturnedByClient { get; set; }
-
-    [SystemAuditLog("Remarks")]
-    public string? Remarks { get; set; }
-
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime? UpdatedAt { get; set; }
 
     public AnnualReturnSubmission() { }
 

@@ -12,6 +12,8 @@
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
         companyType: $companyForm.find('select[name="companyType"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
+        companyStatus: $companyForm.find('select[name="companyStatus"]'),
+        companyActivityLevel: $companyForm.find('select[name="companyActivityLevel"]'),
     }
 
     $companyForm.validate({
@@ -38,6 +40,12 @@
                 required: true
             },
             msicCodesIds: {
+                required: true
+            },
+            companyStatus: {
+                required: true
+            },
+            companyActivityLevel: {
                 required: true
             },
         },
@@ -68,7 +76,13 @@
             },
             msicCodesIds: {
                 required: "Please select at least one MSIC code."
-            }
+            },
+            companyStatus: {
+                required: "Please select a company status"
+            },
+            companyActivityLevel: {
+                required: "Company activity level is required."
+            },
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -701,7 +715,7 @@
             return;
         }
 
-        const staffId = editHandleUser.isEdit ?editHandleUser.staffId: handleUserFormInputs.handleStaffId.val(); // staff ID
+        const staffId = editHandleUser.isEdit ? editHandleUser.staffId : handleUserFormInputs.handleStaffId.val(); // staff ID
         const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
 
         const departmentNames = handleUserFormInputs.userDepartments.find('option:selected')
@@ -1006,7 +1020,7 @@
 			</td>`
         ];
 
-      
+
 
         if (editHandleUser.isEdit) {
             handleUserTable.row(editHandleUser.index).data(rowHtml).draw(false);

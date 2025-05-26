@@ -58,7 +58,7 @@ public class DocumentRecordProfile : Profile
                    return $"{localDomain}{downloadPath}";
                }));
 
-        CreateMap<CreateDocumentRecordRequest, DocumentRecord>()
+        CreateMap<DocumentRecordRequest, DocumentRecord>()
             .ForMember(dest => dest.HandledByStaffId, opt => opt.Ignore());
     }
 

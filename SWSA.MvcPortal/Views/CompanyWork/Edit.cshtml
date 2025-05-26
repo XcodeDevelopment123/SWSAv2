@@ -18,13 +18,10 @@
 	var progress = workVM.Progress;
 
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(workVM.WorkType);
-	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(workVM.ServiceScope);
 	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(workVM.ActivitySize);
 	var workProgressStatus = SelectHelper.GetEnumSelectList<WorkProgressStatus>(progress.Status);
 	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(workVM.CompanyStatus);
-
 	var isYearEndToDo = SelectHelper.GetYesNoSelection(workVM.IsYearEndTask);
-
 	var monthOfYear = SelectHelper.GetEnumSelectList<MonthOfYear>(0);
 
 	var currentYear = DateTime.Now.Year;
@@ -123,7 +120,11 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="companyStatus">Company Status</label>
+								<label for="companyStatus">
+									Company Status
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The status when create task, you can update it to real data."></i>
+
+								</label>
 								<select asp-items="companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">
 								</select>
 							</div>
@@ -131,9 +132,20 @@
 
 						<div class="col-md-6">
 							<div class="form-group">
+								<label for="companyActivityLevel">
+									Company Activity Level
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The level when create task, you can update it to real data."></i>
+
+								</label>
+								<select asp-items="companyActivityLevels" id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
 								<label for="workType">Work Type</label>
-								<select id="workType" name="workType" class="form-control select2">
-									@Html.RenderOptions(workTypes)
+								<select disabled asp-items="workTypes" id="workType" class="form-control select2">
 								</select>
 							</div>
 						</div>
@@ -145,49 +157,12 @@
 								</select>
 							</div>
 						</div>
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="serviceScope">Services Offer</label>
-								<select id="serviceScope" name="serviceScope" class="form-control select2">
-									@Html.RenderOptions(serviceScopes)
-								</select>
-							</div>
-						</div>
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="companyActivityLevel">Company Activity Level</label>
-								<select id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
-									@Html.RenderOptions(companyActivityLevels)
-								</select>
-							</div>
-						</div>
-
-
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="internalNote">Internal Note</label>
 								<input type="text" id="internalNote" value="@workVM.InternalNote" name="internalNote" class="form-control" placeholder="(Optional)" />
 							</div>
 						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<label for="monthToDo">
-									Month To Do
-								</label>
-								<select id="monthToDo" name="months" class="form-control select2" multiple="multiple" style="max-width:95%">
-									@foreach (var month in monthOfYear)
-									{
-										var isSelected = workVM.PlannedMonths.Any(c => c.ToString() == month.Value);
-										<option value="@month.Value" selected="@(isSelected ? "selected" : null)">
-											@month.Text
-										</option>
-									}
-								</select>
-							</div>
-						</div>
-	
 					</div>
 				</div>
 				<!-- /.card-body -->
@@ -240,10 +215,10 @@
 														class="@(UserContext.IsSuperAdmin?"btn-delete-user":"")  btn btn-sm btn-danger"
 														data-bs-toggle="tooltip"
 														data-bs-placement="top"
+														title="Only super admin can remove"
 														value="@user.StaffId"
 														data-department="Audit"
-														data-name="@user.StaffName"
-														title="Only super admin can remove">
+														data-name="@user.StaffName">
 													<i class="fa fa-trash"></i>
 												</button>
 											</td>

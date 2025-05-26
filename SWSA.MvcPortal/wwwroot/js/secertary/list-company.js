@@ -162,22 +162,22 @@
             const staffsName = item.assignedUsers
                 .map(user => user.staffName);
 
-            workTable.row.add([
-                item.workType,
-                item.companyStatus,
-                item.activitySize,
-                item.isYearEndTask ? "Yes" : "No",
-                item.monthToDoLabel,
-                staffsName,
-                ConvertTimeFormat(item.ssmExtensionDate, "DD-MM-YYYY"),
-                ConvertTimeFormat(item.agmDate, "DD-MM-YYYY"),
-                ConvertTimeFormat(item.arDueDate, "DD-MM-YYYY"),
-                ConvertTimeFormat(item.reminderDate, "DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-                ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-                item.internalNote,
-            ]);
+            //workTable.row.add([
+            //    item.workType,
+            //    item.companyStatus,
+            //    item.activitySize,
+            //    item.isYearEndTask ? "Yes" : "No",
+            //    item.monthToDoLabel,
+            //    staffsName,
+            //    ConvertTimeFormat(item.ssmExtensionDate, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(item.agmDate, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(item.arDueDate, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(item.reminderDate, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
+            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
+            //    item.internalNote,
+            //]);
         });
         workTable.draw();
     }

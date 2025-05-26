@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission;
+using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
 

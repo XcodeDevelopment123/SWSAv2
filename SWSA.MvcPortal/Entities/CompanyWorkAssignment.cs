@@ -14,21 +14,20 @@ public class CompanyWorkAssignment
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = null!;
     [SystemAuditLog("Work Type")]
-    public WorkType WorkType { get; set; } 
-    [SystemAuditLog("Company Activity Level")]
-    public CompanyActivityLevel CompanyActivityLevel { get; set; } // SSM-compliant business size
-
+    public WorkType WorkType { get; set; }
     [SystemAuditLog("Service Scope")]
     public ServiceScope ServiceScope { get; set; }
+    [SystemAuditLog("Is Year-End Related Task")]
+    public bool IsYearEndTask { get; set; } // YE to do
 
     [SystemAuditLog("Internal Note")]
     public string? InternalNote { get; set; }
 
-    [SystemAuditLog("Company Status for This Task")]
-    public CompanyStatus CompanyStatus { get; set; } // Dormant, Active, etc
+    [SystemAuditLog("Company Status")]   //The status when work create
+    public CompanyStatus CompanyStatus { get; set; }
+    [SystemAuditLog("Company Activity Level")]//The level when work create
+    public CompanyActivityLevel CompanyActivityLevel { get; set; }
 
-    [SystemAuditLog("Is Year-End Related Task")]
-    public bool IsYearEndTask { get; set; } // YE to do
     public virtual CompanyWorkProgress? Progress { get; set; }
     public virtual ICollection<DocumentRecord> Documents { get; set; } = new List<DocumentRecord>();
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
@@ -36,8 +35,10 @@ public class CompanyWorkAssignment
     public DateTime? UpdatedAt { get; set; }
 
     #region Work Type Entity (Only one)
-    public virtual AnnualReturnSubmission? ARSubmission { get; set; }
+    public virtual AnnualReturnSubmission? ARSubmission { get; set; } = null!;
     public virtual CompanyStrikeOffSubmission? StrikeOffSubmission { get; set; } = null!;
+    public virtual AuditSubmission? AuditSubmission { get; set; } = null!;
+    public virtual LLPSubmission? LLPSubmission { get; set; } = null!;
 
     public void CreateSubmissionEntity()
     {
@@ -48,6 +49,12 @@ public class CompanyWorkAssignment
                 break;
             case WorkType.StrikeOff:
                 StrikeOffSubmission = new CompanyStrikeOffSubmission();
+                break;
+            case WorkType.LLP:
+                LLPSubmission = new LLPSubmission();
+                break;
+            case WorkType.Audit:
+                AuditSubmission = new AuditSubmission();
                 break;
             // Add other cases as needed
             default:

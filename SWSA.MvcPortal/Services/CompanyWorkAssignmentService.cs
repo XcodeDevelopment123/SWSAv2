@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using Force.DeepCloner;
+using Mapster;
 using Microsoft.Extensions.Caching.Memory;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
@@ -25,8 +28,8 @@ ISystemAuditLogService sysAuditService
 {
     public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
     {
-        var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()]
-            : await repo.GetByCompanyIds(userContext.AllowedCompanyIds);
+        var data = userContext.IsSuperAdmin ? [.. await repo.GetWorkListVMAsync()]
+            : await repo.GetWorkListVMByCompanyIdsAsync(userContext.AllowedCompanyIds);
         return mapper.Map<List<CompanyWorkListVM>>(data);
     }
 
@@ -43,7 +46,10 @@ ISystemAuditLogService sysAuditService
         Guard.AgainstNullData(data, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        return data;
+        data.MapSubmissionDetail();
+
+        var vm = data.Adapt<CompanyWorkVM>();
+        return vm;
     }
 
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
@@ -55,7 +61,6 @@ ISystemAuditLogService sysAuditService
         var entity = mapper.Map<CompanyWorkAssignment>(req);
 
         entity.Progress = new CompanyWorkProgress();
-        entity.ARSubmission = new AnnualReturnSubmission(cp!);
 
         var allStaffIds = (req.AssignedUserIds ?? Enumerable.Empty<string>())
                     .Distinct()
@@ -81,10 +86,10 @@ ISystemAuditLogService sysAuditService
 
         var oldData = task.DeepClone();
 
+        task.CompanyStatus = req.CompanyStatus;
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.ServiceScope = req.ServiceScope;
         task.InternalNote = req.InternalNote;
-        task.CompanyStatus = req.CompanyStatus;
         task.IsYearEndTask = req.IsYearEndTask;
         task.UpdatedAt = DateTime.Now;
 
@@ -100,7 +105,6 @@ ISystemAuditLogService sysAuditService
         repo.Update(task);
         await repo.SaveChangesAsync();
 
-
         var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
         sysAuditService.LogInBackground(log);
         return true;
@@ -110,8 +114,19 @@ ISystemAuditLogService sysAuditService
     {
         var data = await repo.GetByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
+        var cp = await companyRepo.GetWithIncludedByIdAsync(data!.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
+        ///TODO: Get all related docs id and path , remove it
+
+        if (data.WorkType == WorkType.StrikeOff && !cp!.IsStrikedOff)
+        {
+            cp.StrikeOffStatus = StrikeOffStatus.NotApplied;
+        }
+
+
+        companyRepo.Update(cp!);
         repo.Remove(data!);
 
         await repo.SaveChangesAsync();
@@ -120,5 +135,6 @@ ISystemAuditLogService sysAuditService
         sysAuditService.LogInBackground(log);
         return data!;
     }
+
 
 }

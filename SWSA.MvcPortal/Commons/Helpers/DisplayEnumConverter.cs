@@ -13,8 +13,21 @@ public class DisplayEnumConverter : JsonConverter
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
+        if (value == null)
+        {
+            writer.WriteNull();
+            return;
+        }
+
         var enumType = value.GetType();
         var enumName = Enum.GetName(enumType, value);
+
+        if (enumName == null)
+        {
+            writer.WriteValue(value.ToString()); 
+            return;
+        }
+
         var displayAttr = enumType
             .GetField(enumName)
             ?.GetCustomAttribute<DisplayAttribute>();

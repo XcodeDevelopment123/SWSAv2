@@ -1,5 +1,5 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
-@using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission
+@using SWSA.MvcPortal.Models.Submissions
 @model List<CompanyStrikeOffSubmissionVM>
 @{
 	ViewData["Title"] = "CompanyStrikeOffList";
@@ -49,9 +49,6 @@
 										<a href="/secretary-dept/submissions/company-strike-off/@cp.SubmissionId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.SubmissionId" data-name="@cp.CompanyName" title="Delete">
-											<i class="fa fa-trash"></i>
-										</button>
 									</div>
 								</td>
 

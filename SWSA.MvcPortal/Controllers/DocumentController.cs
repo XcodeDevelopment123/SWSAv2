@@ -37,7 +37,7 @@ public class DocumentController(
     #region API/Ajax
     [InternalAjaxOnly]
     [HttpPost("docs/create")]
-    public async Task<IActionResult> CreateDocuments([FromForm] CreateDocumentRecordListRequest req, List<IFormFile> files)
+    public async Task<IActionResult> CreateDocuments([FromForm] DocumentRecordListRequest req, List<IFormFile> files)
     {
         var result = await service.CreateDocuments(req, files);
         return Ok(result);

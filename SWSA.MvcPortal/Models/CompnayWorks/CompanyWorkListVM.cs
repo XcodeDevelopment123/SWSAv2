@@ -9,6 +9,7 @@ public class CompanyWorkListVM
     public string CompanyName { get; set; } = null!;
     public string CompanyRegistrationNumber { get; set; } = null!;
     public WorkType WorkType { get; set; }
+    public CompanyStatus CompanyStatus { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public CompanyActivityLevel ActivitySize { get; set; }
     public WorkProgressStatus Status { get; set; }

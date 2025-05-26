@@ -10,6 +10,8 @@
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
         companyType: $companyForm.find('select[name="companyType"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
+        companyStatus: $companyForm.find('select[name="companyStatus"]'),
+        companyActivityLevel: $companyForm.find('select[name="companyActivityLevel"]'),
     }
 
     $companyForm.validate({
@@ -38,6 +40,12 @@
             msicCodesIds: {
                 required: true
             },
+            companyStatus: {
+                required: true
+            },
+            companyActivityLevel: {
+                required: true
+            },
         },
         messages: {
             companyName: {
@@ -63,7 +71,13 @@
             },
             msicCodesIds: {
                 required: "Please select at least one MSIC code."
-            }
+            },
+            companyStatus: {
+                required: "Please select a company status"
+            },
+            companyActivityLevel: {
+                required: "Company activity level is required."
+            },
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {

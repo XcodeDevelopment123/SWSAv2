@@ -127,6 +127,7 @@ public static class DependencyInjector
 
         //#Repository DI (auto generated)
         services.AddScoped<IAnnualReturnSubmissionRepository, AnnualReturnSubmissionRepository>();
+        services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();
         services.AddScoped<ICompanyCommunicationContactRepository, CompanyCommunicationContactRepository>();
         services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
@@ -137,6 +138,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
+        services.AddScoped<ILLPSubmissionRepository, LLPSubmissionRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
         services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
@@ -162,6 +164,7 @@ public static class DependencyInjector
 
         //#Service DI (auto generated)
         services.AddScoped<IAnnualReturnSubmissionService, AnnualReturnSubmissionService>();
+        services.AddScoped<IAuditSubmissionService, AuditSubmissionService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICompanyCommunicationContactService, CompanyCommunicationContactService>();
         services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
@@ -173,6 +176,7 @@ public static class DependencyInjector
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
+        services.AddScoped<ILLPSubmissionService, LLPSubmissionService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
@@ -181,7 +185,6 @@ public static class DependencyInjector
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWorkAssignmentMonthService, WorkAssignmentMonthService>();
         services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
-
         //#Service DI end
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();

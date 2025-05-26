@@ -23,6 +23,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
     internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
     internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
+    internal DbSet<AuditSubmission> AuditSubmissions { get; set; }
+    internal DbSet<LLPSubmission> LLPSubmissions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

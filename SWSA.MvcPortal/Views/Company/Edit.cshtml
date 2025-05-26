@@ -17,11 +17,14 @@
 
 	var cp = Model.Company;
 
+	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(cp.CompanyActivityLevel);
+	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.CompanyStatus);
 	var departments = SelectHelper.GetDepartments(null);
 	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
 	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(cp.CompanyType);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
+
 	var cpMsicCodeIds = cp.MsicCodes.Select(m => m.MsicCodeId).ToList();
 
 	<input type="hidden" id="companyId" value="@cp.Id" />
@@ -230,6 +233,20 @@
 						<div class="form-group">
 							<label for="companyType">Company Type</label>
 							<select asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyStatus">Company Status</label>
+							<select asp-items="companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyActivityLevel">Company Activity Level</label>
+							<select asp-items="companyActivityLevels" id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
+							</select>
 						</div>
 					</div>
 					<div class="col-md-12">

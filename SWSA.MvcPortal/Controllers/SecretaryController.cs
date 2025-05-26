@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
@@ -45,18 +46,11 @@ public class SecretaryController(
 
     [InternalAjaxOnly]
     [HttpPost("submissions/company-strike-off/update")]
-    public async Task<IActionResult> UpdateStrikeOffSubmission(EditCompanyStrikeOffSubmissionRequest req)
+    public async Task<IActionResult> UpdateStrikeOffSubmission([FromForm] EditCompanyStrikeOffSubmissionRequest req, List<IFormFile> files)
     {
-        var result = await cpStrikeOffSubmissionService.UpdateSubmissionForCompany(req);
+        var result = await cpStrikeOffSubmissionService.UpdateSubmissionForCompany(req,files);
         return Ok(result);
     }
 
-    [InternalAjaxOnly]
-    [HttpDelete("submissions/company-strike-off/{submissionId}")]
-    public async Task<IActionResult> DeleteStrikeOffSubmission(int submissionId)
-    {
-        var result = await cpStrikeOffSubmissionService.DeleteSubmissionById(submissionId);
-        return Ok(result);
-    }
     #endregion
 }

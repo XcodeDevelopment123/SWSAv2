@@ -140,6 +140,8 @@ IPermissionRefreshTracker permissionRefreshTracker
         data.YearEndMonth = req.YearEndMonth;
         data.IncorporationDate = req.IncorporationDate;
         data.CompanyType = req.CompanyType;
+        data.CompanyStatus = req.CompanyStatus;
+        data.CompanyActivityLevel = req.CompanyActivityLevel;
 
         await SyncMsicCodes(data, req.MsicCodeIds?.ToHashSet() ?? new());
 

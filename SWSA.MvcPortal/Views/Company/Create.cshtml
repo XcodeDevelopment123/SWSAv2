@@ -18,6 +18,8 @@
 	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(null);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
+	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
+	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null!);
 }
 
 <h3>Create New Company Profile</h3>
@@ -199,6 +201,20 @@
 						<div class="form-group">
 							<label for="companyType">Company Type</label>
 							<select asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyStatus">Company Status</label>
+							<select asp-items="companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="companyActivityLevel">Company Activity Level</label>
+							<select asp-items="companyActivityLevels" id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
+							</select>
 						</div>
 					</div>
 					<div class="col-md-12">

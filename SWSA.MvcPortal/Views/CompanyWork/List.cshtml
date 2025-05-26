@@ -21,7 +21,8 @@
 						<tr>
 							<th>Company</th>
 							<th>Work Type</th>
-							<th>Services Offer</th>
+							<th>Service Offer</th>
+							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Year To Do</th>
 							<th>Assigned Users</th>
@@ -38,8 +39,9 @@
 									@task.CompanyName
 									<p class="m-0">(#@task.CompanyRegistrationNumber)</p>
 								</td>
-								<td>@task.WorkType</td>
+								<td>@task.WorkType.GetDisplayName()</td>
 								<td>@task.ServiceScope.GetDisplayName()</td>
+								<td>@task.CompanyStatus.GetDisplayName()</td>
 								<td>@task.ActivitySize.GetDisplayName()</td>
 								<td>@(task.YearEndToDo ? "Yes" : "No")</td>
 								<td>
@@ -51,9 +53,10 @@
 											<span class="mr-1">
 												<a href="/users/@user.StaffId/overview">
 													@user.StaffName
-													@(isLast ? "" : ", ")
+
 												</a>
 											</span>
+											@(isLast ? "" : ", ")
 										}
 									</div>
 								</td>
@@ -68,7 +71,7 @@
 											<i class="fa fa-edit"></i>
 										</a>
 
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.ServiceScope.GetDisplayName()} for {task.CompanyName}")" title="Delete">
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.WorkType.GetDisplayName()} for {task.CompanyName}")" title="Delete">
 											<i class="fa fa-trash"></i>
 										</button>
 
@@ -82,7 +85,8 @@
 						<tr>
 							<th>Company</th>
 							<th>Work Type</th>
-							<th>Services Offer</th>
+							<th>Service Offer</th>
+							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Assigned Users</th>
 							<th>Year To Do</th>

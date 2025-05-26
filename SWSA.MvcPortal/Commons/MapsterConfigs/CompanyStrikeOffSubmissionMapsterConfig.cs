@@ -1,6 +1,6 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission;
+using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs;
 

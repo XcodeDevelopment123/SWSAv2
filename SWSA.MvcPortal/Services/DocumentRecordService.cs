@@ -58,25 +58,28 @@ ISystemAuditLogService sysAuditService
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
-    public async Task<bool> CreateDocument(CreateDocumentRecordRequest doc, IFormFile files)
+    public async Task<bool> CreateDocument(DocumentRecordRequest doc, IFormFile files)
     {
-        Guard.AgainstUnauthorizedCompanyAccess(doc.CompanyId, null, userContext);
+        // Guard.AgainstUnauthorizedCompanyAccess(doc.CompanyId, null, userContext);
 
         var flowType = doc.FlowType.ToString().ToLower();
 
-        var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
-        var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
-        var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
+        ///TODO: Update doc folder name
+        //var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
+        //  var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+        var safeCompanyName = "";
+        var safeDeptName = "";
+        var subFolder = Path.Combine("docs", safeCompanyName, "", flowType);
 
         var result = await uploadFileService.UploadAsync(files, subFolder, UploadStorageType.Local);
         doc.AttachmentFilePath = result;
 
-        var staff = await userRepo.GetByStaffIdAsync(doc.HandledByStaffId);
-        Guard.AgainstNullData(staff, "Staff not found");
+        //  var staff = await userRepo.GetByStaffIdAsync(doc.HandledByStaffId);
+        //   Guard.AgainstNullData(staff, "Staff not found");
 
         var data = mapper.Map<DocumentRecord>(doc);
 
-        data.HandledByStaffId = staff.Id;
+        data.HandledByStaffId = userContext.EntityId;
 
         repo.Add(data);
 
@@ -87,9 +90,9 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<bool> CreateDocuments(CreateDocumentRecordListRequest req, List<IFormFile> files)
+    public async Task<bool> CreateDocuments(DocumentRecordListRequest req, List<IFormFile> files)
     {
-        var companyDepartmentIds = req.Documents.Select(d => d.CompanyDepartmentId).Distinct().ToList();
+        //  var companyDepartmentIds = req.Documents.Select(d => d.CompanyDepartmentId).Distinct().ToList();
 
         ///TODO : Check if the user has access to the company and department
         //Checking if the user has access to the company departments
@@ -97,8 +100,6 @@ ISystemAuditLogService sysAuditService
         //{
         //}
 
-        var staffIds = req.Documents.Select(d => d.HandledByStaffId).Distinct().ToList();
-        var staffMap = await userRepo.GetDictionaryByStaffIdsAsync(staffIds);
         var skippedDocuments = new List<string>();
 
         List<DocumentRecord> records = new List<DocumentRecord>();
@@ -106,11 +107,6 @@ ISystemAuditLogService sysAuditService
         {
 
             var doc = req.Documents[i];
-            if (!staffMap.TryGetValue(doc.HandledByStaffId, out var staff))
-            {
-                skippedDocuments.Add(doc.AttachmentFileName ?? $"[Index {i}]");
-                continue;
-            }
 
             if (i >= files.Count || files[i] == null)
             {
@@ -120,8 +116,11 @@ ISystemAuditLogService sysAuditService
 
             // Sanitize the folder name
             var flowType = doc.FlowType.ToString().ToLower();
-            var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
-            var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+            ///TODO: Update doc folder name
+            //var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
+            //  var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
+            var safeCompanyName = "";
+            var safeDeptName = "";
             var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
 
             //Upload the file
@@ -129,7 +128,7 @@ ISystemAuditLogService sysAuditService
             doc.AttachmentFilePath = result;
 
             var data = mapper.Map<DocumentRecord>(doc);
-            data.HandledByStaffId = staff.Id;
+            data.HandledByStaffId = userContext.EntityId;
 
             repo.Add(data);
         }

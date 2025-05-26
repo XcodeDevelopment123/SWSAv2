@@ -1,22 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Entities.ValueOfObject;
 
 namespace SWSA.MvcPortal.Entities;
 
-public class CompanyStrikeOffSubmission
+public class CompanyStrikeOffSubmission : BaseSubmission
 {
-    [Key]
-    public int Id { get; set; }
-
     [ForeignKey(nameof(Company))]
     [SystemAuditLog("Company ID")]
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = null!;
-
-    [ForeignKey(nameof(WorkAssignment))]
-    public int WorkAssignmentId { get; set; }
-    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
 
     [SystemAuditLog("Strike-Off Start Date")]
     public DateTime? StartDate { get; set; }
@@ -32,8 +25,4 @@ public class CompanyStrikeOffSubmission
 
     [SystemAuditLog("SSM Strike-Off Date")]
     public DateTime? SSMStrikeOffDate { get; set; }
-
-    [SystemAuditLog("Strike-Off Remarks")]
-    public string? Remarks { get; set; }
-
 }

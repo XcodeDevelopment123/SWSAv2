@@ -4,19 +4,14 @@ $(function () {
 
     const taskFormInputs = {
         companyId: $("#companyId"),
-        companyStatus: $taskForm.find('select[name="companyStatus"]'),
         workType: $taskForm.find('select[name="workType"]'),
         isYearEndTask: $taskForm.find('select[name="isYearEndTask"]'),
         serviceScope: $taskForm.find('select[name="serviceScope"]'),
-        companyActivityLevel: $taskForm.find('select[name="companyActivityLevel"]'),
         internalNote: $taskForm.find('input[name="internalNote"]'),
     };
 
     $taskForm.validate({
         rules: {
-            companyStatus: {
-                required: true
-            },
             workType: {
                 required: true
             },
@@ -26,14 +21,8 @@ $(function () {
             serviceScope: {
                 required: true
             },
-            companyActivityLevel: {
-                required: true
-            },
         },
         messages: {
-            companyStatus: {
-                required: "Please select a company status"
-            },
             workType: {
                 required: "Work type is required."
             },
@@ -42,9 +31,6 @@ $(function () {
             },
             serviceScope: {
                 required: "Service scope is required."
-            },
-            companyActivityLevel: {
-                required: "Company activity level is required."
             },
         },
         errorElement: 'span',

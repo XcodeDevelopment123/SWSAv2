@@ -4,9 +4,10 @@ using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
+using SWSA.MvcPortal.Commons.Services.UploadFile;
 using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompanyStrikeOffSubmission;
+using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -20,7 +21,11 @@ IMapper mapper,
 IUserContext userContext,
 ISystemAuditLogService sysAuditService,
 ICompanyStrikeOffSubmissionRepository repo,
-ICompanyRepository companyRepo
+ICompanyRepository companyRepo,
+ICompanyWorkAssignmentRepository workAssignmentRepo,
+ICompanyWorkProgressRepository workProgressRepo,
+IDocumentRecordRepository documentRepo,
+IUploadFileService uploadFileService
     ) : ICompanyStrikeOffSubmissionService
 {
     public async Task<List<CompanyStrikeOffSubmissionVM>> GetStrikeOffSubmissionVMsAsync()
@@ -39,7 +44,7 @@ ICompanyRepository companyRepo
     public async Task<int> RequestSubmissionForCompany(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var cp = await companyRepo.GetByIdAsync(companyId);
+        var cp = await companyRepo.GetWithIncludedByIdAsync(companyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var submission = await repo.GetByCompanyId(companyId);
@@ -55,10 +60,33 @@ ICompanyRepository companyRepo
             Remarks = "Request for strike off submission",
         };
 
+        List<WorkAssignmentUserMapping> assignedUser = userContext.IsSuperAdmin
+            ? [..cp!.UserCompanyDepartments.Select(c => c.UserId).Distinct()
+            .Select(c=> new WorkAssignmentUserMapping {
+                UserId = c
+            })] //Super admin assign to all handle user
+                : [new WorkAssignmentUserMapping {
+            UserId = userContext.EntityId,
+          }]; //System user assign to self
+
+        var task = new CompanyWorkAssignment
+        {
+            CompanyId = companyId,
+            WorkType = WorkType.StrikeOff,
+            ServiceScope = ServiceScope.Other,
+            CompanyActivityLevel = cp.CompanyActivityLevel,
+            CompanyStatus = cp.CompanyStatus,
+            StrikeOffSubmission = entity,
+            InternalNote = "Request for strike off submission",
+            IsYearEndTask = false,
+            AssignedUsers = assignedUser,
+            Progress = new CompanyWorkProgress(),
+        };
+
         cp!.StrikeOffStatus = StrikeOffStatus.Applying;
         companyRepo.Update(cp);
 
-        repo.Add(entity);
+        workAssignmentRepo.Add(task);
         await repo.SaveChangesAsync();
 
         var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} strike off submission", entity);
@@ -66,35 +94,47 @@ ICompanyRepository companyRepo
         return entity.Id;
     }
 
-    public async Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req)
+    public async Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req, List<IFormFile> files)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
         var data = await repo.GetByIdAsync(req.SubmissionId);
         Guard.AgainstNullData(data, "Submission not found");
-
+        var task = await workAssignmentRepo.GetUpdateVMById(data!.Id);
+        Guard.AgainstNullData(task, "Task not found");
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var oldData = data!.DeepClone();
 
-        data!.CompleteDate = req.CompleteDate;
-        data.SSMStrikeOffDate = req.SSMStrikeOffDate;
-        data.SSMSubmissionDate = req.SSMSubmissionDate;
-        data.IRBSubmissionDate = req.IRBSubmissionDate;
-        data.Remarks = req.Remarks;
-
-        if (data.CompleteDate.HasValue && data.SSMStrikeOffDate.HasValue)
+        List<DocumentRecord> records = new List<DocumentRecord>();
+        for (int i = 0; i < req.Documents.Count; i++)
         {
-            cp!.StrikeOffStatus = StrikeOffStatus.Completed;
-            cp.StrikeOffEffectiveDate = data.SSMStrikeOffDate;
-            cp.IsStrikedOff = true;
-        }
-        else
-        {
-            cp!.StrikeOffStatus = StrikeOffStatus.Applying;
+            var doc = req.Documents[i];
+
+            // Sanitize the folder name
+            var flowType = doc.FlowType.ToString().ToLower();
+            var safeCompanyName = uploadFileService.SanitizeFolderName($"{cp!.Name}-{cp.Id}");
+            var safeTaskName = uploadFileService.SanitizeFolderName($"{task.WorkType}-{task.Id}");
+            var subFolder = Path.Combine("docs", safeCompanyName, safeTaskName, flowType);
+
+            //Upload the file
+            var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
+            doc.AttachmentFilePath = result;
+
+            var docEntity = mapper.Map<DocumentRecord>(doc);
+            docEntity.WorkAssignmentId = task.Id;
+            docEntity.HandledByStaffId = userContext.EntityId;
+
+            records.Add(docEntity);
         }
 
-        companyRepo.Update(cp);
+        UpdateSubmissionFields(data, req);
+        UpdateCompanyStrikeOff(cp!, data, task);
+        UpdateWorkAssignmentProgress(task);
+
+        documentRepo.AddRange(records);
+        workAssignmentRepo.Update(task!);
+        companyRepo.Update(cp!);
         repo.Update(data);
         await repo.SaveChangesAsync();
         var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, req.CompanyId.ToString(), $"Updated {cp.Name} strike off submission", oldData, data);
@@ -102,19 +142,48 @@ ICompanyRepository companyRepo
         return true;
     }
 
-    public async Task<bool> DeleteSubmissionById(int submissionId)
+    private void UpdateSubmissionFields(CompanyStrikeOffSubmission data, EditCompanyStrikeOffSubmissionRequest req)
     {
-        var submission = await repo.GetByIdAsync(submissionId);
-        Guard.AgainstNullData(submission, "Submission not found");
+        data.CompleteDate = req.CompleteDate;
+        data.SSMStrikeOffDate = req.SSMStrikeOffDate;
+        data.SSMSubmissionDate = req.SSMSubmissionDate;
+        data.IRBSubmissionDate = req.IRBSubmissionDate;
+        data.Remarks = req.Remarks;
+    }
 
-        var cp = await companyRepo.GetByIdAsync(submission!.CompanyId);
-        Guard.AgainstNullData(cp, "Company not found");
+    private void UpdateCompanyStrikeOff(Company cp, CompanyStrikeOffSubmission data, CompanyWorkAssignment task)
+    {
+        if (data.CompleteDate.HasValue && data.SSMStrikeOffDate.HasValue)
+        {
+            cp.StrikeOffStatus = StrikeOffStatus.Completed;
+            cp.StrikeOffEffectiveDate = data.SSMStrikeOffDate;
+            cp.IsStrikedOff = true;
+            if (task.Progress != null && task.Progress.Status != WorkProgressStatus.Completed)
+            {
+                CompleteWorkProgress(task.Progress);
+            }
+        }
+        else
+        {
+            cp.StrikeOffStatus = StrikeOffStatus.Applying;
+        }
+    }
 
-        repo.Remove(submission);
-        await repo.SaveChangesAsync();
+    private void UpdateWorkAssignmentProgress(CompanyWorkAssignment task)
+    {
+        if (task.Progress != null && task.Progress.Status == WorkProgressStatus.Pending)
+        {
+            task.Progress.Status = WorkProgressStatus.InProgress;
+            task.Progress.StartDate = DateTime.Today;
+            task.Progress.UpdatedAt = DateTime.Now;
+        }
+    }
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, submission.CompanyId.ToString(), $"Removed {cp!.Name} strike off submission", submission);
-        sysAuditService.LogInBackground(log);
-        return true;
+    private void CompleteWorkProgress(CompanyWorkProgress progress)
+    {
+        progress.Status = WorkProgressStatus.Completed;
+        progress.IsJobCompleted = true;
+        progress.EndDate = DateTime.Today;
+        progress.UpdatedAt = DateTime.Now;
     }
 }

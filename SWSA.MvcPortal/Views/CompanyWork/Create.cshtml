@@ -16,9 +16,6 @@
 
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(null!);
 	var serviceScopes = SelectHelper.GetEnumSelectList<ServiceScope>(null!);
-	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
-	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null!);
-	var monthOfYear = SelectHelper.GetEnumSelectList<MonthOfYear>(0);
 
 	var isYearEndToDo = SelectHelper.GetYesNoSelection(null!);
 	var currentYear = DateTime.Now.Year;
@@ -112,13 +109,7 @@
 						<div class="form-info-label col-12">
 							<label>Work Allocation Info</label>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="companyStatus">Company Status</label>
-								<select asp-items="companyStatus" id="companyStatus" name="companyStatus" class="form-control select2">
-								</select>
-							</div>
-						</div>
+
 
 						<div class="col-md-6">
 							<div class="form-group">
@@ -144,13 +135,7 @@
 							</div>
 						</div>
 
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="companyActivityLevel">Company Activity Level</label>
-								<select asp-items="companyActivityLevels" id="companyActivityLevel" name="companyActivityLevel" class="form-control select2">
-								</select>
-							</div>
-						</div>
+
 
 						<div class="col-md-6">
 							<div class="form-group">
@@ -176,19 +161,11 @@
 
 						<div class="form-info-label col-12">
 							<label>
-								Audit Work Info
+								Assign User
 								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select month and assign user to handle"></i>
 							</label>
 						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<label for="monthToDo">
-									Month To Do
-								</label>
-								<select asp-items="monthOfYear" id="monthToDo" name="monthToDo" class="form-control select2" multiple="multiple" style="max-width:95%">
-								</select>
-							</div>
-						</div>
+
 
 						<table id="auditUserTable" class="table table-bordered table-hover">
 							<thead>

@@ -17,5 +17,7 @@ public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkA
     /// <returns></returns>
     Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7);
     Task<CompanyWorkAssignment> GetUpdateVMById(int id);
-    Task<CompanyWorkVM> GetWorkVMByIdAsync(int id);
+    Task<List<CompanyWorkListVM>> GetWorkListVMAsync();
+    Task<List<CompanyWorkListVM>> GetWorkListVMByCompanyIdsAsync(List<int> ids);
+    Task<CompanyWorkFullVM> GetWorkVMByIdAsync(int id);
 }

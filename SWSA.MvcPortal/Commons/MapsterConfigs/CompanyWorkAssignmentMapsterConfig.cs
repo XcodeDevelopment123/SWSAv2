@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompnayWorks;
 
@@ -10,13 +11,27 @@ public class CompanyWorkAssignmentMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<CompanyWorkAssignment, CompanyWorkAssignment>();
-        config.ForType<CompanyWorkAssignment, CompanyWorkVM>()
-          .Map(dest => dest.TaskId, src => src.Id)
+        config.ForType<CompanyWorkAssignment, CompanyWorkListVM>()
+            .Map(dest => dest.TaskId, src => src.Id)
+            .Map(dest => dest.CompanyId, src => src.CompanyId)
+            .Map(dest => dest.CompanyName, src => src.Company.Name)
+            .Map(dest => dest.CompanyRegistrationNumber, src => src.Company.RegistrationNumber)
+            .Map(dest => dest.YearEndToDo, src => src.IsYearEndTask)
+            .Map(dest => dest.ActivitySize, src => src.CompanyActivityLevel)
+            .Map(dest => dest.CompanyStatus, src => src.CompanyStatus)
+            .Map(dest => dest.Status, src => src.Progress != null ? src.Progress.Status : WorkProgressStatus.Unknown);
+
+        config.ForType<CompanyWorkAssignment, CompanyWorkFullVM>()
+          .Map(dest => dest.Progress, src => src.Progress)
           .Map(dest => dest.ActivitySize, src => src.CompanyActivityLevel)
-          .AfterMapping((src, dest) =>
-          {
-              dest.MergeUsers();
-              dest.SubmissionDetail = dest.MapDetailDto(src);
-          });
+          .Map(dest => dest.CompanyStatus, src => src.CompanyStatus)
+          .Map(dest => dest.TaskId, src => src.Id);
+
+        config.ForType<CompanyWorkAssignment, CompanyWorkVM>()
+          .Map(dest => dest.Progress, src => src.Progress)
+          .Map(dest => dest.ActivitySize, src => src.CompanyActivityLevel)
+          .Map(dest => dest.CompanyStatus, src => src.CompanyStatus)
+          .Map(dest => dest.TaskId, src => src.Id);
+
     }
 }
