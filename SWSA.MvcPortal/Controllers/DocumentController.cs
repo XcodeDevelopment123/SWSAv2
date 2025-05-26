@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Commons.Services.UploadFile;
+﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -35,6 +33,14 @@ public class DocumentController(
 
 
     #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpPost("docs/create-work")]
+    public async Task<IActionResult> CreateDocuments([FromForm] DocumentRecordRequest req, IFormFile file)
+    {
+        var result = await service.CreateDocument(req, file);
+        return Ok(result);
+    }
+
     [InternalAjaxOnly]
     [HttpPost("docs/create")]
     public async Task<IActionResult> CreateDocuments([FromForm] DocumentRecordListRequest req, List<IFormFile> files)

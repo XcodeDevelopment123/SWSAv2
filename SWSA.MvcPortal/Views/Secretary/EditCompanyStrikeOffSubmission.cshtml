@@ -1,9 +1,17 @@
-﻿@using SWSA.MvcPortal.Commons.Extensions
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Submissions
+@using SWSA.MvcPortal.Services.Interfaces
+@inject IUserContext UserContext
 @model CompanyStrikeOffSubmissionVM
 @{
 	ViewData["Title"] = "EditCompanyStrikeOffSubmission";
+	var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
+	var docType = SelectHelper.GetEnumSelectList<DocumentType>(null);
+
 	<input id="submissionId" value="@Model.SubmissionId" type="hidden" />
+	<input id="workAssignmentId" value="@Model.WorkAssignmentId" type="hidden" />
 	<input id="companyId" value="@Model.CompanyId" type="hidden" />
 }
 
@@ -179,10 +187,172 @@
 		</form>
 		<!-- /.card -->
 	</div>
+
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<form id="documentForm">
+			<div class="card card-secondary">
+				<div class="card-header">
+					<h3 class="card-title">Documents</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
+
+				<div class="card-body" style="display:block">
+
+					<table id="documentTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Document Date</th>
+								<th>Document Type</th>
+								<th>Flow Type</th>
+								<th>Bag / Box Count</th>
+								<th>Handled User</th>
+								<th>Attachment File</th>
+								<th>Remark</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var doc in Model.Documents)
+							{
+								<tr>
+									<td>@doc.DocumentDate.ToFormattedString()</td>
+									<td>@doc.FlowType</td>
+									<td>@doc.DocumentType.GetDisplayName()</td>
+									<td>@doc.BagOrBoxCount</td>
+									<td>
+										<a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
+											@doc.StaffName @(UserContext.StaffId == doc.HandledByStaffId ? "(You)" : "")
+										</a>
+									</td>
+									<td>
+										<a target="_blank" href="@doc.DownloadLink" title="Download">
+											@doc.AttachmentFileName
+										</a>
+									</td>
+									<td>@doc.Remark</td>
+									<td>
+										<div class="btn-group" role="group">
+											<a target="_blank" href="@doc.ViewLink"class="btn btn-sm btn-info mr-2" title="View">
+												<i class="fa fa-eye"></i>
+											</a>
+											<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.DocumentId" data-name="@doc.AttachmentFileName" title="Delete">
+												<i class="fa fa-trash"></i>
+											</button>
+
+										</div>
+									</td>
+								</tr>
+							}
+
+						</tbody>
+					</table>
+
+					<div class="divider-line"></div>
+					<div class="row">
+
+						<!-- Document Date -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="documentDate">Document Date</label>
+								<div class="input-group">
+									<input type="text" id="documentDate" name="documentDate" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Flow Type -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="flowType">Flow Type</label>
+								<select asp-items="flowType" id="flowType" name="flowType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Flow Type -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="docType">Document Type</label>
+								<select asp-items="docType" id="docType" name="docType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Bag or Box Count -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="bagOrBoxCount">Bag / Box Count</label>
+								<input type="number" id="bagOrBoxCount" name="bagOrBoxCount" class="form-control" placeholder="e.g. 2" min="0" />
+							</div>
+						</div>
+
+						<!-- Attachment File Name -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="attachment">Attachment File</label>
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" id="attachmentFile" name="attachmentFile">
+									<label class="custom-file-label" for="attachmentFile">Choose file</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="attachmentFileName">Attachment Name (Customize Name)</label>
+								<input type="text" id="attachmentFileName" name="attachmentFileName" class="form-control" placeholder="(Optional)" />
+							</div>
+						</div>
+						<!-- Handled By Staff -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="handledByStaffId">
+									Handled By
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="This value is set by you and cannot be changed."></i>
+
+								</label>
+								<select disabled id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
+									<option value="@UserContext.StaffId">@UserContext.Name (You)</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Remark -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="remark">Remark</label>
+								<input type="text" id="remark" name="remark" class="form-control" placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="submit" class="btn btn-primary float-end">Submit</button>
+				</div>
+
+				<!-- /.card -->
+			</div>
+		</form>
+	</div>
+
 </div>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<partial name="_DatatablesScriptsPartial" />
+
 	<script src="~/js/secertary/edit-strike-off-submission.js" asp-append-version="true"></script>
 	<!-- date-range-picker -->
     }

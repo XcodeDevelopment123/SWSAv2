@@ -29,7 +29,6 @@
 							<th>Document Type</th>
 							<th>File</th>
 							<th>Company</th>
-							<th>Department</th>
 							<th>Handle Staff</th>
 							<th>Action</th>
 						</tr>
@@ -53,11 +52,6 @@
 									</a>
 								</td>
 								<td>
-									<a href="#" title="department overview">
-										@doc.DepartmentName
-									</a>
-								</td>
-								<td>
 									<a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
 										@doc.StaffName @(UserContext.StaffId == doc.HandledByStaffId ? "(You)" : "")
 									</a>
@@ -75,6 +69,7 @@
 								</td>
 							</tr>
 						}
+		
 					</tbody>
 					<tfoot>
 						<tr>
@@ -84,7 +79,6 @@
 							<th>Document Type</th>
 							<th>File</th>
 							<th>Company</th>
-							<th>Department</th>
 							<th>Handle Staff</th>
 							<th>Action</th>
 						</tr>

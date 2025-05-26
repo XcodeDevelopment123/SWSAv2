@@ -27,6 +27,8 @@ public class CompanyWorkAssignment
     public CompanyStatus CompanyStatus { get; set; }
     [SystemAuditLog("Company Activity Level")]//The level when work create
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
+    [SystemAuditLog("Reminder Date")]
+    public DateTime? ReminderDate { get; set; }
 
     public virtual CompanyWorkProgress? Progress { get; set; }
     public virtual ICollection<DocumentRecord> Documents { get; set; } = new List<DocumentRecord>();

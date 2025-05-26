@@ -14,6 +14,7 @@ public class CompanyWorkListVM
     public CompanyActivityLevel ActivitySize { get; set; }
     public WorkProgressStatus Status { get; set; }
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();
+    public DateTime? ReminderDate { get; set; }
     public string? InternalNote { get; set; }
     public bool YearEndToDo { get; set; } = false;
 }

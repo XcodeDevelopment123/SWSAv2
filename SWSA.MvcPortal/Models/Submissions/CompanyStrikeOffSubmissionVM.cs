@@ -1,11 +1,13 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Models.DocumentRecords;
 
 namespace SWSA.MvcPortal.Models.Submissions;
 
 public class CompanyStrikeOffSubmissionVM
 {
 
-    public string SubmissionId { get; set; }
+    public int SubmissionId { get; set; }
+    public int WorkAssignmentId { get; set; }
     public int CompanyId { get; set; }
     public string CompanyName { get; set; }
     public string RegistrationNumber { get; set; }
@@ -18,4 +20,6 @@ public class CompanyStrikeOffSubmissionVM
     public DateTime? IRBSubmissionDate { get; set; }
     public DateTime? SSMStrikeOffDate { get; set; }
     public string? Remarks { get; set; }
+
+    public List<DocumentRecordVM> Documents { get; set; }   
 }

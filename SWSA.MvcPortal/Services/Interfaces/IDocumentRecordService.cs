@@ -1,5 +1,4 @@
 ﻿using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
-using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
 
 namespace SWSA.MvcPortal.Services.Interfaces;
@@ -8,7 +7,7 @@ public interface IDocumentRecordService
 {
     Task<bool> CreateDocument(DocumentRecordRequest doc, IFormFile files);
     Task<bool> CreateDocuments(DocumentRecordListRequest req, List<IFormFile> files);
-    Task<DocumentRecordVM> Delete(int docId);
+    Task<bool> Delete(int docId);
     Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId);
     Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId);
     Task<DocumentRecordVM> GetDocumentRecordById(int id);

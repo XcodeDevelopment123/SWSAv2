@@ -1,6 +1,4 @@
-﻿using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
-
-namespace SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+﻿namespace SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
 
 public class EditCompanyStrikeOffSubmissionRequest
 {
@@ -11,6 +9,4 @@ public class EditCompanyStrikeOffSubmissionRequest
     public DateTime? IRBSubmissionDate { get; set; }
     public DateTime? SSMStrikeOffDate { get; set; }
     public string? Remarks { get; set; }
-
-    public List<DocumentRecordRequest> Documents { get; set; } = new List<DocumentRecordRequest>();
 }

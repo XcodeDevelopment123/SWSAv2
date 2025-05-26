@@ -91,8 +91,8 @@ ISystemAuditLogService sysAuditService
         task.ServiceScope = req.ServiceScope;
         task.InternalNote = req.InternalNote;
         task.IsYearEndTask = req.IsYearEndTask;
+        task.ReminderDate = req.ReminderDate;
         task.UpdatedAt = DateTime.Now;
-
         ///TODO: Only audit / accounting type need to sync month label
         //task.PlannedMonths.SyncWithKeys(
         //    newKeys: req.Months,

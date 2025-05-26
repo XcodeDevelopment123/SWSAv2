@@ -17,7 +17,8 @@ public class CompanyStrikeOffSubmissionMapsterConfig : IMapsterConfig
             .Map(dest => dest.CompanyType, src => src.Company.CompanyType)
             .Map(dest => dest.RegistrationNumber, src => src.Company.RegistrationNumber)
             .Map(dest => dest.IncorporationDate, src => src.Company.IncorporationDate)
-            .Map(dest => dest.YearEndMonth, src => src.Company.YearEndMonth);
+            .Map(dest => dest.YearEndMonth, src => src.Company.YearEndMonth)
+            .Map(dest => dest.Documents, src => src.WorkAssignment.Documents);
 
     }
 }

@@ -10,4 +10,5 @@ public class EditCompanyWorkAssignmentRequest
     public bool IsYearEndTask { get; set; }
     public ServiceScope ServiceScope { get; set; }
     public string? InternalNote { get; set; }
+    public DateTime? ReminderDate { get; set; }
 }

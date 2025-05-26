@@ -9,6 +9,7 @@
         isYearEndTask: $taskForm.find('select[name="isYearEndTask"]'),
         serviceScope: $taskForm.find('select[name="serviceScope"]'),
         companyActivityLevel: $taskForm.find('select[name="companyActivityLevel"]'),
+        reminderDate: $taskForm.find('input[name="reminderDate"]'),
         internalNote: $taskForm.find('input[name="internalNote"]'),
     };
 

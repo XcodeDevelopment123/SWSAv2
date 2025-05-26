@@ -14,3 +14,4 @@ public enum DocumentType
     [Display(Name = "SOCSO")]
     SOCSO,
 }
+

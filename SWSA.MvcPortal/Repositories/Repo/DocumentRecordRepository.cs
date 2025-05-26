@@ -51,25 +51,20 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<DocumentRecord>> BuildQueryAsync()
     {
-        //Default query no action
-        //return Task.FromResult(db.Set<DocumentRecord>().AsQueryable());
-
-        // Do you query here
         var query = db.DocumentRecords
-                .Include(c => c.HandledByStaff) //For staff
+                .Include(c => c.HandledByStaff) 
+                .Include(c => c.WorkAssignment).ThenInclude(c=>c.Company) 
                 .AsNoTracking();
-        //For staff;
         return Task.FromResult(query);
     }
 
     //Rewrite the GetWithIncludesAsync method
     protected override Task<IQueryable<DocumentRecord>> BuildQueryWithIncludesAsync()
     {
-        // Do you query here
         var query = db.DocumentRecords
-                .Include(c => c.HandledByStaff) //For staff
+                .Include(c => c.HandledByStaff)
+                .Include(c => c.WorkAssignment).ThenInclude(c => c.Company)
                 .AsNoTracking();
-        //For staff;
         return Task.FromResult(query);
     }
 

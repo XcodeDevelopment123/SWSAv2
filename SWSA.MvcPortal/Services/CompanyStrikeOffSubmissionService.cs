@@ -31,14 +31,17 @@ IUploadFileService uploadFileService
     public async Task<List<CompanyStrikeOffSubmissionVM>> GetStrikeOffSubmissionVMsAsync()
     {
         var data = await repo.GetListVMAsync();
-        return data;
+        //For download /view link 
+        return mapper.Map<List<CompanyStrikeOffSubmissionVM>>(data);
     }
 
     public async Task<CompanyStrikeOffSubmissionVM> GetStrikeOffSubmissionVMByIdAsync(int submissionId)
     {
         var data = await repo.GetVMByIdAsync(submissionId);
         Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
-        return data;
+        //For download /view link 
+    
+        return mapper.Map<CompanyStrikeOffSubmissionVM>(data)   ;
     }
 
     public async Task<int> RequestSubmissionForCompany(int companyId)
@@ -94,45 +97,22 @@ IUploadFileService uploadFileService
         return entity.Id;
     }
 
-    public async Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req, List<IFormFile> files)
+    public async Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
         var data = await repo.GetByIdAsync(req.SubmissionId);
         Guard.AgainstNullData(data, "Submission not found");
-        var task = await workAssignmentRepo.GetUpdateVMById(data!.Id);
+        var task = await workAssignmentRepo.GetUpdateVMById(data!.WorkAssignmentId);
         Guard.AgainstNullData(task, "Task not found");
         var cp = await companyRepo.GetByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var oldData = data!.DeepClone();
 
-        List<DocumentRecord> records = new List<DocumentRecord>();
-        for (int i = 0; i < req.Documents.Count; i++)
-        {
-            var doc = req.Documents[i];
-
-            // Sanitize the folder name
-            var flowType = doc.FlowType.ToString().ToLower();
-            var safeCompanyName = uploadFileService.SanitizeFolderName($"{cp!.Name}-{cp.Id}");
-            var safeTaskName = uploadFileService.SanitizeFolderName($"{task.WorkType}-{task.Id}");
-            var subFolder = Path.Combine("docs", safeCompanyName, safeTaskName, flowType);
-
-            //Upload the file
-            var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
-            doc.AttachmentFilePath = result;
-
-            var docEntity = mapper.Map<DocumentRecord>(doc);
-            docEntity.WorkAssignmentId = task.Id;
-            docEntity.HandledByStaffId = userContext.EntityId;
-
-            records.Add(docEntity);
-        }
-
         UpdateSubmissionFields(data, req);
         UpdateCompanyStrikeOff(cp!, data, task);
         UpdateWorkAssignmentProgress(task);
 
-        documentRepo.AddRange(records);
         workAssignmentRepo.Update(task!);
         companyRepo.Update(cp!);
         repo.Update(data);

@@ -15,9 +15,8 @@ public static class MapsterConfig
         var configs = new List<IMapsterConfig>
         {
             //#Mapster Config (auto generated)
-            new AuditSubmissionMapsterConfig(),
-            new LLPSubmissionMapsterConfig(),
 new AnnualReturnSubmissionMapsterConfig(),
+new AuditSubmissionMapsterConfig(),
 new CompanyCommunicationContactMapsterConfig(),
 new CompanyComplianceDateMapsterConfig(),
 new CompanyMapsterConfig(),
@@ -28,6 +27,7 @@ new CompanyStrikeOffSubmissionMapsterConfig(),
 new CompanyWorkAssignmentMapsterConfig(),
 new CompanyWorkProgressMapsterConfig(),
 new DocumentRecordMapsterConfig(),
+new LLPSubmissionMapsterConfig(),
 new MsicCodeMapsterConfig(),
 new ScheduledJobMapsterConfig(),
 new SystemAuditLogMapsterConfig(),

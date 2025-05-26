@@ -19,7 +19,9 @@ IUserContext userContext,
 IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
 IUserRepository userRepo,
-ISystemAuditLogService sysAuditService
+ISystemAuditLogService sysAuditService,
+ICompanyWorkAssignmentRepository workAssignmentRepo,
+ICompanyRepository companyRepo
     ) : IDocumentRecordService
 {
 
@@ -60,22 +62,23 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> CreateDocument(DocumentRecordRequest doc, IFormFile files)
     {
-        // Guard.AgainstUnauthorizedCompanyAccess(doc.CompanyId, null, userContext);
+        var workAssignment = await workAssignmentRepo.GetByIdAsync(doc.WorkAssignmentId);
+        Guard.AgainstNullData("Work assignment not found");
+
+        var cp = await companyRepo.GetByIdAsync(workAssignment!.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
+        Guard.AgainstUnauthorizedCompanyAccess(cp!.Id, null, userContext);
 
         var flowType = doc.FlowType.ToString().ToLower();
 
-        ///TODO: Update doc folder name
-        //var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
-        //  var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
-        var safeCompanyName = "";
-        var safeDeptName = "";
-        var subFolder = Path.Combine("docs", safeCompanyName, "", flowType);
+        var safeCpIdName = uploadFileService.SanitizeFolderName($"cp-{cp.Id}");
+        var safeWorkName = uploadFileService.SanitizeFolderName($"{workAssignment.WorkType}-{doc.DocumentType}");
+
+        var subFolder = Path.Combine("docs", safeCpIdName, "work", safeWorkName, flowType);
 
         var result = await uploadFileService.UploadAsync(files, subFolder, UploadStorageType.Local);
         doc.AttachmentFilePath = result;
-
-        //  var staff = await userRepo.GetByStaffIdAsync(doc.HandledByStaffId);
-        //   Guard.AgainstNullData(staff, "Staff not found");
 
         var data = mapper.Map<DocumentRecord>(doc);
 
@@ -142,7 +145,7 @@ ISystemAuditLogService sysAuditService
         return true;
     }
 
-    public async Task<DocumentRecordVM> Delete(int docId)
+    public async Task<bool> Delete(int docId)
     {
         var doc = await repo.GetByIdAsync(docId);
 
@@ -159,6 +162,6 @@ ISystemAuditLogService sysAuditService
 
         var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.AttachmentFileName}", doc);
         sysAuditService.LogInBackground(log);
-        return mapper.Map<DocumentRecordVM>(doc);
+        return true;
     }
 }

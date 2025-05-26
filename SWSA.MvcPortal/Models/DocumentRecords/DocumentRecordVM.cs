@@ -11,10 +11,10 @@ public class DocumentRecordVM
     public string? AttachmentFileName { get; set; } = null!;
     public string HandledByStaffId { get; set; } = null!;
     public string StaffName { get; set; } = null!;
-    public int CompanyDepartmentId { get; set; }
-    public string DepartmentName { get; set; } = null!;
+    public int BagOrBoxCount { get; set; }
     public int CompanyId { get; set; }
     public string CompanyName { get; set; } = null!;
+    public string? Remark { get; set; } = null!;
 
     //For resource viewing or downloading
     public string AttachmentPath { get; set; } = null!;

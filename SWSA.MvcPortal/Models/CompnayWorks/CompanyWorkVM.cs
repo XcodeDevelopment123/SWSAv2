@@ -37,6 +37,7 @@ public class CompanyWorkVM
     public bool IsYearEndTask { get; set; }
     public CompanyWorkProgressVM Progress { get; set; } = null!;
     public List<CompanyWorkUserVM> AssignedUsers { get; set; } = new List<CompanyWorkUserVM>();
+    public DateTime? ReminderDate { get; set; }
     public object? SubmissionDetail { get; set; } = null!; // This will be the specific submission type based on WorkType
     public void MergeUsers()
     {

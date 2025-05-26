@@ -46,9 +46,9 @@ public class SecretaryController(
 
     [InternalAjaxOnly]
     [HttpPost("submissions/company-strike-off/update")]
-    public async Task<IActionResult> UpdateStrikeOffSubmission([FromForm] EditCompanyStrikeOffSubmissionRequest req, List<IFormFile> files)
+    public async Task<IActionResult> UpdateStrikeOffSubmission(EditCompanyStrikeOffSubmissionRequest req)
     {
-        var result = await cpStrikeOffSubmissionService.UpdateSubmissionForCompany(req,files);
+        var result = await cpStrikeOffSubmissionService.UpdateSubmissionForCompany(req);
         return Ok(result);
     }
 
