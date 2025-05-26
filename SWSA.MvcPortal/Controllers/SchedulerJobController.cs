@@ -3,7 +3,7 @@ using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using SWSA.MvcPortal.Dtos.Requests.SchedulerJobs;
-using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.Scheduler;
 
 namespace SWSA.MvcPortal.Controllers;
 

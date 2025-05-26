@@ -2,6 +2,8 @@
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Interfaces.UserAccess;
 
 namespace SWSA.MvcPortal.Controllers;
 

@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 
 namespace SWSA.MvcPortal.Entities;
 
 //Just for references
+[Module("CompanyProfile")]
 public class CompanyComplianceDate
 {
     [Key]

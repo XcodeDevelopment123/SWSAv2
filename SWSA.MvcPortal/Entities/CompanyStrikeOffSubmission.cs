@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Entities.ValueOfObject;
 
 namespace SWSA.MvcPortal.Entities;
-
+[Module("Submission")]
 public class CompanyStrikeOffSubmission : BaseSubmission
 {
     [ForeignKey(nameof(Company))]

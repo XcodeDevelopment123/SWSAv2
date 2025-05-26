@@ -1,11 +1,12 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Filters;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
+[Module("CompanyProfile")]
 public class CompanyCommunicationContact
 {
     [Key]

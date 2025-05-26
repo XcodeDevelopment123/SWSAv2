@@ -1,4 +1,10 @@
 using Mapster;
+using SWSA.MvcPortal.Commons.MapsterConfigs.CompanyProfile;
+using SWSA.MvcPortal.Commons.MapsterConfigs.Scheduler;
+using SWSA.MvcPortal.Commons.MapsterConfigs.Submission;
+using SWSA.MvcPortal.Commons.MapsterConfigs.SystemInfra;
+using SWSA.MvcPortal.Commons.MapsterConfigs.UserAccess;
+using SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignment;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs;
 

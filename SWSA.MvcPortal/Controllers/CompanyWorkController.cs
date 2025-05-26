@@ -3,6 +3,8 @@ using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Models.CompnayWorks;
 using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Interfaces.UserAccess;
 
 namespace SWSA.MvcPortal.Controllers;
 

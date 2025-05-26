@@ -1,6 +1,6 @@
-﻿using SWSA.MvcPortal.Commons.Filters;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities.ValueOfObject;
 

@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Filters;
+﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Models.Users;

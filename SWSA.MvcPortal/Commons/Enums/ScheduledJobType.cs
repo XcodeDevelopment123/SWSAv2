@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Filters;
+﻿using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Commons.Enums;
 

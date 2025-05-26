@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Filters;
+using SWSA.MvcPortal.Commons.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
+[Module("UserAccess")]
 public class User
 {
     [Key]

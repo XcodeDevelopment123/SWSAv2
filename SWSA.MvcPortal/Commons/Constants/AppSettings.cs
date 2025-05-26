@@ -11,6 +11,18 @@ public class AppSettings
 
 }
 
+public class AppModule
+{
+    public const string WorkAssignment = "WorkAssignment";
+    public const string Company = "Company";
+    public const string User = "User";
+    public const string Submission = "Submission";
+    public const string System = "System";
+    public const string Scheduler = "Scheduler";
+}
+
+
+
 public class QuartzGroupKeys
 {
     public const string NotificationGroup = "notificationGroup";

@@ -411,6 +411,9 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<bool>("IsYearEndTask")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ReminderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ServiceScope")
                         .HasColumnType("int");
 

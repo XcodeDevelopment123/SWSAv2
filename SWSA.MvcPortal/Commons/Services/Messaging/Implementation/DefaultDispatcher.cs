@@ -1,5 +1,5 @@
 ﻿using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
-using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 
 namespace SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 

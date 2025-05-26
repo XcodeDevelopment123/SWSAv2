@@ -1,8 +1,10 @@
-﻿using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
 
+[Module("SystemInfra")]
 public class SystemNotificationLog
 {
     [Key]

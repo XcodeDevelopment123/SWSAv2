@@ -1,6 +1,6 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
-using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 
 namespace SWSA.MvcPortal.Commons.Guards;
 

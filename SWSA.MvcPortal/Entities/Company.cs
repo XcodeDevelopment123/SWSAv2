@@ -1,10 +1,10 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Filters;
-using System.CodeDom.Compiler;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
 
+[Module("CompanyProfile")]
 public class Company
 {
     [Key]

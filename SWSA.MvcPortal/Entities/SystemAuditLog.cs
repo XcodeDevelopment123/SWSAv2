@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
 
+[Module("SystemInfra")]
 public class SystemAuditLog
 {
     [Key]

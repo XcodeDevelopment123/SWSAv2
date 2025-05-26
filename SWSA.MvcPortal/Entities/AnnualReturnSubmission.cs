@@ -1,9 +1,10 @@
-﻿using SWSA.MvcPortal.Commons.Filters;
+﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Entities.ValueOfObject;
 
 namespace SWSA.MvcPortal.Entities;
 
 //For Actual Submit record & Record Client Sign/Return record
+[Module("Submission")]
 public class AnnualReturnSubmission : BaseSubmission
 {
     [SystemAuditLog("Submission Year")]
