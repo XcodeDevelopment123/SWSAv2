@@ -167,7 +167,7 @@
 
     initSelect2();
 
-    flatpickr("#completedDate,#startDate,#endDate", {
+    flatpickr("#reminderDate,#completedDate,#startDate,#endDate", {
         allowInput: true
     });
 
