@@ -1,4 +1,5 @@
 ﻿$(function () {
+
     //#region init table and date
     const msicTable = $("#msicDataTable").DataTable({
         "paging": true,
@@ -70,36 +71,7 @@
     });
     //#endregion scroll event handle
 
-    let currentSelectCompanyId = 0;
-
-    $("#requestStrikeOffSubmission").on("click", function () {
-        if (currentSelectCompanyId === 0) {
-            Toast_Fire(ICON_ERROR, "Error", "Please select a company first.");
-            return;
-        }
-
-        const name = $("#companyName").val();
-
-        if (confirm(`Request strike off for company "${name}"?`)) {
-            $.ajax({
-                url: `${urls.secretary_dept_submission}/company-strike-off/create`,
-                type: "POST",
-                data: { companyId: currentSelectCompanyId },
-                success: function (res) {
-                    console.log(res);
-                    Toast_Fire(ICON_SUCCESS, "Success", "Request submitted successfully.");
-                },
-                error: (jqxhr) => {
-                    jqxhr.handledError = true;
-                    const errorMsg = jqxhr?.responseJSON?.error ?? "Please try again later.";
-                    Toast_Fire(ICON_ERROR, "Somethign went wrong", errorMsg);
-
-                }
-            })
-
-
-        }
-    })
+    //#region load company
 
     $(document).on('click', '.company-item', function (e) {
         const companyId = $(this).data("id");
@@ -124,11 +96,16 @@
                     $("#strikeOffContainer").removeClass("d-none");
                     $("#strikeOffStatus").val(res.strikeOffStatus);
                     $("#strikeOffEffectiveDate").val(ConvertTimeFormat(res.strikeOffEffectiveDate, "DD-MM-YYYY")).trigger("change");
+
+                    const strikeOffText = submissionFormInputs.workType.find('option[value="StrikeOff"]').text();
+                    submissionFormInputs.workType.val("").trigger("change");
+                    submissionFormInputs.workType.find('option[value="StrikeOff"]').prop("disabled", true).text(`${strikeOffText} (Applied)`);
                 } else {
                     $("#strikeOffStatus").val("");
                     $("#strikeOffEffectiveDate").val("").trigger("change");
                     $("#strikeOffContainer").addClass("d-none");
                     $("#requestStrikeOffSubmission").prop("disabled", false);
+                    submissionFormInputs.workType.find('option[value="StrikeOff"]').prop("disabled", false);
                 }
 
                 $("#companyName").val(res.companyName);
@@ -210,4 +187,92 @@
         ownerTable.draw();
     }
 
+    //#endregion
+
+    //#region handle submission
+    let currentSelectCompanyId = 0;
+    const submissionUrl = {
+        "StrikeOff": `${urls.secretary_dept_submission}/company-strike-off/create`,
+        "Audit": `${urls.secretary_dept_submission}/company-strike-off/create`,
+    }
+
+    const $submissionForm = $("#submissionForm");
+    const submissionFormInputs = {
+        workType: $submissionForm.find('select[name="submissionSelect"]'),
+    };
+
+    const unsupportedWorkTypes = ["Accounting", "SdnBhd", "LLP", "Enterprise", "Partnership", "FormBE", "FormB", "Trust", "AnnualReturn"];
+
+    submissionFormInputs.workType.find('option').each(function () {
+        const optionValue = $(this).val();
+        if (unsupportedWorkTypes.includes(optionValue)) {
+            var text = $(this).text();
+            $(this).prop('disabled', true).text(`${text} (Not support yet)`);
+        }
+    });
+
+    $submissionForm.validate({
+        rules: {
+            submissionSelect: {
+                required: true
+            }
+        },
+        messages: {
+            submissionSelect: {
+                required: "Work Type are required"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.hasClass('select2-hidden-accessible')) {
+                element.next('.select2-container').after(error);
+            } else {
+                element.closest('.form-group').append(error);
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $submissionForm.on('submit', function (e) {
+        e.preventDefault();
+        if (currentSelectCompanyId === 0) {
+            Toast_Fire(ICON_ERROR, "Error", "Please select a company first.");
+            return;
+        }
+
+        if (!$submissionForm.valid()) {
+            return;
+        }
+
+        const name = $("#companyName").val();
+        const data = getFormData(submissionFormInputs);
+
+        var typeText = submissionFormInputs.workType.find(`option[value="${data.workType}"]`).text();
+
+        if (confirm(`Request ${typeText} work for company "${name}"?`)) {
+            $.ajax({
+                url: submissionUrl[data.workType],
+                type: "POST",
+                data: { companyId: currentSelectCompanyId },
+                success: function (res) {
+                    Toast_Fire(ICON_SUCCESS, "Success", "Request submitted successfully.");
+                },
+                error: (jqxhr) => {
+                    jqxhr.handledError = true;
+                    const errorMsg = jqxhr?.responseJSON?.error ?? "Please try again later.";
+                    Toast_Fire(ICON_ERROR, "Somethign went wrong", errorMsg);
+
+                }
+            })
+
+
+        }
+    });
+    //#endregion
 })

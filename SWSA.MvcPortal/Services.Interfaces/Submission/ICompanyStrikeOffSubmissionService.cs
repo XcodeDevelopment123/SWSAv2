@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+﻿using SWSA.MvcPortal.Dtos.Requests.Submission;
 using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Services.Interfaces.Submission;

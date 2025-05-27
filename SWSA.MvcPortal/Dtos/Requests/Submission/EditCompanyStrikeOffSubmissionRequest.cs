@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+﻿namespace SWSA.MvcPortal.Dtos.Requests.Submission;
 
 public class EditCompanyStrikeOffSubmissionRequest
 {

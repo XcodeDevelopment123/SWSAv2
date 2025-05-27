@@ -1,4 +1,5 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+﻿using System.Text.Json.Serialization;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Submissions;
 
@@ -9,7 +10,7 @@ public class CompanyWorkFullVM : CompanyWorkVM
 {
     public virtual AnnualReturnSubmissionVM? ARSubmission { get; set; } = null!;
     public virtual CompanyStrikeOffSubmissionVM? StrikeOffSubmission { get; set; } = null!;
-    public virtual AuditSubmission? AuditSubmission { get; set; } = null!;
+    public virtual AuditSubmissionVM? AuditSubmission { get; set; } = null!;
     public virtual LLPSubmission? LLPSubmission { get; set; } = null!;
 
     public void MapSubmissionDetail()
@@ -54,5 +55,18 @@ public class CompanyWorkVM
                   }).ToList();
 
         AssignedUsers = mergedResult;
+    }
+
+    public string GetSubmissionPageLink()
+    {
+        if (SubmissionDetail is not BaseSubmissionVM baseVM)
+            return "#";
+
+        return WorkType switch
+        {
+            WorkType.StrikeOff => $"/secretary-dept/submissions/company-strike-off/{baseVM.SubmissionId}/edit",
+            WorkType.Audit => $"/secretary-dept/submissions/audit-report/{baseVM.SubmissionId}/edit",
+            _ => "#"
+        };
     }
 }

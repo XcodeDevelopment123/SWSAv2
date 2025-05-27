@@ -25,9 +25,10 @@
 					<thead>
 						<tr>
 							<th>Doc Id</th>
-							<th>Flow</th>
-							<th>Date</th>
+							<th>Work / Task</th>
 							<th>Document Type</th>
+							<th>Flow</th>
+							<th>Date Uploaded</th>
 							<th>File</th>
 							<th>Company</th>
 							<th>Handle Staff</th>
@@ -39,9 +40,15 @@
 						{
 							<tr>
 								<td>DocId-@doc.DocumentId</td>
+								<td>
+									<a href="/companies/works/@doc.WorkAssignmentId/edit">
+										@doc.WorkType
+									</a>
+								
+									</td>
+								<td>@doc.DocumentType.GetDisplayName()</td>
 								<td>@doc.FlowType</td>
 								<td>@doc.DocumentDate.ToFormattedString()</td>
-								<td>@doc.DocumentType.GetDisplayName()</td>
 								<td>
 									<a target="_blank" href="@doc.DownloadLink" title="Download">
 										@doc.AttachmentFileName
@@ -75,9 +82,10 @@
 					<tfoot>
 						<tr>
 							<th>Doc Id</th>
+							<th>Work / Task</th>
+							<th>Document Type</th>
 							<th>Flow</th>
 							<th>Date</th>
-							<th>Document Type</th>
 							<th>File</th>
 							<th>Company</th>
 							<th>Handle Staff</th>

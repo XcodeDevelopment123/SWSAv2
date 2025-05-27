@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Attributes ;
+using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -38,4 +38,12 @@ public class CompanyWorkProgress
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+    public void Complete()
+    {
+        Status = WorkProgressStatus.Completed;
+        IsJobCompleted = true;
+        EndDate = DateTime.Today;
+        UpdatedAt = DateTime.Now;
+    }
 }

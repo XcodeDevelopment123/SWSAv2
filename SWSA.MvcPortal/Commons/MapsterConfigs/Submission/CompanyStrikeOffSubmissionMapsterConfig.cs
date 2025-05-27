@@ -12,13 +12,7 @@ public class CompanyStrikeOffSubmissionMapsterConfig : IMapsterConfig
         config.ForType<CompanyStrikeOffSubmission, CompanyStrikeOffSubmission>();
         config.ForType<CompanyStrikeOffSubmission, CompanyStrikeOffSubmissionVM>()
     .Map(dest => dest.SubmissionId, src => src.Id)
-    .Map(dest => dest.CompanyId, src => src.Company.Id)
-    .Map(dest => dest.CompanyName, src => src.Company.Name)
-    .Map(dest => dest.CompanyType, src => src.Company.CompanyType)
-    .Map(dest => dest.RegistrationNumber, src => src.Company.RegistrationNumber)
-    .Map(dest => dest.IncorporationDate, src => src.Company.IncorporationDate)
-    .Map(dest => dest.YearEndMonth, src => src.Company.YearEndMonth)
+    .Map(dest => dest.CompanySimpleInfo, src => src.Company)
     .Map(dest => dest.Documents, src => src.WorkAssignment.Documents);
     }
 }
-        

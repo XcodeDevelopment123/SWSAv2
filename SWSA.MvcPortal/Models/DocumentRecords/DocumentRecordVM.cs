@@ -12,6 +12,8 @@ public class DocumentRecordVM
     public string HandledByStaffId { get; set; } = null!;
     public string StaffName { get; set; } = null!;
     public int BagOrBoxCount { get; set; }
+    public WorkType WorkType { get; set; }
+    public int WorkAssignmentId { get; set; }
     public int CompanyId { get; set; }
     public string CompanyName { get; set; } = null!;
     public string? Remark { get; set; } = null!;
@@ -20,4 +22,5 @@ public class DocumentRecordVM
     public string AttachmentPath { get; set; } = null!;
     public string DownloadLink { get; set; } = null!;
     public string ViewLink { get; set; } = null!;
+
 }

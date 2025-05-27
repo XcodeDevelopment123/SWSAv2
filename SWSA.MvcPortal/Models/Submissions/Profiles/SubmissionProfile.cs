@@ -12,5 +12,6 @@ public class SubmissionProfile : Profile
             .ForMember(dest => dest.SubmissionId, opt => opt.MapFrom(src => src.Id));
 
         CreateMap<CompanyStrikeOffSubmissionVM, CompanyStrikeOffSubmissionVM>();
+        CreateMap<AuditSubmissionVM, AuditSubmissionVM>();
     }
 }

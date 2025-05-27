@@ -1,19 +1,17 @@
 ﻿$(function () {
-
     //#region init table and date
     const companyDatatable = $("#companyDatatable").DataTable({
         columnDefs: [
-            { targets: 0, orderable: false ,searchable:false}
+            { targets: 0, orderable: false, searchable: false }
         ],
         "paging": true,
         "lengthChange": false,
         "searching": true,
         "ordering": true,
         "info": true,
-        "autoWidth": false,
+        "autoWidth": true,
         "responsive": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-
         "pageLength": 5
     })
     companyDatatable.buttons().container().appendTo('#companyDatatable_wrapper .col-md-6:eq(0)');
@@ -27,9 +25,9 @@
         const name = $(this).data('name');
         const row = $(this).closest('table').DataTable().row($(this).closest('tr'))
 
-        if (confirm(`Are you sure you want to delete strike off submission for "${name}"?`)) {
+        if (confirm(`Are you sure you want to delete audit submission for "${name}"?`)) {
             $.ajax({
-                url: `${urls.secretary_dept_submission}/company-strike-off/${id}`,
+                url: `${urls.secretary_dept_submission}/audit-report/${id}`,
                 method: "DELETE",
                 success: function (res) {
                     if (res) {

@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -12,9 +14,28 @@ public class AuditSubmissionRepository(AppDbContext _db) : RepositoryBase<AuditS
     {
         var query = _db.Set<AuditSubmission>();
         return asNoTracking ? query.AsNoTracking() : query;
-    }  
+    }
     // Implement the method
     #region VM Method
+    public async Task<List<AuditSubmissionVM>> GetListVMAsync()
+    {
+        var dtos = await BaseQuery(true)
+             .ProjectToType<AuditSubmissionVM>()
+             .ToListAsync();
+
+        return dtos;
+    }
+
+    public async Task<AuditSubmissionVM> GetVMByIdAsync(int id)
+    {
+        var dtos = await BaseQuery(true)
+             .Where(c => c.Id == id)
+             .ProjectToType<AuditSubmissionVM>()
+             .FirstOrDefaultAsync();
+
+        return dtos!;
+    }
+
     #endregion
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<AuditSubmission>> BuildQueryAsync()

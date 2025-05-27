@@ -32,8 +32,7 @@ public class CompanyMapsterConfig : IMapsterConfig
 
         config.ForType<Company, CompanySimpleInfoVM>()
             .Map(dest => dest.CompanyId, src => src.Id)
-            .Map(dest => dest.Name, src => src.Name)
-            .Map(dest => dest.RegistrationNumber, src => src.RegistrationNumber);
+            .Map(dest => dest.CompanyName, src => src.Name);
 
         config.ForType<Company, CompanySelectionVM>()
             .Map(dest => dest.CompanyId, src => src.Id);

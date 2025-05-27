@@ -12,6 +12,8 @@ public class DocumentRecordMapsterConfig : IMapsterConfig
         config.ForType<DocumentRecord, DocumentRecord>();
         config.ForType<DocumentRecord, DocumentRecordVM>()
       .Map(dest => dest.DocumentId, src => src.Id)
+      .Map(dest => dest.WorkAssignmentId, src => src.WorkAssignment.Id)
+      .Map(dest => dest.WorkType, src => src.WorkAssignment.WorkType)
       .Map(dest => dest.FlowType, src => src.DocumentFlow)
       .Map(dest => dest.AttachmentPath, src => src.AttachmentFilePath)
       .Map(dest => dest.CompanyId, src => src.WorkAssignment.Company.Id)

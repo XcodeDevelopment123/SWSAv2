@@ -4,7 +4,7 @@ using Force.DeepCloner;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
-using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
+using SWSA.MvcPortal.Dtos.Requests.Submission;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
@@ -26,7 +26,6 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
 ) : ICompanyStrikeOffSubmissionService
 {
     #region VM/DTO Query Method 
-    #endregion
     public async Task<List<CompanyStrikeOffSubmissionVM>> GetStrikeOffSubmissionVMsAsync()
     {
         var data = await repo.GetListVMAsync();
@@ -37,11 +36,13 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
     public async Task<CompanyStrikeOffSubmissionVM> GetStrikeOffSubmissionVMByIdAsync(int submissionId)
     {
         var data = await repo.GetVMByIdAsync(submissionId);
-        Guard.AgainstUnauthorizedCompanyAccess(data.CompanyId, null, userContext);
+        Guard.AgainstUnauthorizedCompanyAccess(data.GetCompanyId(), null, userContext);
         //For download /view link 
 
         return mapper.Map<CompanyStrikeOffSubmissionVM>(data);
     }
+    #endregion
+
 
     public async Task<int> RequestSubmissionForCompany(int companyId)
     {
@@ -139,7 +140,7 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
             cp.IsStrikedOff = true;
             if (task.Progress != null && task.Progress.Status != WorkProgressStatus.Completed)
             {
-                CompleteWorkProgress(task.Progress);
+                task.Progress.Complete();
             }
         }
         else
@@ -156,13 +157,5 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
             task.Progress.StartDate = DateTime.Today;
             task.Progress.UpdatedAt = DateTime.Now;
         }
-    }
-
-    private void CompleteWorkProgress(CompanyWorkProgress progress)
-    {
-        progress.Status = WorkProgressStatus.Completed;
-        progress.IsJobCompleted = true;
-        progress.EndDate = DateTime.Today;
-        progress.UpdatedAt = DateTime.Now;
     }
 }

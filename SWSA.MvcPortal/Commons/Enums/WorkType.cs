@@ -2,6 +2,7 @@
 public enum WorkType
 {
     Audit,
+    StrikeOff,
     Accounting,
     SdnBhd,
     LLP,
@@ -11,6 +12,4 @@ public enum WorkType
     FormB,
     Trust,
     AnnualReturn,
-    StrikeOff,
-    Others
 }

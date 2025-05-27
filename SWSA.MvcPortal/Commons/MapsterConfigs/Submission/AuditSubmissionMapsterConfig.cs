@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.Submission;
 
@@ -9,6 +10,10 @@ public class AuditSubmissionMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<AuditSubmission, AuditSubmission>();
+        config.ForType<AuditSubmission, AuditSubmissionVM>()
+                .Map(dest => dest.SubmissionId, src => src.Id)
+                .Map(dest => dest.CompanySimpleInfo, src => src.WorkAssignment.Company)
+                .Map(dest => dest.Documents, src => src.WorkAssignment.Documents);
     }
 }
         

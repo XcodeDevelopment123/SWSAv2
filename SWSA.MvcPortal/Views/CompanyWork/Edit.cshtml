@@ -24,7 +24,6 @@
 	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(workVM.CompanyStatus);
 	var isYearEndToDo = SelectHelper.GetYesNoSelection(workVM.IsYearEndTask);
 	var monthOfYear = SelectHelper.GetEnumSelectList<MonthOfYear>(0);
-
 	var currentYear = DateTime.Now.Year;
 	var startYear = currentYear - 10;
 	var endYear = currentYear + 20;
@@ -34,7 +33,7 @@
 	<input type="hidden" id="isSuperAdmin" value="@UserContext.IsSuperAdmin.ToString()" />
 }
 
-<h3>Edit Task for @cp.Name (@cp.RegistrationNumber)</h3>
+<h3>Edit Task for @cp.CompanyName (@cp.RegistrationNumber)</h3>
 <div class="row">
 	<div class="col-md-12">
 		<form>
@@ -60,7 +59,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="companyName">Company</label>
-							<input readonly value="@($"{cp.Name} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
+							<input readonly value="@($"{cp.CompanyName} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -109,6 +108,12 @@
 			<div class="card card-secondary">
 				<div class="card-header">
 					<h3 class="card-title">Task / Work</h3>
+					<div class="card-tools">
+						<a href="@workVM.GetSubmissionPageLink()" class="btn btn-success">
+							To Submission page
+						</a>
+					</div>
+
 				</div>
 				<!-- /.card-header -->
 				<!-- form start -->

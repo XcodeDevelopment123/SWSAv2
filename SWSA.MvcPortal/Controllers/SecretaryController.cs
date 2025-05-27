@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Dtos.Requests.CompanyStrikeOffSubmissions;
-using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
+using SWSA.MvcPortal.Dtos.Requests.Submission;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.Submission;
 
@@ -9,7 +8,8 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("secretary-dept")]
 public class SecretaryController(
     ICompanyService companyService,
-    ICompanyStrikeOffSubmissionService cpStrikeOffSubmissionService
+    ICompanyStrikeOffSubmissionService cpStrikeOffSubmissionService,
+    IAuditSubmissionService auditSubmissionService
     ) : BaseController
 {
     #region Page/View
@@ -20,7 +20,22 @@ public class SecretaryController(
         return View(data);
     }
 
-    [Route("companies-strike-off")]
+    [Route("submissions/audit-report")]
+    public async Task<IActionResult> AuditRepotSubmissionList()
+    {
+        var data = await auditSubmissionService.GetAuditSubmissionVMsAsync();
+        return View(data);
+    }
+
+    [Route("submissions/audit-report/{submissionId}/edit")]
+    public async Task<IActionResult> EditAuditRepotSubmission([FromRoute] int submissionId)
+    {
+        var data = await auditSubmissionService.GetAuditSubmissionVMByIdAsync(submissionId);
+        return View(data);
+    }
+
+
+    [Route("submissions/companies-strike-off")]
     public async Task<IActionResult> CompanyStrikeOffList()
     {
         var data = await cpStrikeOffSubmissionService.GetStrikeOffSubmissionVMsAsync();
@@ -36,6 +51,21 @@ public class SecretaryController(
     #endregion
 
     #region API/Ajax
+    [InternalAjaxOnly]
+    [HttpPost("submissions/audit-report/create")]
+    public async Task<IActionResult> RequestAuditSubmission(int companyId)
+    {
+        var result = await auditSubmissionService.RequestSubmissionForCompany(companyId);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("submissions/audit-report/update")]
+    public async Task<IActionResult> UpdateAuditSubmission(EditAuditSubmissionRequest req)
+    {
+        var result = await auditSubmissionService.UpdateSubmissionForCompany(req);
+        return Ok(result);
+    }
 
     [InternalAjaxOnly]
     [HttpPost("submissions/company-strike-off/create")]

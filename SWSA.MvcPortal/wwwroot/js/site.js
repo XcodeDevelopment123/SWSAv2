@@ -14,7 +14,7 @@ const urls = {
     "company_handle_user": "/companies/handle-users",
     "schedule_job": "/scheduler-jobs",
     "system_audit_log": "/sys-audit-logs",
-    "secretary_dept_submission":"/secretary-dept/submissions",
+    "secretary_dept_submission": "/secretary-dept/submissions",
     "users": "/users",
 };
 
@@ -149,4 +149,53 @@ function ConvertTimeFormat(dateString, format = "DD-MM-YYYY hh:mm A") {
     var formattedDate = momentDate.format(format);
 
     return formattedDate;
+}
+
+function throttle(fn, wait) {
+    let last = 0, timeout;
+    return function (...args) {
+        const now = Date.now();
+        if (now - last > wait) {
+            last = now;
+            fn.apply(this, args);
+        } else {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                last = Date.now();
+                fn.apply(this, args);
+            }, wait);
+        }
+    };
+}
+
+function debounce(fn, delay) {
+    let timer = null;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+function adjustResponsiveTables() {
+    $('.table-responsive').each(function () {
+
+        const $thead = $(this).find('thead').first();
+        const theadWidth = $thead.length ? $thead.get(0).getBoundingClientRect().width : 0;
+
+        const $card = $(this).closest('.card');
+        if ($card.length === 0) return;
+        const cardWidth = $card.get(0).getBoundingClientRect().width;
+
+        if (cardWidth > theadWidth) {
+            $(this).css('display', 'table');
+        } else {
+            $(this).css('display', 'block');
+        }
+    });
+}
+
+function tableResizeEventListener() {
+    window.addEventListener('resize', throttle(adjustResponsiveTables, 150));
+    window.addEventListener('resize', debounce(adjustResponsiveTables, 250));
+    window.addEventListener('load', adjustResponsiveTables);
 }

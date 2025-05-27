@@ -41,6 +41,7 @@
 	var url = Url.ActionContext.HttpContext.Request.Path.ToString();
 	var currentAction = ViewData["action"]!.ToString();
 	var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+	var submissionNav = new List<string> { "AuditRepotSubmissionList", "EditAuditRepotSubmission", "CompanyStrikeOffList", "EditCompanyStrikeOffSubmission" };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -369,31 +370,35 @@
 							</a>
 						</li>
 
-						<li class="nav-item">
-							<a href="/secretary-dept/companies-strike-off" class="nav-link @(
-							currentController== ControllerNames.Secretary
-							&& currentAction == "CompanyStrikeOffList"?"active":"")">
-								<i class="nav-icon fas fa-list"></i>
-								<p>
-									Company Strike Off List
-								</p>
-							</a>
-						</li>
-
-					@* 	<li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
+						
+						<li class="nav-item @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"active":"")">
 								<i class="fas fa-clipboard-list nav-icon"></i>
 								<p>
 									Submissions
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Secretary && submissionNav.Contains(currentAction!)  ? @"display:block" : "display:none")">
 								<li class="nav-item">
-									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
+									<a href="/secretary-dept/submissions/companies-strike-off" class="nav-link @(
+							currentController== ControllerNames.Secretary
+							&& (currentAction == "CompanyStrikeOffList" || currentAction =="EditCompanyStrikeOffSubmission")?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											Company Strike Off List
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/secretary-dept/submissions/audit-report" class="nav-link 
+							@(currentController== ControllerNames.Secretary 
+							&& (currentAction =="AuditRepotSubmissionList" || currentAction =="EditAuditRepotSubmission") ?"active":"")"
+									>
 										<i class="fas fa-clipboard nav-icon"></i>										
 										<p>
-											Audited Report Submission
+											Audited Report 
 										</p>
 									</a>
 								</li>
@@ -402,12 +407,12 @@
 									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
 										<i class="fas fa-clipboard nav-icon"></i>										
 										<p>
-											LLP Submission
+											LLP 
 										</p>
 									</a>
 								</li>
 							</ul>
-						</li> *@
+						</li>
 
 						<li class="nav-header">Users & Systems</li>
 
