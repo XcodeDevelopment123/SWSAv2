@@ -15,7 +15,7 @@ public class AuditSubmission : BaseSubmission
     [SystemAuditLog("Date Submitted")]
     public DateTime? DateSubmitted { get; set; }
     [SystemAuditLog("Targeted Circulation (Month/Year)")]
-    public DateTime? TargettedCirculation { get; set; } //Month and year only
+    public DateTime? TargetedCirculation { get; set; } //Month and year only
     [SystemAuditLog("Is Late Submission")]
     public bool IsLate { get; set; } = false; // DateSubmitted > AccDueDate
     [SystemAuditLog("Reason For Late Submission")]
@@ -29,7 +29,7 @@ public class AuditSubmission : BaseSubmission
         return true;
     }
 
-    public void SetTargettedCirculation(MonthOfYear? yearEndMonth)
+    public void SetTargetedCirculation(MonthOfYear? yearEndMonth)
     {
         if (!yearEndMonth.HasValue)
         {
@@ -40,7 +40,7 @@ public class AuditSubmission : BaseSubmission
         int month = (int)yearEndMonth;
         DateTime yearEnd = new DateTime(year, month, 1);
         // Set TargettedCirculation to 7 months after the year end date
-        TargettedCirculation = yearEnd.AddMonths(7);
+        TargetedCirculation = yearEnd.AddMonths(7);
     
     }
 }

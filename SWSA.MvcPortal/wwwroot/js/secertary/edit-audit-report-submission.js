@@ -7,7 +7,7 @@
         firstYearAccountStart: $submissionForm.find('input[name="firstYearAccountStart"]'),
         accDueDate: $submissionForm.find('input[name="accDueDate"]'),
         dateSubmitted: $submissionForm.find('input[name="dateSubmitted"]'),
-        targettedCirculation: $submissionForm.find('input[name="targettedCirculation"]'),
+        targetedCirculation: $submissionForm.find('input[name="targetedCirculation"]'),
         reasonForLate: $submissionForm.find('input[name="reasonForLate"]'),
     };
 
@@ -33,7 +33,7 @@
         allowInput: true
     });
 
-    flatpickr("#targettedCirculation", {
+    flatpickr("#targetedCirculation", {
         plugins: [
             new monthSelectPlugin({
                 shorthand: false,
@@ -49,7 +49,9 @@
     $("#accDueDate,#dateSubmitted").on("change", function () {
         const accDueDate = $("#accDueDate").val();
         const dateSubmitted = $("#dateSubmitted").val();
-
+        if (accDueDate === "" || dateSubmitted === "") {
+            return;
+        }
         if (dateSubmitted > accDueDate) {
             $("#isLateLabel").val("Late");
         } else {

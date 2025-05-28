@@ -7,6 +7,6 @@ public class EditAuditSubmissionRequest
     public DateTime? FirstYearAccountStart { get; set; }
     public DateTime? AccDueDate { get; set; }
     public DateTime? DateSubmitted { get; set; }
-    public DateTime? TargettedCirculation { get; set; }
+    public DateTime? TargetedCirculation { get; set; }
     public string? ReasonForLate { get; set; }
 }

@@ -55,7 +55,7 @@ public class AuditSubmissionService(
             FirstYearAccountStart = cp!.IncorporationDate?.AddMonths(17) ?? null,
         };
 
-        entity.SetTargettedCirculation(cp.YearEndMonth);
+        entity.SetTargetedCirculation(cp.YearEndMonth);
 
         List<WorkAssignmentUserMapping> assignedUser = userContext.IsSuperAdmin
             ? [..cp!.UserCompanyDepartments.Select(c => c.UserId).Distinct()
@@ -116,7 +116,7 @@ public class AuditSubmissionService(
     {
         data.FirstYearAccountStart = req.FirstYearAccountStart;
         data.AccDueDate = req.AccDueDate;
-        data.TargettedCirculation = req.TargettedCirculation;
+        data.TargetedCirculation = req.TargetedCirculation;
         data.DateSubmitted = req.DateSubmitted;
         data.ReasonForLate = req.ReasonForLate;
         data.Remarks = req.ReasonForLate;

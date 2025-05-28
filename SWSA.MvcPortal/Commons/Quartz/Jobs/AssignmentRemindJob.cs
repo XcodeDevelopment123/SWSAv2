@@ -15,7 +15,7 @@ IMessagingService messagingService
 {
     public async Task Execute(IJobExecutionContext context)
     {
-        Log.Information("[AssignmentDueSoonJob] Execute time: {Time}", DateTime.Now);
+        Log.Information("[AssignmentRemindJob] Execute time: {Time}", DateTime.Now);
         try
         {
             var userAssignments = await workAssignmentUserMapRepo.GetTodayRemindUserAssignmentsAsync();

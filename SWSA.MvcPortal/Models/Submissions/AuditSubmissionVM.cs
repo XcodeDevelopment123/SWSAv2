@@ -5,7 +5,7 @@ public class AuditSubmissionVM : BaseSubmissionVM
     public DateTime? FirstYearAccountStart { get; set; }
     public DateTime? AccDueDate { get; set; }
     public DateTime? DateSubmitted { get; set; }
-    public DateTime? TargettedCirculation { get; set; } //Month and year only
+    public DateTime? TargetedCirculation { get; set; } //Month and year only
     public bool IsLate { get; set; } = false; // DateSubmitted > AccDueDate
     public string? ReasonForLate { get; set; }
 
