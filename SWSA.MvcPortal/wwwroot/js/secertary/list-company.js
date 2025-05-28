@@ -132,29 +132,29 @@
     })
 
     function reloadScheduling(workAssignments) {
-        console.log(workAssignments)
         workTable.clear();
         workAssignments.forEach(item => {
             const submission = item.submission;
             const staffsName = item.assignedUsers
-                .map(user => user.staffName);
+                .map(user => {
+                    return ` <span class="mr-1">
+                            <a href="/users/${user.staffId}/overview">
+                                ${user.staffName}
+                            </a>
+                        </span>`;
+                }
+                   );
 
-            //workTable.row.add([
-            //    item.workType,
-            //    item.companyStatus,
-            //    item.activitySize,
-            //    item.isYearEndTask ? "Yes" : "No",
-            //    item.monthToDoLabel,
-            //    staffsName,
-            //    ConvertTimeFormat(item.ssmExtensionDate, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(item.agmDate, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(item.arDueDate, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(item.reminderDate, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-            //    ConvertTimeFormat(submission.dateOfAnnualReturn, "DD-MM-YYYY"),
-            //    item.internalNote,
-            //]);
+            workTable.row.add([
+                `<a href="/companies/works/${item.taskId}/edit">${item.workType}</a>`,
+                item.companyStatus,
+                item.activitySize,
+                item.isYearEndTask ? "Yes" : "No",
+                staffsName,
+                ConvertTimeFormat(item.reminderDate, "DD-MM-YYYY"),
+                item.progress.status,
+                item.internalNote,
+            ]);
         });
         workTable.draw();
     }
