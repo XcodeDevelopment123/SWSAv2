@@ -54,6 +54,9 @@
 		<Content Update="Tools\TemplateGenCli\appsettings.json">
 		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
+		<Content Update="wwwroot\js\users\overview.js">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
