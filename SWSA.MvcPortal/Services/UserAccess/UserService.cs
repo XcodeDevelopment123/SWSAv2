@@ -51,10 +51,10 @@ IUserContext userContext) : IUserService
 
     public async Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId)
     {
-        var data = await repo.GetOverviewByStaffIdAsync(staffId);
+        var data = await repo.GetOverviewVMByStaffIdAsync(staffId);
         Guard.AgainstNullData(data, "User not found");
-
-        return mapper.Map<UserOverviewVM>(data);
+        data.MergeCompany();
+        return data;
     }
 
     public async Task<UserVM> GetUserByIdAsync(string staffId)

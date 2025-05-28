@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Users;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.UserAccess;
 
@@ -9,6 +10,9 @@ public class UserMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<User, User>();
+        config.ForType<User, UserOverviewVM>()
+            .Map(dest=>dest.AssignedCompanies,src=>src.CompanyDepartments)
+            .Map(dest=>dest.AssignedWorks,src=>src.AssignedDepartmentTasks);
     }
 }
         

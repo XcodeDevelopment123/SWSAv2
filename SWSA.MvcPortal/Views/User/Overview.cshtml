@@ -103,7 +103,13 @@
 							<th>Type</th>
 							<th>Registration Number</th>
 							<th>Year End Month</th>
+							<th>Incorporation Date</th>
 							<th>Director Name</th>
+							<th>Contacts Count</th>
+							<th>MsicCodes Count</th>
+							<th>Work/Task Count</th>
+							<th>Is Striked Off</th>
+							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -115,14 +121,24 @@
 								<td>@cp.CompanyType.GetDisplayName()</td>
 								<td>@cp.RegistrationNumber</td>
 								<td>@cp.YearEndMonth</td>
+								<td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
 								<td>@cp.CompanyDirectorName</td>
+								<td>@cp.ContactsCount</td>
+								<td>@cp.MsicCodesCount</td>
+								<td>@cp.WorkCount</td>
+								<td>@(cp.IsStrikedOff ? "Yes" : "No")</td>
+								<td>@cp.StrikeOffStatus.GetDisplayName()</td>
 								<td>
 									<div class="btn-group" role="group">
 										<a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
+										<a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
 									</div>
 								</td>
+
 							</tr>
 						}
 					</tbody>
@@ -132,7 +148,13 @@
 							<th>Type</th>
 							<th>Registration Number</th>
 							<th>Year End Month</th>
+							<th>Incorporation Date</th>
 							<th>Director Name</th>
+							<th>Contacts Count</th>
+							<th>MsicCodes Count</th>
+							<th>Work/Task Count</th>
+							<th>Is Striked Off</th>
+							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</tfoot>
@@ -161,11 +183,12 @@
 				<table id="assignedTaskTable" class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th>Company Department</th>
+							<th>Company</th>
 							<th>Work Type</th>
+							<th>Service Offer</th>
+							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Year To Do</th>
-							<th>Month To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>
@@ -174,12 +197,20 @@
 					<tbody>
 						@foreach (var task in assignedTask)
 						{
+
 							<tr>
-								<td>@task.CompanyName</td>
-								<td>@task.WorkType</td>
+								<td>
+									@task.CompanyName
+									<p class="m-0">(#@task.CompanyRegistrationNumber)</p>
+								</td>
+								<td>
+									@task.WorkType.GetDisplayName()
+								</td>
+								<td>@task.ServiceScope.GetDisplayName()</td>
+								<td>@task.CompanyStatus.GetDisplayName()</td>
 								<td>@task.ActivitySize.GetDisplayName()</td>
-								<td>-</td>
-								<td>-</td>
+								<td>@(task.YearEndToDo ? "Yes" : "No")</td>
+
 								<td>@task.InternalNote</td>
 								<td>@task.Status.GetDisplayName()</td>
 								<td>
@@ -187,18 +218,23 @@
 										<a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
+										<a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
 									</div>
 								</td>
+
 							</tr>
 						}
 					</tbody>
 					<tfoot>
 						<tr>
-							<th>Company Department</th>
+							<th>Company</th>
 							<th>Work Type</th>
+							<th>Service Offer</th>
+							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Year To Do</th>
-							<th>Month To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>

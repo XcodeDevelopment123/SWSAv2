@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
@@ -17,4 +18,5 @@ public interface IUserRepository : IRepositoryBase<User>
     Task<Dictionary<string, int>> GetDictionaryIdByStaffIdsAsync(List<string> staffIds);
     Task<User> GetOverviewByStaffIdAsync(string staffId);
     Task<List<User>> GetUserByCompanyId(int companyId);
+    Task<UserOverviewVM> GetOverviewVMByStaffIdAsync(string staffId);
 }
