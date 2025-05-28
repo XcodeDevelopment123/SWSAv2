@@ -33,7 +33,12 @@ public class RepositoryBase<T>(
 
     public virtual void Remove(T entity)
     {
-        BeforeRemove(entity);
+        _dbSet.Remove(entity);
+    }
+
+    public virtual async Task RemoveAsync(T entity)
+    {
+        await BeforeRemove(entity);
         _dbSet.Remove(entity);
     }
 
@@ -45,6 +50,16 @@ public class RepositoryBase<T>(
         }
         _dbSet.RemoveRange(entities);
     }
+
+    public virtual async Task RemoveRangeAsync(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            await BeforeRemove(entity);
+        }
+        _dbSet.RemoveRange(entities);
+    }
+
 
     public virtual void Update(T entity)
     {

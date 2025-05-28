@@ -20,4 +20,6 @@ public interface IRepositoryBase<T> where T : class
     Task RollbackTransactionAsync();
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetWithIncludedByIdAsync(object id);
+    Task RemoveAsync(T entity);
+    Task RemoveRangeAsync(IEnumerable<T> entities);
 }

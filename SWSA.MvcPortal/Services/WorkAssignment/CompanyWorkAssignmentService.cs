@@ -124,11 +124,10 @@ ISystemAuditLogService sysAuditService
         if (data.WorkType == WorkType.StrikeOff && !cp!.IsStrikedOff)
         {
             cp.StrikeOffStatus = StrikeOffStatus.NotApplied;
+            companyRepo.Update(cp!);
         }
 
-
-        companyRepo.Update(cp!);
-        repo.Remove(data!);
+        await repo.RemoveAsync(data!);
 
         await repo.SaveChangesAsync();
 

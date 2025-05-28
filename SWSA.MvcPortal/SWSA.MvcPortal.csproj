@@ -51,6 +51,9 @@
 		<Content Update="Datas\MSICcodes-2025-04-07.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
+		<Content Update="Tools\TemplateGenCli\appsettings.json">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
