@@ -17,4 +17,6 @@ public class CompanyWorkListVM
     public DateTime? ReminderDate { get; set; }
     public string? InternalNote { get; set; }
     public bool YearEndToDo { get; set; } = false;
+
+
 }

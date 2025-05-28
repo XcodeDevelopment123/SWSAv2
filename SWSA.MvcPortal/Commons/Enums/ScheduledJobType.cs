@@ -7,6 +7,7 @@ public enum ScheduledJobType
 {
     //Notification group
     AssignmentDueSoon = 100,
+    AssignmentRemind = 101,
 
     //Report group
 

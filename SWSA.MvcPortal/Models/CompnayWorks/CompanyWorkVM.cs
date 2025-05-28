@@ -66,6 +66,8 @@ public class CompanyWorkVM
         {
             WorkType.StrikeOff => $"/secretary-dept/submissions/company-strike-off/{baseVM.SubmissionId}/edit",
             WorkType.Audit => $"/secretary-dept/submissions/audit-report/{baseVM.SubmissionId}/edit",
+            WorkType.AnnualReturn => $"/secretary-dept/submissions/annual-return/{baseVM.SubmissionId}/edit",
+            WorkType.LLP => $"/secretary-dept/submissions/llp/{baseVM.SubmissionId}/edit",
             _ => "#"
         };
     }

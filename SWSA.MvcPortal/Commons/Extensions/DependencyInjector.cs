@@ -310,10 +310,12 @@ public static class DependencyInjector
         // Job-specific factories (your IJobBaseFactory design)
         services.AddTransient<AssignmentDueSoonJobFactory>();
         services.AddTransient<GenerateAssignmentReportJobFactory>();
+        services.AddTransient<AssignmentRemindJobFactory>();
 
         // Job class instances (support DI)
         services.AddScoped<AssignmentDueSoonJob>();
         services.AddScoped<GenerateAssignmentReportJob>();
+        services.AddScoped<AssignmentRemindJob>();
 
         // Services used in jobs
         //  services.AddScoped<IAssignmentDueSoonJobService, AssignmentDueSoonJobService>();

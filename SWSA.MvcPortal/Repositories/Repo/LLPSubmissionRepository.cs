@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -12,9 +14,27 @@ public class LLPSubmissionRepository(AppDbContext _db) : RepositoryBase<LLPSubmi
     {
         var query = _db.Set<LLPSubmission>();
         return asNoTracking ? query.AsNoTracking() : query;
-    }  
+    }
     // Implement the method
     #region VM Method
+    public async Task<List<LLPSubmissionVM>> GetListVMAsync()
+    {
+        var dtos = await BaseQuery(true)
+             .ProjectToType<LLPSubmissionVM>()
+             .ToListAsync();
+
+        return dtos;
+    }
+
+    public async Task<LLPSubmissionVM> GetVMByIdAsync(int id)
+    {
+        var dtos = await BaseQuery(true)
+             .Where(c => c.Id == id)
+             .ProjectToType<LLPSubmissionVM>()
+             .FirstOrDefaultAsync();
+
+        return dtos!;
+    }
     #endregion
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<LLPSubmission>> BuildQueryAsync()

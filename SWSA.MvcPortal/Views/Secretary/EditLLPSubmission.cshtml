@@ -5,9 +5,9 @@
 @using SWSA.MvcPortal.Services.Interfaces
 @using SWSA.MvcPortal.Services.Interfaces.SystemCore
 @inject IUserContext UserContext
-@model AuditSubmissionVM
+@model LLPSubmissionVM
 @{
-	ViewData["Title"] = "EditCompanyStrikeOffSubmission";
+	ViewData["Title"] = "EditLLPSubmission";
 	var flowType = SelectHelper.GetEnumSelectList<DocumentFlowType>(null!);
 	var docType = SelectHelper.GetEnumSelectList<DocumentType>(null);
 	var cpInfo = Model.CompanySimpleInfo;
@@ -17,7 +17,7 @@
 	<input id="companyId" value="@cpInfo.CompanyId" type="hidden" />
 }
 
-<h3>Update Audit Submission for @cpInfo.CompanyName (@cpInfo.RegistrationNumber)</h3>
+<h3>Update LLP Submission for @cpInfo.CompanyName (@cpInfo.RegistrationNumber)</h3>
 
 <div class="row">
 	<div class="col-md-12">
@@ -108,12 +108,11 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="firstYearAccountStart">First Year Account Start Date
-								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Default: Estimate 17 months from incorporation date"></i>
-
+							<label for="ssmExtensionDateForAcc">
+								Ssm Extension Date For Account
 							</label>
 							<div class="input-group">
-								<input  type="text" id="firstYearAccountStart" value="@Model.FirstYearAccountStart?.ToFormattedString()" name="firstYearAccountStart" class="form-control" placeholder="Select date" />
+								<input type="text" id="ssmExtensionDateForAcc" value="@Model.SSMExtensionDateForAcc?.ToFormattedString()" name="ssmExtensionDateForAcc" class="form-control" placeholder="Select date" />
 								<div class="input-group-append">
 									<span class="input-group-text">
 										<i class="fa fa-calendar"></i>
@@ -124,12 +123,11 @@
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="targettedCirculation">
-								Targeted Circulation (Month/Year)
-								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Default: Estimate 7 months from Year End"></i>
+							<label for="arDueDate">
+								Annual Return Due Date
 							</label>
 							<div class="input-group">
-								<input type="text" id="targettedCirculation" value="@Model.TargettedCirculation?.ToFormattedString()" name="targettedCirculation" class="form-control" placeholder="Select date" />
+								<input type="text" id="arDueDate" value="@Model.ARDueDate?.ToFormattedString()" name="arDueDate" class="form-control" placeholder="Select date" />
 								<div class="input-group-append">
 									<span class="input-group-text">
 										<i class="fa fa-calendar"></i>
@@ -140,9 +138,9 @@
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="accDueDate">Account Due Date</label>
+							<label for="accountSubmitDate">Account Submit Date</label>
 							<div class="input-group">
-								<input type="text" id="accDueDate" value="@Model.AccDueDate?.ToFormattedString()" name="accDueDate" class="form-control" placeholder="Select date" />
+								<input type="text" id="accountSubmitDate" value="@Model.AccountSubmitDate?.ToFormattedString()" name="accountSubmitDate" class="form-control" placeholder="Select date" />
 								<div class="input-group-append">
 									<span class="input-group-text">
 										<i class="fa fa-calendar"></i>
@@ -154,9 +152,9 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="dateSubmitted">Date Submitted</label>
+							<label for="arSubmitDate">Annual Rerturn Submit Date</label>
 							<div class="input-group">
-								<input type="text" id="dateSubmitted" value="@Model.DateSubmitted?.ToFormattedString()" name="dateSubmitted" class="form-control" placeholder="Select date" />
+								<input type="text" id="arSubmitDate" value="@Model.ARSubmitDate?.ToFormattedString()" name="arSubmitDate" class="form-control" placeholder="Select date" />
 								<div class="input-group-append">
 									<span class="input-group-text">
 										<i class="fa fa-calendar"></i>
@@ -165,18 +163,40 @@
 							</div>
 						</div>
 					</div>
-				
+
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="isLateLabel">On Time /Late</label>
-							<input readonly id="isLateLabel" value="@Model.GetIsLateDisplyLabel()" class="form-control " />
+							<label for="dateSentToClient">Date send to client</label>
+							<div class="input-group">
+								<input type="text" id="dateSentToClient" value="@Model.DateSentToClient?.ToFormattedString()" name="dateSentToClient" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="dateReturnedByClient">Date return by client</label>
+							<div class="input-group">
+								<input type="text" id="dateReturnedByClient" value="@Model.DateReturnedByClient?.ToFormattedString()" name="dateReturnedByClient" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label for="reasonForLate">Reason For Late</label>
-							<input id="reasonForLate" value="@Model.ReasonForLate" name="reasonForLate" class="form-control " />
+							<label for="remarks">Remarks</label>
+							<input id="remarks" value="@Model.Remarks" name="remarks" class="form-control " />
 						</div>
 					</div>
 				</div>
@@ -354,7 +374,8 @@
 	<partial name="_ValidationScriptsPartial" />
 	<partial name="_DatatablesScriptsPartial" />
 
-	<script src="~/js/secertary/edit-audit-report-submission.js" asp-append-version="true"></script>
+	<script src="~/js/secertary/edit-llp-submission.js" asp-append-version="true"></script>
 	<script src="~/js/secertary/edit-submission.js" asp-append-version="true"></script>
+
 	<!-- date-range-picker -->
     }

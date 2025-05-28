@@ -11,7 +11,9 @@ public class AnnualReturnSubmissionMapsterConfig : IMapsterConfig
     {
         config.ForType<AnnualReturnSubmission, AnnualReturnSubmission>();
         config.ForType<AnnualReturnSubmission, AnnualReturnSubmissionVM>()
-            .Map(dest => dest.SubmissionId, src => src.Id);
+            .Map(dest => dest.SubmissionId, src => src.Id)
+            .Map(dest => dest.CompanySimpleInfo, src => src.WorkAssignment.Company)
+            .Map(dest => dest.Documents, src => src.WorkAssignment.Documents);
     }
 }
         

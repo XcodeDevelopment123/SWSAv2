@@ -8,6 +8,7 @@ public class BaseSubmissionVM
 {
     public int SubmissionId { get; set; }
     public int WorkAssignmentId { get; set; }
+    public string? Remarks { get; set; }
     public List<DocumentRecordVM> Documents { get; set; }
     public CompanySimpleInfoVM CompanySimpleInfo { get; set; } = new CompanySimpleInfoVM();
 

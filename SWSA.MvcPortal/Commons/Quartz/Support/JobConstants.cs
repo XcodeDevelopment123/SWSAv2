@@ -10,6 +10,8 @@ namespace SWSA.MvcPortal.Commons.Quartz.Support;
 public class QuartzJobKeys
 {
     public static readonly JobKey AssignmentDueSoonJobKey = new JobKey(nameof(ScheduledJobType.AssignmentDueSoon), QuartzGroupKeys.NotificationGroup);
+    public static readonly JobKey AssignmentRemindJobKey = new JobKey(nameof(ScheduledJobType.AssignmentRemind), QuartzGroupKeys.NotificationGroup);
     public static readonly JobKey GenerateAssignmentReportJobKey = new JobKey(nameof(ScheduledJobType.GenerateAssignmentReport), QuartzGroupKeys.ReportGroup);
 }
+
 

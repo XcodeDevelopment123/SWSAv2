@@ -83,6 +83,16 @@ public class CompanyWorkAssignmentRepository(AppDbContext db) : RepositoryBase<C
         return await query.Where(c => companyIds.Contains(c.CompanyId)).ToListAsync();
     }
 
+    public Task<List<CompanyWorkAssignment>> GetTodayRemindAssignments()
+    {
+        var today = DateTime.Today;
+
+        return db.CompanyWorkAssignments
+           .Where(c => c.ReminderDate.HasValue && c.ReminderDate.Value.Date == today) 
+           .Include(c => c.Company)
+           .ToListAsync();
+    }
+
     public Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7)
     {
         // Get the current date

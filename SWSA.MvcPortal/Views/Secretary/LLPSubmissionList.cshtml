@@ -1,11 +1,12 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Models.Submissions
-@model List<CompanyStrikeOffSubmissionVM>
+@model List<LLPSubmissionVM>
+
 @{
-	ViewData["Title"] = "Strike Off List";
+	ViewData["Title"] = "LLP Submission List";
 }
 
-<h3> Company Strike Off List</h3>
+<h3> LLP Suibmission List</h3>
 
 <div class="row">
 	<div class="col-md-12">
@@ -21,12 +22,14 @@
 							<th>Registration Number</th>
 							<th>Incorporation Date</th>
 							<th>Year End Month</th>
-							<th>Start Date</th>
-							<th>Complete Date</th>
-							<th>SSM Submission Date</th>
-							<th>IRB Submission Date</th>
-							<th>SSM Strike off Date</th>
-							<th>Remarks</th>
+							<th>Company Status (Task)</th>
+							<th>Activity/Size (Task)</th>
+							<th>SSM Extension Date For Account</th>
+							<th>Annual Return Due Date</th>
+							<th>Account Submit Date</th>
+							<th>Annual Return Submit Date</th>
+							<th>Date Send to Client</th>
+							<th>Date Returned</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -34,11 +37,9 @@
 						{
 							var cpInfo = cp.CompanySimpleInfo;
 							<tr>
-
 								<td>
 									<div class="btn-group" role="group">
-										<a href="/secretary-dept/submissions/company-strike-off/@cp.SubmissionId/edit" class="btn btn-sm btn-warning mr-2"
-										   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+										<a href="/secretary-dept/submissions/llp/@cp.SubmissionId/edit" class="btn btn-sm btn-warning mr-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
 									</div>
@@ -47,13 +48,14 @@
 								<td>@cpInfo.RegistrationNumber</td>
 								<td>@cpInfo.IncorporationDate?.ToFormattedString()</td>
 								<td>@cpInfo.YearEndMonth?.GetDisplayName()</td>
-								<td>@cp.StartDate?.ToFormattedString()</td>
-								<td>@cp.CompleteDate?.ToFormattedString()</td>
-								<td>@cp.SSMSubmissionDate?.ToFormattedString()</td>
-								<td>@cp.IRBSubmissionDate?.ToFormattedString()</td>
-								<td>@cp.SSMStrikeOffDate?.ToFormattedString()</td>
-								<td>@cp.Remarks</td>
-
+								<td>@cp.CompanyStatus.GetDisplayName()</td>
+								<td>@cp.CompanyActivityLevel.GetDisplayName()</td>
+								<td>@cp.SSMExtensionDateForAcc?.ToFormattedString()</td>
+								<td>@cp.ARDueDate?.ToFormattedString()</td>
+								<td>@cp.AccountSubmitDate?.ToFormattedString()</td>
+								<td>@cp.ARSubmitDate?.ToFormattedString()</td>
+								<td>@cp.DateSentToClient?.ToFormattedString()</td>
+								<td>@cp.DateReturnedByClient?.ToFormattedString()</td>
 
 							</tr>
 						}
@@ -65,12 +67,14 @@
 							<th>Registration Number</th>
 							<th>Incorporation Date</th>
 							<th>Year End Month</th>
-							<th>Start Date</th>
-							<th>Complete Date</th>
-							<th>SSM Submission Date</th>
-							<th>IRB Submission Date</th>
-							<th>SSM Strike off Date</th>
-							<th>Remarks</th>
+							<th>Company Status (Task)</th>
+							<th>Activity/Size (Task)</th>
+							<th>SSM Extension Date For Account</th>
+							<th>Annual Return Due Date</th>
+							<th>Account Submit Date</th>
+							<th>Annual Return Submit Date</th>
+							<th>Date Send to Client</th>
+							<th>Date Returned</th>
 						</tr>
 					</tfoot>
 				</table>

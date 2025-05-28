@@ -113,9 +113,16 @@ input:disabled {
         margin-left: -.5rem;
     }
 
+ table thead tr th{
+     text-align:center
+ }
 
 .table-responsive {
+    width:100% !important;
     overflow-x: auto;
     white-space: nowrap;
 }
 
+.table > :not(:last-child) > :last-child > * {
+    border-bottom: 2px solid #dee2e6 !important
+}

@@ -9,6 +9,7 @@ public class InMemoryTemplateRegistry : ITemplateRegistry
     private readonly Dictionary<string, HashSet<MessagingChannel>> _templateChannelSupport = new()
     {
         [MessagingTemplateCode.AssignmentWorkDueSoon] = new() { MessagingChannel.Email, MessagingChannel.Wappy },
+        [MessagingTemplateCode.AssignmentRemind] = new() { MessagingChannel.Email, MessagingChannel.Wappy },
         [MessagingTemplateCode.OTP] = new() { MessagingChannel.SMS, MessagingChannel.Email },
         [MessagingTemplateCode.Notification] = new() { MessagingChannel.Email, MessagingChannel.WhatsApp },
     };
@@ -17,6 +18,8 @@ public class InMemoryTemplateRegistry : ITemplateRegistry
     {
         [(MessagingTemplateCode.AssignmentWorkDueSoon, MessagingChannel.Email)] = new[] { "title", "content", "footer" },
         [(MessagingTemplateCode.AssignmentWorkDueSoon, MessagingChannel.WhatsApp)] = new[] { "body" },
+        [(MessagingTemplateCode.AssignmentRemind, MessagingChannel.Email)] = new[] { "title", "content", "footer" },
+        [(MessagingTemplateCode.AssignmentRemind, MessagingChannel.WhatsApp)] = new[] { "body" },
         [(MessagingTemplateCode.OTP, MessagingChannel.SMS)] = new[] { "otp" },
         [(MessagingTemplateCode.OTP, MessagingChannel.Email)] = new[] { "otp", "emailSubject" },
         [(MessagingTemplateCode.Notification, MessagingChannel.Email)] = new[] { "title", "message" },

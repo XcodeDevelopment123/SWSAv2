@@ -7,11 +7,11 @@ namespace SWSA.MvcPortal.Entities;
 [Module("Submission")]
 public class AnnualReturnSubmission : BaseSubmission
 {
-    [SystemAuditLog("Submission Year")]
-    public int Year { get; set; } // e.g. 2025
 
     [SystemAuditLog("Anniversary Date")]
     public DateTime? AnniversaryDate { get; set; } //EST 17 months from  incopr date
+    [SystemAuditLog("Annual Return Due Date")]
+    public DateTime? ARDueDate { get; set; }
 
     [SystemAuditLog("Targeted AR Date")]
     public DateTime? TargetedARDate { get; set; } // 7 Month from year end
@@ -19,7 +19,7 @@ public class AnnualReturnSubmission : BaseSubmission
     [SystemAuditLog("Actual Date of Annual Return")]
     public DateTime? DateOfAnnualReturn { get; set; }
 
-    [SystemAuditLog("Date AR Submitted")]
+    [SystemAuditLog("Actual Date Of AR Submitted")]
     public DateTime? DateSubmitted { get; set; }
 
     [SystemAuditLog("Date Sent to Client")]
@@ -28,14 +28,10 @@ public class AnnualReturnSubmission : BaseSubmission
     [SystemAuditLog("Date Returned by Client")]
     public DateTime? DateReturnedByClient { get; set; }
 
-    public AnnualReturnSubmission() { }
-
-    public AnnualReturnSubmission(Company cp)
+    public void SetAnniversaryAndTargetedARDate(Company cp)
     {
-        Year = DateTime.Now.Year;
         if (cp.IncorporationDate.HasValue)
             AnniversaryDate = cp.IncorporationDate.Value.AddMonths(17);
-
         if (cp.YearEndMonth.HasValue)
         {
             int year = DateTime.Now.Year;
@@ -43,6 +39,13 @@ public class AnnualReturnSubmission : BaseSubmission
             DateTime yearEnd = new DateTime(year, month, 1);
             TargetedARDate = yearEnd.AddMonths(7);
         }
+    }
+
+    public bool IsSubmissionComplete()
+    {
+        if (!DateSubmitted.HasValue) return false;
+
+        return true;
     }
 
 }

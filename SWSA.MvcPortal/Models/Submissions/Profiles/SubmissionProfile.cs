@@ -13,5 +13,7 @@ public class SubmissionProfile : Profile
 
         CreateMap<CompanyStrikeOffSubmissionVM, CompanyStrikeOffSubmissionVM>();
         CreateMap<AuditSubmissionVM, AuditSubmissionVM>();
+        CreateMap<LLPSubmissionVM, LLPSubmissionVM>();
+        CreateMap<AnnualReturnSubmissionVM, AnnualReturnSubmissionVM>();
     }
 }

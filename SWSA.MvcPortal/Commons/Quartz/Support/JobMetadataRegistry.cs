@@ -42,14 +42,17 @@ public class JobMetadataRegistry : IJobMetadataRegistry
         // === Types
         _jobKeyToType[QuartzJobKeys.AssignmentDueSoonJobKey.Name] = ScheduledJobType.AssignmentDueSoon;
         _jobKeyToType[QuartzJobKeys.GenerateAssignmentReportJobKey.Name] = ScheduledJobType.GenerateAssignmentReport;
+        _jobKeyToType[QuartzJobKeys.AssignmentRemindJobKey.Name] = ScheduledJobType.AssignmentRemind;
 
         // === Factories
         _factories[QuartzJobKeys.AssignmentDueSoonJobKey.Name] = () =>
             _serviceProvider.GetRequiredService<AssignmentDueSoonJobFactory>();
+        _factories[QuartzJobKeys.AssignmentRemindJobKey.Name] = () =>
+            _serviceProvider.GetRequiredService<AssignmentRemindJobFactory>();
         _factories[QuartzJobKeys.GenerateAssignmentReportJobKey.Name] = () =>
             _serviceProvider.GetRequiredService<GenerateAssignmentReportJobFactory>();
 
-        // === Only those have specific request
+        // === Only those have specific request payload
         _deserializers[QuartzJobKeys.GenerateAssignmentReportJobKey.Name] = json =>
             JsonConvert.DeserializeObject<GenerateReportJobRequest>(json);
 

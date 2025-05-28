@@ -119,7 +119,7 @@ public class AuditSubmissionService(
         data.TargettedCirculation = req.TargettedCirculation;
         data.DateSubmitted = req.DateSubmitted;
         data.ReasonForLate = req.ReasonForLate;
-
+        data.Remarks = req.ReasonForLate;
         if (req.AccDueDate.HasValue && req.DateSubmitted.HasValue)
         {
             data.IsLate = req.DateSubmitted > req.AccDueDate;

@@ -1,4 +1,5 @@
 ﻿using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
@@ -6,4 +7,6 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface ILLPSubmissionRepository : IRepositoryBase<LLPSubmission>
 {
     // Define custom methods if needed
+    Task<List<LLPSubmissionVM>> GetListVMAsync();
+    Task<LLPSubmissionVM> GetVMByIdAsync(int id);
 }

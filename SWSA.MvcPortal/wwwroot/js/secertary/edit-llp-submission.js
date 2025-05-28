@@ -4,10 +4,12 @@
     const submissionFormInputs = {
         companyId: $("#companyId"),
         submissionId: $("#submissionId"),
-        completeDate: $submissionForm.find('input[name="completeDate"]'),
-        ssmSubmissionDate: $submissionForm.find('input[name="ssmSubmissionDate"]'),
-        irbSubmissionDate: $submissionForm.find('input[name="irbSubmissionDate"]'),
-        ssmStrikeOffDate: $submissionForm.find('input[name="ssmStrikeOffDate"]'),
+        ssmExtensionDateForAcc: $submissionForm.find('input[name="ssmExtensionDateForAcc"]'),
+        arDueDate: $submissionForm.find('input[name="arDueDate"]'),
+        accountSubmitDate: $submissionForm.find('input[name="accountSubmitDate"]'),
+        arSubmitDate: $submissionForm.find('input[name="arSubmitDate"]'),
+        dateSentToClient: $submissionForm.find('input[name="dateSentToClient"]'),
+        dateReturnedByClient: $submissionForm.find('input[name="dateReturnedByClient"]'),
         remarks: $submissionForm.find('input[name="remarks"]'),
     };
 
@@ -18,7 +20,7 @@
 
         const data = getFormData(submissionFormInputs);
         $.ajax({
-            url: `${urls.secretary_dept_submission}/company-strike-off/update`,
+            url: `${urls.secretary_dept_submission}/llp/update`,
             method: "POST",
             data: data,
             success: function (res) {
@@ -29,7 +31,7 @@
         });
     });
 
-    flatpickr("#ssmStrikeOffDate,#irbSubmissionDate,#ssmSubmissionDate,#completeDate,#startDate,#documentDate", {
+    flatpickr("#ssmExtensionDateForAcc,#arDueDate,#accountSubmitDate,#arSubmitDate,#dateSentToClient,#dateReturnedByClient", {
         allowInput: true
     });
 })

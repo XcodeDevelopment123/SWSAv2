@@ -59,5 +59,6 @@ public class MessagingTemplateCode
 {
     public const string OTP = "OTP";
     public const string AssignmentWorkDueSoon = "Assignment_Work_Due_Soon";
+    public const string AssignmentRemind = "Assignment_Remind";
     public const string Notification = "Notification";
 }

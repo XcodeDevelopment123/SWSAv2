@@ -191,17 +191,13 @@
 
     //#region handle submission
     let currentSelectCompanyId = 0;
-    const submissionUrl = {
-        "StrikeOff": `${urls.secretary_dept_submission}/company-strike-off/create`,
-        "Audit": `${urls.secretary_dept_submission}/company-strike-off/create`,
-    }
 
     const $submissionForm = $("#submissionForm");
     const submissionFormInputs = {
         workType: $submissionForm.find('select[name="submissionSelect"]'),
     };
 
-    const unsupportedWorkTypes = ["Accounting", "SdnBhd", "LLP", "Enterprise", "Partnership", "FormBE", "FormB", "Trust", "AnnualReturn"];
+    const unsupportedWorkTypes = ["Accounting", "SdnBhd", "Enterprise", "Partnership", "FormBE", "FormB", "Trust",];
 
     submissionFormInputs.workType.find('option').each(function () {
         const optionValue = $(this).val();
@@ -257,9 +253,9 @@
 
         if (confirm(`Request ${typeText} work for company "${name}"?`)) {
             $.ajax({
-                url: submissionUrl[data.workType],
+                url: `${urls.secretary_dept_submission}/create`,
                 type: "POST",
-                data: { companyId: currentSelectCompanyId },
+                data: { companyId: currentSelectCompanyId, type: data.workType },
                 success: function (res) {
                     Toast_Fire(ICON_SUCCESS, "Success", "Request submitted successfully.");
                 },

@@ -8,4 +8,5 @@ public interface IWorkAssignmentUserMappingRepository : IRepositoryBase<WorkAssi
 {
     // Define your method here
     Task<WorkAssignmentUserMapping?> GetByUserIdAsync(int taskId, int userId);
+    Task<List<WorkAssignmentUserMapping>> GetTodayRemindUserAssignmentsAsync();
 }

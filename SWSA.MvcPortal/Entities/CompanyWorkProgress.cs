@@ -46,4 +46,11 @@ public class CompanyWorkProgress
         EndDate = DateTime.Today;
         UpdatedAt = DateTime.Now;
     }
+
+    public void Processing()
+    {
+        Status = WorkProgressStatus.InProgress;
+        StartDate = DateTime.Today;
+        UpdatedAt = DateTime.Now;
+    }
 }

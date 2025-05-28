@@ -1,0 +1,94 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Models.Submissions
+@model List<AnnualReturnSubmissionVM>
+@{
+	ViewData["Title"] = "AR Submission List";
+}
+
+<h3> Annual Retur Submission List</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<!-- /.card -->
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="companyDatatable" class="table table-bordered table-striped table-responsive">
+					<thead>
+						<tr>
+							<th rowspan="2">Action</th>
+							<th rowspan="2">Company Name</th>
+							<th rowspan="2">Registration Number</th>
+							<th rowspan="2">Incorporation Date</th>
+							<th colspan="3">SSM AR Due Dates</th>
+
+							<th colspan="2">Actual AR Submission Dates</th>
+							<th colspan="2">Client's Sign & Return'</th>
+							<th rowspan="2">Remarks</th>
+
+						</tr>
+						<tr>
+							<th>Anniversary Date</th>
+							<th>Annual Return Due Date</th>
+							<th>Targeted AR Date</th>
+							<th>Date Of Annual Return</th>
+							<th>Date AR Submited</th>
+							<th>Date Send To Client</th>
+							<th>Date Returned By Client</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var cp in Model)
+						{
+							var cpInfo = cp.CompanySimpleInfo;
+							<tr>
+								<td>
+									<div class="btn-group" role="group">
+										<a href="/secretary-dept/submissions/annual-return/@cp.SubmissionId/edit" class="btn btn-sm btn-warning mr-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+											<i class="fa fa-edit"></i>
+										</a>
+									</div>
+								</td>
+								<td>@cpInfo.CompanyName</td>
+								<td>@cpInfo.RegistrationNumber</td>
+								<td>@cpInfo.IncorporationDate?.ToFormattedString()</td>
+								<td>@cp.AnniversaryDate?.ToFormattedString()</td>
+								<td>@cp.ARDueDate?.ToFormattedString()</td>
+								<td>@cp.TargetedARDate?.ToFormattedString()</td>
+								<td>@cp.DateOfAnnualReturn?.ToFormattedString()</td>
+								<td>@cp.DateSubmitted?.ToFormattedString()</td>
+								<td>@cp.DateSentToClient?.ToFormattedString()</td>
+								<td>@cp.DateReturnedByClient?.ToFormattedString()</td>
+								<td>@cp.Remarks</td>
+
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Action</th>
+							<th>Company Name</th>
+							<th>Registration Number</th>
+							<th>Incorporation Date</th>
+							<th>Anniversary Date</th>
+							<th>Annual Return Due Date</th>
+							<th>Targeted AR Date</th>
+							<th>Date Of Annual Return</th>
+							<th>Date AR Submited</th>
+							<th>Date Send To Client</th>
+							<th>Date Returned By Client</th>
+							<th>Remarks</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/secertary/list-submission.js" asp-append-version="true"></script>
+}

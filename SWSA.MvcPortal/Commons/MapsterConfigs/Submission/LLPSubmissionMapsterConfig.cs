@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Models.Submissions;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.Submission;
 
@@ -9,6 +10,11 @@ public class LLPSubmissionMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<LLPSubmission, LLPSubmission>();
+        config.ForType<LLPSubmission, LLPSubmissionVM>()
+        .Map(dest => dest.SubmissionId, src => src.Id)
+        .Map(dest => dest.CompanySimpleInfo, src => src.WorkAssignment.Company)
+        .Map(dest => dest.CompanyStatus, src => src.WorkAssignment.CompanyStatus)
+        .Map(dest => dest.CompanyActivityLevel, src => src.WorkAssignment.CompanyActivityLevel)
+        .Map(dest => dest.Documents, src => src.WorkAssignment.Documents);
     }
 }
-        

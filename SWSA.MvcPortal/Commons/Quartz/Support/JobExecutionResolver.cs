@@ -115,6 +115,7 @@ public class JobExecutionResolver : IJobExecutionResolver
     {
         ScheduledJobType.GenerateAssignmentReport => QuartzJobKeys.GenerateAssignmentReportJobKey.Name,
         ScheduledJobType.AssignmentDueSoon => QuartzJobKeys.AssignmentDueSoonJobKey.Name,
+        ScheduledJobType.AssignmentRemind => QuartzJobKeys.AssignmentRemindJobKey.Name,
         _ => throw new NotImplementedException($"JobKey mapping not found for {type}")
     };
 }
