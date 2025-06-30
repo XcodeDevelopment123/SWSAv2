@@ -22,4 +22,7 @@ public interface ICompanyRepository : IRepositoryBase<Company>
     Task<List<CompanyListVM>> GetListVMByTypeAsync(CompanyType type);
     Task<CompanySecretaryVM> GetSecretaryVMByIdAsync(int id);
     Task<CompanySimpleInfoVM> GetSimpleInfoVMByIdAsync(int id);
+    Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(CompanyType type);
+    Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAndTypeAsync(int userId, CompanyType type);
+    Task<List<SecretaryCompanyListVM>> GetSecretaryCompanyListVMByYearAsync(int year);
 }

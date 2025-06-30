@@ -52,8 +52,8 @@ $(function () {
                 password: $form.find('input[name="password"]').val()
             },
             success: function (res) {
-                console.log("login req:", res);
                 if (!res.isSuccess) {
+                console.log("login req:", res);
                     $form.append(`<span id="login-error" class="error invalid-feedback" style="display: block;">* Login Failed. ${res.message}</span>`);
                     return;
                 }

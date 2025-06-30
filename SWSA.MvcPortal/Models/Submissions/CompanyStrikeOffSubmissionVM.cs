@@ -10,4 +10,6 @@ public class CompanyStrikeOffSubmissionVM : BaseSubmissionVM
     public DateTime? IRBSubmissionDate { get; set; }
     public DateTime? SSMStrikeOffDate { get; set; }
     public string? Remarks { get; set; }
+
+    public override string DisplayYearLabel => $"{ForYear}";
 }

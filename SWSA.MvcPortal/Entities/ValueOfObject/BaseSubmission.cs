@@ -4,7 +4,7 @@ using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities.ValueOfObject;
 
-public class BaseSubmission
+public abstract class BaseSubmission
 {
     [Key]
     public int Id { get; set; }
@@ -17,4 +17,8 @@ public class BaseSubmission
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+    public int ForYear { get; set; } 
+
+    public abstract bool IsSubmissionComplete();
 }

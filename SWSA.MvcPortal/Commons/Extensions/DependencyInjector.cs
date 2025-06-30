@@ -46,6 +46,8 @@ using SWSA.MvcPortal.Services.WorkAssignment;
 using SWSA.MvcPortal.Services.SystemInfra;
 using SWSA.MvcPortal.Services.UserAccess;
 using SWSA.MvcPortal.Services.Scheduler;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -71,11 +73,9 @@ public static class DependencyInjector
         services.AddControllers(options =>
         {
             options.Filters.Add<LoginSessionFilter>();
-        })
-
-           .AddNewtonsoftJson(options =>
+        }).AddNewtonsoftJson(options =>
            {
-               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+               options.SerializerSettings.ReferenceLoopHandling =ReferenceLoopHandling.Ignore;
                options.SerializerSettings.Converters.Add(new DisplayEnumConverter());
            });
 
@@ -134,9 +134,12 @@ public static class DependencyInjector
             {
                 options.EnableSensitiveDataLogging();
             }
-
-
         }, ServiceLifetime.Scoped);
+
+        services.AddScoped<IDbConnection>(sp =>
+        {
+            return new SqlConnection(connString);
+        });
 
         //#Repository DI (auto generated)
         services.AddScoped<IAnnualReturnSubmissionRepository, AnnualReturnSubmissionRepository>();

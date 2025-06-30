@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Persistence.Seeders;

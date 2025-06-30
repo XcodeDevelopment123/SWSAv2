@@ -39,7 +39,8 @@ public class ExceptionMiddleware() : IMiddleware
 
             case BusinessLogicException businessEx:
                 if (isAjax)
-                    await WriteJsonError(context, StatusCodes.Status400BadRequest, "Operation not permitted by current business rules.", businessEx);
+                    //await WriteJsonError(context, StatusCodes.Status400BadRequest, "Operation not permitted by current business rules", businessEx);
+                    await WriteJsonError(context, StatusCodes.Status400BadRequest, "Action failed", businessEx);
                 else
                     RedirectToPage(context, $"/errors/BusinessError?message={Uri.EscapeDataString(businessEx.Message)}");
                 break;

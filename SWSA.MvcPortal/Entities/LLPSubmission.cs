@@ -22,10 +22,11 @@ public class LLPSubmission : BaseSubmission
 
     [SystemAuditLog("Date Returned by Client")]
     public DateTime? DateReturnedByClient { get; set; }
-    public bool IsSubmissionComplete()
+    public override bool IsSubmissionComplete()
     {
         if (!AccountSubmitDate.HasValue || !ARSubmitDate.HasValue) return false;
 
         return true;
     }
+
 }

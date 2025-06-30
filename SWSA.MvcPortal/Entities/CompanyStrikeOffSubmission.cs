@@ -25,4 +25,13 @@ public class CompanyStrikeOffSubmission : BaseSubmission
 
     [SystemAuditLog("SSM Strike-Off Date")]
     public DateTime? SSMStrikeOffDate { get; set; }
+
+    public override bool IsSubmissionComplete()
+    {
+        if (CompleteDate.HasValue && SSMSubmissionDate.HasValue && IRBSubmissionDate.HasValue && SSMStrikeOffDate.HasValue)
+        {
+            return true;
+        }
+        return false;
+    }
 }

@@ -8,6 +8,6 @@ public interface IAnnualReturnSubmissionService
     // Define your method here
     Task<AnnualReturnSubmissionVM> GetARSubmissionVMByIdAsync(int submissionId);
     Task<List<AnnualReturnSubmissionVM>> GetARSubmissionVMsAsync();
-    Task<int> RequestSubmissionForCompany(int companyId);
+    Task<int> RequestSubmissionForCompany(SubmissionRequest req);
     Task<bool> UpdateSubmissionForCompany(EditARSubmissionRequest req);
 }

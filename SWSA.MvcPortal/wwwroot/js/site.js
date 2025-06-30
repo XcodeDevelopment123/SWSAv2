@@ -14,9 +14,14 @@ const urls = {
     "company_handle_user": "/companies/handle-users",
     "schedule_job": "/scheduler-jobs",
     "system_audit_log": "/sys-audit-logs",
+    "secretary_dept": "/secretary-dept",
     "secretary_dept_submission": "/secretary-dept/submissions",
     "users": "/users",
 };
+
+$(function () {
+    $("#documentForm").remove()
+})
 
 // example use
 /**
@@ -192,6 +197,21 @@ function adjustResponsiveTables() {
             $(this).css('display', 'block');
         }
     });
+}
+
+function formatMonthLabel(monthNumber) {
+    const month = parseInt(monthNumber);
+    if (isNaN(month) || month < 1 || month > 12) {
+        return monthNumber; 
+    }
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'] ;
+
+    const zeroPad = month.toString().padStart(2, '0');
+    const monthName = monthNames[month - 1];
+
+    return `${zeroPad} (${monthName})`;
 }
 
 function tableResizeEventListener() {

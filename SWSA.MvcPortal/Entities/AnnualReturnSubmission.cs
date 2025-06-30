@@ -41,11 +41,12 @@ public class AnnualReturnSubmission : BaseSubmission
         }
     }
 
-    public bool IsSubmissionComplete()
+    public override bool IsSubmissionComplete()
     {
         if (!DateSubmitted.HasValue) return false;
 
         return true;
     }
 
+   
 }

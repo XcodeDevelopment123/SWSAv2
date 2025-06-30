@@ -74,11 +74,12 @@ IUserContext userContext) : IUserService
             throw new BusinessLogicException("Username already exists");
         }
 
-        var hashPassword = PasswordHasher.Hash(req.Password);
         var user = mapper.Map<User>(req);
-        user.HashedPassword = hashPassword;
+        user.SetAndHashPassword(req.Password);
+
         repo.Add(user);
         await repo.SaveChangesAsync();
+
         var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.User, user.StaffId.ToString(), $"User: {user.FullName}", user);
         sysAuditService.LogInBackground(log);
         return user.StaffId;
@@ -105,8 +106,7 @@ IUserContext userContext) : IUserService
 
         if (!string.IsNullOrEmpty(req.Password))
         {
-            var hashPassword = PasswordHasher.Hash(req.Password);
-            user.HashedPassword = hashPassword;
+            user.SetAndHashPassword(req.Password);
         }
 
         repo.Update(user);

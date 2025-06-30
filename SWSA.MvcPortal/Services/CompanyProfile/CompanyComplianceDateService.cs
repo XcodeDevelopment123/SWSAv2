@@ -20,7 +20,6 @@ ISystemAuditLogService sysAuditService
     #region VM/DTO Query Method 
     #endregion
 
-
     public async Task<bool> Edit(EditCompanyComplianceDate req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);

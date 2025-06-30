@@ -16,11 +16,29 @@ public class SecretaryController(
     ) : BaseController
 {
     #region Page/View
+    [Route("landing")]
+    public IActionResult Landing()
+    {
+        return View();
+    }
+
     [Route("companies")]
     public async Task<IActionResult> CompanyList()
     {
         var data = await companyService.GetCompanySelectionAsync();
         return View(data);
+    }
+
+    [Route("companies/sdn-bhd")]
+    public async Task<IActionResult> SdnBhdCompanyList()
+    {
+        return View();
+    }
+
+    [Route("companies/llp")]
+    public async Task<IActionResult> LLPCompanyList()
+    {
+        return View();
     }
 
     [Route("submissions/audit-report")]
@@ -83,15 +101,28 @@ public class SecretaryController(
 
     #region API/Ajax
     [InternalAjaxOnly]
-    [HttpPost("submissions/create")]
-    public async Task<IActionResult> RequestSubmission(int companyId, WorkType type)
+    [HttpGet("landing/companies")]
+    public async Task<IActionResult> UpdateARSubmission([FromQuery] int year)
     {
+        var result = await companyService.GetSecretaryCompanyListVMByYearAsync(year);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("submissions/create")]
+    public async Task<IActionResult> RequestSubmission(int companyId, WorkType type, int year)
+    {
+        var request = new SubmissionRequest
+        {
+            CompanyId = companyId,
+            ForYear = year
+        };
         var result = type switch
         {
-            WorkType.LLP => await llpSubmissionService.RequestSubmissionForCompany(companyId),
-            WorkType.Audit => await auditSubmissionService.RequestSubmissionForCompany(companyId),
-            WorkType.StrikeOff => await cpStrikeOffSubmissionService.RequestSubmissionForCompany(companyId),
-            WorkType.AnnualReturn => await arSubmissionService.RequestSubmissionForCompany(companyId),
+            WorkType.LLP => await llpSubmissionService.RequestSubmissionForCompany(request),
+            WorkType.Audit => await auditSubmissionService.RequestSubmissionForCompany(request),
+            WorkType.StrikeOff => await cpStrikeOffSubmissionService.RequestSubmissionForCompany(request),
+            WorkType.AnnualReturn => await arSubmissionService.RequestSubmissionForCompany(request),
             _ => throw new ArgumentOutOfRangeException(nameof(type), "Invalid work type")
         };
         return Ok(result);

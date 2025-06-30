@@ -38,7 +38,8 @@
                 required: true
             },
             msicCodesIds: {
-                required: true
+                required: true,
+                maxlength: 3
             },
             companyStatus: {
                 required: true
@@ -70,7 +71,8 @@
                 required: "Company Type is required."
             },
             msicCodesIds: {
-                required: "Please select at least one MSIC code."
+                required: "Please select at least one MSIC code.",
+                maxlength: "You can select up to 3 MSIC codes only."
             },
             companyStatus: {
                 required: "Please select a company status"
@@ -397,7 +399,7 @@
 
         const staffData = {
             staffId: staffId,
-            name: `${staffName}`, 
+            name: `${staffName}`,
             departments: departmentNames
         };
 
@@ -405,7 +407,7 @@
 
         handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
         handleUserFormInputs.userDepartments.val("").trigger('change');
-        handleUserFormInputs.handleStaffId.val("").trigger('change'); 
+        handleUserFormInputs.handleStaffId.val("").trigger('change');
         $handleUserForm[0].reset();
     });
 
@@ -447,7 +449,7 @@
         paging: true,
         lengthChange: false,
         searching: true,
-        ordering: true, 
+        ordering: true,
         info: true,
         autoWidth: false,
         responsive: true
@@ -487,7 +489,7 @@
     $("#btnSubmitRequest").on('click', function (e) {
 
         if (!$companyForm.valid()) {
-            demoSubmitCompany()
+            // demoSubmitCompany()
             return;
         }
 

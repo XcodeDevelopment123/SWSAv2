@@ -10,6 +10,6 @@ public interface ILLPSubmissionService
 
     // Define your method here
     Task<List<LLPSubmissionVM>> GetLLPSubmissionVMsAsync();
-    Task<int> RequestSubmissionForCompany(int companyId);
+    Task<int> RequestSubmissionForCompany(SubmissionRequest req);
     Task<bool> UpdateSubmissionForCompany(EditLLPSubmissionRequest req);
 }

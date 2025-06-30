@@ -9,6 +9,8 @@ public class AuditSubmissionVM : BaseSubmissionVM
     public bool IsLate { get; set; } = false; // DateSubmitted > AccDueDate
     public string? ReasonForLate { get; set; }
 
+    public override string DisplayYearLabel => $"{ForYear} - {ForYear + 1}";
+
     public string GetIsLateDisplyLabel()
     {
         if (DateSubmitted.HasValue && AccDueDate.HasValue)

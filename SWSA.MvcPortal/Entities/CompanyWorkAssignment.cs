@@ -64,5 +64,27 @@ public class CompanyWorkAssignment
                 throw new NotSupportedException($"WorkType {WorkType} is not supported for submission creation.");
         }
     }
+
+    public int GetForYear()
+    {
+        switch (WorkType)
+        {
+            case WorkType.AnnualReturn:
+                return ARSubmission?.ForYear ?? 0;
+
+            case WorkType.StrikeOff:
+                return StrikeOffSubmission?.ForYear ?? 0;
+
+            case WorkType.LLP:
+                return LLPSubmission?.ForYear ?? 0;
+
+            case WorkType.Audit:
+                return AuditSubmission?.ForYear ?? 0;
+
+            // Add other cases as needed
+            default:
+                return 0;
+        }
+    }
     #endregion
 }

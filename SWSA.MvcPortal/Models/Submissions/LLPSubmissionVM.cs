@@ -1,5 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Attributes;
-using SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Models.Submissions;
 
@@ -13,4 +12,6 @@ public class LLPSubmissionVM : BaseSubmissionVM
     public DateTime? ARSubmitDate { get; set; }
     public DateTime? DateSentToClient { get; set; }
     public DateTime? DateReturnedByClient { get; set; }
+
+    public override string DisplayYearLabel => $"{ForYear} - {ForYear + 1}";
 }

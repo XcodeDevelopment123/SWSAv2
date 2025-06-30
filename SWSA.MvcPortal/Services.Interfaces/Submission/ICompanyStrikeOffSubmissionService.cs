@@ -9,6 +9,6 @@ public interface ICompanyStrikeOffSubmissionService
 
     // Define your method here
     Task<List<CompanyStrikeOffSubmissionVM>> GetStrikeOffSubmissionVMsAsync();
-    Task<int> RequestSubmissionForCompany(int companyId);
+    Task<int> RequestSubmissionForCompany(SubmissionRequest req);
     Task<bool> UpdateSubmissionForCompany(EditCompanyStrikeOffSubmissionRequest req);
 }

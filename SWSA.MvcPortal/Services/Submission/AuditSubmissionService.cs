@@ -41,16 +41,17 @@ public class AuditSubmissionService(
     }
     #endregion
 
-    public async Task<int> RequestSubmissionForCompany(int companyId)
+    public async Task<int> RequestSubmissionForCompany(SubmissionRequest req)
     {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var cp = await companyRepo.GetWithIncludedByIdAsync(companyId);
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
 
 
         var entity = new AuditSubmission()
         {
+            ForYear = req.ForYear,
             Remarks = "Request for audit report submission",
             FirstYearAccountStart = cp!.IncorporationDate?.AddMonths(17) ?? null,
         };
@@ -68,7 +69,7 @@ public class AuditSubmissionService(
 
         var task = new CompanyWorkAssignment
         {
-            CompanyId = companyId,
+            CompanyId = req.CompanyId,
             WorkType = WorkType.Audit,
             ServiceScope = ServiceScope.Other,
             CompanyActivityLevel = cp.CompanyActivityLevel,
@@ -83,7 +84,7 @@ public class AuditSubmissionService(
         workAssignmentRepo.Add(task);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} audit report submission", entity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, req.CompanyId.ToString(), $"Requested {cp.Name} audit report submission", entity);
         sysAuditService.LogInBackground(log);
         return entity.Id;
     }

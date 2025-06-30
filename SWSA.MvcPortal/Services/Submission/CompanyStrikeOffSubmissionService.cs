@@ -44,13 +44,13 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
     #endregion
 
 
-    public async Task<int> RequestSubmissionForCompany(int companyId)
+    public async Task<int> RequestSubmissionForCompany(SubmissionRequest req)
     {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var cp = await companyRepo.GetWithIncludedByIdAsync(companyId);
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
-        var submission = await repo.GetByCompanyId(companyId);
+        var submission = await repo.GetByCompanyId(req.CompanyId);
         if (submission != null)
         {
             throw new BusinessLogicException("Company already submitted for strike off");
@@ -58,7 +58,8 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
 
         var entity = new CompanyStrikeOffSubmission()
         {
-            CompanyId = companyId,
+            ForYear= req.ForYear,
+            CompanyId = req.CompanyId,
             StartDate = DateTime.Today,
             Remarks = "Request for strike off submission",
         };
@@ -74,7 +75,7 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
 
         var task = new CompanyWorkAssignment
         {
-            CompanyId = companyId,
+            CompanyId = req.CompanyId,
             WorkType = WorkType.StrikeOff,
             ServiceScope = ServiceScope.Other,
             CompanyActivityLevel = cp.CompanyActivityLevel,
@@ -92,7 +93,7 @@ ICompanyWorkAssignmentRepository workAssignmentRepo
         workAssignmentRepo.Add(task);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} strike off submission", entity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, req.CompanyId.ToString(), $"Requested {cp.Name} strike off submission", entity);
         sysAuditService.LogInBackground(log);
         return entity.Id;
     }

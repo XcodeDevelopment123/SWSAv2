@@ -17,6 +17,7 @@
 					<thead>
 						<tr>
 							<th rowspan="2">Action</th>
+							<th rowspan="2">Year</th>
 							<th rowspan="2">Company Name</th>
 							<th rowspan="2">Registration Number</th>
 							<th rowspan="2">Incorporation Date</th>
@@ -49,6 +50,7 @@
 										</a>
 									</div>
 								</td>
+								<td>@cp.DisplayYearLabel</td>
 								<td>@cpInfo.CompanyName</td>
 								<td>@cpInfo.RegistrationNumber</td>
 								<td>@cpInfo.IncorporationDate?.ToFormattedString()</td>

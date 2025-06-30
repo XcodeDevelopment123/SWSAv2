@@ -50,6 +50,13 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data;
     }
 
+    public async Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(CompanyType type)
+    {
+        var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMByTypeAsync(type)
+            : await repo.GetSelectionsVMByUserIdAndTypeAsync(userContext.EntityId, type);
+        return data;
+    }
+
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
         var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMAsync()
@@ -63,6 +70,12 @@ IPermissionRefreshTracker permissionRefreshTracker
         var data = await repo.GetSecretaryVMByIdAsync(companyId);
         Guard.AgainstNullData(data, "Company not found");
 
+        return data;
+    }
+
+    public async Task<List<SecretaryCompanyListVM>> GetSecretaryCompanyListVMByYearAsync(int year)
+    {
+        var data = await repo.GetSecretaryCompanyListVMByYearAsync(year);
         return data;
     }
 

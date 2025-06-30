@@ -19,10 +19,10 @@ public class AuditSubmission : BaseSubmission
     [SystemAuditLog("Is Late Submission")]
     public bool IsLate { get; set; } = false; // DateSubmitted > AccDueDate
     [SystemAuditLog("Reason For Late Submission")]
-    public string? ReasonForLate{ get; set; }
+    public string? ReasonForLate { get; set; }
 
 
-    public bool IsSubmissionComplete()
+    public override bool IsSubmissionComplete()
     {
         if (!DateSubmitted.HasValue || !AccDueDate.HasValue) return false;
 
@@ -41,6 +41,6 @@ public class AuditSubmission : BaseSubmission
         DateTime yearEnd = new DateTime(year, month, 1);
         // Set TargettedCirculation to 7 months after the year end date
         TargetedCirculation = yearEnd.AddMonths(7);
-    
+
     }
 }

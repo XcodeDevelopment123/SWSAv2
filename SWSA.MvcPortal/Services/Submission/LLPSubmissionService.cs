@@ -41,14 +41,15 @@ public class LLPSubmissionService(
     }
     #endregion
 
-    public async Task<int> RequestSubmissionForCompany(int companyId)
+    public async Task<int> RequestSubmissionForCompany(SubmissionRequest req)
     {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var cp = await companyRepo.GetWithIncludedByIdAsync(companyId);
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var entity = new LLPSubmission()
         {
+            ForYear = req.ForYear,
             Remarks = "Request for LLP submission",
         };
 
@@ -63,7 +64,7 @@ public class LLPSubmissionService(
 
         var task = new CompanyWorkAssignment
         {
-            CompanyId = companyId,
+            CompanyId = req.CompanyId,
             WorkType = WorkType.LLP,
             ServiceScope = ServiceScope.Other,
             CompanyActivityLevel = cp.CompanyActivityLevel,
@@ -78,7 +79,7 @@ public class LLPSubmissionService(
         workAssignmentRepo.Add(task);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} LLP submission", entity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, req.CompanyId.ToString(), $"Requested {cp.Name} LLP submission", entity);
         sysLLPService.LogInBackground(log);
         return entity.Id;
     }
@@ -115,7 +116,7 @@ public class LLPSubmissionService(
         data.ARSubmitDate = req.ARSubmitDate;
         data.DateSentToClient = req.DateSentToClient;
         data.DateReturnedByClient = req.DateReturnedByClient;
-        data.Remarks= req.Remarks;
+        data.Remarks = req.Remarks;
     }
 
     private void UpdateWorkAssignmentProgress(CompanyWorkAssignment task, LLPSubmission data)

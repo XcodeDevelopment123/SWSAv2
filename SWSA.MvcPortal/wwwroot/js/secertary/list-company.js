@@ -1,5 +1,5 @@
 ﻿$(function () {
-
+    tableResizeEventListener();
     //#region init table and date
     const msicTable = $("#msicDataTable").DataTable({
         "paging": true,
@@ -43,6 +43,8 @@
     flatpickr("#incorpDate,#strikeOffEffectiveDate", {
         allowInput: true,
     });
+
+    $("#yearpicker").yearpicker()
     //#endregion init table and date
 
     //#region scroll event handle
@@ -99,6 +101,7 @@
 
                     const strikeOffText = submissionFormInputs.workType.find('option[value="StrikeOff"]').text();
                     submissionFormInputs.workType.val("").trigger("change");
+                    submissionFormInputs.year.val("").trigger("change");
                     submissionFormInputs.workType.find('option[value="StrikeOff"]').prop("disabled", true).text(`${strikeOffText} (Applied)`);
                 } else {
                     $("#strikeOffStatus").val("");
@@ -195,6 +198,7 @@
     const $submissionForm = $("#submissionForm");
     const submissionFormInputs = {
         workType: $submissionForm.find('select[name="submissionSelect"]'),
+        year: $submissionForm.find('input[name="yearpicker"]'),
     };
 
     const unsupportedWorkTypes = ["Accounting", "SdnBhd", "Enterprise", "Partnership", "FormBE", "FormB", "Trust",];
@@ -211,11 +215,17 @@
         rules: {
             submissionSelect: {
                 required: true
-            }
+            },
+            yearpicker: {
+                required: true
+            },
         },
         messages: {
             submissionSelect: {
                 required: "Work Type are required"
+            },
+            yearpicker: {
+                required: "Year are required"
             },
         },
         errorElement: 'span',
@@ -248,14 +258,14 @@
 
         const name = $("#companyName").val();
         const data = getFormData(submissionFormInputs);
-
+        console.log(data);
         var typeText = submissionFormInputs.workType.find(`option[value="${data.workType}"]`).text();
 
         if (confirm(`Request ${typeText} work for company "${name}"?`)) {
             $.ajax({
                 url: `${urls.secretary_dept_submission}/create`,
                 type: "POST",
-                data: { companyId: currentSelectCompanyId, type: data.workType },
+                data: { companyId: currentSelectCompanyId, type: data.workType, year: data.year },
                 success: function (res) {
                     Toast_Fire(ICON_SUCCESS, "Success", "Request submitted successfully.");
                 },
@@ -271,4 +281,8 @@
         }
     });
     //#endregion
+
+
+
+
 })

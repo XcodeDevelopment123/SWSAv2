@@ -1,0 +1,79 @@
+﻿@{
+	ViewData["Title"] = "Landing";
+}
+<link rel='stylesheet' href='~/lib/yearpicker/yearpicker.css' asp-append-version="true" />
+
+<h3> Company List (Sec Dept)</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<!-- /.card -->
+		<div class="card">
+			<!-- /.card-header -->
+			<div class="card-body">
+				<table id="companyDatatable" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th colspan="3">Company Info</th>
+							<th colspan="4">Actual Submission Dates</th>
+							<th colspan="2">Sign And Return
+								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Annual Return submission"></i>
+
+							</th>
+							<th rowspan="2">Remarks</th>
+						</tr>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Year End</th>
+
+							<th>Date of Annual Return
+								</th>
+							<th>Date of AR Due 
+
+							</th>
+							<th>Date AR Submited 
+
+							</th>
+							<th>Date of acc Submited 
+
+							</th>
+
+							<th>Date send to Client</th>
+							<th>Date Returned</th>
+
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Year End</th>
+
+							<th>Date of Annual Return </th>
+							<th>Date of AR Due </th>
+							<th>Date AR Submited </th>
+							<th>Date of acc Submited </th>
+
+							<th>Date send to Client</th>
+							<th>Date Returned</th>
+							<th>Remarks</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<!-- /.card -->
+	</div>
+</div>
+
+
+@section Scripts {
+	<partial name="_DatatablesScriptsPartial" />
+	<script src='~/lib/yearpicker/yearpicker.js'></script>
+
+	<script src="~/js/secertary/landing.js" asp-append-version="true"></script>
+}

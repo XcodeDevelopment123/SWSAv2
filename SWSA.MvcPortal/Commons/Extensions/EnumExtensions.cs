@@ -19,6 +19,7 @@ public static class EnumExtensions
 
         return attribute?.Name ?? enumValue.ToString().SplitCamelCase();
     }
+
     public static int GetIntValue(this Enum enumValue)
     {
         if (enumValue == null)

@@ -12,7 +12,7 @@
 	var workType = SelectHelper.GetEnumSelectList<WorkType>(null!);
 }
 <link rel="stylesheet" href="~/css/secretary-list-company.css" asp-append-version="true" />
-
+<link rel='stylesheet' href='~/lib/yearpicker/yearpicker.css' asp-append-version="true" />
 <h3> Company List</h3>
 
 <div class="row">
@@ -71,11 +71,26 @@
 				</div>
 
 				<form id="submissionForm">
-					<div action="col-md-12">
+					<div action="col-md-6">
 						<div class="form-group">
 							<label for="submissionSelect">Work Type</label>
 							<select asp-items="workType" id="submissionSelect" name="submissionSelect" class="form-control select2">
 							</select>
+						</div>
+
+					</div>
+
+					<div action="col-md-6">
+						<div class="form-group">
+							<label for="yearpicker">Year</label>
+							<div class="input-group">
+								<input type="text" id="yearpicker" name="yearpicker" class="form-control" placeholder="Select year" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
 						</div>
 
 					</div>
@@ -268,5 +283,8 @@
 	<partial name="_ValidationScriptsPartial" />
 
 	<partial name="_DatatablesScriptsPartial" />
+
+
+	<script src='~/lib/yearpicker/yearpicker.js'></script>
 	<script src="~/js/secertary/list-company.js" asp-append-version="true"></script>
 }

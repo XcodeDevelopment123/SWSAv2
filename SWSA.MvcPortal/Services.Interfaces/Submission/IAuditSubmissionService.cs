@@ -10,6 +10,6 @@ public interface IAuditSubmissionService
 
     // Define your method here
     Task<List<AuditSubmissionVM>> GetAuditSubmissionVMsAsync();
-    Task<int> RequestSubmissionForCompany(int companyId);
+    Task<int> RequestSubmissionForCompany(SubmissionRequest req);
     Task<bool> UpdateSubmissionForCompany(EditAuditSubmissionRequest req);
 }

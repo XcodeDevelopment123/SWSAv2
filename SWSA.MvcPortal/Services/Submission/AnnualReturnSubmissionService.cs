@@ -41,14 +41,15 @@ public class AnnualReturnSubmissionService(
     }
     #endregion
 
-    public async Task<int> RequestSubmissionForCompany(int companyId)
+    public async Task<int> RequestSubmissionForCompany(SubmissionRequest req)
     {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var cp = await companyRepo.GetWithIncludedByIdAsync(companyId);
+        Guard.AgainstUnauthorizedCompanyAccess(req.CompanyId, null, userContext);
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
 
         var entity = new AnnualReturnSubmission()
         {
+            ForYear = req.ForYear,
             Remarks = "Request for Annual Return submission",
         };
 
@@ -65,7 +66,7 @@ public class AnnualReturnSubmissionService(
 
         var task = new CompanyWorkAssignment
         {
-            CompanyId = companyId,
+            CompanyId = req.CompanyId,
             WorkType = WorkType.AnnualReturn,
             ServiceScope = ServiceScope.Other,
             CompanyActivityLevel = cp.CompanyActivityLevel,
@@ -80,7 +81,7 @@ public class AnnualReturnSubmissionService(
         workAssignmentRepo.Add(task);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, companyId.ToString(), $"Requested {cp.Name} Annual Return submission", entity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, req.CompanyId.ToString(), $"Requested {cp.Name} Annual Return submission", entity);
         sysAnnualReturnService.LogInBackground(log);
         return entity.Id;
     }

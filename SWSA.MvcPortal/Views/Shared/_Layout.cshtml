@@ -41,12 +41,15 @@
 	var url = Url.ActionContext.HttpContext.Request.Path.ToString();
 	var currentAction = ViewData["action"]!.ToString();
 	var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-	var submissionNav = new List<string> { 
+	var submissionNav = new List<string> {
 		"AuditRepotSubmissionList", "EditAuditRepotSubmission",
 		"CompanyStrikeOffList", "EditCompanyStrikeOffSubmission",
 		"ARSubmissionList", "EditARSubmission",
 		"LLPSubmissionList", "EditLLPSubmission",
-	
+	};
+
+	var secretaryCompanyNav = new List<string> {
+		"CompanyList",
 	};
 }
 
@@ -314,7 +317,7 @@
 										</p>
 									</a>
 								</li>
-							@* 	<li class="nav-item">
+								@* 	<li class="nav-item">
 									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")
 									" data-target-url="/companies/{companyId}/docs/create" data-url-name="Create documents for">
@@ -350,7 +353,7 @@
 										</p>
 									</a>
 								</li>
-						@* 		<li class="nav-item">
+								@* 		<li class="nav-item">
 									<a href="#" class="nav-link open-company-modal
                                                 @(currentController== ControllerNames.CompanyWork && currentAction =="Create" ?"active":"")
 									" data-target-url="/companies/{companyId}/works/create" data-url-name="Create new work for">
@@ -366,17 +369,38 @@
 						<li class="nav-header">Secretary Dept</li>
 
 						<li class="nav-item">
-							<a href="/secretary-dept/companies" class="nav-link @(
+							<a href="/secretary-dept/landing" class="nav-link @(
 							currentController== ControllerNames.Secretary
-							&& currentAction == "CompanyList"?"active":"")">
-								<i class="fas fa-building nav-icon"></i>
+							&& currentAction == "Landing"?"active":"")">
+								<i class="fas fa-briefcase nav-icon"></i>
 								<p>
-									Companies
+									Landing
 								</p>
 							</a>
 						</li>
 
-						
+
+						<li class="nav-item @(currentController== ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!) ?"active":"")">
+								<i class="fas fa-building nav-icon"></i>								<p>
+									Companies
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!)  ? @"display:block" : "display:none")">
+								<li class="nav-item">
+									<a href="/secretary-dept/companies" class="nav-link
+							@(currentController== ControllerNames.Secretary
+							&& currentAction =="CompanyList" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											List
+										</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+
 						<li class="nav-item @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
 							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"active":"")">
 								<i class="fas fa-clipboard-list nav-icon"></i>
@@ -386,7 +410,7 @@
 								</p>
 							</a>
 							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Secretary && submissionNav.Contains(currentAction!)  ? @"display:block" : "display:none")">
-					
+
 
 								<li class="nav-item">
 									<a href="/secretary-dept/submissions/annual-return" class="nav-link
@@ -400,13 +424,12 @@
 								</li>
 
 								<li class="nav-item">
-									<a href="/secretary-dept/submissions/audit-report" class="nav-link 
-							@(currentController== ControllerNames.Secretary 
-							&& (currentAction =="AuditRepotSubmissionList" || currentAction =="EditAuditRepotSubmission") ?"active":"")"
-									>
+									<a href="/secretary-dept/submissions/audit-report" class="nav-link
+							@(currentController== ControllerNames.Secretary
+							&& (currentAction =="AuditRepotSubmissionList" || currentAction =="EditAuditRepotSubmission") ?"active":"")">
 										<i class="nav-icon fas fa-list"></i>
 										<p>
-											Audited Report 
+											Audited Report
 										</p>
 									</a>
 								</li>
@@ -428,7 +451,7 @@
 							&& (currentAction == "LLPSubmissionList" || currentAction =="EditLLPSubmission")?"active":"")">
 										<i class="nav-icon fas fa-list"></i>
 										<p>
-											LLP 
+											LLP
 										</p>
 									</a>
 								</li>

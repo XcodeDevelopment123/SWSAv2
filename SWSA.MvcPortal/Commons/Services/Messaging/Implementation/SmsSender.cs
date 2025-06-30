@@ -10,10 +10,11 @@ public class SmsSender : IMessageSender
 
     public async Task<MessagingResult> SendAsync(MessageEnvelope message)
     {
-        var successMessage = $"[SMS] To: {message.Recipient} | Template: {message.TemplateCode} | Data: {string.Join(",", message.Data)}";
+        var successMessage = $"[Email] To: {message.Recipient} | Template: {message.TemplateCode} | Data: {string.Join(",", message.Data.Select(kv => $"{kv.Key}={kv.Value}"))}";
         Log.Information(successMessage);
 
-        await Task.Delay(500); // delay
+        await Task.Delay(500);
+        
         return new MessagingResult(true, successMessage, message);
     }
 }

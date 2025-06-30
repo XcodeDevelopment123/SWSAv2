@@ -16,4 +16,6 @@ public interface ICompanyService
     Task<List<CompanyListVM>> GetCompanyListByTypeAsync(CompanyType type);
     Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId);
     Task<CompanySimpleInfoVM> GetCompanySimpleInfoVMByIdAsync(int companyId);
+    Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(CompanyType type);
+    Task<List<SecretaryCompanyListVM>> GetSecretaryCompanyListVMByYearAsync(int year);
 }

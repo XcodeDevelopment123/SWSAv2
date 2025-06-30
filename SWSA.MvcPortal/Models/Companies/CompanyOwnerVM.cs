@@ -1,6 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Attributes;
-using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities;
+﻿using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Models.Companies;
