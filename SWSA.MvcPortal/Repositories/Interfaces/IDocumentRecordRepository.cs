@@ -11,4 +11,5 @@ public interface IDocumentRecordRepository : IRepositoryBase<DocumentRecord>
     Task<List<DocumentRecord>> GetDocumentRecordsByCompanyId(int companyId);
     Task<List<DocumentRecord>> GetDocumentRecordsByCompanyIds(List<int> companyIds);
     Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId);
+    Task<List<DocumentRecord>> GetDocumentRecordsByTaskId(int taskId);
 }

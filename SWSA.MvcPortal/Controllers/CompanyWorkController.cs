@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.WorkAssignments;
 using SWSA.MvcPortal.Models.CompnayWorks;
 using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
@@ -50,6 +51,34 @@ public class CompanyWorkController(
         var users = await userService.GetUserSelectionByCompanyIdAsync(data.CompanyId);
         var vm = new CompanyWorkAssignmentkEditPageVM(data, cpInfo, users);
         return View(vm);
+    }
+
+    [Route("works/audit/{taskId}/edit")]
+    public async Task<IActionResult> AuditEdit([FromRoute] int taskId)
+    {
+        var data = await service.GetWorkAssignmentById<AuditWorkAssignment>(taskId);
+        return View(data);
+    }
+
+    [Route("works/annual-return/{taskId}/edit")]
+    public async Task<IActionResult> AnnualReturnEdit([FromRoute] int taskId)
+    {
+        var data = await service.GetWorkAssignmentById<AnnualReturnWorkAssignment>(taskId);
+        return View(data);
+    }
+
+    [Route("works/strike-off/{taskId}/edit")]
+    public async Task<IActionResult> StrikeOffEdit([FromRoute] int taskId)
+    {
+        var data = await service.GetWorkAssignmentById<StrikeOffWorkAssignment>(taskId);
+        return View(data);
+    }
+
+    [Route("works/llp/{taskId}/edit")]
+    public async Task<IActionResult> LLPEdit([FromRoute] int taskId)
+    {
+        var data = await service.GetWorkAssignmentById<LLPWorkAssignment>(taskId);
+        return View(data);
     }
     #endregion
 
@@ -111,5 +140,39 @@ public class CompanyWorkController(
         var result = await service.Delete(taskId);
         return Ok(result);
     }
+
+    [InternalAjaxOnly]
+    [HttpPost("works/annual-return/update")]
+    public async Task<IActionResult> UpdateARWork(EditARWorkRequest req)
+    {
+        var result = await service.UpdateWork<EditARWorkRequest, AnnualReturnWorkAssignment>(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("works/audit-report/update")]
+    public async Task<IActionResult> UpdateAuditWork(EditAuditWorkRequest req)
+    {
+        var result = await service.UpdateWork<EditAuditWorkRequest, AuditWorkAssignment>(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("works/strike-off/update")]
+    public async Task<IActionResult> UpdateStrikeOffWork(EditStrikeOffWorkRequest req)
+    {
+        var result = await service.UpdateWork<EditStrikeOffWorkRequest, StrikeOffWorkAssignment>(req);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("works/llp/update")]
+    public async Task<IActionResult> UpdateLLPWork(EditLLPWorkRequest req)
+    {
+        var result = await service.UpdateWork<EditLLPWorkRequest, LLPWorkAssignment>(req);
+        return Ok(result);
+    }
+
+
     #endregion
 }

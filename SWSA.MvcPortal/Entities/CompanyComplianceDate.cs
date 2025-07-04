@@ -28,15 +28,4 @@ public class CompanyComplianceDate
     [SystemAuditLog("Compliance Notes")]
     public string? Notes { get; set; }
     public Company Company { get; set; } = null!;
-
-
-    public void UpdateComplianceDates(EditCompanyComplianceDate req)
-    {
-        AccountDueDate = req.AccountDueDate;
-        AnniversaryDate = req.AnniversaryDate;
-        AGMDate = req.AGMDate;
-        AnnualReturnDueDate = req.AnnualReturnDueDate;
-        FirstYearAccountStart = req.FirstYearAccountStart;
-        Notes = req.Notes;
-    }
 }

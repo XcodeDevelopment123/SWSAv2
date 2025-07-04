@@ -10,7 +10,6 @@
         taxIdentificationNumber: $companyForm.find('input[name="tinNumber"]'),
         yearEndMonth: $companyForm.find('input[name="yearEndMonth"]'),
         incorporationDate: $companyForm.find('input[name="incorpDate"]'),
-        companyType: $companyForm.find('select[name="companyType"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
         companyStatus: $companyForm.find('select[name="companyStatus"]'),
         companyActivityLevel: $companyForm.find('select[name="companyActivityLevel"]'),
@@ -34,9 +33,6 @@
                 required: true
             },
             yearEndMonth: {
-                required: true
-            },
-            companyType: {
                 required: true
             },
             msicCodesIds: {
@@ -67,9 +63,6 @@
             },
             yearEndMonth: {
                 required: "Year End Month is required."
-            },
-            companyType: {
-                required: "Company Type is required."
             },
             companyStatus: {
                 required: "Company Status is required."

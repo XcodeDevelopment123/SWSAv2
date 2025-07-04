@@ -1,6 +1,5 @@
 ﻿using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Repositories.Interfaces;
-using Mapster;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
@@ -12,6 +11,9 @@ using AutoMapper;
 using Force.DeepCloner;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
+using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Commons.Services.UploadFile;
 
 namespace SWSA.MvcPortal.Services.WorkAssignment;
 
@@ -22,16 +24,18 @@ IUserContext userContext,
 ICompanyWorkAssignmentRepository repo,
 ICompanyRepository companyRepo,
 IUserRepository userRepo,
-ISystemAuditLogService sysAuditService
+ISystemAuditLogService sysAuditService,
+IWorkAssignmentFactory workAssignmentFactory,
+IDocumentRecordRepository docRepo,
+IUploadFileService uploadFileService
 ) : ICompanyWorkAssignmentService
 {
     #region VM/DTO Query Method 
-    #endregion
-    public async Task<List<CompanyWorkListVM>> GetWorkAssignments()
+    public async Task<List<CompanyWorkAssignment>> GetWorkAssignments()
     {
-        var data = userContext.IsSuperAdmin ? [.. await repo.GetWorkListVMAsync()]
-            : await repo.GetWorkListVMByCompanyIdsAsync(userContext.AllowedCompanyIds);
-        return mapper.Map<List<CompanyWorkListVM>>(data);
+        var data = userContext.IsSuperAdmin ? [.. await repo.GetWorkList()]
+            : await repo.GetByCompanyIds(userContext.AllowedCompanyIds);
+        return data;
     }
 
     public async Task<List<CompanyWorkCalendarVM>> GetWorkCalendarEvents()
@@ -41,17 +45,31 @@ ISystemAuditLogService sysAuditService
         return data.Select(CompanyWorkCalendarVM.FromTask).ToList();
     }
 
-    public async Task<CompanyWorkVM> GetWorkAssignmentById(int taskId)
+    public async Task<CompanyWorkAssignment> GetWorkAssignmentById(int taskId)
     {
-        var data = await repo.GetWorkVMByIdAsync(taskId);
+        var data = await repo.GetWithIncludedByIdAsync(taskId);
+        Guard.AgainstNullData(data, "Company Work Assignment not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
+        return data;
+    }
+
+    public async Task<List<T>> GetWorkAssignments<T>() where T : CompanyWorkAssignment
+    {
+        var data = userContext.IsSuperAdmin ? await repo.Query().OfType<T>().ToListAsync()
+         : await repo.Query(userContext.AllowedCompanyIds).OfType<T>().ToListAsync();
+
+        return data;
+    }
+
+    public async Task<T> GetWorkAssignmentById<T>(int taskId) where T : CompanyWorkAssignment
+    {
+        var data = await repo.Query().OfType<T>().FirstOrDefaultAsync(c => c.Id == taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        data.MapSubmissionDetail();
-
-        var vm = data.Adapt<CompanyWorkVM>();
-        return vm;
+        return data;
     }
+    #endregion
 
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
     {
@@ -70,7 +88,6 @@ ISystemAuditLogService sysAuditService
         var staffIdToUserId = await userRepo.GetDictionaryIdByStaffIdsAsync(allStaffIds);
         var assignedUserEntities = WorkAssignedUsersMapper.ToEntities([.. staffIdToUserId.Values]);
         entity.AssignedUsers.AddRangeSafe(assignedUserEntities);
-        entity.CreateSubmissionEntity();
         repo.Add(entity);
         await repo.SaveChangesAsync();
 
@@ -81,7 +98,7 @@ ISystemAuditLogService sysAuditService
 
     public async Task<bool> Edit(EditCompanyWorkAssignmentRequest req)
     {
-        var task = await repo.GetUpdateVMById(req.TaskId);
+        var task = await repo.GetByIdAsync(req.TaskId);
         Guard.AgainstNullData(task, "Company Work Assignment not found");
         Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
 
@@ -91,7 +108,6 @@ ISystemAuditLogService sysAuditService
         task.CompanyActivityLevel = req.CompanyActivityLevel;
         task.ServiceScope = req.ServiceScope;
         task.InternalNote = req.InternalNote;
-        task.IsYearEndTask = req.IsYearEndTask;
         task.ReminderDate = req.ReminderDate;
         task.UpdatedAt = DateTime.Now;
         ///TODO: Only audit / accounting type need to sync month label
@@ -106,7 +122,7 @@ ISystemAuditLogService sysAuditService
         repo.Update(task);
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.CompanyWorkAssignment, task.Id.ToString(), $"Company Work Assignment : {task.WorkType.GetDisplayName()}", oldData, task);
         sysAuditService.LogInBackground(log);
         return true;
     }
@@ -119,20 +135,64 @@ ISystemAuditLogService sysAuditService
         Guard.AgainstNullData(cp, "Company not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        ///TODO: Get all related docs id and path , remove it
-
-        if (data.WorkType == WorkType.StrikeOff && !cp!.IsStrikedOff)
+        var docs = await docRepo.GetDocumentRecordsByTaskId(data.Id);
+        if (docs.Count > 0)
         {
-            cp.StrikeOffStatus = StrikeOffStatus.NotApplied;
-            companyRepo.Update(cp!);
+            foreach (var doc in docs)
+            {
+                if (!string.IsNullOrEmpty(doc.AttachmentFilePath))
+                {
+                    await uploadFileService.DeleteAsync(doc.AttachmentFilePath);
+                }
+            }
         }
-
         await repo.RemoveAsync(data!);
 
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyWorkAssignment, data!.Id.ToString(), $"Company Work Assignment : {data.WorkType.GetDisplayName()}", data);
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.CompanyWorkAssignment, data!.Id.ToString(), $"Company Work Assignment : {data.WorkType.GetDisplayName()}", data);
         sysAuditService.LogInBackground(log);
         return data!;
+    }
+
+    public async Task<int> RequestWorkAssignment(WorkAssignmentRequest req)
+    {
+        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
+        Guard.AgainstNullData(cp, "Company not found");
+
+        var entity = workAssignmentFactory.Create(req, cp!);
+
+        entity.Progress = new CompanyWorkProgress();
+
+        var assignedUserEntities = WorkAssignedUsersMapper.ToEntities([userContext.EntityId]);
+        entity.AssignedUsers.AddRangeSafe(assignedUserEntities);
+
+        repo.Add(entity);
+        await repo.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.CompanyWorkAssignment, entity.Id.ToString(), $"Company Work Assignment : {entity.WorkType.GetDisplayName()}", entity);
+        sysAuditService.LogInBackground(log);
+        return entity.Id;
+    }
+
+    public async Task<bool> UpdateWork<TRequest, TEntity>(TRequest req)
+       where TRequest : IWorkAssignmentUpdater<TEntity>
+       where TEntity : CompanyWorkAssignment
+    {
+        var data = await GetWorkAssignmentById<TEntity>(req.TaskId);
+        Guard.AgainstNullData(data, "Task not found");
+        var oldData = data.DeepClone();
+
+        req.ApplyTo(data);
+        data.Progress?.UpdateProgress();
+
+        repo.Update(data);
+        await repo.SaveChangesAsync();
+
+        var cp = await companyRepo.GetByIdAsync(req.CompanyId);
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, cp!.Id.ToString(), $"Updated {cp.Name} {data.WorkType.GetDisplayName()} task", oldData, data);
+        sysAuditService.LogInBackground(log);
+
+        return true;
     }
 }

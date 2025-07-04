@@ -2,7 +2,6 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.Submissions;
 using SWSA.MvcPortal.Models.Users;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;

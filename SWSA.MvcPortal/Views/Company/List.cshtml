@@ -1,7 +1,8 @@
 ﻿@using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities
 @using SWSA.MvcPortal.Models.Companies
-@model List<CompanyListVM>
+@model List<Company>
 @{
 	ViewData["Title"] = "List";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -26,8 +27,6 @@
 							<th>Contacts Count</th>
 							<th>MsicCodes Count</th>
 							<th>Work/Task Count</th>
-							<th>Is Striked Off</th>
-							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -35,26 +34,24 @@
 						@foreach (var cp in Model)
 						{
 							<tr>
-								<td>@cp.CompanyName</td>
+								<td>@cp.Name</td>
 								<td>@cp.CompanyType.GetDisplayName()</td>
 								<td>@cp.RegistrationNumber</td>
 								<td>@cp.YearEndMonth</td>
 								<td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
-								<td>@cp.CompanyDirectorName</td>
-								<td>@cp.ContactsCount</td>
-								<td>@cp.MsicCodesCount</td>
-								<td>@cp.WorkCount</td>
-								<td>@(cp.IsStrikedOff ? "Yes" : "No")</td>
-								<td>@cp.StrikeOffStatus.GetDisplayName()</td>
+								<td>@cp.GetDirectorName()</td>
+								<td>@cp.GetContactCount()</td>
+								<td>@cp.MsicCodes.Count</td>
+								<td>@cp.WorkAssignments.Count</td>
 								<td>
 									<div class="btn-group" role="group">
-										<a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
+										<a href="/companies/@cp.Id/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
-										<a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+										<a href="/companies/@cp.Id/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.CompanyId" data-name="@cp.CompanyName" title="Delete">
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cp.Id" data-name="@cp.Name" title="Delete">
 											<i class="fa fa-trash"></i>
 										</button>
 									</div>
@@ -74,8 +71,6 @@
 							<th>Contacts Count</th>
 							<th>MsicCodes Count</th>
 							<th>Work/Task Count</th>
-							<th>Is Striked Off</th>
-							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</tfoot>

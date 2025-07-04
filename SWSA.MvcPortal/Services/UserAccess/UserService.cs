@@ -7,7 +7,6 @@ using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Models.Users;
 using AutoMapper;
 using Force.DeepCloner;
-using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
@@ -22,8 +21,6 @@ ISystemAuditLogService sysAuditService,
 IUserContext userContext) : IUserService
 {
     #region VM/DTO Query Method 
-    #endregion
-
     public async Task<List<UserListVM>> GetUsersAsync()
     {
         var data = await repo.GetAllAsync();
@@ -64,6 +61,7 @@ IUserContext userContext) : IUserService
 
         return mapper.Map<UserVM>(data);
     }
+    #endregion
 
     public async Task<string> Create(CreateUserRequest req)
     {
@@ -136,5 +134,4 @@ IUserContext userContext) : IUserService
 
         return mapper.Map<UserVM>(data);
     }
-
 }

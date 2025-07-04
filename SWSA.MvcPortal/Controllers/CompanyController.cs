@@ -18,7 +18,7 @@ public class CompanyController(
     [Route("")]
     public async Task<IActionResult> List()
     {
-        var data = await service.GetCompanyListVMAsync();
+        var data = await service.GetCompaniesAsync();
         return View(data);
     }
 
@@ -64,19 +64,12 @@ public class CompanyController(
     #endregion
 
     #region API/Ajax
+
     [InternalAjaxOnly]
     [HttpGet("{companyId}")]
     public async Task<IActionResult> GetCompanyDetailById([FromRoute] int companyId)
     {
         var data = await service.GetCompanyByIdAsync(companyId);
-        return Ok(data);
-    }
-
-    [InternalAjaxOnly]
-    [HttpGet("{companyId}/secretary")]
-    public async Task<IActionResult> GetCompanyDetailForSecretaryById([FromRoute] int companyId)
-    {
-        var data = await service.GetCompanyForSecretaryVMByIdAsync(companyId);
         return Ok(data);
     }
 

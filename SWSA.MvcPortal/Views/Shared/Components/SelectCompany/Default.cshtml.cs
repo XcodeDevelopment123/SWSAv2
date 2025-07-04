@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 
-namespace SWSA.MvcPortal.Views.Shared.Components.SelectCompany
+namespace SWSA.MvcPortal.Views.Shared.Components.SelectCompany;
+
+public class SelectCompanyViewComponent(
+    ICompanyService companyService
+    ) : ViewComponent
 {
-    public class DefaultModel : PageModel
+
+    public async Task<IViewComponentResult> InvokeAsync()
     {
-        public void OnGet()
-        {
-        }
+        var companies = await companyService.GetCompanySelectionAsync();
+        return View(companies);
     }
 }

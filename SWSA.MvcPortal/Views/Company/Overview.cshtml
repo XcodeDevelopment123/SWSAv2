@@ -7,7 +7,6 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	var msicCodes = Model.MsicCodes.ToList();
 	var workAssignments = Model.WorkAssignments
-		.OrderByDescending(x => x.GetForYear())
 		.ToList();
 }
 
@@ -138,7 +137,7 @@
 						</div>
 					</div>
 
-					@if (Model.StrikeOffStatus != StrikeOffStatus.NotApplied)
+				@* 	@if (Model.StrikeOffStatus != StrikeOffStatus.NotApplied)
 					{
 						<div class="form-info-label col-12">
 							<label>Strike Off Status</label>
@@ -156,7 +155,7 @@
 								<input readonly value="@Model.StrikeOffEffectiveDate.ToFormattedString()" class="form-control" />
 							</div>
 						</div>
-					}
+					} *@
 
 					<div class="col-md-12">
 						<label for="msicCodes">Msic Codes</label>
@@ -471,7 +470,6 @@
 							<th>Service Offer</th>
 							<th>Company Status </th>
 							<th>Activity Size </th>
-							<th>Year To Do</th>
 							<th>Assigned Users</th>
 							<th>Internal Note</th>
 							<th>Status</th>
@@ -484,7 +482,7 @@
 							var assignedUsers = task.AssignedUsers.ToList();
 							<tr>
 								<td>
-									@task.GetForYear()
+									-
 								</td>
 								<td>
 									@task.WorkType.GetDisplayName()
@@ -492,7 +490,6 @@
 								<td>@task.ServiceScope.GetDisplayName()</td>
 								<td>@task.CompanyStatus.GetDisplayName()</td>
 								<td>@task.CompanyActivityLevel.GetDisplayName()</td>
-								<td>@(task.IsYearEndTask ? "Yes" : "No")</td>
 								<td>
 									<div>
 										@for (var i = 0; i < assignedUsers.Count; i++)
@@ -539,7 +536,6 @@
 							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Assigned Users</th>
-							<th>Year To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>

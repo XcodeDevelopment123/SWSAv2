@@ -40,6 +40,15 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
            .ToListAsync();
     }
 
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByTaskId(int taskId)
+    {
+        var query = await BuildQueryAsync();
+        ///TODO: Use department string to query
+        return await query
+            .Where(c=>c.WorkAssignmentId ==taskId)
+            .ToListAsync();
+    }
+
     public async Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId)
     {
         var query = await BuildQueryAsync();

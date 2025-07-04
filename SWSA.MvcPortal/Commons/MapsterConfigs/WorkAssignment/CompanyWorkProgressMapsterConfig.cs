@@ -1,6 +1,5 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompnayWorks;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignment;
 
@@ -10,8 +9,6 @@ public class CompanyWorkProgressMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<CompanyWorkProgress, CompanyWorkProgress>();
-        config.ForType<CompanyWorkProgress, CompanyWorkProgressVM>()
-            .Map(dest => dest.ProgressId, src => src.Id);
     }
 }
         

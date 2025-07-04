@@ -1,6 +1,5 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
-@using SWSA.MvcPortal.Models.Submissions
-@model List<CompanyStrikeOffSubmissionVM>
+
 @{
 	ViewData["Title"] = "Strike Off List";
 }
@@ -31,7 +30,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var cp in Model)
+				@* 		@foreach (var cp in Model)
 						{
 							var cpInfo = cp.CompanySimpleInfo;
 							<tr>
@@ -58,7 +57,7 @@
 
 
 							</tr>
-						}
+						} *@
 					</tbody>
 					<tfoot>
 						<tr>

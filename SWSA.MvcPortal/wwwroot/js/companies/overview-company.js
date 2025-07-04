@@ -42,6 +42,20 @@
         autoWidth: false,
         responsive: true
     });
+
+    const workDatatable = $('#workDatatable').DataTable({
+        select: {
+            style: 'single',
+            selector: 'td .btn-edit-staff-ct'
+        },
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true
+    });
     //#endregion
 
 })

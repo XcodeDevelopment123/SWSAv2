@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
 
@@ -11,24 +9,7 @@ public class CompanyProfile : Profile
     public CompanyProfile()
     {
         CreateMap<Company, Company>();
-        CreateMap<Company, CompanyListVM>()
-           .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
-           .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))
-           .ForMember(dest => dest.CompanyDirectorName, opt => opt.MapFrom((src, dest) =>
-           {
-               var firstOwner = src.Owners.FirstOrDefault(c => c.Position == PositionType.Director);
-               return firstOwner?.NamePerIC ?? AppSettings.NotAvailable;
-           }))
-           .ForMember(dest => dest.ContactsCount, opt => opt.MapFrom((src, dest) =>
-           {
-               return src.CommunicationContacts.Count + src.OfficialContacts.Count;
-           }))
-           .ForMember(dest => dest.WorkCount, opt => opt.MapFrom((src, dest) =>
-           {
-               return src.WorkAssignments.Count;
-           }))
-           .ForMember(dest => dest.MsicCodesCount, opt => opt.MapFrom(src => src.MsicCodes.Count));
-
+      
         CreateMap<Company, CompanySelectionVM>()
                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id));
 
@@ -38,9 +19,9 @@ public class CompanyProfile : Profile
             .ForMember(dest => dest.ComplianceDate, opt => opt.MapFrom(src => src.ComplianceDate))
             .ForMember(dest => dest.Owners, opt => opt.MapFrom(src => src.CompanyOwners));
 
-        CreateMap<Company, CompanySecretaryVM>()
-   .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
-   .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name))
-   .ForMember(dest=>dest.WorkAssignments,opt=>opt.MapFrom(src=>src.WorkAssignments));
+        CreateMap<Company,CompanySimpleInfoVM>()
+            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Name));
+
     }
 }

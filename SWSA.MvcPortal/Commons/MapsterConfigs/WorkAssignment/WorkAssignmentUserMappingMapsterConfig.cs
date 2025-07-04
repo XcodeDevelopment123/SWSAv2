@@ -1,7 +1,6 @@
 ﻿using Mapster;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompnayWorks;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignment;
 
@@ -11,21 +10,6 @@ public class WorkAssignmentUserMappingMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<WorkAssignmentUserMapping, WorkAssignmentUserMapping>();
-        config.ForType<WorkAssignmentUserMapping, CompanyWorkUserVM>()
-        .Map(dest => dest.StaffId, src => src.User.StaffId)
-        .Map(dest => dest.StaffName, src => src.User.FullName)
-        .Map(dest => dest.Role, src => src.User.Role);
-
-        config.ForType<WorkAssignmentUserMapping, CompanyWorkListVM>()
-           .Map(dest => dest.TaskId, src => src.WorkAssignment.Id)
-           .Map(dest => dest.CompanyId, src => src.WorkAssignment.CompanyId)
-           .Map(dest => dest.CompanyName, src => src.WorkAssignment.Company.Name)
-           .Map(dest => dest.CompanyRegistrationNumber, src => src.WorkAssignment.Company.RegistrationNumber)
-           .Map(dest => dest.YearEndToDo, src => src.WorkAssignment.IsYearEndTask)
-           .Map(dest => dest.ActivitySize, src => src.WorkAssignment.CompanyActivityLevel)
-           .Map(dest => dest.CompanyStatus, src => src.WorkAssignment.CompanyStatus)
-           .Map(dest => dest.Status, src => src.WorkAssignment.Progress != null ? src.WorkAssignment.Progress.Status : WorkProgressStatus.Unknown);
-
     }
 }
         

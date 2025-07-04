@@ -19,10 +19,6 @@ const urls = {
     "users": "/users",
 };
 
-$(function () {
-    $("#documentForm").remove()
-})
-
 // example use
 /**
  *  
@@ -212,6 +208,24 @@ function formatMonthLabel(monthNumber) {
     const monthName = monthNames[month - 1];
 
     return `${zeroPad} (${monthName})`;
+}
+
+function reorderSelect2OptionsByText(selectElement) {
+    const $select = $(selectElement);
+    const options = $select.find('option').detach().get();
+
+    const firstOption = options.shift();
+
+    const enabledSorted = options
+        .filter(opt => !opt.disabled)
+        .sort((a, b) => a.text.localeCompare(b.text));
+
+    const disabledSorted = options
+        .filter(opt => opt.disabled)
+        .sort((a, b) => a.text.localeCompare(b.text));
+
+    $select.append([firstOption, ...enabledSorted, ...disabledSorted]);
+    $select.trigger('change.select2');
 }
 
 function tableResizeEventListener() {

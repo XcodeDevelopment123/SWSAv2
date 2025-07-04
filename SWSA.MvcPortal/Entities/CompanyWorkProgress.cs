@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
+using AutoMapper.Execution;
+using SWSA.MvcPortal.Entities.WorkAssignments;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -39,7 +41,17 @@ public class CompanyWorkProgress
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 
-    public void Complete()
+    public void UpdateProgress()
+    {
+        if (Status == WorkProgressStatus.Pending)
+        {
+            Processing();
+            if (WorkAssignment.IsComplete())
+                Complete();
+        }
+    }
+
+    private void Complete()
     {
         Status = WorkProgressStatus.Completed;
         IsJobCompleted = true;
@@ -47,10 +59,11 @@ public class CompanyWorkProgress
         UpdatedAt = DateTime.Now;
     }
 
-    public void Processing()
+    private void Processing()
     {
         Status = WorkProgressStatus.InProgress;
-        StartDate = DateTime.Today;
+        if (!StartDate.HasValue)
+            StartDate = DateTime.Today;
         UpdatedAt = DateTime.Now;
     }
 }

@@ -22,107 +22,6 @@ namespace SWSA.MvcPortal.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.AnnualReturnSubmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ARDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("AnniversaryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateOfAnnualReturn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateReturnedByClient")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateSentToClient")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateSubmitted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ForYear")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TargetedARDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkAssignmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkAssignmentId")
-                        .IsUnique();
-
-                    b.ToTable("AnnualReturnSubmissions");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.AuditSubmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("AccDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateSubmitted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FirstYearAccountStart")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ForYear")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsLate")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReasonForLate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TargetedCirculation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkAssignmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkAssignmentId")
-                        .IsUnique();
-
-                    b.ToTable("AuditSubmissions");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -152,21 +51,12 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsStrikedOff")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RegistrationNumber")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("StrikeOffEffectiveDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("StrikeOffStatus")
-                        .HasColumnType("int");
 
                     b.Property<string>("TaxIdentificationNumber")
                         .HasColumnType("nvarchar(max)");
@@ -361,57 +251,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("CompanyOwners");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStrikeOffSubmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CompleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ForYear")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("IRBSubmissionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SSMStrikeOffDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SSMSubmissionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkAssignmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("WorkAssignmentId")
-                        .IsUnique();
-
-                    b.ToTable("CompanyStrikeOffSubmissions");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
                     b.Property<int>("Id")
@@ -432,11 +271,11 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ForYear")
+                        .HasColumnType("int");
+
                     b.Property<string>("InternalNote")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsYearEndTask")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ReminderDate")
                         .HasColumnType("datetime2");
@@ -455,6 +294,8 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyWorkAssignments");
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkProgress", b =>
@@ -545,55 +386,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("WorkAssignmentId");
 
                     b.ToTable("DocumentRecords");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.LLPSubmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ARDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ARSubmitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("AccountSubmitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateReturnedByClient")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateSentToClient")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ForYear")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SSMExtensionDateForAcc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkAssignmentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkAssignmentId")
-                        .IsUnique();
-
-                    b.ToTable("LLPSubmissions");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.MsicCode", b =>
@@ -866,27 +658,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("UserCompanyDepartment");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentMonth", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyWorkAssignmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyWorkAssignmentId");
-
-                    b.ToTable("WorkAssignmentMonths");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentUserMapping", b =>
                 {
                     b.Property<int>("Id")
@@ -911,26 +682,104 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("WorkAssignmentUserMappings");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.AnnualReturnSubmission", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.AnnualReturnWorkAssignment", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
-                        .WithOne("ARSubmission")
-                        .HasForeignKey("SWSA.MvcPortal.Entities.AnnualReturnSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.HasBaseType("SWSA.MvcPortal.Entities.CompanyWorkAssignment");
 
-                    b.Navigation("WorkAssignment");
+                    b.Property<DateTime?>("ARDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AnniversaryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateOfAnnualReturn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateReturnedByClient")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateSentToClient")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TargetedARDate")
+                        .HasColumnType("datetime2");
+
+                    b.ToTable("AnnualReturnWorkAssignments", (string)null);
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.AuditSubmission", b =>
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.AuditWorkAssignment", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
-                        .WithOne("AuditSubmission")
-                        .HasForeignKey("SWSA.MvcPortal.Entities.AuditSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasBaseType("SWSA.MvcPortal.Entities.CompanyWorkAssignment");
 
-                    b.Navigation("WorkAssignment");
+                    b.Property<DateTime?>("AccDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FirstYearAccountStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsLate")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReasonForLate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TargetedCirculation")
+                        .HasColumnType("datetime2");
+
+                    b.ToTable("AuditWorkAssignments", (string)null);
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.LLPWorkAssignment", b =>
+                {
+                    b.HasBaseType("SWSA.MvcPortal.Entities.CompanyWorkAssignment");
+
+                    b.Property<DateTime?>("ARDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AccountSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateReturnedByClient")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateSentToClient")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMExtensionDateForAcc")
+                        .HasColumnType("datetime2");
+
+                    b.ToTable("LLPWorkAssignments", (string)null);
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.StrikeOffWorkAssignment", b =>
+                {
+                    b.HasBaseType("SWSA.MvcPortal.Entities.CompanyWorkAssignment");
+
+                    b.Property<DateTime?>("CompleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("IRBSubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMStrikeOffDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMSubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.ToTable("StrikeOffWorkAssignments", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyCommunicationContact", b =>
@@ -996,25 +845,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyStrikeOffSubmission", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
-                        .WithOne("StrikeOffSubmission")
-                        .HasForeignKey("SWSA.MvcPortal.Entities.CompanyStrikeOffSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("WorkAssignment");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
@@ -1052,17 +882,6 @@ namespace SWSA.MvcPortal.Migrations
                         .IsRequired();
 
                     b.Navigation("HandledByStaff");
-
-                    b.Navigation("WorkAssignment");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.LLPSubmission", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
-                        .WithOne("LLPSubmission")
-                        .HasForeignKey("SWSA.MvcPortal.Entities.LLPSubmission", "WorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("WorkAssignment");
                 });
@@ -1110,17 +929,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentMonth", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "CompanyWorkAssignment")
-                        .WithMany()
-                        .HasForeignKey("CompanyWorkAssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CompanyWorkAssignment");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignmentUserMapping", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.User", "User")
@@ -1138,6 +946,42 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("User");
 
                     b.Navigation("WorkAssignment");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.AnnualReturnWorkAssignment", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", null)
+                        .WithOne()
+                        .HasForeignKey("SWSA.MvcPortal.Entities.WorkAssignments.AnnualReturnWorkAssignment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.AuditWorkAssignment", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", null)
+                        .WithOne()
+                        .HasForeignKey("SWSA.MvcPortal.Entities.WorkAssignments.AuditWorkAssignment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.LLPWorkAssignment", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", null)
+                        .WithOne()
+                        .HasForeignKey("SWSA.MvcPortal.Entities.WorkAssignments.LLPWorkAssignment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.WorkAssignments.StrikeOffWorkAssignment", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", null)
+                        .WithOne()
+                        .HasForeignKey("SWSA.MvcPortal.Entities.WorkAssignments.StrikeOffWorkAssignment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Company", b =>
@@ -1162,19 +1006,11 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
-                    b.Navigation("ARSubmission");
-
                     b.Navigation("AssignedUsers");
-
-                    b.Navigation("AuditSubmission");
 
                     b.Navigation("Documents");
 
-                    b.Navigation("LLPSubmission");
-
                     b.Navigation("Progress");
-
-                    b.Navigation("StrikeOffSubmission");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.MsicCode", b =>

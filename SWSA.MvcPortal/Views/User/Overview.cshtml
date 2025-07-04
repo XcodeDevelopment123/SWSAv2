@@ -108,8 +108,6 @@
 							<th>Contacts Count</th>
 							<th>MsicCodes Count</th>
 							<th>Work/Task Count</th>
-							<th>Is Striked Off</th>
-							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -117,23 +115,22 @@
 						@foreach (var cp in assignedCompanies)
 						{
 							<tr>
-								<td>@cp.CompanyName</td>
+								<td>@cp.Name</td>
 								<td>@cp.CompanyType.GetDisplayName()</td>
 								<td>@cp.RegistrationNumber</td>
 								<td>@cp.YearEndMonth</td>
 								<td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
-								<td>@cp.CompanyDirectorName</td>
-								<td>@cp.ContactsCount</td>
-								<td>@cp.MsicCodesCount</td>
-								<td>@cp.WorkCount</td>
-								<td>@(cp.IsStrikedOff ? "Yes" : "No")</td>
-								<td>@cp.StrikeOffStatus.GetDisplayName()</td>
+								<td>@cp.GetDirectorName()</td>
+								<td>@cp.GetContactCount()</td>
+								<td>@cp.MsicCodes.Count</td>
+								<td>@cp.WorkAssignments.Count</td>
+							
 								<td>
 									<div class="btn-group" role="group">
-										<a href="/companies/@cp.CompanyId/overview" class="btn btn-sm btn-info mr-2" title="View">
+										<a href="/companies/@cp.Id/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
-										<a href="/companies/@cp.CompanyId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+										<a href="/companies/@cp.Id/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
 									</div>
@@ -153,8 +150,6 @@
 							<th>Contacts Count</th>
 							<th>MsicCodes Count</th>
 							<th>Work/Task Count</th>
-							<th>Is Striked Off</th>
-							<th>Strike Off Status</th>
 							<th>Action</th>
 						</tr>
 					</tfoot>
@@ -188,7 +183,6 @@
 							<th>Service Offer</th>
 							<th>Company Status </th>
 							<th>Activity Size </th>
-							<th>Year To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>
@@ -200,25 +194,24 @@
 
 							<tr>
 								<td>
-									@task.CompanyName
-									<p class="m-0">(#@task.CompanyRegistrationNumber)</p>
+									@task.Company.Name
+									<p class="m-0">(#@task.Company.RegistrationNumber)</p>
 								</td>
 								<td>
 									@task.WorkType.GetDisplayName()
 								</td>
 								<td>@task.ServiceScope.GetDisplayName()</td>
 								<td>@task.CompanyStatus.GetDisplayName()</td>
-								<td>@task.ActivitySize.GetDisplayName()</td>
-								<td>@(task.YearEndToDo ? "Yes" : "No")</td>
+								<td>@task.CompanyActivityLevel.GetDisplayName()</td>
 
 								<td>@task.InternalNote</td>
-								<td>@task.Status.GetDisplayName()</td>
+								<td>@task.Progress?.Status.GetDisplayName()</td>
 								<td>
 									<div class="btn-group" role="group">
-										<a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
+										<a href="/companies/works/@task.Id/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
-										<a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+										<a href="/companies/works/@task.Id/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
 									</div>
@@ -234,7 +227,6 @@
 							<th>Service Offer</th>
 							<th>Company Status </th>
 							<th>Activity Size </th>
-							<th>Year To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>

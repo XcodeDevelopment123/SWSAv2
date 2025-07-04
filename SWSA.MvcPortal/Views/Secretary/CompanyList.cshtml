@@ -8,7 +8,6 @@
 	ViewData["Title"] = "CompanyList";
 
 	var cpType = SelectHelper.GetEnumSelectList<CompanyType>(null!);
-
 	var workType = SelectHelper.GetEnumSelectList<WorkType>(null!);
 }
 <link rel="stylesheet" href="~/css/secretary-list-company.css" asp-append-version="true" />
@@ -27,9 +26,9 @@
 				<div class="form-inline">
 					<label>Filter:</label>
 					<div class="input-group">
-						<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+						<input id="searchInput" class="form-control form-control-sidebar" type="search" placeholder="Search (Name or Co#)" aria-label="Search">
 						<div class="input-group-append">
-							<button class="btn btn-sidebar">
+							<button class="btn btn-sidebar" id="searchBtn">
 								<i class="fas fa-search fa-fw"></i>
 							</button>
 						</div>
@@ -230,7 +229,6 @@
 							<th>Work Type</th>
 							<th>Company Status</th>
 							<th>Activity/Size</th>
-							<th>Year End To Do</th>
 							<th>Staff(s)</th>
 							<th>Reminder Date</th>
 							<th>Status</th>

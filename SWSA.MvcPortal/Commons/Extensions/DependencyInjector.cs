@@ -37,10 +37,8 @@ using SWSA.MvcPortal.Services.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.Scheduler;
-using SWSA.MvcPortal.Services.Interfaces.Submission;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.Submission;
 using SWSA.MvcPortal.Services.CompanyProfile;
 using SWSA.MvcPortal.Services.WorkAssignment;
 using SWSA.MvcPortal.Services.SystemInfra;
@@ -142,26 +140,21 @@ public static class DependencyInjector
         });
 
         //#Repository DI (auto generated)
-        services.AddScoped<IAnnualReturnSubmissionRepository, AnnualReturnSubmissionRepository>();
-        services.AddScoped<IAuditSubmissionRepository, AuditSubmissionRepository>();
         services.AddScoped<ICompanyCommunicationContactRepository, CompanyCommunicationContactRepository>();
         services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
         services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
-        services.AddScoped<ICompanyStrikeOffSubmissionRepository, CompanyStrikeOffSubmissionRepository>();
         services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
         services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
-        services.AddScoped<ILLPSubmissionRepository, LLPSubmissionRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
         services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
         services.AddScoped<IUserCompanyDepartmentRepository, UserCompanyDepartmentRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IWorkAssignmentMonthRepository, WorkAssignmentMonthRepository>();
         services.AddScoped<IWorkAssignmentUserMappingRepository, WorkAssignmentUserMappingRepository>();
         //#Repository DI end
     }
@@ -179,8 +172,6 @@ public static class DependencyInjector
         }, applicationAssembly);
 
         //#Service DI (auto generated)
-        services.AddScoped<IAnnualReturnSubmissionService, AnnualReturnSubmissionService>();
-        services.AddScoped<IAuditSubmissionService, AuditSubmissionService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICompanyCommunicationContactService, CompanyCommunicationContactService>();
         services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
@@ -188,20 +179,21 @@ public static class DependencyInjector
         services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
         services.AddScoped<ICompanyService, CompanyService>();
-        services.AddScoped<ICompanyStrikeOffSubmissionService, CompanyStrikeOffSubmissionService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
-        services.AddScoped<ILLPSubmissionService, LLPSubmissionService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<IUserCompanyDepartmentService, UserCompanyDepartmentService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IWorkAssignmentMonthService, WorkAssignmentMonthService>();
         services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
         //#Service DI end
+
+        //Factory
+        services.AddScoped<IWorkAssignmentFactory, WorkAssignmentFactory>();
+
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();
         services.AddScoped<IUserFetcher, UserFetcher>();

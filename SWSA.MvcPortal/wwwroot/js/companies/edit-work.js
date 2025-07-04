@@ -6,7 +6,6 @@
     const taskFormInputs = {
         taskId: $("#taskId"),
         companyStatus: $taskForm.find('select[name="companyStatus"]'),
-        isYearEndTask: $taskForm.find('select[name="isYearEndTask"]'),
         serviceScope: $taskForm.find('select[name="serviceScope"]'),
         companyActivityLevel: $taskForm.find('select[name="companyActivityLevel"]'),
         reminderDate: $taskForm.find('input[name="reminderDate"]'),
@@ -16,9 +15,6 @@
     $taskForm.validate({
         rules: {
             companyStatus: {
-                required: true
-            },
-            isYearEndTask: {
                 required: true
             },
             serviceScope: {
@@ -31,9 +27,6 @@
         messages: {
             companyStatus: {
                 required: "Please select a company status"
-            },
-            isYearEndTask: {
-                required: "Please define is year end task or not"
             },
             serviceScope: {
                 required: "Service scope is required."

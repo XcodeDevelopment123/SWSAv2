@@ -1,7 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Commons.Enums
-@using SWSA.MvcPortal.Models.CompanyStaffs
 @using SWSA.MvcPortal.Models.Users
 @using SWSA.MvcPortal.Services.Interfaces
 @using SWSA.MvcPortal.Services.Interfaces.SystemCore
@@ -368,7 +367,7 @@
 
 						<li class="nav-header">Secretary Dept</li>
 
-						<li class="nav-item">
+						@* <li class="nav-item">
 							<a href="/secretary-dept/landing" class="nav-link @(
 							currentController== ControllerNames.Secretary
 							&& currentAction == "Landing"?"active":"")">
@@ -377,7 +376,7 @@
 									Landing
 								</p>
 							</a>
-						</li>
+						</li> *@
 
 
 						<li class="nav-item @(currentController== ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
@@ -398,10 +397,30 @@
 										</p>
 									</a>
 								</li>
+											<li class="nav-item">
+									<a href="/secretary-dept/companies/sdn-bhd" class="nav-link
+							@(currentController== ControllerNames.Secretary
+							&& currentAction =="SdnBhdCompanyList" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											Sdn Bhd
+										</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="/secretary-dept/companies/llp" class="nav-link
+							@(currentController== ControllerNames.Secretary
+							&& currentAction =="LLPCompanyList" ?"active":"")">
+										<i class="nav-icon fas fa-list"></i>
+										<p>
+											LLP
+										</p>
+									</a>
+								</li>
 							</ul>
 						</li>
 
-						<li class="nav-item @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
+				@* 		<li class="nav-item @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
 							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"active":"")">
 								<i class="fas fa-clipboard-list nav-icon"></i>
 								<p>
@@ -457,7 +476,7 @@
 								</li>
 							</ul>
 						</li>
-
+ *@
 						<li class="nav-header">Users & Systems</li>
 
 						<li class="nav-item @(currentController== ControllerNames.User ?"menu-is-opening menu-open":"")">

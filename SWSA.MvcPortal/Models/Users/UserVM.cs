@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Models.Users;
 
@@ -12,8 +11,10 @@ public class UserVM
     public string Email { get; set; }
     public bool IsActive { get; set; }
     public bool IsSuperAdmin => Role == UserRole.SuperAdmin;
+    public DateTime CreatedAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
     public UserRole Role { get; set; }
+
 
     public string ToJsonData()
     {

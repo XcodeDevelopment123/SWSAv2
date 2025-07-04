@@ -3,7 +3,6 @@ using AutoMapper;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.CompanyStaffs;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using Force.DeepCloner;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
@@ -22,13 +21,6 @@ ISystemAuditLogService sysAuditService
 {
     #region VM/DTO Query Method 
     #endregion
-    public async Task<List<CompanyCommunicationContactVM>> GetCommunicationContactsByCompanyId(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-
-        var data = await repo.GetAllByCompanyIdAsync(companyId);
-        return mapper.Map<List<CompanyCommunicationContactVM>>(data); ;
-    }
 
     public async Task<int> Create(CreateCompanyCommunicationContactRequest req)
     {

@@ -17,7 +17,7 @@ public class CompanyWorkCalendarVM
 
     public static (string background, string border, string text) GetColor(CompanyWorkAssignment task)
     {
-        var progress = task.Progress.Status;
+        var progress = task.Progress?.Status;
         int hue = progress switch
         {
             WorkProgressStatus.Pending => 30,

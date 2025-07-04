@@ -1,7 +1,5 @@
 ﻿using Mapster;
-using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.Companies;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.UserAccess;
 
@@ -11,24 +9,5 @@ public class UserCompanyDepartmentMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<UserCompanyDepartment, UserCompanyDepartment>();
-        config.ForType<UserCompanyDepartment, CompanyListVM>()
-            .Map(dest => dest.CompanyId, src => src.Company.Id)
-            .Map(dest => dest.CompanyName, src => src.Company.Name)
-            .Map(dest => dest.RegistrationNumber, src => src.Company.RegistrationNumber)
-            .Map(dest => dest.EmployerNumber, src => src.Company.EmployerNumber)
-            .Map(dest => dest.TaxIdentificationNumber, src => src.Company.TaxIdentificationNumber)
-            .Map(dest => dest.YearEndMonth, src => src.Company.YearEndMonth)
-            .Map(dest => dest.IncorporationDate, src => src.Company.IncorporationDate)
-            .Map(dest => dest.CompanyType, src => src.Company.CompanyType)
-            .Map(dest => dest.CompanyDirectorName,
-                      src => src.Company.Owners
-                               .Where(o => o.Position == PositionType.Director)
-                               .OrderBy(o => o.Id)
-                               .Select(o => o.NamePerIC)
-                               .FirstOrDefault() ?? "")
-            .Map(dest => dest.ContactsCount,
-                  src => src.Company.CommunicationContacts.Count + src.Company.OfficialContacts.Count)
-            .Map(dest => dest.MsicCodesCount, src => src.Company.MsicCodes.Count)
-            .Map(dest => dest.WorkCount, src => src.Company.WorkAssignments.Count);
     }
 }

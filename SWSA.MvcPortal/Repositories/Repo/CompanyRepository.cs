@@ -26,85 +26,6 @@ public class CompanyRepository(
     // Implement the method
 
     #region VM Method
-    public async Task<List<SecretaryCompanyListVM>> GetSecretaryCompanyListVMByYearAsync(int year)
-    {
-        var sql = @"
-SELECT 
-    c.Id AS CompanyId,
-    c.Name AS CompanyName,
-    c.RegistrationNumber,
-    c.CompanyType,
-    c.YearEndMonth,
-
-    ars.ForYear AS ForYear,
-    ars.DateOfAnnualReturn AS DateOfAnnualReturn,
-    ars.ARDueDate AS DateOfARDue,
-    ars.DateSubmitted AS DateOfARSubmitted,
-    ars.DateSentToClient,
-    ars.DateReturnedByClient,
-
-    auds.DateSubmitted AS DateOfAccSubmitted,
-    wa.InternalNote AS Remarks
-
-FROM Companies c
-
-LEFT JOIN CompanyWorkAssignments wa ON wa.CompanyId = c.Id
-LEFT JOIN AnnualReturnSubmissions ars ON ars.WorkAssignmentId = wa.Id AND wa.WorkType = 10
-LEFT JOIN AuditSubmissions auds ON auds.WorkAssignmentId = wa.Id AND wa.WorkType = 0
-
-WHERE c.IsDeleted = 0 
-AND c.CompanyType IN (0,1) -- only Sdn bhd and llp
-AND (
-   (ars.ForYear = @Year AND wa.WorkType = 10) -- AR
-   OR
-   (auds.ForYear = @Year AND wa.WorkType = 0) -- Audit
-)";
-
-        return (await conn.QueryAsync<SecretaryCompanyListVM>(sql, new { Year = year })).ToList();
-    }
-
-    public async Task<List<CompanyListVM>> GetListVMAsync()
-    {
-        var dtos = await ActiveCompanies(true)
-             .ProjectToType<CompanyListVM>()
-             .ToListAsync();
-
-        return dtos;
-    }
-
-    public async Task<List<CompanyListVM>> GetListVMByTypeAsync(CompanyType type)
-    {
-        var dtos = await ActiveCompanies(true)
-             .Where(c => c.CompanyType == type)
-             .ProjectToType<CompanyListVM>()
-             .ToListAsync();
-
-        return dtos;
-    }
-
-    public async Task<List<CompanyListVM>> GetListVMByUserIdAsync(int userId)
-    {
-        var dtos = await ActiveCompanies(true)
-             .Where(c => c.UserCompanyDepartments
-             .Any(ucd => ucd.UserId == userId))
-             .ProjectToType<CompanyListVM>()
-             .ToListAsync();
-
-        return dtos;
-    }
-
-    public async Task<List<CompanyListVM>> GetListVMByUserIdAndTypeAsync(int userId, CompanyType type)
-    {
-        var dtos = await ActiveCompanies(true)
-             .Where(c => c.UserCompanyDepartments
-             .Any(ucd => ucd.UserId == userId) &&
-                         c.CompanyType == type)
-             .ProjectToType<CompanyListVM>()
-             .ToListAsync();
-
-        return dtos;
-    }
-
     public async Task<List<CompanySelectionVM>> GetSelectionsVMAsync()
     {
         var dtos = await ActiveCompanies(true)
@@ -147,15 +68,6 @@ AND (
         return dtos;
     }
 
-    public async Task<CompanySecretaryVM> GetSecretaryVMByIdAsync(int id)
-    {
-        var dtos = await ActiveCompanies(true)
-            .Where(c => c.Id == id)
-            .ProjectToType<CompanySecretaryVM>()
-            .FirstOrDefaultAsync();
-        return dtos;
-    }
-
     public async Task<CompanySimpleInfoVM> GetSimpleInfoVMByIdAsync(int id)
     {
         var dtos = await ActiveCompanies(true)
@@ -179,14 +91,49 @@ AND (
         return await query.Where(c => companyIds.Contains(c.Id)).ToListAsync();
     }
 
+    public async Task<List<Company>> GetCompanies()
+    {
+        var query = await BuildQueryWithIncludesAsync();
+
+        return await query
+            .ToListAsync();
+    }
+
     public async Task<List<Company>> GetCompaniesByUserId(int userId)
     {
-        var query = await BuildQueryAsync();
+        var query = await BuildQueryWithIncludesAsync();
 
         return await query
             .Where(c => c.UserCompanyDepartments
             .Any(ucd => ucd.UserId == userId))
             .ToListAsync();
+    }
+
+    public async Task<List<Company>> GetCompaniesByType(CompanyType type)
+    {
+        var query = await BuildQueryWithIncludesAsync();
+
+        return await query
+             .Where(c => c.CompanyType == type)
+             .ToListAsync();
+    }
+
+    public async Task<List<Company>> GetCompaniesByUserIdAndType(int userId,CompanyType type)
+    {
+
+        var query = await BuildQueryWithIncludesAsync();
+
+        var dtos = await ActiveCompanies(true)
+            .Where(c => c.UserCompanyDepartments
+            .Any(ucd => ucd.UserId == userId)
+            && c.CompanyType == type)
+             .ToListAsync();
+
+        return await query
+            .Where(c => c.UserCompanyDepartments
+            .Any(ucd => ucd.UserId == userId)
+            && c.CompanyType == type)
+             .ToListAsync(); 
     }
 
     //Rewrite the GetAllAsync method
@@ -209,10 +156,6 @@ AND (
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.ARSubmission)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.AuditSubmission)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.LLPSubmission)
-            .Include(c => c.WorkAssignments).ThenInclude(c => c.StrikeOffSubmission)
             .Where(c => !c.IsDeleted);
 
         return Task.FromResult(query);

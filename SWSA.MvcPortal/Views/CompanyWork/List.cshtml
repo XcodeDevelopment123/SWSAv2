@@ -1,12 +1,11 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities
 @using SWSA.MvcPortal.Models.CompnayWorks
-@model List<CompanyWorkListVM>
+@model List<CompanyWorkAssignment>
 @{
 	ViewData["Title"] = "List";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 <h3> Task / Work List</h3>
 
 <div class="row">
@@ -20,11 +19,11 @@
 					<thead>
 						<tr>
 							<th>Company</th>
+							<th>For Year</th>
 							<th>Work Type</th>
 							<th>Service Offer</th>
 							<th>Company Status </th>
 							<th>Activity Size </th>
-							<th>Year To Do</th>
 							<th>Assigned Users</th>
 							<th>Internal Note</th>
 							<th>Status</th>
@@ -34,27 +33,31 @@
 					<tbody>
 						@foreach (var task in Model)
 						{
+							var assignedUsers = task.AssignedUsers.ToList();
+
 							<tr>
 								<td>
-									@task.CompanyName
-									<p class="m-0">(#@task.CompanyRegistrationNumber)</p>
+									@task.Company.Name
+									<p class="m-0">(#@task.Company.RegistrationNumber)</p>
+								</td>
+								<td>
+									@task.GetForYearLabel()
 								</td>
 								<td>
 									@task.WorkType.GetDisplayName()
 								</td>
 								<td>@task.ServiceScope.GetDisplayName()</td>
 								<td>@task.CompanyStatus.GetDisplayName()</td>
-								<td>@task.ActivitySize.GetDisplayName()</td>
-								<td>@(task.YearEndToDo ? "Yes" : "No")</td>
+								<td>@task.CompanyActivityLevel.GetDisplayName()</td>
 								<td>
 									<div>
-										@for (var i = 0; i < task.AssignedUsers.Count; i++)
+										@for (var i = 0; i < assignedUsers.Count; i++)
 										{
-											var user = task.AssignedUsers[i];
+											var user = assignedUsers[i];
 											var isLast = i == task.AssignedUsers.Count - 1;
 											<span class="mr-1">
-												<a href="/users/@user.StaffId/overview">
-													@user.StaffName
+												<a href="/users/@user.User.StaffId/overview">
+													@user.User.FullName
 
 												</a>
 											</span>
@@ -63,17 +66,17 @@
 									</div>
 								</td>
 								<td>@task.InternalNote</td>
-								<td>@task.Status.GetDisplayName()</td>
+								<td>@task.Progress?.Status.GetDisplayName()</td>
 								<td>
 									<div class="btn-group" role="group">
-										<a href="/companies/works/@task.TaskId/overview" class="btn btn-sm btn-info mr-2" title="View">
+										<a href="/companies/works/@task.Id/overview" class="btn btn-sm btn-info mr-2" title="View">
 											<i class="fa fa-eye"></i>
 										</a>
-										<a href="/companies/works/@task.TaskId/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
+										<a href="/companies/works/@task.Id/edit" class="btn btn-sm btn-warning mr-2" title="Edit">
 											<i class="fa fa-edit"></i>
 										</a>
 
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.TaskId" data-name="@($"Task {task.WorkType.GetDisplayName()} for {task.CompanyName}")" title="Delete">
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.Id" data-name="@($"Task {task.WorkType.GetDisplayName()} for {task.Company.Name}")" title="Delete">
 											<i class="fa fa-trash"></i>
 										</button>
 
@@ -87,12 +90,12 @@
 					<tfoot>
 						<tr>
 							<th>Company</th>
+							<th>For Year</th>
 							<th>Work Type</th>
 							<th>Service Offer</th>
 							<th>Company Status </th>
 							<th>Activity Size </th>
 							<th>Assigned Users</th>
-							<th>Year To Do</th>
 							<th>Internal Note</th>
 							<th>Status</th>
 							<th>Action</th>

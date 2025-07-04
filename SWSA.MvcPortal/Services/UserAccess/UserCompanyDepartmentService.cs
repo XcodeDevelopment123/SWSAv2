@@ -118,7 +118,6 @@ ICompanyRepository companyRepo
         var user = await userRepo.GetByStaffIdAsync(staffId);
         Guard.AgainstNullData(user, "User not found");
 
-
         var existing = await repo.GetByCompanyIdAndStaffId(companyId, staffId);
         var departmentNames = existing.Select(e => e.Department).ToList();
         var oldObject = new UserCompanyDepartmentAuditVM(departmentNames);

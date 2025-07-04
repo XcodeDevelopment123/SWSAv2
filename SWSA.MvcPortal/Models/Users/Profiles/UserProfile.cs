@@ -9,7 +9,6 @@ public class UserProfile : Profile
     public UserProfile()
     {
         CreateMap<User, UserListVM>();
-        CreateMap<User, UserEditVM>();
         CreateMap<User, UserVM>();
         CreateMap<User, UserOverviewVM>()
            .ForMember(dest => dest.AssignedCompanies, opt => opt.MapFrom(src =>

@@ -30,8 +30,6 @@ ISystemAuditLogService sysAuditService
 
         var oldData = data.DeepClone();
 
-        data.UpdateComplianceDates(req);
-
         if (isNew)
         {
             data.CompanyId = req.CompanyId;

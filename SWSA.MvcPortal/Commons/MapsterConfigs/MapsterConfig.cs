@@ -1,7 +1,6 @@
 using Mapster;
 using SWSA.MvcPortal.Commons.MapsterConfigs.CompanyProfile;
 using SWSA.MvcPortal.Commons.MapsterConfigs.Scheduler;
-using SWSA.MvcPortal.Commons.MapsterConfigs.Submission;
 using SWSA.MvcPortal.Commons.MapsterConfigs.SystemInfra;
 using SWSA.MvcPortal.Commons.MapsterConfigs.UserAccess;
 using SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignment;
@@ -21,26 +20,21 @@ public static class MapsterConfig
         var configs = new List<IMapsterConfig>
         {
             //#Mapster Config (auto generated)
-new AnnualReturnSubmissionMapsterConfig(),
-new AuditSubmissionMapsterConfig(),
 new CompanyCommunicationContactMapsterConfig(),
 new CompanyComplianceDateMapsterConfig(),
 new CompanyMapsterConfig(),
 new CompanyMsicCodeMapsterConfig(),
 new CompanyOfficialContactMapsterConfig(),
 new CompanyOwnerMapsterConfig(),
-new CompanyStrikeOffSubmissionMapsterConfig(),
 new CompanyWorkAssignmentMapsterConfig(),
 new CompanyWorkProgressMapsterConfig(),
 new DocumentRecordMapsterConfig(),
-new LLPSubmissionMapsterConfig(),
 new MsicCodeMapsterConfig(),
 new ScheduledJobMapsterConfig(),
 new SystemAuditLogMapsterConfig(),
 new SystemNotificationLogMapsterConfig(),
 new UserCompanyDepartmentMapsterConfig(),
 new UserMapsterConfig(),
-new WorkAssignmentMonthMapsterConfig(),
 new WorkAssignmentUserMappingMapsterConfig(),
             //#Mapster Config end
         };

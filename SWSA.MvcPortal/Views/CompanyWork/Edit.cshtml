@@ -14,93 +14,23 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 
 	var workVM = Model.CompanyWork;
-
 	var cp = Model.Company;
 	var progress = workVM.Progress;
 
 	var workTypes = SelectHelper.GetEnumSelectList<WorkType>(workVM.WorkType);
-	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(workVM.ActivitySize);
-	var workProgressStatus = SelectHelper.GetEnumSelectList<WorkProgressStatus>(progress.Status);
+	var serviceScope = SelectHelper.GetEnumSelectList<ServiceScope>(workVM.ServiceScope);
+	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(workVM.CompanyActivityLevel);
+	var workProgressStatus = SelectHelper.GetEnumSelectList<WorkProgressStatus>(progress?.Status);
 	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(workVM.CompanyStatus);
-	var isYearEndToDo = SelectHelper.GetYesNoSelection(workVM.IsYearEndTask);
-	var monthOfYear = SelectHelper.GetEnumSelectList<MonthOfYear>(0);
-	var currentYear = DateTime.Now.Year;
-	var startYear = currentYear - 10;
-	var endYear = currentYear + 20;
 
-	<input type="hidden" id="taskId" value="@workVM.TaskId" />
-	<input type="hidden" id="progressId" value="@progress.ProgressId" />
+	<input type="hidden" id="taskId" value="@workVM.Id" />
+	<input type="hidden" id="progressId" value="@progress?.Id" />
 	<input type="hidden" id="isSuperAdmin" value="@UserContext.IsSuperAdmin.ToString()" />
 }
 
 <h3>Edit Task for @cp.CompanyName (@cp.RegistrationNumber)</h3>
 <div class="row">
-	<div class="col-md-12">
-		<form>
-			<!-- jquery validation -->
-			<div class="card card-primary">
-				<div class="card-header">
-					<a href="/companies/@cp.CompanyId/overview">
-						<h3 class="card-title">
-							Company Info
-
-						</h3>
-					</a>
-					<div class="card-tools">
-						<button type="button" class="btn btn-tool" data-card-widget="collapse">
-							<i class="fas fa-minus"></i>
-						</button>
-					</div>
-				</div>
-
-				<!-- /.card-header -->
-				<!-- form start -->
-				<div class="card-body row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="companyName">Company</label>
-							<input readonly value="@($"{cp.CompanyName} ({cp.RegistrationNumber})")" class="form-control " placeholder="xxx sdn.bhd." />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="incorpDate">Incorporation Date</label>
-							<div class="input-group">
-								<input disabled type="text" value="@cp.IncorporationDate.ToFormattedString()" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
-								<div class="input-group-append">
-									<span class="input-group-text">
-										<i class="fa fa-calendar"></i>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="companyType">Company Type</label>
-							<input readonly id="companyType" value="@cp.CompanyType.GetDisplayName()" class="form-control " />
-						</div>
-					</div>
-
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="yearEndMonth">Year End Month</label>
-							<div class="input-group">
-								<input readonly type="text" id="yearEndMonth" value="@cp.YearEndMonth?.GetDisplayNameAndNumber()" name="yearEndMonth" class="form-control" placeholder="Select month" />
-								<div class="input-group-append">
-									<span class="input-group-text">
-										<i class="fa fa-calendar"></i>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</form>
-		<!-- /.card -->
-	</div>
+	@await Component.InvokeAsync("CompanyInfo", new { input = cp })
 
 	<div class="col-md-12">
 		<!-- jquery validation -->
@@ -109,8 +39,8 @@
 				<div class="card-header">
 					<h3 class="card-title">Task / Work</h3>
 					<div class="card-tools">
-						<a href="@workVM.GetSubmissionPageLink()" class="btn btn-success">
-							To Submission page
+						<a href="@AppUrlHelper.GenerateWorkEditUrl(workVM.WorkType,workVM.Id)" class="btn btn-success">
+							To Work Details
 						</a>
 					</div>
 
@@ -155,14 +85,16 @@
 								</select>
 							</div>
 						</div>
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="isYearEndTask">Year End To Do</label>
-								<select asp-items="isYearEndToDo" id="isYearEndTask" name="isYearEndTask" class="form-control select2">
-								</select>
+						@if (workVM.WorkType != WorkType.StrikeOff)
+						{
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="serviceScope">Service Scope</label>
+									<select asp-items="serviceScope" id="serviceScope" class="form-control select2">
+									</select>
+								</div>
 							</div>
-						</div>
+						}		
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="internalNote">Internal Note</label>
@@ -221,11 +153,12 @@
 							</thead>
 							<tbody>
 								@{
-									@foreach (var user in workVM.AssignedUsers)
+									@foreach (var mapUser in workVM.AssignedUsers)
 									{
+										var user = mapUser.User;
 										<tr data-staff-id="@user.StaffId">
 											<td>
-												@user.StaffName (@user.Role.GetDisplayName()) @(UserContext.StaffId == user.StaffId ? "(You)" : "")
+												@user.FullName (@user.Role.GetDisplayName()) @(UserContext.StaffId == user.StaffId ? "(You)" : "")
 											</td>
 
 											<td>
@@ -237,7 +170,7 @@
 														title="Only super admin can remove"
 														value="@user.StaffId"
 														data-department="Audit"
-														data-name="@user.StaffName">
+														data-name="@user.FullName">
 													<i class="fa fa-trash"></i>
 												</button>
 											</td>
@@ -271,7 +204,7 @@
 
 											@foreach (var user in Model.UserSelections)
 											{
-												var isSelected = workVM.AssignedUsers.Any(c => c.StaffId == user.StaffId);
+												var isSelected = workVM.AssignedUsers.Any(c => c.User.StaffId == user.StaffId);
 												if (isSelected)
 												{
 													<option value="@user.StaffId" disabled>@user.FullName (@user.Role.GetDisplayName())</option>
@@ -356,7 +289,7 @@
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="serviceScope">Progress Status</label>
+								<label for="status">Progress Status</label>
 								<select asp-items="workProgressStatus" id="status" name="status" class="form-control select2">
 								</select>
 							</div>
@@ -381,8 +314,6 @@
 	</div>
 
 </div>
-
-
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

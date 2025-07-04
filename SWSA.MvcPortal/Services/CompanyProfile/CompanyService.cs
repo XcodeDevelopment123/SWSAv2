@@ -36,17 +36,26 @@ IPermissionRefreshTracker permissionRefreshTracker
 {
 
     #region VM/DTO Query Method 
-    public async Task<List<CompanyListVM>> GetCompanyListVMAsync()
+    public async Task<List<Company>> GetCompaniesAsync()
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetListVMAsync()
-                : await repo.GetListVMByUserIdAsync(userContext.EntityId);
-        return data;
+        var data = userContext.IsSuperAdmin ? await repo.GetCompanies()
+                : await repo.GetCompaniesByUserId(userContext.EntityId);
+        return [.. data];
     }
 
-    public async Task<List<CompanyListVM>> GetCompanyListByTypeAsync(CompanyType type)
+    public async Task<Company> GetCompanyByIdAsync(int companyId)
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetListVMByTypeAsync(type)
-            : await repo.GetListVMByUserIdAndTypeAsync(userContext.EntityId, type);
+        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
+        var data = await repo.GetWithIncludedByIdAsync(companyId);
+        Guard.AgainstNullData(data, "Company not found");
+
+        return data!;
+    }
+
+    public async Task<List<Company>> GetCompaniesByTypeAsync(CompanyType type)
+    {
+        var data = userContext.IsSuperAdmin ? await repo.GetCompaniesByType(type)
+            : await repo.GetCompaniesByUserIdAndType(userContext.EntityId, type);
         return data;
     }
 
@@ -64,21 +73,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data;
     }
 
-    public async Task<CompanySecretaryVM> GetCompanyForSecretaryVMByIdAsync(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await repo.GetSecretaryVMByIdAsync(companyId);
-        Guard.AgainstNullData(data, "Company not found");
-
-        return data;
-    }
-
-    public async Task<List<SecretaryCompanyListVM>> GetSecretaryCompanyListVMByYearAsync(int year)
-    {
-        var data = await repo.GetSecretaryCompanyListVMByYearAsync(year);
-        return data;
-    }
-
     public async Task<CompanySimpleInfoVM> GetCompanySimpleInfoVMByIdAsync(int companyId)
     {
         Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
@@ -87,15 +81,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data;
     }
     #endregion
-
-    public async Task<Company> GetCompanyByIdAsync(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await repo.GetWithIncludedByIdAsync(companyId);
-        Guard.AgainstNullData(data, "Company not found");
-
-        return data!;
-    }
 
     public async Task<int> Create(CreateCompanyRequest req)
     {
@@ -137,7 +122,7 @@ IPermissionRefreshTracker permissionRefreshTracker
         }
 
         ClearCompaniesCache();
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.Company, cp.Id.ToString(), cp.Name, cp);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Company, cp.Id.ToString(), cp.Name, cp);
         sysAuditService.LogInBackground(log);
         return cp.Id;
     }
@@ -156,7 +141,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         data.TaxIdentificationNumber = req.TaxIdentificationNumber;
         data.YearEndMonth = req.YearEndMonth;
         data.IncorporationDate = req.IncorporationDate;
-        data.CompanyType = req.CompanyType;
         data.CompanyStatus = req.CompanyStatus;
         data.CompanyActivityLevel = req.CompanyActivityLevel;
 
@@ -166,7 +150,7 @@ IPermissionRefreshTracker permissionRefreshTracker
         await repo.SaveChangesAsync();
         ClearCompaniesCache(data.Id);
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, oldData, data);
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, data.Id.ToString(), data.Name, oldData, data);
         sysAuditService.LogInBackground(log);
         return true;
     }
@@ -192,7 +176,7 @@ IPermissionRefreshTracker permissionRefreshTracker
 
         ClearCompaniesCache();
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.Company, data.Id.ToString(), data.Name, data);
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.Company, data.Id.ToString(), data.Name, data);
         sysAuditService.LogInBackground(log);
         return data!;
     }
@@ -268,7 +252,7 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     private async Task SyncMsicCodes(Company data, HashSet<int> requestedMsicIds)
     {
-        var existingMsicIds = data.MsicCodes.Select(x => x.MsicCodeId).ToHashSet();
+        var existingMsicIds = data.MsicCodes.Select(x =>  x.MsicCodeId).ToHashSet();
         var msicIdsToAdd = requestedMsicIds.Except(existingMsicIds).ToList();
         var msicsToRemove = data.MsicCodes
           .Where(x => !requestedMsicIds.Contains(x.MsicCodeId)).ToList();

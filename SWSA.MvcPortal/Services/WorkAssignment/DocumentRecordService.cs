@@ -9,6 +9,7 @@ using SWSA.MvcPortal.Models.SystemAuditLogs;
 using AutoMapper;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
 
 namespace SWSA.MvcPortal.Services.WorkAssignment;
 
@@ -24,8 +25,6 @@ ICompanyRepository companyRepo
 ) : IDocumentRecordService
 {
     #region VM/DTO Query Method 
-    #endregion
-
     public async Task<List<DocumentRecordVM>> GetDocumentRecords()
     {
         var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()] :
@@ -60,6 +59,7 @@ ICompanyRepository companyRepo
 
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
+    #endregion
 
     public async Task<bool> CreateDocument(DocumentRecordRequest doc, IFormFile files)
     {

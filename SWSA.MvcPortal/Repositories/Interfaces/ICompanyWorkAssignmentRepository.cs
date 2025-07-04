@@ -1,5 +1,4 @@
-﻿
-using SWSA.MvcPortal.Entities;
+﻿using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.CompnayWorks;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
@@ -8,7 +7,7 @@ namespace SWSA.MvcPortal.Repositories.Interfaces;
 public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkAssignment>
 {
     Task<List<CompanyWorkAssignment>> GetByCompanyIds(List<int> companyIds);
-
+    Task<List<CompanyWorkAssignment>> GetWorkList();
     // Define your method here
     /// <summary>
     /// Get the assignments that are due within the {day} days
@@ -17,8 +16,5 @@ public interface ICompanyWorkAssignmentRepository : IRepositoryBase<CompanyWorkA
     /// <returns></returns>
     Task<List<CompanyWorkAssignment>> GetDueSoonAssignments(int day = 7);
     Task<List<CompanyWorkAssignment>> GetTodayRemindAssignments();
-    Task<CompanyWorkAssignment> GetUpdateVMById(int id);
-    Task<List<CompanyWorkListVM>> GetWorkListVMAsync();
-    Task<List<CompanyWorkListVM>> GetWorkListVMByCompanyIdsAsync(List<int> ids);
-    Task<CompanyWorkFullVM> GetWorkVMByIdAsync(int id);
+    IQueryable<CompanyWorkAssignment> Query(List<int>? companyIds = null);
 }

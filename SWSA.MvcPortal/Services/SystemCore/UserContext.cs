@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Constants;
+﻿using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 

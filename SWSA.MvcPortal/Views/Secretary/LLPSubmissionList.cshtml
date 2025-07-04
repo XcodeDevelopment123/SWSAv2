@@ -1,6 +1,4 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
-@using SWSA.MvcPortal.Models.Submissions
-@model List<LLPSubmissionVM>
 
 @{
 	ViewData["Title"] = "LLP Submission List";
@@ -34,7 +32,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var cp in Model)
+						@* @foreach (var cp in Model)
 						{
 							var cpInfo = cp.CompanySimpleInfo;
 							<tr>
@@ -60,7 +58,7 @@
 								<td>@cp.DateReturnedByClient?.ToFormattedString()</td>
 
 							</tr>
-						}
+						} *@
 					</tbody>
 					<tfoot>
 						<tr>

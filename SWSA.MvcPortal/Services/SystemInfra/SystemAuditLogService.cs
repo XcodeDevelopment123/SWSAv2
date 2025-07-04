@@ -6,7 +6,6 @@ using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
-using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Services.SystemAuditLog;
@@ -24,7 +23,6 @@ IMapper mapper
 ) : ISystemAuditLogService
 {
     #region VM/DTO Query Method 
-    #endregion
     public async Task<List<SystemAuditLogListVM>> GetLogs()
     {
         var data = await repo.GetAllAsync();
@@ -38,6 +36,7 @@ IMapper mapper
 
         return mapper.Map<SystemAuditLogVM>(data);
     }
+    #endregion
 
     public void LogInBackground(SystemAuditLogEntry entry)
     {

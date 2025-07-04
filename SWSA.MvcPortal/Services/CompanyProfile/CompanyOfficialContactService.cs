@@ -21,6 +21,7 @@ ISystemAuditLogService sysAuditService
 {
     #region VM/DTO Query Method 
     #endregion
+
     public async Task<int> Create(CreateCompanyOfficialContactRequest req)
     {
         if (!req.CompanyId.HasValue)

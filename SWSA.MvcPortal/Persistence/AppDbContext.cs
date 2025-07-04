@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.WorkAssignments;
 
 namespace SWSA.MvcPortal.Persistence;
 
@@ -7,24 +8,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     internal DbSet<User> Users { get; set; }
     internal DbSet<Company> Companies { get; set; }
+    internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<CompanyCommunicationContact> CompanyCommunicationContact { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
     internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
-    internal DbSet<WorkAssignmentMonth> WorkAssignmentMonths { get; set; }
+    #region
+    internal DbSet<AnnualReturnWorkAssignment> AnnualReturnWorkAssignments { get; set; }
+    internal DbSet<AuditWorkAssignment> AuditWorkAssignments { get; set; }
+    internal DbSet<LLPWorkAssignment> LLPWorkAssignments { get; set; }
+    internal DbSet<StrikeOffWorkAssignment> StrikeOffWorkAssignments { get; set; }
+    #endregion
     internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
-    internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
-    internal DbSet<MsicCode> MsicCodes { get; set; }
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
     internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
-    internal DbSet<CompanyStrikeOffSubmission> CompanyStrikeOffSubmissions { get; set; }
-    internal DbSet<AnnualReturnSubmission> AnnualReturnSubmissions { get; set; }
-    internal DbSet<AuditSubmission> AuditSubmissions { get; set; }
-    internal DbSet<LLPSubmission> LLPSubmissions { get; set; }
+    internal DbSet<MsicCode> MsicCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,17 +78,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
         });
 
-        modelBuilder.Entity<CompanyStrikeOffSubmission>()
-            .HasOne(x => x.WorkAssignment)
-            .WithOne(x => x.StrikeOffSubmission)
-            .HasForeignKey<CompanyStrikeOffSubmission>(x => x.WorkAssignmentId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<AnnualReturnWorkAssignment>()
+            .ToTable("AnnualReturnWorkAssignments");
 
-        modelBuilder.Entity<AnnualReturnSubmission>()
-            .HasOne(x => x.WorkAssignment)
-            .WithOne(x => x.ARSubmission)
-            .HasForeignKey<AnnualReturnSubmission>(x => x.WorkAssignmentId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<AuditWorkAssignment>()
+            .ToTable("AuditWorkAssignments");
+
+        modelBuilder.Entity<LLPWorkAssignment>()
+            .ToTable("LLPWorkAssignments");
+
+        modelBuilder.Entity<StrikeOffWorkAssignment>()
+            .ToTable("StrikeOffWorkAssignments");
 
         modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
         {

@@ -10,8 +10,6 @@
 @model CompanyEditPageVM
 @{
 	ViewData["Title"] = "Edit Company Profile";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-
 	var groupedMsicCodes = Model.MsicCodes
 				.GroupBy(m => m.CategoryReferences)
 				.ToList();
@@ -233,7 +231,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="companyType">Company Type</label>
-							<select asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
+							<select disabled asp-items=@companyTypes id="companyType" name="companyType" class="form-control select2">  </select>
 						</div>
 					</div>
 					<div class="col-md-6">

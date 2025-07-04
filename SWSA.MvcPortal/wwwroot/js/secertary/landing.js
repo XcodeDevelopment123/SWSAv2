@@ -1,9 +1,10 @@
 ﻿$(function () {
     let currentYear = new Date().getFullYear();
 
+    return
     const companyTable = $("#companyDatatable").DataTable({
         ajax: {
-            url: `${urls.secretary_dept}/landing/companies?year=${currentYear}`,
+            url: `${urls.companies}/companies?year=${currentYear}`,
             type: "GET",
             dataSrc: '',
             complete: function (jqXHR, textStatus) {

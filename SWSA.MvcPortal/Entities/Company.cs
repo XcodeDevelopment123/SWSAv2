@@ -38,15 +38,6 @@ public class Company
     [SystemAuditLog("Company Activity Level")]
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
 
-    [SystemAuditLog("Is Striked Off")]
-    public bool IsStrikedOff { get; set; } = false;
-
-    [SystemAuditLog("Strike Off Status")]
-    public StrikeOffStatus StrikeOffStatus { get; set; } = StrikeOffStatus.NotApplied;
-
-    [SystemAuditLog("Strike Off Effective Date")]
-    public DateTime? StrikeOffEffectiveDate { get; set; }
-
     public bool IsDeleted { get; set; }
 
     public CompanyComplianceDate ComplianceDate { get; set; } = null!;
@@ -57,4 +48,18 @@ public class Company
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
     public virtual ICollection<UserCompanyDepartment> UserCompanyDepartments { get; set; } = new List<UserCompanyDepartment>();
+
+    public string GetDirectorName()
+    {
+        if(this.Owners == null || this.Owners.Count == 0)
+            return string.Empty;
+
+        var director = this.Owners.FirstOrDefault(o => o.Position == PositionType.Director);
+        return director?.NamePerIC ?? string.Empty;
+    }
+
+    public int GetContactCount()
+    {
+        return CommunicationContacts.Count + OfficialContacts.Count;
+    }
 }
