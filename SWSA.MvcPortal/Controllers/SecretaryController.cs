@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
-using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
 
 namespace SWSA.MvcPortal.Controllers;
 

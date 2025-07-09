@@ -27,7 +27,6 @@ using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
 using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using Serilog;
-using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using AspNetCoreRateLimit;
 using SWSA.MvcPortal.Commons.Services.Permission;
 using SWSA.MvcPortal.Commons.Services.Session;
@@ -46,6 +45,8 @@ using SWSA.MvcPortal.Services.UserAccess;
 using SWSA.MvcPortal.Services.Scheduler;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 

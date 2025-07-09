@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
-using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
 
 namespace SWSA.MvcPortal.Controllers;
 

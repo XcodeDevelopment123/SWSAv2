@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
-using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 using SWSA.MvcPortal.Models.CompnayWorks;
-using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
 
 namespace SWSA.MvcPortal.Controllers;
 

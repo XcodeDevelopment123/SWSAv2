@@ -78,6 +78,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
         });
 
+        //Add new Assignment at here
         modelBuilder.Entity<AnnualReturnWorkAssignment>()
             .ToTable("AnnualReturnWorkAssignments");
 
@@ -95,30 +96,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId }).IsUnique();
         });
 
-
         modelBuilder.Entity<SystemNotificationLog>(entity =>
         {
             entity.HasIndex(c => new { c.CreatedAt, c.Channel });
             entity.HasIndex(c => new { c.CreatedAt, c.TemplateCode });
         });
-
-        //modelBuilder.Entity<SystemAuditLog>(entity =>
-        //{
-        //    entity.HasOne(e => e.PerformedByUser)
-        //        .WithMany()
-        //        .HasForeignKey(e => e.PerformedByUserId)
-        //        .OnDelete(DeleteBehavior.SetNull);
-
-        //    entity.HasOne(e => e.PerformedByCompanyStaff)
-        //        .WithMany()
-        //        .HasForeignKey(e => e.PerformedByCompanyStaffId)
-        //        .OnDelete(DeleteBehavior.SetNull);
-
-        //    entity.HasOne(e => e.Company)
-        //        .WithMany()
-        //        .HasForeignKey(e => e.CompanyId)
-        //        .OnDelete(DeleteBehavior.SetNull);
-        //});
 
         modelBuilder.Entity<ScheduledJob>(entity =>
         {
