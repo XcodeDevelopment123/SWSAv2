@@ -27,7 +27,6 @@ IMapper mapper,
 ICompanyRepository repo,
 ICompanyMsicCodeRepository companyMsicCodeRepository,
 IMsicCodeRepository msicCodeRepository,
-IUserCompanyDepartmentRepository userCompanyDepartmentRepository,
 IUserRepository userRepository,
 IUserContext userContext,
 ISystemAuditLogService sysAuditService,
@@ -38,8 +37,7 @@ IPermissionRefreshTracker permissionRefreshTracker
     #region VM/DTO Query Method 
     public async Task<List<Company>> GetCompaniesAsync()
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetCompanies()
-                : await repo.GetCompaniesByUserId(userContext.EntityId);
+        var data = await repo.GetCompanies();
         return [.. data];
     }
 
@@ -55,21 +53,20 @@ IPermissionRefreshTracker permissionRefreshTracker
     public async Task<List<Company>> GetCompaniesByTypeAsync(CompanyType type)
     {
         var data = userContext.IsSuperAdmin ? await repo.GetCompaniesByType(type)
-            : await repo.GetCompaniesByUserIdAndType(userContext.EntityId, type);
+            : await repo.GetCompaniesByType(type);
         return data;
     }
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(CompanyType type)
     {
         var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMByTypeAsync(type)
-            : await repo.GetSelectionsVMByUserIdAndTypeAsync(userContext.EntityId, type);
+            : await repo.GetSelectionsVMByTypeAsync(type);
         return data;
     }
 
     public async Task<List<CompanySelectionVM>> GetCompanySelectionAsync()
     {
-        var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMAsync()
-            : await repo.GetSelectionsVMByUserIdAsync(userContext.EntityId);
+        var data = await repo.GetSelectionsVMAsync();
         return data;
     }
 
@@ -84,9 +81,6 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     public async Task<int> Create(CreateCompanyRequest req)
     {
-        if (req.HandleUsers.Count == 0)
-            throw new BusinessLogicException("Please select at least one user to handle this company");
-
         Company cp = mapper.Map<Company>(req);
 
         await repo.BeginTransactionAsync();
@@ -94,24 +88,6 @@ IPermissionRefreshTracker permissionRefreshTracker
         {
             repo.Add(cp);
             await repo.SaveChangesAsync();
-
-            //Process handle user associated
-            var staffIds = req.HandleUsers.Select(x => x.StaffId).ToHashSet();
-            var userIds = await userRepository.GetDictionaryIdByStaffIdsAsync([.. staffIds]);
-            var allUserCompanyDepartments = new List<UserCompanyDepartment>();
-            foreach (var handleUser in req.HandleUsers)
-            {
-                var userId = userIds[handleUser.StaffId];
-                var noRepeatDepartments = handleUser.Departments.Select(x => x).Distinct().ToList();
-
-                var entities = UserCompanyDepartmentMapper.ToEntities(noRepeatDepartments, cp.Id, userId);
-                allUserCompanyDepartments.AddRange(entities);
-
-                permissionRefreshTracker.MarkRefreshNeeded(handleUser.StaffId);
-            }
-
-            userCompanyDepartmentRepository.AddRange(allUserCompanyDepartments);
-            await userCompanyDepartmentRepository.SaveChangesAsync();
 
             await repo.CommitTransactionAsync();
         }
@@ -252,7 +228,7 @@ IPermissionRefreshTracker permissionRefreshTracker
 
     private async Task SyncMsicCodes(Company data, HashSet<int> requestedMsicIds)
     {
-        var existingMsicIds = data.MsicCodes.Select(x =>  x.MsicCodeId).ToHashSet();
+        var existingMsicIds = data.MsicCodes.Select(x => x.MsicCodeId).ToHashSet();
         var msicIdsToAdd = requestedMsicIds.Except(existingMsicIds).ToList();
         var msicsToRemove = data.MsicCodes
           .Where(x => !requestedMsicIds.Contains(x.MsicCodeId)).ToList();

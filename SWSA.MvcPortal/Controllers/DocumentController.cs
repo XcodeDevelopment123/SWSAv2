@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWSA.MvcPortal.Commons.Constants;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
@@ -8,7 +10,7 @@ using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
 namespace SWSA.MvcPortal.Controllers;
 
 
-[Route("companies")]
+[Route("documents")]
 public class DocumentController(
     IDocumentRecordService service,
     IUserService userService,
@@ -16,6 +18,22 @@ public class DocumentController(
     ) : BaseController
 {
     #region Page/View
+    [Route("audit-dept")]
+    public async Task<IActionResult> AuditDepartment()
+    {
+        var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Audit);
+        var companies = await companyService.GetCompanySelectionAsync();
+        var vm = new DocumentRecordAuditDeptPageVM(companies, documents);
+        return View(vm);
+    }
+
+    [Route("account-dept")]
+    public async Task<IActionResult> AccountDepartment()
+    {
+        var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Account);
+        return View(documents);
+    }
+
     [Route("docs")]
     public async Task<IActionResult> List()
     {
@@ -27,7 +45,7 @@ public class DocumentController(
     public async Task<IActionResult> Create([FromRoute] int companyId)
     {
         var cp = await companyService.GetCompanyByIdAsync(companyId);
-        var staff = await userService.GetUserSelectionByCompanyIdAsync(companyId);
+        var staff = await userService.GetUserSelectionAsync();
         var vm = new DocumentRecordCreatePageVM(cp, staff);
         return View(vm);
     }
@@ -36,10 +54,10 @@ public class DocumentController(
 
     #region API/Ajax
     [InternalAjaxOnly]
-    [HttpPost("docs/create-work")]
-    public async Task<IActionResult> CreateDocuments([FromForm] DocumentRecordRequest req, IFormFile file)
+    [HttpPost("submit-doc-record")]
+    public async Task<IActionResult> CreateDocument(DocumentRecordRequest req)
     {
-        var result = await service.CreateDocument(req, file);
+        var result = await service.CreateDocument(req);
         return Ok(result);
     }
 
@@ -52,7 +70,7 @@ public class DocumentController(
     }
 
     [InternalAjaxOnly]
-    [HttpDelete("docs/{docId}/delete")]
+    [HttpDelete("{docId}/delete")]
     public async Task<IActionResult> Delete([FromRoute] int docId)
     {
         var result = await service.Delete(docId);

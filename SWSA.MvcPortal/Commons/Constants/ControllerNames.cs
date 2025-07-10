@@ -1,9 +1,9 @@
 ﻿namespace SWSA.MvcPortal.Commons.Constants;
-
 public class ControllerNames
 {
     public const string Dashboard = "Dashboard";
     public const string Company = "Company";
+    public const string NewCompany = "NewCompany";
     public const string Secretary = "Secretary";
     public const string CompanyStaff = "CompanyStaff";
     public const string User = "User";
@@ -12,4 +12,39 @@ public class ControllerNames
     public const string Notification = "Notification";
     public const string SystemAuditLog = "SystemAuditLog";
     public const string SchedulerJob = "SchedulerJob";
+
+}
+
+public class ControllerInfo
+{
+    public string Name { get; }
+
+    public ControllerInfo(string? name)
+    {
+        Name = name ?? string.Empty;
+    }
+
+    public static implicit operator string(ControllerInfo controller)
+    {
+        return controller.Name;
+    }
+
+    public bool Is(string target)
+    {
+        return string.Equals(target, Name, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+public class ActionInfo
+{
+    public string Name { get; }
+    public ActionInfo(string? name)
+    {
+        Name = name ?? string.Empty;
+    }
+
+    public bool Is(string target)
+    {
+        return string.Equals(target, Name, StringComparison.OrdinalIgnoreCase);
+    }
 }

@@ -54,23 +54,7 @@
 										@user.FullName @(UserContext.StaffId == user.StaffId ? "(You)" : "")
 									</a>
 								</td>
-								<td>
-									<a target="_blank" href="@doc.GetDownloadLink()" title="Download">
-										@doc.AttachmentFileName
-									</a>
-								</td>
-								<td>@doc.Remark</td>
-								<td>
-									<div class="btn-group" role="group">
-										<a target="_blank" href="@doc.GetViewLink()" class="btn btn-sm btn-info mr-2" title="View">
-											<i class="fa fa-eye"></i>
-										</a>
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@doc.Id" data-name="@doc.AttachmentFileName" title="Delete">
-											<i class="fa fa-trash"></i>
-										</button>
-
-									</div>
-								</td>
+								
 							</tr>
 						}
 

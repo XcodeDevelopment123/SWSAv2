@@ -8,7 +8,7 @@ const urls = {
     "company_official_contact": "/companies/official-contact",
     "company_cm_contact": "/companies/cm-contact",
     "company_compliance_date": "/companies/compliance-date",
-    "company_documents": "/companies/docs",
+    "documents": "/documents",
     "company_works": "/companies/works",
     "company_work_progress": "/companies/works/progress",
     "company_handle_user": "/companies/handle-users",

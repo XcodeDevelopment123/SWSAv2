@@ -45,6 +45,7 @@ public class UserSeeder(AppDbContext db) : ISeeder
             HashedPassword = PasswordHasher.Hash("admin"),
             FullName = "SWSA Admin",
             PhoneNumber = "+60123456789",
+            Department = "Full",
             Role = UserRole.SuperAdmin
         };
     }

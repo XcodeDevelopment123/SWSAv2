@@ -45,23 +45,10 @@ public class CompanyRepository(
         return dtos;
     }
 
-    public async Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAsync(int userId)
+    public async Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(int userId, CompanyType type)
     {
         var dtos = await ActiveCompanies(true)
-            .Where(c => c.UserCompanyDepartments
-            .Any(ucd => ucd.UserId == userId))
-             .ProjectToType<CompanySelectionVM>()
-             .ToListAsync();
-
-        return dtos;
-    }
-
-    public async Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAndTypeAsync(int userId, CompanyType type)
-    {
-        var dtos = await ActiveCompanies(true)
-            .Where(c => c.UserCompanyDepartments
-            .Any(ucd => ucd.UserId == userId)
-            && c.CompanyType == type)
+            .Where(c =>  c.CompanyType == type)
              .ProjectToType<CompanySelectionVM>()
              .ToListAsync();
 
@@ -99,15 +86,6 @@ public class CompanyRepository(
             .ToListAsync();
     }
 
-    public async Task<List<Company>> GetCompaniesByUserId(int userId)
-    {
-        var query = await BuildQueryWithIncludesAsync();
-
-        return await query
-            .Where(c => c.UserCompanyDepartments
-            .Any(ucd => ucd.UserId == userId))
-            .ToListAsync();
-    }
 
     public async Task<List<Company>> GetCompaniesByType(CompanyType type)
     {
@@ -116,24 +94,6 @@ public class CompanyRepository(
         return await query
              .Where(c => c.CompanyType == type)
              .ToListAsync();
-    }
-
-    public async Task<List<Company>> GetCompaniesByUserIdAndType(int userId,CompanyType type)
-    {
-
-        var query = await BuildQueryWithIncludesAsync();
-
-        var dtos = await ActiveCompanies(true)
-            .Where(c => c.UserCompanyDepartments
-            .Any(ucd => ucd.UserId == userId)
-            && c.CompanyType == type)
-             .ToListAsync();
-
-        return await query
-            .Where(c => c.UserCompanyDepartments
-            .Any(ucd => ucd.UserId == userId)
-            && c.CompanyType == type)
-             .ToListAsync(); 
     }
 
     //Rewrite the GetAllAsync method
@@ -152,7 +112,6 @@ public class CompanyRepository(
             .Include(c => c.Owners)
             .Include(c => c.OfficialContacts)
             .Include(c => c.CommunicationContacts)
-            .Include(c => c.UserCompanyDepartments).ThenInclude(u => u.User)
             .Include(c => c.MsicCodes).ThenInclude(cm => cm.MsicCode)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.AssignedUsers)
             .Include(c => c.WorkAssignments).ThenInclude(c => c.Progress)

@@ -6,8 +6,10 @@
 @{
 	ViewData["Title"] = "List";
 	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	var companyType = ViewData["company-type"]?.ToString() ?? "";
 }
-<h3> Company List</h3>
+<h3> @companyType List</h3>
 
 <div class="row">
 	<div class="col-md-12">
@@ -19,7 +21,6 @@
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Type</th>
 							<th>Registration Number</th>
 							<th>Year End Month</th>
 							<th>Incorporation Date</th>
@@ -35,7 +36,6 @@
 						{
 							<tr>
 								<td>@cp.Name</td>
-								<td>@cp.CompanyType.GetDisplayName()</td>
 								<td>@cp.RegistrationNumber</td>
 								<td>@cp.YearEndMonth</td>
 								<td>@(cp.IncorporationDate?.ToString("yyyy-MM-dd") ?? AppSettings.NotAvailable)</td>
@@ -63,7 +63,6 @@
 					<tfoot>
 						<tr>
 							<th>Name</th>
-							<th>Type</th>
 							<th>Registration Number</th>
 							<th>Year End Month</th>
 							<th>Incorporation Date</th>

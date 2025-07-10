@@ -9,8 +9,6 @@ using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Repositories.Repo;
 using SWSA.MvcPortal.Services;
 using SWSA.MvcPortal.Services.Interfaces;
-using SWSA.MvcPortal.Commons.Services.UploadFile;
-using SWSA.MvcPortal.Commons.Services.UploadFile.Implements;
 using Microsoft.Extensions.Options;
 using SWSA.MvcPortal.Models.DocumentRecords.Profiles;
 using Quartz;
@@ -154,7 +152,6 @@ public static class DependencyInjector
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
         services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
-        services.AddScoped<IUserCompanyDepartmentRepository, UserCompanyDepartmentRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IWorkAssignmentUserMappingRepository, WorkAssignmentUserMappingRepository>();
         //#Repository DI end
@@ -187,7 +184,6 @@ public static class DependencyInjector
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
-        services.AddScoped<IUserCompanyDepartmentService, UserCompanyDepartmentService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
         //#Service DI end
@@ -198,10 +194,6 @@ public static class DependencyInjector
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();
         services.AddScoped<IUserFetcher, UserFetcher>();
-        //Third party service eg. sms service/ image / save file
-        services.AddScoped<IUploadFileService, UploadFileService>();
-        services.AddScoped<LocalUploadFileService>();
-        services.AddScoped<CloudUploadFileService>();
 
         //Messaging service
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
@@ -233,11 +225,7 @@ public static class DependencyInjector
     {
         services.Configure<WappySettings>(configuration.GetSection(nameof(WappySettings)));
 
-        services.AddHttpClient<CloudUploadFileService>((serviceProvider, client) =>
-        {
-            //var options = serviceProvider.GetRequiredService<IOptions<{SettingsFromAppsetting.json}>>();
-            //Other base url,  header request
-        });
+
         //services.AddHttpClient("clientName", client =>
         //  {
         //      client.BaseAddress = new Uri("baseUrl");

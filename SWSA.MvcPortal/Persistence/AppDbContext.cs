@@ -43,15 +43,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         });
 
-        modelBuilder.Entity<UserCompanyDepartment>(entity =>
-        {
-            entity
-             .HasOne(ucd => ucd.User)
-             .WithMany(u => u.CompanyDepartments)
-             .HasForeignKey(ucd => ucd.UserId)
-             .OnDelete(DeleteBehavior.Cascade);
-        });
-
         modelBuilder.Entity<Company>(entity =>
         {
             entity.HasMany(c => c.CommunicationContacts)

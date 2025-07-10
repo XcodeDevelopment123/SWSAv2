@@ -30,12 +30,6 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
 
     #endregion
     // Implement the method
-    public async Task<List<User>> GetUserByCompanyId(int companyId)
-    {
-        var query = await BuildQueryAsync();
-        return await query.Where(u => u.CompanyDepartments != null
-        && u.CompanyDepartments.Any(c => c.CompanyId == companyId)).ToListAsync();
-    }
 
     public async Task<List<User>> GetByActiveStatus(bool isActive)
     {
@@ -58,8 +52,7 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     public async Task<User> GetOverviewByStaffIdAsync(string staffId)
     {
         var query = await BuildQueryAsync();
-        query = query.Include(c => c.SystemAuditLogs)
-                     .Include(c => c.CompanyDepartments).ThenInclude(c => c.Company);
+        query = query.Include(c => c.SystemAuditLogs);
         return await query.FirstOrDefaultAsync(u => u.StaffId == staffId);
     }
 
@@ -92,9 +85,7 @@ public class UserRepository(AppDbContext db) : RepositoryBase<User>(db), IUserRe
     //Rewrite the GetAllAsync method
     protected override Task<IQueryable<User>> BuildQueryAsync()
     {
-        var query = db.Set<User>()
-           .Include(c => c.CompanyDepartments)
-           .AsNoTracking();
+        var query = db.Set<User>().AsNoTracking();
         return Task.FromResult(query);
     }
 

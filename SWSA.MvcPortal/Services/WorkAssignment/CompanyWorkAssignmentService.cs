@@ -13,7 +13,6 @@ using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
-using SWSA.MvcPortal.Commons.Services.UploadFile;
 
 namespace SWSA.MvcPortal.Services.WorkAssignment;
 
@@ -26,8 +25,7 @@ ICompanyRepository companyRepo,
 IUserRepository userRepo,
 ISystemAuditLogService sysAuditService,
 IWorkAssignmentFactory workAssignmentFactory,
-IDocumentRecordRepository docRepo,
-IUploadFileService uploadFileService
+IDocumentRecordRepository docRepo
 ) : ICompanyWorkAssignmentService
 {
     #region VM/DTO Query Method 
@@ -135,19 +133,8 @@ IUploadFileService uploadFileService
         Guard.AgainstNullData(cp, "Company not found");
         Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
 
-        var docs = await docRepo.GetDocumentRecordsByTaskId(data.Id);
-        if (docs.Count > 0)
-        {
-            foreach (var doc in docs)
-            {
-                if (!string.IsNullOrEmpty(doc.AttachmentFilePath))
-                {
-                    await uploadFileService.DeleteAsync(doc.AttachmentFilePath);
-                }
-            }
-        }
-        await repo.RemoveAsync(data!);
 
+        await repo.RemoveAsync(data!);
         await repo.SaveChangesAsync();
 
         var log = SystemAuditLogEntry.Delete(SystemAuditModule.CompanyWorkAssignment, data!.Id.ToString(), $"Company Work Assignment : {data.WorkType.GetDisplayName()}", data);

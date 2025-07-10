@@ -14,14 +14,5 @@ public class UserSessionWriter(IHttpContextAccessor _accessor):IUserSessionWrite
         session.SetString(SessionKeys.Name, user.FullName);
         session.SetString(SessionKeys.LoginTime, DateTime.Now.ToString());
         session.SetString(SessionKeys.UserRole, user.Role.ToString());
-
-        var companyIds = user.CompanyDepartments.Select(c => c.CompanyId).Distinct().ToList();
-        session.SetString(SessionKeys.AllowedCompanyIds, JsonConvert.SerializeObject(companyIds));
-
-        var allowedDepartments = user.CompanyDepartments
-            .GroupBy(c => c.CompanyId)
-            .ToDictionary(g => g.Key, g => g.Select(d => d.Department).Distinct().ToList());
-
-        session.SetString(SessionKeys.AllowedDepartments, JsonConvert.SerializeObject(allowedDepartments));
     }
 }

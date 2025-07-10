@@ -32,7 +32,7 @@
 
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
             $.ajax({
-                url: `${urls.company_documents}/${id}/delete`,
+                url: `${urls.documents}/${id}/delete`,
                 method: "DELETE",
                 success: function (res) {
                     if (res) {

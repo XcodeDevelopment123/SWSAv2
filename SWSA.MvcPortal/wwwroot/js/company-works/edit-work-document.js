@@ -122,7 +122,7 @@
 
 
         $.ajax({
-            url: `${urls.company_documents}/create-work`,
+            url: `${urls.documents}/create-work`,
             type: 'POST',
             data: formData,
             processData: false,
@@ -146,7 +146,7 @@
 
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
             $.ajax({
-                url: `${urls.company_documents}/${documentId}/delete`,
+                url: `${urls.documents}/${documentId}/delete`,
                 method: "DELETE",
                 success: function (res) {
                     if (res) {

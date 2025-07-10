@@ -174,14 +174,14 @@
         });
 
         $.ajax({
-            url: `${urls.company_documents}/create`,
+            url: `${urls.documents}/create`,
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function (res) {
                 Toast_Fire(ICON_SUCCESS, "Create successfullly", "Documents has been created");
-                window.location.href = `${urls.company_documents}`;
+                window.location.href = `${urls.documents}`;
             },
             error: function (err) {
             }

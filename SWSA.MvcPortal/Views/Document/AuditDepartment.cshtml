@@ -1,0 +1,429 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Entities
+@using SWSA.MvcPortal.Models.Companies
+@using SWSA.MvcPortal.Models.DocumentRecords
+@using SWSA.MvcPortal.Services.Interfaces.SystemCore
+@model DocumentRecordAuditDeptPageVM
+@inject IUserContext UserContext
+@{
+	ViewData["Title"] = "AuditDepartment";
+
+	var companiesSelection = Model.Companies;
+	var docs = Model.DocumentRecords;
+
+	var inFlow = SelectHelper.GetEnumSelectList<DocumentFlowType>(DocumentFlowType.Incoming);
+	var outFlow = SelectHelper.GetEnumSelectList<DocumentFlowType>(DocumentFlowType.Outgoing);
+	var docType = SelectHelper.GetEnumSelectList<DocumentType>(null);
+	var inDocs = docs.Where(x => x.DocumentFlow == DocumentFlowType.Incoming).ToList();
+	var outDocs = docs.Where(x => x.DocumentFlow == DocumentFlowType.Outgoing).ToList();
+}
+<div class="row">
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<form id="inDocForm">
+			<div class="card card-secondary">
+				<div class="card-header">
+					<h3 class="card-title">Incoming Documents</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body" style="display:block">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="in_display_client">
+									Client
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="To select and show documents"></i>
+								</label>
+								<select id="in_display_client" name="in_display_client" class="form-control select2 ">
+									<option selected value="">All</option>
+									@foreach (var cp in companiesSelection)
+									{
+										<option value="@cp.CompanyId">@cp.Name (@cp.RegistrationNumber)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="in_yearEndMonth">Year End Month</label>
+								<div class="input-group">
+									<input readonly type="text" id="in_yearEndMonth" value="-" name="in_yearEndMonth" class="form-control" placeholder="Select month" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<table id="inDocsTable" class="table table-bordered table-hover">
+						<thead>
+
+							<tr>
+								<th rowspan="2">Id</th>
+								<th rowspan="2">ClientId</th>
+								<th rowspan="2">Client</th>
+								<th rowspan="2">Year End</th>
+								<th colspan="3">Receipt of Documents</th>
+								<th colspan="2">Acknowledgement</th>
+							</tr>
+							<tr>
+							
+								<th>Document Type</th>
+								<th>Date Received </th>
+								<th>#Bag / Box Count</th>
+
+								<th>Handled User</th>
+								<th>Upload Letter</th>
+
+								<th>Remark</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var doc in inDocs)
+							{
+								var user = doc.HandledByStaff;
+								<tr>
+									<td>@doc.Id</td>
+									<td>@doc.Company.Id</td>
+
+									<td>
+										<a href="/companies/@doc.Company.Id/overview" title="company overview">
+											@doc.Company.Name
+										</a>
+									</td>
+									<td>@doc.Company.YearEndMonth?.GetDisplayNameAndNumber()</td>
+									<td>@doc.DocumentType.GetDisplayName()</td>
+									<td>@doc.DocumentDate.ToFormattedString()</td>
+									<td>@doc.BagOrBoxCount</td>
+									<td>
+										<a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
+											@user.FullName @(UserContext.StaffId == user.StaffId ? "(You)" : "")
+										</a>
+									</td>
+									<td>@doc.UploadLetter</td>
+									<td>@doc.Remark</td>
+									<td>
+										<button type="button" class="btn btn-sm btn-danger btn-delete-row" data-id="@doc.Id"><i class="fa fa-trash"></i></button>
+									</td>
+								</tr>
+							}
+
+						</tbody>
+					</table>
+
+					<div class="divider-line"></div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="in_client">
+									Client
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="To submit the record to the client."></i>
+								</label>
+								<select id="in_client" name="in_client" class="form-control select2 ">
+									<option value="">Please select</option>
+
+									@foreach (var cp in companiesSelection)
+									{
+										<option value="@cp.CompanyId">@cp.Name (@cp.RegistrationNumber)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<!-- Handled By Staff -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="handledByStaffId">
+									Handled By
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="This value is set by you and cannot be changed."></i>
+
+								</label>
+								<select disabled id="handledByStaffId" name="handledByStaffId" class="form-control select2 ">
+									<option value="@UserContext.StaffId">@UserContext.Name (You)</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Flow Type -->
+						<div class="col-md-2 d-none">
+							<div class="form-group">
+								<label for="in_flowType">Flow Type</label>
+								<select disabled asp-items="inFlow" id="in_flowType" name="in_flowType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Document Date -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="in_documentDate">Date Received</label>
+								<div class="input-group">
+									<input type="text" id="in_documentDate" name="in_documentDate" class="form-control" placeholder="Select date" value="@DateTime.Today.ToFormattedString()" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Document Type -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="in_docType">Document Type</label>
+								<select asp-items="docType" id="in_docType" name="in_docType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Bag or Box Count -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="in_bagOrBoxCount">Bag / Box Count</label>
+								<input type="number" id="in_bagOrBoxCount" name="in_bagOrBoxCount" class="form-control" placeholder="e.g. 2" min="0" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="in_UploadLetter">Upload Letter</label>
+								<input type="text" id="in_UploadLetter" name="in_UploadLetter" class="form-control" placeholder="" />
+							</div>
+						</div>
+						<!-- Remark -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="in_remark">Remark</label>
+								<input type="text" id="in_remark" name="in_remark" class="form-control" placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="submit" class="btn btn-primary float-end">Submit</button>
+				</div>
+
+				<!-- /.card -->
+			</div>
+		</form>
+	</div>
+
+
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<form id="outDocForm">
+			<div class="card card-secondary">
+				<div class="card-header">
+					<h3 class="card-title">Outgoing Documents</h3>
+					<div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+							<i class="fas fa-minus"></i>
+						</button>
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<!-- form start -->
+				<div class="card-body" style="display:block">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="out_display_client">
+									Client
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="To select and show documents"></i>
+								</label>
+								<select id="out_display_client" name="out_display_client" class="form-control select2 ">
+									<option selected value="">All</option>
+									@foreach (var cp in companiesSelection)
+									{
+										<option value="@cp.CompanyId">@cp.Name (@cp.RegistrationNumber)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="out_yearEndMonth">Year End Month</label>
+								<div class="input-group">
+									<input readonly type="text" id="out_yearEndMonth" value="-" name="out_yearEndMonth" class="form-control" placeholder="Select month" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<table id="outDocsTable" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th colspan="11">Document Outward Control</th>
+							</tr>
+							<tr>
+								<th>Id</th>
+								<th>ClientId</th>
+
+								<th>Client</th>
+								<th>Year End</th>
+								<th>Document Type</th>
+								<th>Document Date</th>
+								<th>Bag / Box Count</th>
+								<th>Handled User</th>
+								<th>Upload Letter</th>
+								<th>Remark</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var doc in outDocs)
+							{
+								var user = doc.HandledByStaff;
+								<tr>
+									<td>@doc.Id</td>
+									<td>@doc.Company.Id</td>
+									<td>
+										<a href="/companies/@doc.Company.Id/overview" title="company overview">
+											@doc.Company.Name
+										</a>
+									</td>
+									<td>@doc.Company.YearEndMonth?.GetDisplayNameAndNumber()</td>
+									<td>@doc.DocumentType.GetDisplayName()</td>
+									<td>@doc.DocumentDate.ToFormattedString()</td>
+									<td>@doc.BagOrBoxCount</td>
+									<td>
+										<a href="/users/@doc.HandledByStaffId/overview" title="staff overview">
+											@user.FullName @(UserContext.StaffId == user.StaffId ? "(You)" : "")
+										</a>
+									</td>
+									<td>@doc.UploadLetter</td>
+									<td>@doc.Remark</td>
+									<td>
+										<button type="button" class="btn btn-sm btn-danger btn-delete-row" data-id="@doc.Id"><i class="fa fa-trash"></i></button>
+									</td>
+								</tr>
+							}
+
+						</tbody>
+					</table>
+
+					<div class="divider-line"></div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="out_client">
+									Client
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="To submit the record to the client."></i>
+								</label>
+								<select id="out_client" name="out_client" class="form-control select2 ">
+									<option value="">Please select</option>
+
+									@foreach (var cp in companiesSelection)
+									{
+										<option value="@cp.CompanyId">@cp.Name (@cp.RegistrationNumber)</option>
+									}
+								</select>
+							</div>
+						</div>
+						<!-- Handled By Staff -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="handledByStaffId">
+									Handled By
+									<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="This value is set by you and cannot be changed."></i>
+
+								</label>
+								<select disabled id="out_handledByStaffId" name="handledByStaffId" class="form-control select2 ">
+									<option value="@UserContext.StaffId">@UserContext.Name (You)</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Flow Type -->
+						<div class="col-md-6 d-none" >
+							<div class="form-group">
+								<label for="out_flowType">Flow Type</label>
+								<select disabled asp-items="outFlow" id="out_flowType" name="out_flowType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Document Date -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="out_documentDate">Date Received</label>
+								<div class="input-group">
+									<input type="text" id="out_documentDate" name="out_documentDate" class="form-control" placeholder="Select date" value="@DateTime.Today.ToFormattedString()" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Document Type -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="out_docType">Document Type</label>
+								<select asp-items="docType" id="out_docType" name="out_docType" class="form-control select2">
+								</select>
+							</div>
+						</div>
+
+						<!-- Bag or Box Count -->
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="out_bagOrBoxCount">Bag / Box Count</label>
+								<input type="number" id="out_bagOrBoxCount" name="out_bagOrBoxCount" class="form-control" placeholder="e.g. 2" min="0" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="out_UploadLetter">Upload Letter</label>
+								<input type="text" id="out_UploadLetter" name="out_UploadLetter" class="form-control" placeholder="" />
+							</div>
+						</div>
+						<!-- Remark -->
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="out_remark">Remark</label>
+								<input type="text" id="out_remark" name="out_remark" class="form-control" placeholder="(Optional)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.card-body -->
+				<div class="card-footer">
+					<button type="submit" class="btn btn-primary float-end">Submit</button>
+				</div>
+
+				<!-- /.card -->
+			</div>
+		</form>
+	</div>
+</div>
+
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<partial name="_DatatablesScriptsPartial" />
+	<script src="~/js/documents/audit-docs.js" asp-append-version="true"></script>
+}

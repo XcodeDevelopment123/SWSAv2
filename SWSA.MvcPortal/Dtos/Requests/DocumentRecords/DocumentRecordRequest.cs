@@ -9,13 +9,12 @@ public class DocumentRecordListRequest
 
 public class DocumentRecordRequest
 {
-    public int WorkAssignmentId { get; set; }
+    public int CompanyId { get; set; }
+    public string Department { get; set; }
     public DateTime DocumentDate { get; set; }  // Date Received (for Incoming) or Date Returned (for Outgoing)
     public DocumentFlowType FlowType { get; set; } // Incoming or Outgoing  
     public DocumentType DocumentType { get; set; }
     public int BagOrBoxCount { get; set; }
+    public string? UploadLetter { get; set; } = null!;
     public string? Remark { get; set; } = null!;
-
-    public string? AttachmentFileName { get; set; } = null!;
-    public string? AttachmentFilePath { get; set; } = null!;
 }

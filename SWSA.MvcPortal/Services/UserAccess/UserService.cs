@@ -37,15 +37,6 @@ IUserContext userContext) : IUserService
         return mapper.Map<List<UserSelectionVM>>(data);
     }
 
-    public async Task<List<UserSelectionVM>> GetUserSelectionByCompanyIdAsync(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-        var data = await repo.GetUserByCompanyId(companyId);
-
-        return mapper.Map<List<UserSelectionVM>>(data);
-    }
-
-
     public async Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId)
     {
         var data = await repo.GetOverviewVMByStaffIdAsync(staffId);

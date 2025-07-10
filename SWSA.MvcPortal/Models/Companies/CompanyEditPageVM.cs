@@ -6,12 +6,10 @@ public class CompanyEditPageVM
 {
     public Company Company { get; set; }
     public List<MsicCode> MsicCodes { get; set; } = [];
-    public List<UserSelectionVM> Users { get; set; } = [];
-    public CompanyEditPageVM(Company cp, List<MsicCode> msicCodes, List<UserSelectionVM> users)
+    public CompanyEditPageVM(Company cp, List<MsicCode> msicCodes)
     {
         Company = cp;
         MsicCodes = msicCodes;
-        Users = users;
     }
 }
 

@@ -32,21 +32,12 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
             .ToListAsync();
     }
 
-    public async Task<List<DocumentRecord>> GetDocumentRecordsByCompanyDepartmentId(int companyDepartmentId)
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByDepartment(string department)
     {
         var query = await BuildQueryAsync();
-        ///TODO: Use department string to query
+        query = query.Where(c=>c.Department ==department);
         return await query
            .ToListAsync();
-    }
-
-    public async Task<List<DocumentRecord>> GetDocumentRecordsByTaskId(int taskId)
-    {
-        var query = await BuildQueryAsync();
-        ///TODO: Use department string to query
-        return await query
-            .Where(c=>c.WorkAssignmentId ==taskId)
-            .ToListAsync();
     }
 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByStaffId(string staffId)
@@ -62,7 +53,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var query = db.DocumentRecords
                 .Include(c => c.HandledByStaff) 
-                .Include(c => c.WorkAssignment).ThenInclude(c=>c.Company) 
+                .Include(c => c.Company)
                 .AsNoTracking();
         return Task.FromResult(query);
     }
@@ -72,7 +63,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var query = db.DocumentRecords
                 .Include(c => c.HandledByStaff)
-                .Include(c => c.WorkAssignment).ThenInclude(c => c.Company)
+                .Include(c => c.Company)
                 .AsNoTracking();
         return Task.FromResult(query);
     }

@@ -33,7 +33,6 @@ new MsicCodeMapsterConfig(),
 new ScheduledJobMapsterConfig(),
 new SystemAuditLogMapsterConfig(),
 new SystemNotificationLogMapsterConfig(),
-new UserCompanyDepartmentMapsterConfig(),
 new UserMapsterConfig(),
 new WorkAssignmentUserMappingMapsterConfig(),
             //#Mapster Config end

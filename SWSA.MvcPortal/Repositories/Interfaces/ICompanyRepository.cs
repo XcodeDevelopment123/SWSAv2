@@ -10,12 +10,8 @@ public interface ICompanyRepository : IRepositoryBase<Company>
 {
     Task<List<Company>> GetCompanies();
     Task<List<Company>> GetCompaniesByIdsAsync(List<int> companyIds);
-    Task<List<Company>> GetCompaniesByUserId(int userId);
     Task<List<Company>> GetCompaniesByType(CompanyType type);
-    Task<List<Company>> GetCompaniesByUserIdAndType(int userId, CompanyType type);
-    Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAsync(int userId);
     Task<List<CompanySelectionVM>> GetSelectionsVMAsync();
     Task<CompanySimpleInfoVM> GetSimpleInfoVMByIdAsync(int id);
     Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(CompanyType type);
-    Task<List<CompanySelectionVM>> GetSelectionsVMByUserIdAndTypeAsync(int userId, CompanyType type);
 }

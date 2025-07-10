@@ -34,7 +34,6 @@ public abstract class CompanyWorkAssignment
     [SystemAuditLog("Reminder Date")]
     public DateTime? ReminderDate { get; set; }
     public virtual CompanyWorkProgress? Progress { get; set; }
-    public virtual ICollection<DocumentRecord> Documents { get; set; } = new List<DocumentRecord>();
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }

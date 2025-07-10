@@ -4,6 +4,7 @@
 @using SWSA.MvcPortal.Models.Users
 @using SWSA.MvcPortal.Services.Interfaces
 @using SWSA.MvcPortal.Services.Interfaces.SystemCore
+@using System.Data
 @inject IUserContext UserContext
 <!DOCTYPE html>
 <html lang="en">
@@ -36,9 +37,11 @@
 
 
 @{
-	var currentController = ViewData["controller"]!.ToString();
+	var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+	var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+	var currentCompanyType = new ActionInfo(ViewData["company-type"]?.ToString() ?? "");
+
 	var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-	var currentAction = ViewData["action"]!.ToString();
 	var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
 	var submissionNav = new List<string> {
 		"AuditRepotSubmissionList", "EditAuditRepotSubmission",
@@ -175,11 +178,6 @@
 		<!-- /.navbar -->
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<!-- Brand Logo -->
-			@* 			<a href="#" class="brand-link" target="_blank">
-				<img src="~/assets/imgs/logo.png" alt="SWSA Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-				<span class="brand-text font-weight-light">K T NG & ASSOCIATES</span>
-			</a> *@
 
 			<!-- Sidebar -->
 			<div class="sidebar">
@@ -210,17 +208,17 @@
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 						<!-- Add icons to the links using the .nav-icon class
 						with font-awesome or any other icon font library -->
-						<li class="nav-item  @(currentController==ControllerNames.Dashboard ? "menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController==ControllerNames.Dashboard ? "active":"")">
+						<li class="nav-item  @(currentController.Is(ControllerNames.Dashboard)? "menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Dashboard) ? "active":"")">
 								<i class="nav-icon fas fa-tachometer-alt"></i>
 								<p>
 									Dashboard
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style=@(currentController == ControllerNames.Dashboard ? @"display:block" : "display:none")>
+							<ul class="nav nav-treeview" style=@(currentController.Is(ControllerNames.Dashboard) ? @"display:block" : "display:none")>
 								<li class="nav-item">
-									<a href="/dashboard/overall" class="nav-link @(currentController == ControllerNames.Dashboard && currentAction =="Overall" ? "active" : "")">
+									<a href="/dashboard/overall" class="nav-link @(currentController.Is(ControllerNames.Dashboard) && currentAction.Is("Overall") ? "active" : "")">
 										<i class="far fa-circle nav-icon"></i>
 										<p>Overall</p>
 									</a>
@@ -240,344 +238,442 @@
 							</ul>
 						</li>
 
-						<li class="nav-header">Companies</li>
-
-						<li class="nav-item @(companyNav.Contains(currentController!) ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(companyNav.Contains(currentController!) ?"active":"")">
-								<i class="fas fa-building nav-icon"></i>
+						<li class="nav-item @(currentController.Is(ControllerNames.Company) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Company) ?"active":"")">
+								<span class="nav-icon">1</span>
 								<p>
-									Company
+									Clients
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style="@(companyNav.Contains(currentController!) ? @"display:block" : "display:none")">
+							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Company) ? @"display:block" : "display:none")">
 
 								<li class="nav-item">
-									<a href="/companies" class="nav-link @(currentController== ControllerNames.Company && currentAction =="List" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											List
-											@* <span class="badge badge-info right">2</span> *@
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/companies/create" class="nav-link @(currentController== ControllerNames.Company && currentAction =="Create" ?"active":"")">
-										<i class="nav-icon fas fa-plus"></i>
-										<p>
-											Add Company
-										</p>
-									</a>
-								</li>
-
-								@* 	<li class="nav-item">
-									<a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.Company && currentAction =="CompanyLP" ?"active":"")
-									" data-target-url="/companies/{companyId}/landing-page" data-url-name="Navigate to Landing Page">
-										<i class="far fa-dot-circle nav-icon"></i>
-										<p>Assign Company LP</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.Company && currentAction =="Department" ?"active":"")
-									" data-target-url="/companies/{companyId}/departments" data-url-name="Navigate to Department Page">
-										<i class="far fa-dot-circle nav-icon"></i>
-										<p>Assign Departments</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.CompanyStaff ?"active":"")
-									" data-target-url="/companies/{companyId}/staff-list" data-url-name="Navigate to Staffs Page">
-										<i class="far fa-dot-circle nav-icon"></i>
-										<p>Assign Staffs</p>
-									</a>
-								</li> *@
-							</ul>
-						</li>
-
-						<li class="nav-item @(currentController== ControllerNames.Document ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.Document ?"active":"")">
-								<i class="fas fa-file-alt nav-icon"></i>
-								<p>
-									Documents
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Document ? @"display:block" : "display:none")">
-
-								<li class="nav-item">
-									<a href="/companies/docs" class="nav-link @(currentController== ControllerNames.Document && currentAction =="List" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											List
-										</p>
-									</a>
-								</li>
-								@* 	<li class="nav-item">
-									<a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.Document && currentAction =="Create" ?"active":"")
-									" data-target-url="/companies/{companyId}/docs/create" data-url-name="Create documents for">
-										<i class="nav-icon fas fa-plus"></i>
-										New Document
-									</a>
-								</li> *@
-							</ul>
-						</li>
-
-						<li class="nav-item @(currentController== ControllerNames.CompanyWork ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.CompanyWork ?"active":"")">
-								<i class="fas fa-clipboard-list nav-icon"></i>
-								<p>
-									Tasks / Work
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.CompanyWork ? @"display:block" : "display:none")">
-								<li class="nav-item">
-									<a href="/companies/works/overview" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="Overview" ?"active":"")">
-										<i class="nav-icon fas fa-calendar-alt"></i>
-										<p>
-											Overview
-										</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/companies/works" class="nav-link @(currentController== ControllerNames.CompanyWork && currentAction =="List" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											List
-										</p>
-									</a>
-								</li>
-								@* 		<li class="nav-item">
-									<a href="#" class="nav-link open-company-modal
-                                                @(currentController== ControllerNames.CompanyWork && currentAction =="Create" ?"active":"")
-									" data-target-url="/companies/{companyId}/works/create" data-url-name="Create new work for">
-										<i class="nav-icon fas fa-plus"></i>
-										<p>
-											New work
-										</p>
-									</a>
-								</li> *@
-							</ul>
-						</li>
-
-						<li class="nav-header">Secretary Dept</li>
-
-						@* <li class="nav-item">
-							<a href="/secretary-dept/landing" class="nav-link @(
-							currentController== ControllerNames.Secretary
-							&& currentAction == "Landing"?"active":"")">
-								<i class="fas fa-briefcase nav-icon"></i>
-								<p>
-									Landing
-								</p>
-							</a>
-						</li> *@
-
-
-						<li class="nav-item @(currentController== ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!) ?"active":"")">
-								<i class="fas fa-building nav-icon"></i>								<p>
-									Companies
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Secretary && secretaryCompanyNav.Contains(currentAction!)  ? @"display:block" : "display:none")">
-								<li class="nav-item">
-									<a href="/secretary-dept/companies" class="nav-link
-							@(currentController== ControllerNames.Secretary
-							&& currentAction =="CompanyList" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											List
-										</p>
-									</a>
-								</li>
-											<li class="nav-item">
-									<a href="/secretary-dept/companies/sdn-bhd" class="nav-link
-							@(currentController== ControllerNames.Secretary
-							&& currentAction =="SdnBhdCompanyList" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+									<a href="/companies?type=@CompanyType.SdnBhd.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.SdnBhd.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+										<span class="nav-icon ">1.1</span>
 										<p>
 											Sdn Bhd
 										</p>
 									</a>
 								</li>
+
 								<li class="nav-item">
-									<a href="/secretary-dept/companies/llp" class="nav-link
-							@(currentController== ControllerNames.Secretary
-							&& currentAction =="LLPCompanyList" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+									<a href="/companies?type=@CompanyType.LLP.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.LLP.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ? "active" : "")">
+										<span class="nav-icon ">1.2</span>
 										<p>
 											LLP
 										</p>
 									</a>
 								</li>
+
+								<li class="nav-item">
+									<a href="/companies?type=@CompanyType.Enterprise.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.Enterprise.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+										<span class="nav-icon ">1.3</span>
+										<p>
+											Enterprise
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/companies?type=@CompanyType.Individual.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.Individual.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+										<span class="nav-icon ">1.4</span>
+										<p>
+											Individual
+										</p>
+									</a>
+								</li>
 							</ul>
 						</li>
 
-				@* 		<li class="nav-item @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.Secretary && submissionNav.Contains(currentAction!) ?"active":"")">
-								<i class="fas fa-clipboard-list nav-icon"></i>
+						<li class="nav-item @(currentController.Is(ControllerNames.NewCompany) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewCompany) ?"active":"")">
+								<span class="nav-icon">2</span>
 								<p>
-									Submissions
+									New Client
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.Secretary && submissionNav.Contains(currentAction!)  ? @"display:block" : "display:none")">
-
-
-								<li class="nav-item">
-									<a href="/secretary-dept/submissions/annual-return" class="nav-link
-							@(currentController== ControllerNames.Secretary
-							&& (currentAction =="ARSubmissionList" || currentAction =="EditARSubmission") ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewCompany) ? @"display:block" : "display:none")">
+								<li class="nav-item @(currentController.Is(ControllerNames.NewCompany) ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewCompany) ?"active":"")">
+										<span class="nav-icon">2.1</span>
 										<p>
-											Annual Return
+											New Client Profile
+											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
-								</li>
+									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewCompany) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/secretary-dept/submissions/audit-report" class="nav-link
-							@(currentController== ControllerNames.Secretary
-							&& (currentAction =="AuditRepotSubmissionList" || currentAction =="EditAuditRepotSubmission") ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+
+										<li class="nav-item">
+											<a href="/companies/new?type=@CompanyType.SdnBhd.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.SdnBhd.ToString()) ?"active":"")">
+												<span class="nav-icon ">2.1.1</span>
+												<p>
+													Sdn Bhd
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies/new?type=@CompanyType.LLP.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.LLP.ToString()) ?"active":"")">
+												<span class="nav-icon ">2.1.2</span>
+												<p>
+													LLP
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies/new?type=@CompanyType.Enterprise.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.Enterprise.ToString()) ?"active":"")">
+												<span class="nav-icon ">2.1.3</span>
+												<p>
+													Enterprise
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies/new?type=@CompanyType.Individual.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.Individual.ToString()) ?"active":"")">
+												<span class="nav-icon ">2.1.4</span>
+												<p>
+													Individual
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li class="nav-item @(currentController.Is(ControllerNames.Document) ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document)  ?"active":"")">
+										<span class="nav-icon">2.2</span>
 										<p>
-											Audited Report
+											Client Report
+											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
+									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document)  ? @"display:block" : "display:none")">
+									</ul>
 								</li>
 
-								<li class="nav-item">
-									<a href="/secretary-dept/submissions/companies-strike-off" class="nav-link @(
-							currentController== ControllerNames.Secretary
-							&& (currentAction == "CompanyStrikeOffList" || currentAction =="EditCompanyStrikeOffSubmission")?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											Company Strike Off
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/secretary-dept/submissions/llp" class="nav-link @(
-							currentController== ControllerNames.Secretary
-							&& (currentAction == "LLPSubmissionList" || currentAction =="EditLLPSubmission")?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											LLP
-										</p>
-									</a>
-								</li>
 							</ul>
 						</li>
- *@
-						<li class="nav-header">Users & Systems</li>
 
-						<li class="nav-item @(currentController== ControllerNames.User ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController== ControllerNames.User ?"active":"")">
-								<i class="fas fa-users nav-icon"></i>
+						<li class="nav-item @(currentController.Is(ControllerNames.Document)  ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document) ?"active":"")">
+								<span class="nav-icon">3</span>
 								<p>
-									Users
+									Form/Template
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
-
-								<li class="nav-item">
-									<a href="/users" class="nav-link @(currentController== ControllerNames.User && currentAction =="List" ?"active":"")">
-										<i class="nav-icon fas fa-list"></i>
+							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document)  ? @"display:block" : "display:none")">
+								<li class="nav-item @(currentController.Is(ControllerNames.Document)  ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document)  ?"active":"")">
+										<span class="nav-icon">3.1</span>
 										<p>
-											List
+											Document Control
+											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
+									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document)  ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/documents/audit-dept"
+											   class="nav-link @(currentController.Is(ControllerNames.Document)  && currentAction.Is("AuditDepartment")  ?"active":"")">
+												<span class="nav-icon ">3.1.1</span>
+												<p>
+													Audit Department
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="#" class="nav-link ">
+												<span class="nav-icon ">3.1.2</span>
+												<p>
+													Acc Department
+												</p>
+											</a>
+										</li>
+									</ul>
 								</li>
-								@if (UserContext.IsSuperAdmin)
-								{
-									<li class="nav-item">
-										<a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction =="Create" ?"active":"")">
-											<i class="nav-icon fas fa-plus"></i>
-											<p>
-												New User
-											</p>
-										</a>
-									</li>
-								}
+								<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(false ?"active":"")">
+										<span class="nav-icon">3.2</span>
+										<p>
+											Account dept
+											<i class="right fas fa-angle-left"></i>
+										</p>
+									</a>
+									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">3.2.1</span>
+												<p>
+													Inward Correspond
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">3.2.2</span>
+												<p>
+													Tax Audit
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(false ?"active":"")">
+										<span class="nav-icon">3.3</span>
+										<p>
+											Tax dept
+											<i class="right fas fa-angle-left"></i>
+										</p>
+									</a>
+									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">3.3.1</span>
+												<p>
+													Inward Correspond
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">3.3.2</span>
+												<p>
+													Tax Audit
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+
 							</ul>
 						</li>
 
-						@* 	<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-list"></i>
+						<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(false ?"active":"")">
+								<span class="nav-icon">4</span>
 								<p>
-									MSIC
-
+									Schedule/Report
+									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
+							<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+								<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(false ?"active":"")">
+										<span class="nav-icon">4.1</span>
+										<p>
+											Secretary Dept
+											<i class="right fas fa-angle-left"></i>
+										</p>
+									</a>
+									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.1</span>
+												<p>
+													Task Template
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.2</span>
+												<p>
+													Strike off Template
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.3</span>
+												<p>
+													Sdh bhd master sec - Schedule
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.4</span>
+												<p>
+													LLP master sec
+												</p>
+											</a>
+										</li>
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.5</span>
+												<p>
+													Annual return submision report
+												</p>
+											</a>
+										</li>
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.6</span>
+												<p>
+													Sdn bhd aduit acc submission report
+												</p>
+											</a>
+										</li>
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.7</span>
+												<p>
+													LLP submission report
+												</p>
+											</a>
+										</li>
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.1.8</span>
+												<p>
+													Strike Off Schedule
+												</p>
+											</a>
+										</li>
+
+									</ul>
+								</li>
+								<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(false ?"active":"")">
+										<span class="nav-icon">4.2</span>
+										<p>
+											Audit Dept
+											<i class="right fas fa-angle-left"></i>
+										</p>
+									</a>
+									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.2.1</span>
+												<p>
+												</p>
+											</a>
+										</li>
+
+										<li class="nav-item">
+											<a href="/companies" class="nav-link ">
+												<span class="nav-icon ">4.2.2</span>
+												<p>
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
 						</li>
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-list"></i>
-								<p>
-									Department
-								</p>
-							</a>
-						</li> *@
 
-						<li class="nav-item">
-							<a href="/notifications/logs" class="nav-link @(currentController== ControllerNames.Notification ?"active":"")">
-								<i class="nav-icon fas fa-bell"></i>
-								<p>
-									System Notification
-								</p>
-							</a>
-						</li>
-
-						<li class="nav-item">
-							<a href="/sys-audit-logs" class="nav-link @(currentController== ControllerNames.SystemAuditLog ?"active":"")">
-								<i class="nav-icon fas fa-history"></i>
-								<p>
-									System Audit Log
-								</p>
-							</a>
-						</li>
-
-						@if (UserContext.IsSuperAdmin)
+						@if (false)
 						{
-							<li class="nav-item @(currentController== ControllerNames.SchedulerJob ?"menu-is-opening menu-open":"")">
-								<a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
-									<i class="nav-icon fas fa-clock"></i>                                    <p>
-										Scheduled Task
+							<li class="nav-header">Users & Systems</li>
+
+							<li class="nav-item @(currentController== ControllerNames.User ?"menu-is-opening menu-open":"")">
+								<a href="#" class="nav-link @(currentController== ControllerNames.User ?"active":"")">
+									<i class="fas fa-users nav-icon"></i>
+									<p>
+										Users
 										<i class="right fas fa-angle-left"></i>
 									</p>
 								</a>
-								<ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
+								<ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
 
 									<li class="nav-item">
-										<a href="/scheduler-jobs" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "List" ?"active":"")">
+										<a href="/users" class="nav-link @(currentController== ControllerNames.User && currentAction.Is("List") ?"active":"")">
 											<i class="nav-icon fas fa-list"></i>
 											<p>
 												List
 											</p>
 										</a>
 									</li>
-									<li class="nav-item">
-										<a href="/scheduler-jobs/create" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction == "Create" ?"active":"")">
-											<i class="nav-icon fas fa-plus"></i>
-											<p>
-												Add new task
-											</p>
-										</a>
-									</li>
+									@if (UserContext.IsSuperAdmin)
+									{
+										<li class="nav-item">
+											<a href="/users/create" class="nav-link @(currentController== ControllerNames.User && currentAction.Is("Create") ?"active":"")">
+												<i class="nav-icon fas fa-plus"></i>
+												<p>
+													New User
+												</p>
+											</a>
+										</li>
+									}
 								</ul>
 							</li>
 
+							<li class="nav-item">
+								<a href="/notifications/logs" class="nav-link @(currentController== ControllerNames.Notification ?"active":"")">
+									<i class="nav-icon fas fa-bell"></i>
+									<p>
+										System Notification
+									</p>
+								</a>
+							</li>
+
+							<li class="nav-item">
+								<a href="/sys-audit-logs" class="nav-link @(currentController== ControllerNames.SystemAuditLog ?"active":"")">
+									<i class="nav-icon fas fa-history"></i>
+									<p>
+										System Audit Log
+									</p>
+								</a>
+							</li>
+
+							@if (UserContext.IsSuperAdmin)
+							{
+								<li class="nav-item @(currentController== ControllerNames.SchedulerJob ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
+										<i class="nav-icon fas fa-clock"></i>                                    <p>
+											Scheduled Task
+											<i class="right fas fa-angle-left"></i>
+										</p>
+									</a>
+									<ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
+
+										<li class="nav-item">
+											<a href="/scheduler-jobs" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction.Is("List") ?"active":"")">
+												<i class="nav-icon fas fa-list"></i>
+												<p>
+													List
+												</p>
+											</a>
+										</li>
+										<li class="nav-item">
+											<a href="/scheduler-jobs/create" class="nav-link @(currentController== ControllerNames.SchedulerJob && currentAction.Is("Create") ?"active":"")">
+												<i class="nav-icon fas fa-plus"></i>
+												<p>
+													Add new task
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+
+							}
+
 						}
+
 
 						<li class="nav-item">
 							<a href="/auth/logout" class="nav-link">

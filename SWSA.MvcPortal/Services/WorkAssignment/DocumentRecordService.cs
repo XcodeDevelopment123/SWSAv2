@@ -1,6 +1,4 @@
-﻿using SWSA.MvcPortal.Services.Interfaces;
-using SWSA.MvcPortal.Repositories.Interfaces;
-using SWSA.MvcPortal.Commons.Services.UploadFile;
+﻿using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
@@ -17,14 +15,20 @@ namespace SWSA.MvcPortal.Services.WorkAssignment;
 public class DocumentRecordService(
 IMapper mapper,
 IUserContext userContext,
-IUploadFileService uploadFileService,
 IDocumentRecordRepository repo,
 ISystemAuditLogService sysAuditService,
 ICompanyWorkAssignmentRepository workAssignmentRepo,
-ICompanyRepository companyRepo
+ICompanyRepository companyRepo,
+IUserRepository userRepo
 ) : IDocumentRecordService
 {
     #region VM/DTO Query Method 
+    public async Task<List<DocumentRecord>> GetDocumentRecordsByDepartment(string department)
+    {
+        var data = await repo.GetDocumentRecordsByDepartment(department);
+        return data;
+    }
+
     public async Task<List<DocumentRecordVM>> GetDocumentRecords()
     {
         var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()] :
@@ -48,99 +52,42 @@ ICompanyRepository companyRepo
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
-    public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyDepartmentId(int companyDepartmentId)
-    {
-        var data = await repo.GetDocumentRecordsByCompanyDepartmentId(companyDepartmentId);
-        if (data.Count > 0)
-        {
-            var firstItem = data.First();
-            ///TODO : Check if the user has access to the company and department
-        }
-
-        return mapper.Map<List<DocumentRecordVM>>(data);
-    }
     #endregion
 
-    public async Task<bool> CreateDocument(DocumentRecordRequest doc, IFormFile files)
+    public async Task<DocumentRecord> CreateDocument(DocumentRecordRequest doc)
     {
-        var workAssignment = await workAssignmentRepo.GetByIdAsync(doc.WorkAssignmentId);
-        Guard.AgainstNullData("Work assignment not found");
-
-        var cp = await companyRepo.GetByIdAsync(workAssignment!.CompanyId);
+        var cp = await companyRepo.GetByIdAsync(doc.CompanyId);
         Guard.AgainstNullData(cp, "Company not found");
-
+        var user = await userRepo.GetByIdAsync(userContext.EntityId);
+        Guard.AgainstNullData(user, "User not found");
         Guard.AgainstUnauthorizedCompanyAccess(cp!.Id, null, userContext);
 
-        var flowType = doc.FlowType.ToString().ToLower();
-
-        var safeCpIdName = uploadFileService.SanitizeFolderName($"cp-{cp.Id}");
-        var safeWorkName = uploadFileService.SanitizeFolderName($"{workAssignment.WorkType}-{doc.DocumentType}");
-
-        var subFolder = Path.Combine("docs", safeCpIdName, "work", safeWorkName, flowType);
-
-        var result = await uploadFileService.UploadAsync(files, subFolder, UploadStorageType.Local);
-        doc.AttachmentFilePath = result;
-
         var data = mapper.Map<DocumentRecord>(doc);
-
-        data.HandledByStaffId = userContext.EntityId;
-
+        data.HandledByStaffId = user!.Id;
         repo.Add(data);
 
         await repo.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, data.Id.ToString(), $"Document: {data.AttachmentFileName}", data);
+        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, data.Id.ToString(), $"Document: {data.Id}", data);
         sysAuditService.LogInBackground(log);
-        return true;
+        return data;
     }
 
     public async Task<bool> CreateDocuments(DocumentRecordListRequest req, List<IFormFile> files)
     {
-        //  var companyDepartmentIds = req.Documents.Select(d => d.CompanyDepartmentId).Distinct().ToList();
-
-        ///TODO : Check if the user has access to the company and department
-        //Checking if the user has access to the company departments
-        //foreach (var companyDepartment in companyDepartments)
-        //{
-        //}
-
-        var skippedDocuments = new List<string>();
-
         List<DocumentRecord> records = new List<DocumentRecord>();
         for (int i = 0; i < req.Documents.Count; i++)
         {
-
             var doc = req.Documents[i];
-
-            if (i >= files.Count || files[i] == null)
-            {
-                skippedDocuments.Add(doc.AttachmentFileName ?? $"[Index {i}]");
-                continue;
-            }
-
-            // Sanitize the folder name
-            var flowType = doc.FlowType.ToString().ToLower();
-            ///TODO: Update doc folder name
-            //var safeCompanyName = uploadFileService.SanitizeFolderName($"{doc.CompanyName}-{doc.CompanyId}");
-            //  var safeDeptName = uploadFileService.SanitizeFolderName($"{doc.DepartmentName}-{doc.CompanyDepartmentId}");
-            var safeCompanyName = "";
-            var safeDeptName = "";
-            var subFolder = Path.Combine("docs", safeCompanyName, safeDeptName, flowType);
-
-            //Upload the file
-            var result = await uploadFileService.UploadAsync(files[i], subFolder, UploadStorageType.Local);
-            doc.AttachmentFilePath = result;
-
             var data = mapper.Map<DocumentRecord>(doc);
             data.HandledByStaffId = userContext.EntityId;
-
             repo.Add(data);
         }
 
         await repo.SaveChangesAsync();
         foreach (var doc in records)
         {
-            var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, doc.Id.ToString(), $"Document: {doc.AttachmentFileName}", doc);
+            var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.Id}", doc);
             sysAuditService.LogInBackground(log);
         }
         return true;
@@ -155,13 +102,8 @@ ICompanyRepository companyRepo
         repo.Remove(doc!);
         await repo.SaveChangesAsync();
 
-        var filePath = doc!.AttachmentFilePath;
-        if (!string.IsNullOrEmpty(filePath))
-        {
-            await uploadFileService.DeleteAsync(filePath);
-        }
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.AttachmentFileName}", doc);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.Id}", doc);
         sysAuditService.LogInBackground(log);
         return true;
     }

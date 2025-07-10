@@ -45,13 +45,13 @@ public class Company
     public virtual ICollection<CompanyOfficialContact> OfficialContacts { get; set; } = new List<CompanyOfficialContact>();
     public virtual ICollection<CompanyCommunicationContact> CommunicationContacts { get; set; } = new List<CompanyCommunicationContact>();
     public virtual ICollection<CompanyOwner> Owners { get; set; } = new List<CompanyOwner>();
+    public virtual ICollection<DocumentRecord> DocumentRecords { get; set; } = new List<DocumentRecord>();
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; } = new List<SystemAuditLog>();
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = new List<CompanyMsicCode>();
-    public virtual ICollection<UserCompanyDepartment> UserCompanyDepartments { get; set; } = new List<UserCompanyDepartment>();
 
     public string GetDirectorName()
     {
-        if(this.Owners == null || this.Owners.Count == 0)
+        if (this.Owners == null || this.Owners.Count == 0)
             return string.Empty;
 
         var director = this.Owners.FirstOrDefault(o => o.Position == PositionType.Director);

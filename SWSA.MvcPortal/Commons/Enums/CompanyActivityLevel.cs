@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum CompanyActivityLevel
 {
+    Other = 0,
+
     /// <summary>
     /// Dormant
     /// </summary>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -16,9 +17,10 @@ public class CompanyController(
 {
     #region Page/View
     [Route("")]
-    public async Task<IActionResult> List()
+    public async Task<IActionResult> List(CompanyType? type)
     {
-        var data = await service.GetCompaniesAsync();
+        var data = type.HasValue ? await service.GetCompaniesByTypeAsync(type.Value) : await service.GetCompaniesAsync();
+        ViewData["company-type"] = type;
         return View(data);
     }
 
@@ -35,23 +37,15 @@ public class CompanyController(
         return View(data);
     }
 
-    [Route("create")]
-    public async Task<IActionResult> Create()
-    {
-        var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var users = await userService.GetUserSelectionAsync();
-        CompanyCreatePageVM vm = new(msicCodes, users);
-        return View(vm);
-    }
 
     [Route("{companyId}/edit")]
     public async Task<IActionResult> Edit([FromRoute] int companyId)
     {
         var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        var users = await userService.GetUserSelectionAsync();
+        ViewData["company-type"] = cp.CompanyType;
 
-        CompanyEditPageVM vm = new(cp, msicCodes, users);
+        CompanyEditPageVM vm = new(cp, msicCodes);
         return View(vm);
     }
 
@@ -70,6 +64,14 @@ public class CompanyController(
     public async Task<IActionResult> GetCompanyDetailById([FromRoute] int companyId)
     {
         var data = await service.GetCompanyByIdAsync(companyId);
+        return Ok(data);
+    }
+
+    [InternalAjaxOnly]
+    [HttpGet("{companyId}/simple-info")]
+    public async Task<IActionResult> GetCompanySimpleInfoById([FromRoute] int companyId)
+    {
+        var data = await service.GetCompanySimpleInfoVMByIdAsync(companyId);
         return Ok(data);
     }
 

@@ -4,6 +4,7 @@ namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum CompanyStatus
 {
+    Other=0,
     Active = 1,
     Dormant = 2,
     [Display(Name = "Strike Off")]

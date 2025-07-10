@@ -29,13 +29,13 @@ public class User
     public bool IsLocked { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastLoginAt { get; set; }
+    public string Department { get; set; }
     [SystemAuditLog("User Role")]
     public UserRole Role { get; set; } = UserRole.Staff;
 
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
-    public virtual ICollection<UserCompanyDepartment> CompanyDepartments { get; set; } //Use to define this user can access which company department
-    public virtual ICollection<WorkAssignmentUserMapping> AssignedDepartmentTasks { get; set; } = new List<WorkAssignmentUserMapping>(); // The user handle work
+    public virtual ICollection<WorkAssignmentUserMapping> AssignedWorks { get; set; } = new List<WorkAssignmentUserMapping>(); // The user handle work
 
 
     public string ToJsonData()

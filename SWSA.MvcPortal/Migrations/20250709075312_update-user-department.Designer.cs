@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250709075312_update-user-department")]
+    partial class updateuserdepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,13 +358,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("BagOrBoxCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DocumentDate")
                         .HasColumnType("datetime2");
 
@@ -377,15 +373,14 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UploadLetter")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("WorkAssignmentId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("HandledByStaffId");
+
+                    b.HasIndex("WorkAssignmentId");
 
                     b.ToTable("DocumentRecords");
                 });
@@ -848,21 +843,21 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.DocumentRecord", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.Company", "Company")
-                        .WithMany("DocumentRecords")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SWSA.MvcPortal.Entities.User", "HandledByStaff")
                         .WithMany()
                         .HasForeignKey("HandledByStaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.HasOne("SWSA.MvcPortal.Entities.CompanyWorkAssignment", "WorkAssignment")
+                        .WithMany("Documents")
+                        .HasForeignKey("WorkAssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("HandledByStaff");
+
+                    b.Navigation("WorkAssignment");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.ScheduledJob", b =>
@@ -951,8 +946,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("ComplianceDate")
                         .IsRequired();
 
-                    b.Navigation("DocumentRecords");
-
                     b.Navigation("MsicCodes");
 
                     b.Navigation("OfficialContacts");
@@ -967,6 +960,8 @@ namespace SWSA.MvcPortal.Migrations
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyWorkAssignment", b =>
                 {
                     b.Navigation("AssignedUsers");
+
+                    b.Navigation("Documents");
 
                     b.Navigation("Progress");
                 });

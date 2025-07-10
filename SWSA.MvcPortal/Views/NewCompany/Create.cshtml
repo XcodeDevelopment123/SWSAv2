@@ -16,7 +16,7 @@
 
 	var departments = SelectHelper.GetDepartments(null);
 	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
-	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(null);
+	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(Model.CompanyType);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
 	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
@@ -26,109 +26,6 @@
 <h3>Create New Company Profile</h3>
 
 <div class="row">
-	<div class="col-md-12">
-		<form id="handleUserForm">
-			<!-- jquery validation -->
-			<div class="card card-primary">
-				<div class="card-header">
-					<h3 class="card-title">Handle Users Info</h3>
-
-					<div class="card-tools">
-						<button type="button" class="btn btn-tool" data-card-widget="collapse">
-							<i class="fas fa-minus"></i>
-						</button>
-					</div>
-				</div>
-
-				<!-- /.card-header -->
-				<!-- form start -->
-				<div class="card-body">
-					<table id="handleUserTable" class="table table-bordered table-hover">
-						<thead>
-							<tr>
-								<th>User</th>
-								<th>Departments</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@if (!UserContext.IsSuperAdmin)
-							{
-								var departmentsName = string.Join(",", departments.Select(d => d.Value));
-
-								<tr>
-									<td data-staff-id="@UserContext.StaffId">
-										@UserContext.Name (@UserContext.Role.GetDisplayName())
-									</td>
-									<td data-departments="@departmentsName">
-										@departmentsName
-									</td>
-									<td>
-										<button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Only super admin can remove"><i class="fa fa-trash"></i></button>
-									</td>
-								</tr>
-							}
-
-						</tbody>
-					</table>
-
-					@if (UserContext.IsSuperAdmin)
-					{
-						<div class="divider-line"></div>
-
-						<div class="row">
-
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="handleStaffId">
-										User
-										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The system user assigned to handle this company."></i>
-									</label>
-									<select id="handleStaffId" name="handleStaffId" class="form-control select2 ">
-										@if (Model.Users.Count == 0)
-										{
-											<option disabled value="">No swsa staff available in systems</option>
-										}
-										else
-										{
-											<option value="">Please select</option>
-										}
-
-										@foreach (var user in Model.Users)
-										{
-											<option value="@user.StaffId">@user.FullName (@user.Role.GetDisplayName())</option>
-										})
-
-									</select>
-								</div>
-							</div>
-
-
-							<div class="col-md-12">
-								<div class="form-group">
-									<label for="userDepartments">
-										User Handle Departments
-										<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="The selected departments are user-specific and independent of the company's department settings. Users can access them even if the company disables the department later."></i>
-									</label>
-									<select asp-items="departments" id="userDepartments" name="userDepartments" class="form-control select2" multiple="multiple" style="max-width:95%">
-							
-									</select>
-								</div>
-							</div>
-						</div>
-					}
-				</div>
-
-				@if (UserContext.IsSuperAdmin)
-				{
-					<div class="card-footer">
-						<button type="submit" class="btn btn-primary float-end">Add</button>
-					</div>
-				}
-			</div>
-		</form>
-		<!-- /.card -->
-	</div>
 
 	<div class="col-md-12">
 		<form id="companyForm">
@@ -147,7 +44,12 @@
 				<!-- /.card-header -->
 				<!-- form start -->
 				<div class="card-body row">
-
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="companyType">Company Type</label>
+							<select disabled asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
+						</div>
+					</div>
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="companyName">Company Name*</label>
@@ -198,12 +100,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="companyType">Company Type</label>
-							<select asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
-						</div>
-					</div>
+			
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="companyStatus">Company Status</label>

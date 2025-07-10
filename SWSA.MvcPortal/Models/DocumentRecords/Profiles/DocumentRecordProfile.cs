@@ -17,50 +17,11 @@ public class DocumentRecordProfile : Profile
               .ForMember(dest => dest.DocumentId, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.FullName ?? AppSettings.NotAvailable))
               .ForMember(dest => dest.HandledByStaffId, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.StaffId ?? src.HandledByStaffId.ToString()))
-              .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow))      
-              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.WorkAssignment.CompanyId))      
-              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.WorkAssignment.Company.Name))      
-              .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow))      
-              .ForMember(dest => dest.AttachmentPath, opt => opt.MapFrom((src, dest) =>
-              {
-                  if (string.IsNullOrEmpty(src.AttachmentFilePath))
-                      return null!;
-
-                  var localDomain = fileSettings.Value.LocalDomain;
-                  return src.AttachmentFilePath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-              ? src.AttachmentFilePath
-              : $"{localDomain}{src.AttachmentFilePath}";
-              }))
-              .ForMember(dest => dest.DownloadLink, opt => opt.MapFrom((src, dest) =>
-               {
-                   if (string.IsNullOrEmpty(src.AttachmentFilePath))
-                       return null!;
-
-                   if (src.AttachmentFilePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                       return src.AttachmentFilePath;
-
-                   //file controller and download link
-                   var downloadPath = $"/files/download?path={Uri.EscapeDataString(src.AttachmentFilePath)}";
-                   if (!string.IsNullOrEmpty(src.AttachmentFileName))
-                   {
-                       downloadPath += $"&fileOriName={Uri.EscapeDataString(src.AttachmentFileName)}";
-                   }
-                   var localDomain = fileSettings.Value.LocalDomain;
-                   return $"{localDomain}{downloadPath}";
-               }))
-               .ForMember(dest => dest.ViewLink, opt => opt.MapFrom((src, dest) =>
-               {
-                   if (string.IsNullOrEmpty(src.AttachmentFilePath))
-                       return null!;
-
-                   if (src.AttachmentFilePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                       return src.AttachmentFilePath;
-
-                   //file controller and download link
-                   var downloadPath = $"/files/view?path={Uri.EscapeDataString(src.AttachmentFilePath)}";
-                   var localDomain = fileSettings.Value.LocalDomain;
-                   return $"{localDomain}{downloadPath}";
-               }));
+              .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow))
+              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.CompanyId))
+              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Company.Name))
+              .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow));
+           
 
         //Only for map link
         CreateMap<DocumentRecordVM, DocumentRecordVM>()

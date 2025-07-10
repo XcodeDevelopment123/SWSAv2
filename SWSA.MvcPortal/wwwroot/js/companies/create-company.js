@@ -343,88 +343,8 @@
 
     //#endregion
 
-    //#region Handle User Form 
-    const $handleUserForm = $("#handleUserForm");
-    const handleUserFormInputs = {
-        handleStaffId: $handleUserForm.find('select[name="handleStaffId"]'),
-        userDepartments: $handleUserForm.find('select[name="userDepartments"]'),
-    };
-
-    $handleUserForm.validate({
-        rules: {
-            handleStaffId: {
-                required: true
-            },
-            userDepartments: {
-                required: true
-            },
-        },
-        messages: {
-            handleStaffId: {
-                required: "User is required."
-            },
-            userDepartments: {
-                required: "Select at least one department"
-            },
-        },
-        errorElement: 'span',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            if (element.hasClass('select2-hidden-accessible')) {
-                element.next('.select2-container').after(error);
-            } else {
-                element.closest('.form-group').append(error);
-            }
-        },
-        highlight: function (element) {
-            $(element).addClass('is-invalid');
-        },
-        unhighlight: function (element) {
-            $(element).removeClass('is-invalid');
-        }
-    });
-
-    $handleUserForm.on('submit', function (e) {
-        e.preventDefault();
-
-        if (!$handleUserForm.valid()) {
-            return;
-        }
-
-        const staffId = handleUserFormInputs.handleStaffId.val(); // staff ID
-        const staffName = handleUserFormInputs.handleStaffId.find('option:selected').text(); // staff 名字
-        const departmentNames = handleUserFormInputs.userDepartments.find('option:selected')
-            .map(function () { return $(this).text(); })
-            .get(); // array of names
-
-        const staffData = {
-            staffId: staffId,
-            name: `${staffName}`,
-            departments: departmentNames
-        };
-
-        addHandleUserRow(staffData)
-
-        handleUserFormInputs.handleStaffId.find(`option[value="${staffId}"]`).prop('disabled', true);
-        handleUserFormInputs.userDepartments.val("").trigger('change');
-        handleUserFormInputs.handleStaffId.val("").trigger('change');
-        $handleUserForm[0].reset();
-    });
-
-    //#endregion
-
 
     //#region Table
-    const handleUserTable = $('#handleUserTable').DataTable({
-        paging: true,
-        lengthChange: false,
-        searching: true,
-        ordering: true,
-        info: true,
-        autoWidth: false,
-        responsive: true
-    });
-
     const ownerTable = $('#ownerTable').DataTable({
         paging: true,
         lengthChange: false,
@@ -498,7 +418,6 @@
         companyData.companyOwners = getOwnerTableData();
         companyData.communicationContacts = getCommunicationContactTableData();
         companyData.officialContacts = getOfficialContactTableData();
-        companyData.handleUsers = getHandleUserTableData();
         companyData.complianceDate = getFormData(complianceDateFormInputs);
 
         $.ajax({
@@ -515,24 +434,6 @@
             }
         })
     });
-
-    function addHandleUserRow(data) {
-        const rowHtml = [
-            `<td data-staff-id="${data.staffId}">
-                ${data.name}
-            </td>`,
-            `<td data-departments="${data.departments.join(',')}">
-                ${data.departments.join(',')}
-            </td>`,
-            `<td>
-            <button type="button" class="btn btn-sm btn-danger btn-delete-row" value="${data.staffId}">
-                <i class="fa fa-trash"></i>
-            </button>
-        </td>`
-        ];
-
-        handleUserTable.row.add(rowHtml).draw(false);
-    }
 
     function addOwnerRow(data) {
         ownerTable.row.add([
@@ -623,36 +524,18 @@
         return data;
     }
 
-    function getHandleUserTableData() {
-        const data = [];
-
-        handleUserTable.rows().every(function () {
-            const rowData = this.data();
-
-            const staffCell = $('<div>').html(rowData[0]).find('td, *[data-staff-id]');
-            const departmentCell = $('<div>').html(rowData[1]).find('td, *[data-departments]');
-            const staffId = staffCell.data('staff-id');
-            const departmentNames = departmentCell.data('departments');
-
-            data.push({
-                staffId: staffId,
-                departments: departmentNames.split(',')
-            });
-        });
-
-        return data;
-    }
-
     //Require to select user
     function demoSubmitCompany() {
         const companyData = {
-            "CompanyName": "ABC Biz Solutions Sdn Bhd",
-            "RegistrationNumber": "202401234567",
-            "EmployerNumber": "E1234567890",
-            "TaxIdentificationNumber": "TIN99887766",
+            "CompanyName": "DEF Biz Solutions Sdn Bhd",
+            "RegistrationNumber": "202501234567",
+            "EmployerNumber": "E12342267890",
+            "TaxIdentificationNumber": "TIN993487766",
             "YearEndMonth": "December",
             "IncorporationDate": "2022-07-15T00:00:00",
             "CompanyType": "SdnBhd",
+            "CompanyStatus": "Active", 
+            "CompanyActivityLevel": "D", 
             "ComplianceDate": {
                 "FirstYearAccountStart": "2022-07-15T00:00:00",
                 "AGMDate": "2023-09-01T00:00:00",
@@ -694,8 +577,8 @@
                     "Remark": "Registered office"
                 }
             ],
-            "HandleUsers": getHandleUserTableData()
         }
+
         $.ajax({
             url: `${urls.companies}/create`,
             method: "POST",

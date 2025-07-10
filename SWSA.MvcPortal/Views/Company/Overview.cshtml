@@ -14,61 +14,6 @@
 
 <div class="row">
 	<div class="col-md-12">
-		<form id="handleUserForm">
-			<!-- jquery validation -->
-			<div class="card card-primary">
-				<div class="card-header">
-					<h3 class="card-title">Handle Users Info</h3>
-
-					<div class="card-tools">
-						<button type="button" class="btn btn-tool" data-card-widget="collapse">
-							<i class="fas fa-minus"></i>
-						</button>
-					</div>
-				</div>
-
-				<!-- /.card-header -->
-				<!-- form start -->
-				<div class="card-body">
-					<table id="handleUserTable" class="table table-bordered table-hover">
-						<thead>
-							<tr>
-								<th>User</th>
-								<th>Departments</th>
-							</tr>
-						</thead>
-						<tbody>
-							@{
-								var userDepartments = Model.UserCompanyDepartments
-								.GroupBy(ucd => ucd.UserId)
-								.Select(g => new
-								{
-									User = g.First().User,
-									Departments = g.Select(x => x.Department).Distinct().ToList()
-								})
-								.ToHashSet();
-								foreach (var user in userDepartments)
-								{
-									<tr>
-										<td>
-											<a href="/users/@user.User.StaffId/overview">@user.User.FullName (@user.User.Role.GetDisplayName())</a>
-										</td>
-										<td>
-											@string.Join(", ", user.Departments)
-										</td>
-									</tr>
-								}
-							}
-						</tbody>
-					</table>
-				</div>
-
-			</div>
-		</form>
-		<!-- /.card -->
-	</div>
-
-	<div class="col-md-12">
 		<form id="companyForm">
 			<!-- jquery validation -->
 			<div class="card card-primary">
