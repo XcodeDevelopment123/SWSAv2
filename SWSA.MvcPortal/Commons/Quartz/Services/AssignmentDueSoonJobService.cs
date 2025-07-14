@@ -8,7 +8,7 @@ namespace SWSA.MvcPortal.Commons.Quartz.Services;
 
 [Obsolete("currently use job instead of service")]
 public class AssignmentDueSoonJobService(
-    ICompanyWorkAssignmentRepository companyWorkAssignmentRepository
+    IWorkAssignmentRepository companyWorkAssignmentRepository
     //Inject messaging service to use whatsapp / email etc..
     ) : IAssignmentDueSoonJobService
 {

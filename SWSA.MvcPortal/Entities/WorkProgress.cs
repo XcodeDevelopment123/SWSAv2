@@ -2,20 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
-using AutoMapper.Execution;
-using SWSA.MvcPortal.Entities.WorkAssignments;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("WorkAssignment")]
-public class CompanyWorkProgress
+[Module("WorkAssignments")]
+public class WorkProgress
 {
     [Key]
     public int Id { get; set; }
 
     [ForeignKey(nameof(WorkAssignment))]
     public int WorkAssignmentId { get; set; }
-    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
+    public virtual WorkAssignment WorkAssignment { get; set; } = null!;
 
     [SystemAuditLog("Work Start Date")]
     public DateTime? StartDate { get; set; }

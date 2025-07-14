@@ -1,5 +1,4 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Dtos.Requests.Users;
 
 namespace SWSA.MvcPortal.Dtos.Requests.Companies;
 

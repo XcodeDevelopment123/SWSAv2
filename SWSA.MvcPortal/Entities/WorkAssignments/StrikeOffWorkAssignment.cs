@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Entities.WorkAssignments;
 
-public class StrikeOffWorkAssignment : CompanyWorkAssignment
+public class StrikeOffWorkAssignment : WorkAssignment
 {
     [SystemAuditLog("Strike-Off Start Date")]
     public DateTime? StartDate { get; set; }

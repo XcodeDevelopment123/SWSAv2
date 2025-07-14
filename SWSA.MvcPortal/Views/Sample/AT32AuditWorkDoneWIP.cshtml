@@ -1,0 +1,366 @@
+﻿
+@{
+    ViewData["Title"] = "AT32AuditWorkDoneWIP";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">AT3.2 Audit Work Done WIP</h3>
+            </div>
+            <div class="card-body">
+                <!-- Form 1 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Audit WIP (days)</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Audit Fee</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Billed</label>
+                                <div class="input-group">
+                                    <input disabled type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <div class="input-group">
+                                    <input disabled type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>As at</label>
+                                <div class="input-group">
+                                    <input disabled type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>No. of Days</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Total Field Work Days</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Result Over/Under</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+
+                <!-- Form 2 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Audit Work WIP %</label>
+                        </div>
+
+                        <div class="col-md-2"><label>Planning (PIC)</label><input type="text" class="form-control" /></div>
+                        <div class="col-md-2"><label>Fieldwork (PIC)</label><input type="text" class="form-control" /></div>
+                        <div class="col-md-2"><label>Evaluation (PIC)</label><input type="text" class="form-control" /></div>
+                        <div class="col-md-2"><label>Audit Completion (PIC)</label><input type="text" class="form-control" /></div>
+                        <div class="col-md-2"><label>Total %</label><input type="text" class="form-control" /></div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+
+                <!-- Form 3 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Review</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>1st Review - Date Sent</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>1st Review - End Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3"><label>1st Review - Result Over/Under</label><input type="text" class="form-control" /></div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>2nd Review - Date Sent</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>2nd Review - End Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3"><label>2nd Review - Result Over/Under</label><input type="text" class="form-control" /></div>
+
+                        <div class="col-md-3"><label>Total Review Days</label><input type="text" class="form-control" /></div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+
+                <!-- Form 4 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Audit Reports (from KK)</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Sent to KK</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Received AR</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date of Report</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date of Directors Report</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+
+                <!-- Form 5 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Directors’ Signing Pages</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Sent</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Follow Up Dates</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Received</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Comm of Oaths Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+
+                <!-- Form 6 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Final Department Handover</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Tax Due Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Pass to Tax Dept</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>SSM Due Date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Pass to Sec Dept (MBRS)</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date Binded</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Despatch Date to Client</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+            </div>
+        </div>
+    </div>
+</div>

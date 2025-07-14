@@ -1,0 +1,414 @@
+﻿@{
+	ViewData["Title"] = "AT21AuditMasterLogBook";
+}
+<div class="row">
+	<div class="col-md-12">
+		<!-- jquery validation -->
+		<div class="card card-secondary">
+			<div class="card-header">
+				<h3 class="card-title">AT2.1 Audit Master Log Book</h3>
+			</div>
+			<!-- /.card-header -->
+			<!-- form start -->
+
+			<div class="card-body">
+				<!-- Form 1 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Company Info</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Company Name</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Activity</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>YE To do</label>
+							<div class="input-group">
+								<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 2 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Handle User</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>PIC</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 3 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Due date</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>18 Month due</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Status</label>
+								<select class="form-control select2"></select>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 4 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Document</label>
+						</div>
+
+						<div class="form-group">
+							<label>Doc. Inwards date</label>
+							<div class="input-group">
+								<input disabled type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 5 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Est year result & Billing</label>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Revenue</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Profit/Loss</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Audit Fee</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>Date Billed</label>
+							<div class="input-group">
+								<input disabled type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+								<div class="input-group-append">
+									<span class="input-group-text">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 6 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Audit Progress</label>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>% Done</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Result Over/Under</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Completed %</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Days Done</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 7 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Review Status</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>KOH Review (1st)</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>KOH Review (2nd)</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Date sent to KH</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Review result (in # days)</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 8 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Audit Report</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Ref No</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 9 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Director Signing</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Who to meet client & date</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Date sent to client</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Date received back</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 10 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Tax Dept</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Tax Due Date</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Pass to Tax Dept</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 11 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Sec Dept</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>SSM Due Date</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Date pass to Sec Dept (MR/KR)</label>
+								<div class="input-group">
+									<input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fa fa-calendar"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+				<!-- Form 12 -->
+				<form>
+					<div class="row">
+						<div class="form-info-label col-12">
+							<label>Post Audit Work</label>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Reinfield</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>Downcheck DMR to Client</label>
+								<input type="text" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="divider-line"></div>
+
+			</div>
+		</div>
+		<!-- /.card-body -->
+		<!-- /.card -->
+	</div>
+</div>

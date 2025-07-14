@@ -4,7 +4,7 @@ using SWSA.MvcPortal.Entities.WorkAssignments;
 using SWSA.MvcPortal.Models.CompnayWorks;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 

@@ -37,13 +37,13 @@ using SWSA.MvcPortal.Services.Interfaces.Scheduler;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
 using SWSA.MvcPortal.Services.CompanyProfile;
-using SWSA.MvcPortal.Services.WorkAssignment;
+using SWSA.MvcPortal.Services.WorkAssignments;
 using SWSA.MvcPortal.Services.SystemInfra;
 using SWSA.MvcPortal.Services.UserAccess;
 using SWSA.MvcPortal.Services.Scheduler;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
@@ -145,8 +145,8 @@ public static class DependencyInjector
         services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
         services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
-        services.AddScoped<ICompanyWorkAssignmentRepository, CompanyWorkAssignmentRepository>();
-        services.AddScoped<ICompanyWorkProgressRepository, CompanyWorkProgressRepository>();
+        services.AddScoped<IWorkAssignmentRepository, WorkAssignmentRepository>();
+        services.AddScoped<IWorkProgressRepository, WorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
         services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();

@@ -10,19 +10,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<Company> Companies { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<CompanyCommunicationContact> CompanyCommunicationContact { get; set; }
-    internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
+    internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
-    internal DbSet<CompanyWorkAssignment> CompanyWorkAssignments { get; set; }
-    internal DbSet<CompanyWorkProgress> CompanyWorkProgresses { get; set; }
-    #region
+    internal DbSet<DocumentRecord> DocumentRecords { get; set; }
+    #region Work Assignment
+    internal DbSet<WorkAssignment> WorkAssignments { get; set; }
+    internal DbSet<WorkProgress> WorkProgresses { get; set; }
+    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; } 
     internal DbSet<AnnualReturnWorkAssignment> AnnualReturnWorkAssignments { get; set; }
     internal DbSet<AuditWorkAssignment> AuditWorkAssignments { get; set; }
     internal DbSet<LLPWorkAssignment> LLPWorkAssignments { get; set; }
     internal DbSet<StrikeOffWorkAssignment> StrikeOffWorkAssignments { get; set; }
     #endregion
-    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
-    internal DbSet<DocumentRecord> DocumentRecords { get; set; }
+
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
     internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
@@ -62,11 +63,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });
 
-        modelBuilder.Entity<CompanyWorkAssignment>(entity =>
+        modelBuilder.Entity<WorkAssignment>(entity =>
         {
             entity.HasOne(x => x.Progress)
             .WithOne(p => p.WorkAssignment)
-            .HasForeignKey<CompanyWorkProgress>(p => p.WorkAssignmentId);
+            .HasForeignKey<WorkProgress>(p => p.WorkAssignmentId);
         });
 
         //Add new Assignment at here

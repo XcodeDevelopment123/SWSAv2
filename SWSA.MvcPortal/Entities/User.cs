@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Identity;
 using SWSA.MvcPortal.Commons.Helpers;
 
 namespace SWSA.MvcPortal.Entities;

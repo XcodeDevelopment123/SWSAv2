@@ -3,16 +3,16 @@ using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 
-namespace SWSA.MvcPortal.Services.WorkAssignment;
+namespace SWSA.MvcPortal.Services.WorkAssignments;
 
 public interface IWorkAssignmentFactory
 {
-    CompanyWorkAssignment Create(WorkAssignmentRequest request, Company cp);
+    Entities.WorkAssignment Create(WorkAssignmentRequest request, Company cp);
 }
 
 public class WorkAssignmentFactory : IWorkAssignmentFactory
 {
-    public CompanyWorkAssignment Create(WorkAssignmentRequest request, Company cp)
+    public Entities.WorkAssignment Create(WorkAssignmentRequest request, Company cp)
     {
         var baseInfo = new
         {

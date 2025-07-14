@@ -14,6 +14,4 @@ public class EditCompanyRequest
     public CompanyStatus CompanyStatus { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     public List<int> MsicCodeIds { get; set; } = [];
-    public List<int> DepartmentsIds { get; set; } = [];
-
 }

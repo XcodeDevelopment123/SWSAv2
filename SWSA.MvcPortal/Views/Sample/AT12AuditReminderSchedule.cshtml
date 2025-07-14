@@ -1,0 +1,341 @@
+﻿
+@{
+    ViewData["Title"] = "AT12AuditReminderSchedule";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">AT1.2 Audit Reminder Schedule</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <div class="card-body">
+                <!-- Form 1 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Company Info</label>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Co Status</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>AEX/OT</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+                <!-- Form 2 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Planning & Allocation</label>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Year End</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>PIC</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Link to AT1.1 / AT3.1</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 3 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Due Dates</label>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>SSM 18 Mths</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>SSM / Tax</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Link to months ref to Year End</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 4 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Bank Confirmation</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Targeted send date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Targeted date send reminder</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date sent</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Date received</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 5 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>MH 1 Email</label>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Targeted date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Date sent</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Targeted call date</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 6 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>MH 4 Reminder PIC</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date remind</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>4th mth Y / N</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 7 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>MH 6 Test PIC</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Targeted Final Text</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>6th mth Y / N</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form 8 -->
+                <form>
+                    <div class="row">
+                        <div class="form-info-label col-12">
+                            <label>Inward Doc</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date Received</label>
+                                <div class="input-group">
+                                    <input type="text" value="yyyy-mm-dd" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Link to Doc Control A1.1</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="divider-line"></div>
+            </div>
+
+        </div>
+        <!-- /.card-body -->
+        <!-- /.card -->
+    </div>
+
+</div>

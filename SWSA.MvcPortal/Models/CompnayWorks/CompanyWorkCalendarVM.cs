@@ -15,7 +15,7 @@ public class CompanyWorkCalendarVM
     public string? Url { get; set; }
     public bool AllDay { get; set; } = true;
 
-    public static (string background, string border, string text) GetColor(CompanyWorkAssignment task)
+    public static (string background, string border, string text) GetColor(WorkAssignment task)
     {
         var progress = task.Progress?.Status;
         int hue = progress switch
@@ -37,7 +37,7 @@ public class CompanyWorkCalendarVM
         return (hsl, hsl, "#fff");
     }
 
-    public static CompanyWorkCalendarVM FromTask(CompanyWorkAssignment task)
+    public static CompanyWorkCalendarVM FromTask(WorkAssignment task)
     {
         var (bg, border, text) = GetColor(task);
 

@@ -5,8 +5,8 @@ using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("WorkAssignment")]
-public abstract class CompanyWorkAssignment
+[Module("WorkAssignments")]
+public abstract class WorkAssignment
 {
     [Key]
     public int Id { get; set; }
@@ -33,7 +33,7 @@ public abstract class CompanyWorkAssignment
 
     [SystemAuditLog("Reminder Date")]
     public DateTime? ReminderDate { get; set; }
-    public virtual CompanyWorkProgress? Progress { get; set; }
+    public virtual WorkProgress? Progress { get; set; }
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }

@@ -8,7 +8,7 @@ public class CompanyWorkAssignmentProfile : Profile
 {
     public CompanyWorkAssignmentProfile()
     {
-        CreateMap<CompanyWorkAssignment, CompanyWorkAssignment>();
-        CreateMap<CreateCompanyWorkAssignmentRequest, CompanyWorkAssignment>();
+        CreateMap<WorkAssignment, WorkAssignment>();
+        CreateMap<CreateCompanyWorkAssignmentRequest, WorkAssignment>();
     }
 }

@@ -5,7 +5,7 @@ using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 

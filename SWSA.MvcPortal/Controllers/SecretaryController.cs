@@ -2,7 +2,7 @@
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignment;
+using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 

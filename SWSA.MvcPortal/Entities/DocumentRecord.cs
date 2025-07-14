@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
-[Module("Clients")]
+[Module("CompanyProfile")]
 public class DocumentRecord
 {
     [Key]

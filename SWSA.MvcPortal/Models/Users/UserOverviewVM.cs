@@ -7,7 +7,7 @@ public class UserOverviewVM : UserVM
 {
     public List<SystemAuditLogListVM> AuditLogs { get; set; } = [];
     public List<Company> AssignedCompanies { get; set; } = [];
-    public List<CompanyWorkAssignment> AssignedWorks { get; set; } = [];
+    public List<WorkAssignment> AssignedWorks { get; set; } = [];
 
     public void MergeCompany()
     {

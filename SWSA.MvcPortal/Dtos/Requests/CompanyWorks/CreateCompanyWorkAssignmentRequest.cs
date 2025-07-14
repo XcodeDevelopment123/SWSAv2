@@ -13,7 +13,6 @@ public class CreateCompanyWorkAssignmentRequest
     public List<MonthOfYear> Months { get; set; } = new();
     public List<string> AssignedUserIds { get; set; } = new();
     public DateTime? ReminderDate { get; set; }
-
 }
 
 public static class WorkAssignedUsersMapper

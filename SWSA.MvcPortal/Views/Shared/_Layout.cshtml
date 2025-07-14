@@ -351,15 +351,15 @@
 										</li>
 									</ul>
 								</li>
-								<li class="nav-item @(currentController.Is(ControllerNames.Document) ?"menu-is-opening menu-open":"")">
-									<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document)  ?"active":"")">
+								<li class="nav-item @(false ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(false  ?"active":"")">
 										<span class="nav-icon">2.2</span>
 										<p>
 											Client Report
 											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
-									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document)  ? @"display:block" : "display:none")">
+									<ul class="nav nav-treeview" style="@(false  ? @"display:block" : "display:none")">
 									</ul>
 								</li>
 
@@ -582,6 +582,81 @@
 											</a>
 										</li>
 									</ul>
+								</li>
+							</ul>
+						</li>
+
+						<li class="nav-item @(currentController.Is("Sample") ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is("Sample") ?"active":"")">
+								<span class="nav-icon">5</span>
+								<p>
+									Sample
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview" style="@(currentController.Is("Sample") ? @"display:block" : "display:none")">
+
+								<li class="nav-item">
+									<a href="/samples/at1.2" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AT 1.2 Audit Reinder Schedule
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/samples/at2.1-master-log" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AT 2.1 Auit Master Log Book
+										</p>
+									</a>
+								</li>
+
+									<li class="nav-item">
+									<a href="/samples/at2.1-master-schedule" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AT 2.1 Auit Master Schedule
+										</p>
+									</a>
+								</li>
+							
+								<li class="nav-item">
+									<a href="/samples/at2.2" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AT 2.2 Audit Back Log Master Schedule
+										</p>
+									</a>
+								</li>
+
+									<li class="nav-item">
+									<a href="/samples/at3.2" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AT 3.2 Audit Work Done WIP
+										</p>
+									</a>
+								</li>
+
+									<li class="nav-item">
+									<a href="/samples/at4.1" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AEX 4.1 Audit OT / AEX Scheduling for current year
+										</p>
+									</a>
+								</li>
+
+									<li class="nav-item">
+									<a href="/samples/at4.2" class="nav-link ">
+										<span class="nav-icon "></span>
+										<p>
+											AEX 4.2 Audit OT / AEX Backlog
+										</p>
+									</a>
 								</li>
 							</ul>
 						</li>

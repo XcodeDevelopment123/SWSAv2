@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Entities.WorkAssignments;
 
-public class LLPWorkAssignment : CompanyWorkAssignment
+public class LLPWorkAssignment : WorkAssignment
 {
     [SystemAuditLog("SSM Extension Date For Account")]
     public DateTime? SSMExtensionDateForAcc { get; set; }

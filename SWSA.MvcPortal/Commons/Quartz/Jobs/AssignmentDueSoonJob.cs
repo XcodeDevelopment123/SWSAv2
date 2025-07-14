@@ -9,7 +9,7 @@ using SWSA.MvcPortal.Repositories.Interfaces;
 namespace SWSA.MvcPortal.Commons.Quartz.Jobs;
 
 public class AssignmentDueSoonJob(
-    ICompanyWorkAssignmentRepository companyWorkAssignmentRepository,
+    IWorkAssignmentRepository companyWorkAssignmentRepository,
     IMessagingService messagingService
     ) : IJob
 {

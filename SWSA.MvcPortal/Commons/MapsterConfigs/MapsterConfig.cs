@@ -3,7 +3,7 @@ using SWSA.MvcPortal.Commons.MapsterConfigs.CompanyProfile;
 using SWSA.MvcPortal.Commons.MapsterConfigs.Scheduler;
 using SWSA.MvcPortal.Commons.MapsterConfigs.SystemInfra;
 using SWSA.MvcPortal.Commons.MapsterConfigs.UserAccess;
-using SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignment;
+using SWSA.MvcPortal.Commons.MapsterConfigs.WorkAssignments;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs;
 

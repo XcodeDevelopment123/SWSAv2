@@ -1,7 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
-using SWSA.MvcPortal.Entities;
+﻿using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Repositories.Interfaces;
 

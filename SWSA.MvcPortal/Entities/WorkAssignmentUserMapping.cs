@@ -15,6 +15,6 @@ public class WorkAssignmentUserMapping
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
 
-    public virtual CompanyWorkAssignment WorkAssignment { get; set; } = null!;
+    public virtual WorkAssignment WorkAssignment { get; set; } = null!;
     public virtual User User { get; set; } = null!;
 }

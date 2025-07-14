@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SWSA.MvcPortal.Commons.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using System.ComponentModel.DataAnnotations;

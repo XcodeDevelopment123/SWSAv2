@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Entities.WorkAssignments;
 
-public class AuditWorkAssignment : CompanyWorkAssignment
+public class AuditWorkAssignment : WorkAssignment
 {
     [SystemAuditLog("First Year Account Start Date")]
     public DateTime? FirstYearAccountStart { get; set; }

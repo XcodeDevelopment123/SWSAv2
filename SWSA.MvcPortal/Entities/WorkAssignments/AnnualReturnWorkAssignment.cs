@@ -2,7 +2,7 @@
 
 namespace SWSA.MvcPortal.Entities.WorkAssignments;
 
-public class AnnualReturnWorkAssignment : CompanyWorkAssignment
+public class AnnualReturnWorkAssignment : WorkAssignment
 {
     [SystemAuditLog("Anniversary Date")]
     public DateTime? AnniversaryDate { get; set; } //EST 17 months from  incopr date
