@@ -7,8 +7,8 @@ namespace SWSA.MvcPortal.Persistence;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     internal DbSet<User> Users { get; set; }
-    internal DbSet<CommunicationContact> CompanyCommunicationContact { get; set; }
-    internal DbSet<OfficialContact> CompanyOfficialContacts { get; set; }
+    internal DbSet<CommunicationContact> CommunicationContact { get; set; }
+    internal DbSet<OfficialContact> OfficialContacts { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }

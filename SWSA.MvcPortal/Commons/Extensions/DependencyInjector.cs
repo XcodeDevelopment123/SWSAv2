@@ -32,7 +32,6 @@ using SWSA.MvcPortal.Commons.MapsterConfigs;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Services.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
-using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.Scheduler;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
@@ -188,7 +187,6 @@ public static class DependencyInjector
 
         //Factory
         services.AddScoped<IWorkAssignmentFactory, WorkAssignmentFactory>();
-
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();
         services.AddScoped<IUserFetcher, UserFetcher>();

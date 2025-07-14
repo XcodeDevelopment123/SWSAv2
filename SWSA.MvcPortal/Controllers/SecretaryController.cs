@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
-using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("secretary-dept")]
 public class SecretaryController(
-    ICompanyService companyService,
     ICompanyWorkAssignmentService companyWorkAssignmentService
     ) : BaseController
 {
@@ -22,8 +20,8 @@ public class SecretaryController(
     [Route("companies")]
     public async Task<IActionResult> CompanyList()
     {
-        var data = await companyService.GetCompanySelectionAsync();
-        return View(data);
+  //      var data = await companyService.GetCompanySelectionAsync();
+        return View();
     }
 
     [Route("companies/sdn-bhd")]

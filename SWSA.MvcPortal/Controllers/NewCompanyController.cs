@@ -2,7 +2,6 @@
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Services.Interfaces;
-using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 
 namespace SWSA.MvcPortal.Controllers;
 [Route("companies/new")]

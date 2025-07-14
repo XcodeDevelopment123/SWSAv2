@@ -10,7 +10,7 @@ public class CommunicationContactRepository(AppDbContext db) : RepositoryBase<Co
     // Implement the method
     public async Task<List<CommunicationContact>> GetAllByCompanyIdAsync(int companyId)
     {
-        var data = await db.CompanyCommunicationContact
+        var data = await db.CommunicationContact
             .Where(c => c.ClientId == companyId).ToListAsync();
         return data;
     }
@@ -19,7 +19,7 @@ public class CommunicationContactRepository(AppDbContext db) : RepositoryBase<Co
     protected override Task<IQueryable<CommunicationContact>> BuildQueryAsync()
     {
         // Do you query here
-        var query = db.CompanyCommunicationContact
+        var query = db.CommunicationContact
            .Include(c => c.Client)
            .AsNoTracking();
         return Task.FromResult(query);

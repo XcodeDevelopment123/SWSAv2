@@ -14,7 +14,6 @@ public class CompanyInfoViewComponent(IMapper _mapper) : ViewComponent
         CompanySimpleInfoVM? vm = raw switch
         {
             CompanySimpleInfoVM simple => simple,
-            Company company => _mapper.Map<CompanySimpleInfoVM>(company),
             _ => null
         };
 
