@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Entities.Clients;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -11,9 +12,10 @@ public class CompanyMsicCode
     public int Id { get; set; }
     [ForeignKey(nameof(Company))]
     public int CompanyId { get; set; }
+
     [ForeignKey(nameof(MsicCode))]
     public int MsicCodeId { get; set; }
-    public Company Company { get; set; } = null!;
+    public BaseCompany Company { get; set; } = null!;
     public MsicCode MsicCode { get; set; } = null!;
 
     public CompanyMsicCode(int msicCodeId)

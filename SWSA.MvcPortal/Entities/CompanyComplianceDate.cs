@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using SWSA.MvcPortal.Commons.Attributes;
-using SWSA.MvcPortal.Dtos.Requests.Companies;
 
 namespace SWSA.MvcPortal.Entities;
 

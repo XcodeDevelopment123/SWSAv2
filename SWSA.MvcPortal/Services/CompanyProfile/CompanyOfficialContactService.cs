@@ -31,7 +31,7 @@ ISystemAuditLogService sysAuditService
 
         Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
 
-        var data = mapper.Map<CompanyOfficialContact>(req);
+        var data = mapper.Map<OfficialContact>(req);
         repo.Add(data);
         await repo.SaveChangesAsync();
 

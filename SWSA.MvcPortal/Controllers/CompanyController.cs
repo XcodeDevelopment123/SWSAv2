@@ -17,7 +17,7 @@ public class CompanyController(
 {
     #region Page/View
     [Route("")]
-    public async Task<IActionResult> List(CompanyType? type)
+    public async Task<IActionResult> List(ClientType? type)
     {
         var data = type.HasValue ? await service.GetCompaniesByTypeAsync(type.Value) : await service.GetCompaniesAsync();
         ViewData["company-type"] = type;

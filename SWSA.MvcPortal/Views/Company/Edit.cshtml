@@ -20,7 +20,7 @@
 	var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(cp.CompanyStatus);
 	var departments = SelectHelper.GetDepartments(null);
 	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
-	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(cp.CompanyType);
+	var companyTypes = SelectHelper.GetEnumSelectList<ClientType>(cp.CompanyType);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
 

@@ -2,11 +2,12 @@
 
 namespace SWSA.MvcPortal.Commons.Enums;
 
-public enum CompanyType
+public enum ClientType
 {
     [Display(Name = "Sdn Bhd")]
     SdnBhd,
     [Display(Name = "LLP")]
     LLP,
-    Partnership,
+    Enterprise,
+    Individual
 }

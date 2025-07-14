@@ -249,8 +249,8 @@
 							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Company) ? @"display:block" : "display:none")">
 
 								<li class="nav-item">
-									<a href="/companies?type=@CompanyType.SdnBhd.ToString()"
-									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.SdnBhd.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+									<a href="/companies?type=@ClientType.SdnBhd.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(ClientType.SdnBhd.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
 										<span class="nav-icon ">1.1</span>
 										<p>
 											Sdn Bhd
@@ -259,8 +259,8 @@
 								</li>
 
 								<li class="nav-item">
-									<a href="/companies?type=@CompanyType.LLP.ToString()"
-									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.LLP.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ? "active" : "")">
+									<a href="/companies?type=@ClientType.LLP.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(ClientType.LLP.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ? "active" : "")">
 										<span class="nav-icon ">1.2</span>
 										<p>
 											LLP
@@ -269,8 +269,8 @@
 								</li>
 
 								<li class="nav-item">
-									<a href="/companies?type=@CompanyType.Enterprise.ToString()"
-									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.Enterprise.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+									<a href="/companies?type=@ClientType.Enterprise.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(ClientType.Enterprise.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
 										<span class="nav-icon ">1.3</span>
 										<p>
 											Enterprise
@@ -279,8 +279,8 @@
 								</li>
 
 								<li class="nav-item">
-									<a href="/companies?type=@CompanyType.Individual.ToString()"
-									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(CompanyType.Individual.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
+									<a href="/companies?type=@ClientType.Individual.ToString()"
+									   class="nav-link @(currentController.Is(ControllerNames.Company) && currentCompanyType.Is(ClientType.Individual.ToString())&&(currentAction.Is("Edit")|| currentAction.Is("List")) ?"active":"")">
 										<span class="nav-icon ">1.4</span>
 										<p>
 											Individual
@@ -311,8 +311,8 @@
 
 
 										<li class="nav-item">
-											<a href="/companies/new?type=@CompanyType.SdnBhd.ToString()"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.SdnBhd.ToString()) ?"active":"")">
+											<a href="/companies/new?type=@ClientType.SdnBhd.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.SdnBhd.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.1</span>
 												<p>
 													Sdn Bhd
@@ -321,8 +321,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/companies/new?type=@CompanyType.LLP.ToString()"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.LLP.ToString()) ?"active":"")">
+											<a href="/companies/new?type=@ClientType.LLP.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.LLP.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.2</span>
 												<p>
 													LLP
@@ -331,8 +331,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/companies/new?type=@CompanyType.Enterprise.ToString()"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.Enterprise.ToString()) ?"active":"")">
+											<a href="/companies/new?type=@ClientType.Enterprise.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.Enterprise.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.3</span>
 												<p>
 													Enterprise
@@ -341,8 +341,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/companies/new?type=@CompanyType.Individual.ToString()"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(CompanyType.Individual.ToString()) ?"active":"")">
+											<a href="/companies/new?type=@ClientType.Individual.ToString()"
+											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.Individual.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.4</span>
 												<p>
 													Individual

@@ -12,8 +12,8 @@ public interface ICompanyService
     Task<Company> Delete(int companyId);
     Task<bool> Edit(EditCompanyRequest req);
     Task<List<CompanySelectionVM>> GetCompanySelectionAsync();
-    Task<List<Company>> GetCompaniesByTypeAsync(CompanyType type);
+    Task<List<Company>> GetCompaniesByTypeAsync(ClientType type);
     Task<CompanySimpleInfoVM> GetCompanySimpleInfoVMByIdAsync(int companyId);
-    Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(CompanyType type);
+    Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(ClientType type);
     Task<List<Company>> GetCompaniesAsync();
 }

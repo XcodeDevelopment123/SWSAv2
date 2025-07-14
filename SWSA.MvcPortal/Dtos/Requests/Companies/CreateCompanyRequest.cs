@@ -10,7 +10,7 @@ public class CreateCompanyRequest
     public string? TaxIdentificationNumber { get; set; }
     public MonthOfYear? YearEndMonth { get; set; }  // Year End Month (optional)
     public DateTime? IncorporationDate { get; set; } // Incorporation Date (optional) - 成立日期
-    public CompanyType CompanyType { get; set; }
+    public ClientType CompanyType { get; set; }
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
     public CompanyStatus CompanyStatus { get; set; }
 

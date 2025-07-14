@@ -35,7 +35,7 @@ public class CompanyRepository(
         return dtos;
     }
 
-    public async Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(CompanyType type)
+    public async Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(ClientType type)
     {
         var dtos = await ActiveCompanies(true)
              .Where(c => c.CompanyType == type)
@@ -45,7 +45,7 @@ public class CompanyRepository(
         return dtos;
     }
 
-    public async Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(int userId, CompanyType type)
+    public async Task<List<CompanySelectionVM>> GetSelectionsVMByTypeAsync(int userId, ClientType type)
     {
         var dtos = await ActiveCompanies(true)
             .Where(c =>  c.CompanyType == type)
@@ -87,7 +87,7 @@ public class CompanyRepository(
     }
 
 
-    public async Task<List<Company>> GetCompaniesByType(CompanyType type)
+    public async Task<List<Company>> GetCompaniesByType(ClientType type)
     {
         var query = await BuildQueryWithIncludesAsync();
 

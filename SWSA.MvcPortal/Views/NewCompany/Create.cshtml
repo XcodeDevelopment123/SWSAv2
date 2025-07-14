@@ -16,7 +16,7 @@
 
 	var departments = SelectHelper.GetDepartments(null);
 	var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
-	var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(Model.CompanyType);
+	var companyTypes = SelectHelper.GetEnumSelectList<ClientType>(Model.CompanyType);
 	var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
 	var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
 	var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);

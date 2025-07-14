@@ -50,14 +50,14 @@ IPermissionRefreshTracker permissionRefreshTracker
         return data!;
     }
 
-    public async Task<List<Company>> GetCompaniesByTypeAsync(CompanyType type)
+    public async Task<List<Company>> GetCompaniesByTypeAsync(ClientType type)
     {
         var data = userContext.IsSuperAdmin ? await repo.GetCompaniesByType(type)
             : await repo.GetCompaniesByType(type);
         return data;
     }
 
-    public async Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(CompanyType type)
+    public async Task<List<CompanySelectionVM>> GetCompanySelectionByTypeAsync(ClientType type)
     {
         var data = userContext.IsSuperAdmin ? await repo.GetSelectionsVMByTypeAsync(type)
             : await repo.GetSelectionsVMByTypeAsync(type);

@@ -14,7 +14,7 @@ public class NewCompanyController(
 {
 
     [Route("")]
-    public async Task<IActionResult> Create(CompanyType type)
+    public async Task<IActionResult> Create(ClientType type)
     {
         ViewData["company-type"] = type;
         var msicCodes = await msicCodeService.GetMsicCodeAsync();

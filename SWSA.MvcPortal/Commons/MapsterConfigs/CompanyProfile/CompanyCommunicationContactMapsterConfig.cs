@@ -8,7 +8,7 @@ public class CompanyCommunicationContactMapsterConfig : IMapsterConfig
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.ForType<CompanyCommunicationContact, CompanyCommunicationContact>();
+        config.ForType<CommunicationContact, CommunicationContact>();
     }
 }
         

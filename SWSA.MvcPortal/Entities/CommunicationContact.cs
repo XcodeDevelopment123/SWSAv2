@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace SWSA.MvcPortal.Entities;
 
 [Module("CompanyProfile")]
-public class CompanyCommunicationContact
+public class CommunicationContact
 {
     [Key]
     public int Id { get; set; }

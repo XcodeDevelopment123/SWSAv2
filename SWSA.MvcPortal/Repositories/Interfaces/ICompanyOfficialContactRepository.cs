@@ -6,7 +6,7 @@ using SWSA.MvcPortal.Repositories.Interfaces;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 
-public interface ICompanyOfficialContactRepository : IRepositoryBase<CompanyOfficialContact>
+public interface ICompanyOfficialContactRepository : IRepositoryBase<OfficialContact>
 {
     // Define your method here
 }

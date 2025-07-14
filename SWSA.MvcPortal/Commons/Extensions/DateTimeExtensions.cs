@@ -9,6 +9,7 @@ public static class DateTimeExtensions
         var format = formatType switch
         {
             DateTimeFormatType.DateOnly => DateTimeFormats.DateOnly,
+            DateTimeFormatType.MonthAndYearOnly => DateTimeFormats.MonthAndYearOnly,
             DateTimeFormatType.DateTime24H => DateTimeFormats.DateTime24H,
             DateTimeFormatType.DateTime12H => DateTimeFormats.DateTime12H,
             DateTimeFormatType.TimeOnly => DateTimeFormats.TimeOnly,
@@ -26,6 +27,7 @@ public static class DateTimeExtensions
         var format = formatType switch
         {
             DateTimeFormatType.DateOnly => DateTimeFormats.DateOnly,
+            DateTimeFormatType.MonthAndYearOnly => DateTimeFormats.MonthAndYearOnly,
             DateTimeFormatType.DateTime24H => DateTimeFormats.DateTime24H,
             DateTimeFormatType.DateTime12H => DateTimeFormats.DateTime12H,
             DateTimeFormatType.TimeOnly => DateTimeFormats.TimeOnly,
@@ -77,7 +79,13 @@ public enum DateTimeFormatType
     /// Format: yyyy-MM-ddTHH:mm:ss
     /// Example: 2025-04-15T18:30:00
     /// </summary>
-    Iso8601
+    Iso8601,
+
+    /// <summary>
+    /// Format : dd MMMM
+    /// Example: 31 March
+    /// </summary>
+    MonthAndYearOnly
 }
 
 public static class DateTimeFormats
@@ -87,4 +95,5 @@ public static class DateTimeFormats
     public const string DateTime12H = "yyyy-MM-dd hh:mm tt";
     public const string TimeOnly = "HH:mm";
     public const string Iso8601 = "yyyy-MM-ddTHH:mm:ss";
+    public const string MonthAndYearOnly = "dd MMMM";
 }

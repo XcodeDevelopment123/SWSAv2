@@ -8,7 +8,7 @@ public class CompanyCommunicationContactProfile : Profile
 {
     public CompanyCommunicationContactProfile()
     {
-        CreateMap<CompanyCommunicationContact, CompanyCommunicationContact>();
-        CreateMap<CreateCompanyCommunicationContactRequest, CompanyCommunicationContact>();
+        CreateMap<CommunicationContact, CommunicationContact>();
+        CreateMap<CreateCompanyCommunicationContactRequest, CommunicationContact>();
     }
 }

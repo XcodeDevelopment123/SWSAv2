@@ -9,8 +9,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<User> Users { get; set; }
     internal DbSet<Company> Companies { get; set; }
     internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
-    internal DbSet<CompanyCommunicationContact> CompanyCommunicationContact { get; set; }
-    internal DbSet<CompanyOfficialContact> CompanyOfficialContacts { get; set; }
+    internal DbSet<CommunicationContact> CompanyCommunicationContact { get; set; }
+    internal DbSet<OfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
@@ -58,7 +58,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         });
 
-        modelBuilder.Entity<CompanyCommunicationContact>(entity => { });
+        modelBuilder.Entity<CommunicationContact>(entity => { });
 
         modelBuilder.Entity<CompanyComplianceDate>()
             .HasIndex(c => new { c.CompanyId });

@@ -6,9 +6,9 @@ namespace SWSA.MvcPortal.Models.Companies;
 public class CompanyCreatePageVM
 {
     public List<MsicCode> MsicCodes { get; set; } = [];
-    public CompanyType CompanyType { get; set; }
+    public ClientType CompanyType { get; set; }
 
-    public CompanyCreatePageVM(List<MsicCode> msicCodes, CompanyType type)
+    public CompanyCreatePageVM(List<MsicCode> msicCodes, ClientType type)
     {
         MsicCodes = msicCodes;
         CompanyType = type;

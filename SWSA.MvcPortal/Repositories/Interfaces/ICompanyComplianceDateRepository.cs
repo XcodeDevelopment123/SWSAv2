@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Threading.Tasks;
-using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Repositories.Interfaces;
+﻿using SWSA.MvcPortal.Entities;
 
 namespace SWSA.MvcPortal.Repositories.Interfaces;
 

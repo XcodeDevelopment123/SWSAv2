@@ -5,7 +5,7 @@ using SWSA.MvcPortal.Commons.Attributes;
 namespace SWSA.MvcPortal.Entities;
 
 [Module("CompanyProfile")]
-public class CompanyOfficialContact
+public class OfficialContact
 {
     [Key]
     public int Id { get; set; }
