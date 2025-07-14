@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Entities.Clients;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -11,9 +12,8 @@ public abstract class WorkAssignment
     [Key]
     public int Id { get; set; }
 
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
-    public virtual Company Company { get; set; } = null!;
+    [ForeignKey(nameof(Client))]
+    public int ClientId { get; set; }
     public int ForYear { get; set; }
 
     [SystemAuditLog("Work Type")]
@@ -35,6 +35,7 @@ public abstract class WorkAssignment
     public DateTime? ReminderDate { get; set; }
     public virtual WorkProgress? Progress { get; set; }
     public virtual ICollection<WorkAssignmentUserMapping> AssignedUsers { get; set; } = new List<WorkAssignmentUserMapping>();
+    public virtual BaseClient Client { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 

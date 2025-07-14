@@ -44,7 +44,7 @@ public class CompanyWorkCalendarVM
         return new CompanyWorkCalendarVM
         {
             TaskId = task.Id.ToString(),
-            Title = $"{task.ServiceScope} - {task.Company.Name}",
+            Title = $"{task.ServiceScope} - {task.Client.Name}",
             Start = DateTime.Today,
             AllDay = true,
             BackgroundColor = bg,

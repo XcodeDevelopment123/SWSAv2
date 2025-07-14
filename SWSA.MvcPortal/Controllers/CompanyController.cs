@@ -41,11 +41,9 @@ public class CompanyController(
     [Route("{companyId}/edit")]
     public async Task<IActionResult> Edit([FromRoute] int companyId)
     {
-        var cp = await service.GetCompanyByIdAsync(companyId);
         var msicCodes = await msicCodeService.GetMsicCodeAsync();
-        ViewData["company-type"] = cp.CompanyType;
 
-        CompanyEditPageVM vm = new(cp, msicCodes);
+        CompanyEditPageVM vm = new( msicCodes);
         return View(vm);
     }
 

@@ -18,8 +18,8 @@ public class DocumentRecordProfile : Profile
               .ForMember(dest => dest.StaffName, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.FullName ?? AppSettings.NotAvailable))
               .ForMember(dest => dest.HandledByStaffId, opt => opt.MapFrom((src, dest) => src.HandledByStaff?.StaffId ?? src.HandledByStaffId.ToString()))
               .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow))
-              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.CompanyId))
-              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Company.Name))
+              .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((src, dest) => src.ClientId))
+              .ForMember(dest => dest.CompanyName, opt => opt.MapFrom((src, dest) => src.Client.Name))
               .ForMember(dest => dest.FlowType, opt => opt.MapFrom((src, dest) => src.DocumentFlow));
            
 

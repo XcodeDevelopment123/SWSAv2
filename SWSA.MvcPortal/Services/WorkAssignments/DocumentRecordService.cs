@@ -18,7 +18,6 @@ IUserContext userContext,
 IDocumentRecordRepository repo,
 ISystemAuditLogService sysAuditService,
 IWorkAssignmentRepository workAssignmentRepo,
-ICompanyRepository companyRepo,
 IUserRepository userRepo
 ) : IDocumentRecordService
 {
@@ -56,11 +55,11 @@ IUserRepository userRepo
 
     public async Task<DocumentRecord> CreateDocument(DocumentRecordRequest doc)
     {
-        var cp = await companyRepo.GetByIdAsync(doc.CompanyId);
-        Guard.AgainstNullData(cp, "Company not found");
+        //var cp = await companyRepo.GetByIdAsync(doc.CompanyId);
+        //Guard.AgainstNullData(cp, "Company not found");
         var user = await userRepo.GetByIdAsync(userContext.EntityId);
         Guard.AgainstNullData(user, "User not found");
-        Guard.AgainstUnauthorizedCompanyAccess(cp!.Id, null, userContext);
+       // Guard.AgainstUnauthorizedCompanyAccess(cp!.Id, null, userContext);
 
         var data = mapper.Map<DocumentRecord>(doc);
         data.HandledByStaffId = user!.Id;

@@ -8,7 +8,6 @@ public class DocumentRecordAuditDeptPageVM
     public List<CompanySelectionVM> Companies { get; set; }
     public List<DocumentRecord> DocumentRecords { get; set; } = [];
 
-
     public DocumentRecordAuditDeptPageVM(
             List<CompanySelectionVM> companies,
             List<DocumentRecord> docs

@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+﻿@* @using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Entities.WorkAssignments
@@ -150,7 +150,7 @@
 	</div>
 
 	@* @await Component.InvokeAsync("EditDocument", new { input = Model.Documents }) *@
-</div>
+@* </div>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
@@ -160,3 +160,4 @@
 	<script src="~/js/company-works/edit-work-document.js" asp-append-version="true"></script>
 	<!-- date-range-picker -->
     }
+ *@ 

@@ -37,8 +37,7 @@
 
 							<tr>
 								<td>
-									@task.Company.Name
-									<p class="m-0">(#@task.Company.RegistrationNumber)</p>
+				
 								</td>
 								<td>
 									@task.GetForYearLabel()
@@ -76,7 +75,7 @@
 											<i class="fa fa-edit"></i>
 										</a>
 
-										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.Id" data-name="@($"Task {task.WorkType.GetDisplayName()} for {task.Company.Name}")" title="Delete">
+										<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@task.Id" data-name="@($"Task {task.WorkType.GetDisplayName()} for ")" title="Delete">
 											<i class="fa fa-trash"></i>
 										</button>
 

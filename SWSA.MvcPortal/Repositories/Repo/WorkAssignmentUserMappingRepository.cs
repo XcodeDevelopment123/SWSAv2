@@ -29,7 +29,7 @@ public class WorkAssignmentUserMappingRepository(AppDbContext db) : RepositoryBa
                          && x.WorkAssignment.ReminderDate.Value.Date == today
                          && x.WorkAssignment.Progress!.Status != Commons.Enums.WorkProgressStatus.Completed)
              .Include(x => x.User)
-             .Include(x => x.WorkAssignment.Company)
+             .Include(x => x.WorkAssignment.Client)
              .Include(x => x.WorkAssignment.Progress);
         return query.ToListAsync();
     }

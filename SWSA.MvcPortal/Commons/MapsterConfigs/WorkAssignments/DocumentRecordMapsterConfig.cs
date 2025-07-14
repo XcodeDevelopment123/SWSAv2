@@ -13,8 +13,6 @@ public class DocumentRecordMapsterConfig : IMapsterConfig
         config.ForType<DocumentRecord, DocumentRecordVM>()
       .Map(dest => dest.DocumentId, src => src.Id)
       .Map(dest => dest.FlowType, src => src.DocumentFlow)
-      .Map(dest => dest.CompanyId, src => src.CompanyId)
-      .Map(dest => dest.CompanyName, src => src.Company.Name)
       .Map(dest => dest.StaffName, src => src.HandledByStaff.FullName ?? "N/A")
       .Map(dest => dest.HandledByStaffId, src => src.HandledByStaff.StaffId ?? src.HandledByStaffId.ToString());
     }

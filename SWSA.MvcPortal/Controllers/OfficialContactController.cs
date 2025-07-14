@@ -5,8 +5,8 @@ using SWSA.MvcPortal.Services.Interfaces;
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("companies/official-contact")]
-public class CompanyOfficialContactController(
-        ICompanyOfficialContactService service
+public class OfficialContactController(
+        IOfficialContactService service
     ) : BaseController
 {
     #region API/Ajax

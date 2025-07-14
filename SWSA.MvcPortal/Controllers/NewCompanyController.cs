@@ -8,7 +8,6 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("companies/new")]
 
 public class NewCompanyController(
-    ICompanyService service,
     IMsicCodeService msicCodeService
     ) : BaseController
 {

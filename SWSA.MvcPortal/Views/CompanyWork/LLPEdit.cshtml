@@ -9,13 +9,13 @@
 
 @{
 	ViewData["Title"] = "LLP Details";
-	var cpInfo = Model.Company;
+	var cpInfo = Model.Client;
 
 	<input id="workAssignmentId" value="@Model.Id" type="hidden" />
 	<input id="companyId" value="@cpInfo.Id" type="hidden" />
 }
 
-<h3>Update LLP Submission for @cpInfo.Name (@cpInfo.RegistrationNumber)</h3>
+<h3>Update LLP Submission for @cpInfo.Name </h3>
 
 <div class="row">
 

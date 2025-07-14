@@ -39,7 +39,7 @@ IMessagingService messagingService
                         return $"""
                         *Task:* {ts.WorkType.GetDisplayName()} - {ts.ServiceScope.GetDisplayName()}
                         *Task ID:* {ts.Id}
-                        *Company:* {ts.Company.Name} ({ts.Company.RegistrationNumber})
+
                         *Progress* {ts.Progress?.Status.GetDisplayName() ?? "-"}
                         *Note:* {ts.InternalNote}
                         """;

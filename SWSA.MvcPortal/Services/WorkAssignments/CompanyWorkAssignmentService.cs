@@ -21,7 +21,6 @@ public class CompanyWorkAssignmentService(
 IMapper mapper,
 IUserContext userContext,
 IWorkAssignmentRepository repo,
-ICompanyRepository companyRepo,
 IUserRepository userRepo,
 ISystemAuditLogService sysAuditService,
 IWorkAssignmentFactory workAssignmentFactory,
@@ -47,7 +46,7 @@ IDocumentRecordRepository docRepo
     {
         var data = await repo.GetWithIncludedByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
+        Guard.AgainstUnauthorizedCompanyAccess(data!.ClientId, null, userContext);
         return data;
     }
 
@@ -63,7 +62,7 @@ IDocumentRecordRepository docRepo
     {
         var data = await repo.Query().OfType<T>().FirstOrDefaultAsync(c => c.Id == taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
+        Guard.AgainstUnauthorizedCompanyAccess(data!.ClientId, null, userContext);
 
         return data;
     }
@@ -72,8 +71,8 @@ IDocumentRecordRepository docRepo
     public async Task<int> Create(CreateCompanyWorkAssignmentRequest req)
     {
         Guard.AgainstUnauthorizedCompanyAccess(req!.CompanyId, null, userContext);
-        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
-        Guard.AgainstNullData(cp, "Company not found");
+        //var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
+        //Guard.AgainstNullData(cp, "Company not found");
 
         var entity = mapper.Map<Entities.WorkAssignment>(req);
 
@@ -98,7 +97,7 @@ IDocumentRecordRepository docRepo
     {
         var task = await repo.GetByIdAsync(req.TaskId);
         Guard.AgainstNullData(task, "Company Work Assignment not found");
-        Guard.AgainstUnauthorizedCompanyAccess(task!.CompanyId, null, userContext);
+        Guard.AgainstUnauthorizedCompanyAccess(task!.ClientId, null, userContext);
 
         var oldData = task.DeepClone();
 
@@ -129,9 +128,9 @@ IDocumentRecordRepository docRepo
     {
         var data = await repo.GetByIdAsync(taskId);
         Guard.AgainstNullData(data, "Company Work Assignment not found");
-        var cp = await companyRepo.GetWithIncludedByIdAsync(data!.CompanyId);
-        Guard.AgainstNullData(cp, "Company not found");
-        Guard.AgainstUnauthorizedCompanyAccess(data!.CompanyId, null, userContext);
+        //var cp = await companyRepo.GetWithIncludedByIdAsync(data!.ClientId);
+        //Guard.AgainstNullData(cp, "Company not found");
+        Guard.AgainstUnauthorizedCompanyAccess(data!.ClientId, null, userContext);
 
 
         await repo.RemoveAsync(data!);
@@ -144,10 +143,10 @@ IDocumentRecordRepository docRepo
 
     public async Task<int> RequestWorkAssignment(WorkAssignmentRequest req)
     {
-        var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
-        Guard.AgainstNullData(cp, "Company not found");
+        //var cp = await companyRepo.GetWithIncludedByIdAsync(req.CompanyId);
+        //Guard.AgainstNullData(cp, "Company not found");
 
-        var entity = workAssignmentFactory.Create(req, cp!);
+        var entity = workAssignmentFactory.Create(req, null);
 
         entity.Progress = new WorkProgress();
 
@@ -176,9 +175,9 @@ IDocumentRecordRepository docRepo
         repo.Update(data);
         await repo.SaveChangesAsync();
 
-        var cp = await companyRepo.GetByIdAsync(req.CompanyId);
-        var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, cp!.Id.ToString(), $"Updated {cp.Name} {data.WorkType.GetDisplayName()} task", oldData, data);
-        sysAuditService.LogInBackground(log);
+        //var cp = await companyRepo.GetByIdAsync(req.CompanyId);
+        //var log = SystemAuditLogEntry.Update(SystemAuditModule.Company, cp!.Id.ToString(), $"Updated {cp.Name} {data.WorkType.GetDisplayName()} task", oldData, data);
+        //sysAuditService.LogInBackground(log);
 
         return true;
     }

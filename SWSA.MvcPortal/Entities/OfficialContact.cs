@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
-using SWSA.MvcPortal.Commons.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -23,7 +24,7 @@ public class OfficialContact
     public string? Remark { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
-    public Company Company { get; set; }
+    [ForeignKey(nameof(Client))]
+    public int ClientId { get; set; }
+    public virtual BaseClient Client { get; set; } = null!;
 }

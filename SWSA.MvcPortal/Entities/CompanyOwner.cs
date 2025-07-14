@@ -1,17 +1,18 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Attributes;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("CompanyProfile")]
+[Module("Clients")]
 public class CompanyOwner
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
+    [ForeignKey(nameof(Client))]
+    public int ClientId { get; set; }
     [SystemAuditLog("Owner Name (per IC)")]
     public string NamePerIC { get; set; } = null!;
     [SystemAuditLog("IC or Passport Number")]
@@ -28,5 +29,7 @@ public class CompanyOwner
     public OwnershipType OwnershipType { get; set; } //Its own or corp with other
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public Company Company { get; set; } = null!;
+
+    public virtual BaseClient Client { get; set; } = null!;
+
 }

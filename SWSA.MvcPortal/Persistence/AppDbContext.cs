@@ -7,13 +7,12 @@ namespace SWSA.MvcPortal.Persistence;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     internal DbSet<User> Users { get; set; }
-    internal DbSet<Company> Companies { get; set; }
-    internal DbSet<CompanyComplianceDate> CompanyComplianceDates { get; set; }
     internal DbSet<CommunicationContact> CompanyCommunicationContact { get; set; }
     internal DbSet<OfficialContact> CompanyOfficialContacts { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
+
     #region Work Assignment
     internal DbSet<WorkAssignment> WorkAssignments { get; set; }
     internal DbSet<WorkProgress> WorkProgresses { get; set; }
@@ -44,24 +43,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         });
 
-        modelBuilder.Entity<Company>(entity =>
-        {
-            entity.HasMany(c => c.CommunicationContacts)
-            .WithOne(cc => cc.Company)
-            .HasForeignKey(cc => cc.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict); //When deleting a company, please perform delete all contact before delete company;
-
-            entity.HasOne(c => c.ComplianceDate)
-            .WithOne(ccd => ccd.Company)
-            .HasForeignKey<CompanyComplianceDate>(ccd => ccd.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, enforce manual cleanup
-
-        });
-
         modelBuilder.Entity<CommunicationContact>(entity => { });
-
-        modelBuilder.Entity<CompanyComplianceDate>()
-            .HasIndex(c => new { c.CompanyId });
 
         modelBuilder.Entity<WorkAssignment>(entity =>
         {

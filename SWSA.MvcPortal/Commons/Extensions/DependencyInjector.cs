@@ -45,6 +45,8 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
+using SWSA.MvcPortal.Services.Clients;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -139,12 +141,11 @@ public static class DependencyInjector
         });
 
         //#Repository DI (auto generated)
-        services.AddScoped<ICompanyCommunicationContactRepository, CompanyCommunicationContactRepository>();
-        services.AddScoped<ICompanyComplianceDateRepository, CompanyComplianceDateRepository>();
+        services.AddScoped<ICommunicationContactRepository, CommunicationContactRepository>();
+        services.AddScoped<IOfficialContactRepository, OfficialContactRepository>();
+  
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
-        services.AddScoped<ICompanyOfficialContactRepository, CompanyOfficialContactRepository>();
-        services.AddScoped<ICompanyOwnerRepository, CompanyOwnerRepository>();
-        services.AddScoped<ICompanyRepository, CompanyRepository>();
+
         services.AddScoped<IWorkAssignmentRepository, WorkAssignmentRepository>();
         services.AddScoped<IWorkProgressRepository, WorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
@@ -171,12 +172,9 @@ public static class DependencyInjector
 
         //#Service DI (auto generated)
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<ICompanyCommunicationContactService, CompanyCommunicationContactService>();
-        services.AddScoped<ICompanyComplianceDateService, CompanyComplianceDateService>();
+        services.AddScoped<ICommunicationContactService, CommunicationContactService>();
+        services.AddScoped<IOfficialContactService, OfficialContactService>();
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
-        services.AddScoped<ICompanyOfficialContactService, CompanyOfficialContactService>();
-        services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
-        services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();

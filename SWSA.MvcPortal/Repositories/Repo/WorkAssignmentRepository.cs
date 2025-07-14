@@ -21,11 +21,11 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
 
         if (companyIds != null && companyIds.Any())
         {
-            query = query.Where(c => companyIds.Contains(c.CompanyId));
+            query = query.Where(c => companyIds.Contains(c.ClientId));
         }
 
         return query.Include(c => c.Progress)
-            .Include(c => c.Company)
+            .Include(c => c.Client)
             .Include(c => c.AssignedUsers).ThenInclude(c => c.User);
     }
 
@@ -41,10 +41,10 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
         if (companyIds.Count == 1)
         {
             var id = companyIds[0];
-            return await query.Where(c => c.CompanyId == id).ToListAsync();
+            return await query.Where(c => c.ClientId == id).ToListAsync();
         }
 
-        return await query.Where(c => companyIds.Contains(c.CompanyId)).ToListAsync();
+        return await query.Where(c => companyIds.Contains(c.ClientId)).ToListAsync();
     }
 
     public async Task<List<WorkAssignment>> GetTodayRemindAssignments()
@@ -53,7 +53,7 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
 
         return await db.WorkAssignments
            .Where(c => c.ReminderDate.HasValue && c.ReminderDate.Value.Date == today)
-           .Include(c => c.Company)
+           .Include(c => c.Client)
            .ToListAsync();
     }
 
@@ -66,7 +66,7 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
         // Get the assignments that are due within the next 7 days
         return await db.WorkAssignments
            // .Where(c => c.DueDate >= today && c.DueDate < endDate.AddDays(1)) // 小于隔天 00:00
-           .Include(c => c.Company)
+           .Include(c => c.Client)
            .ToListAsync();
     }
     #endregion
@@ -77,7 +77,7 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
         // Do you query here
         var query = db.WorkAssignments
                   .Include(c => c.Progress)
-                  .Include(c => c.Company)
+                  .Include(c => c.Client)
                   .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                   .AsNoTracking();
 
@@ -90,7 +90,7 @@ public class WorkAssignmentRepository(AppDbContext db) : RepositoryBase<WorkAssi
         //Default query no action
         var query = db.WorkAssignments
                  .Include(c => c.Progress)
-                 .Include(c => c.Company)
+                 .Include(c => c.Client)
                  .Include(c => c.AssignedUsers).ThenInclude(c => c.User)
                  .AsNoTracking();
 

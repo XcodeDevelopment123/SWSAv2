@@ -1,12 +1,13 @@
 ﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("CompanyProfile")]
+[Module("Clients")]
 public class CommunicationContact
 {
     [Key]
@@ -21,9 +22,9 @@ public class CommunicationContact
     public string? Remark { get; set; }
     [SystemAuditLog("Position")]
     public PositionType Position { get; set; } = PositionType.Staff;
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
-    public virtual Company Company { get; set; } = null!;
+    [ForeignKey(nameof(Client))]
+    public int ClientId { get; set; }
+    public virtual BaseClient Client { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public string GetWhatsappNumber()
     {

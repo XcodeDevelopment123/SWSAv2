@@ -1,8 +1,8 @@
 ﻿using SWSA.MvcPortal.Dtos.Requests.Companies;
 
-namespace SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+namespace SWSA.MvcPortal.Services.Interfaces.Clients;
 
-public interface ICompanyCommunicationContactService 
+public interface ICommunicationContactService 
 {
     // Define your method here
     Task<int> Create(CreateCompanyCommunicationContactRequest req);

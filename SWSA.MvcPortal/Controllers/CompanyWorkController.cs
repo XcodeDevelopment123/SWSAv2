@@ -35,7 +35,7 @@ public class CompanyWorkController(
     [Route("{companyId}/works/create")]
     public async Task<IActionResult> Create([FromRoute] int companyId)
     {
-        var cp = await companyService.GetCompanyByIdAsync(companyId);
+        var cp = await companyService.GetCompanySimpleInfoVMByIdAsync(companyId);
         var users = await userService.GetUserSelectionAsync();
         var vm = new CompanyWorkAssignmentCreatePageVM(cp, users);
         return View(vm);
@@ -46,7 +46,7 @@ public class CompanyWorkController(
     public async Task<IActionResult> Edit([FromRoute] int taskId)
     {
         var data = await service.GetWorkAssignmentById(taskId);
-        var cpInfo = await companyService.GetCompanySimpleInfoVMByIdAsync(data.CompanyId);
+        var cpInfo = await companyService.GetCompanySimpleInfoVMByIdAsync(data.ClientId);
         var users = await userService.GetUserSelectionAsync();
         var vm = new CompanyWorkAssignmentkEditPageVM(data, cpInfo, users);
         return View(vm);

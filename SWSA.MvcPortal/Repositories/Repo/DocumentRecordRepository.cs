@@ -53,7 +53,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var query = db.DocumentRecords
                 .Include(c => c.HandledByStaff) 
-                .Include(c => c.Company)
+                .Include(c => c.Client)
                 .AsNoTracking();
         return Task.FromResult(query);
     }
@@ -63,7 +63,7 @@ public class DocumentRecordRepository(AppDbContext db) : RepositoryBase<Document
     {
         var query = db.DocumentRecords
                 .Include(c => c.HandledByStaff)
-                .Include(c => c.Company)
+                .Include(c => c.Client)
                 .AsNoTracking();
         return Task.FromResult(query);
     }

@@ -1,5 +1,6 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Attributes;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,7 +30,7 @@ public class DocumentRecord
     public int HandledByStaffId { get; set; }
     public User HandledByStaff { get; set; } = null!;
 
-    [ForeignKey(nameof(Company))]
-    public int CompanyId { get; set; }
-    public Company Company { get; set; }
+    [ForeignKey(nameof(Client))]
+    public int ClientId { get; set; }
+    public virtual BaseClient Client { get; set; } = null!;
 }

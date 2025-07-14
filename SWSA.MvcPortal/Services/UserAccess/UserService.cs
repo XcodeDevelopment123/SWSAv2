@@ -41,7 +41,6 @@ IUserContext userContext) : IUserService
     {
         var data = await repo.GetOverviewVMByStaffIdAsync(staffId);
         Guard.AgainstNullData(data, "User not found");
-        data.MergeCompany();
         return data;
     }
 

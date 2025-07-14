@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
-using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("companies/cm-contact")]
-public class CompanyCommunicationContactController(
-    ICompanyCommunicationContactService service
+public class CommunicationContactController(
+    ICommunicationContactService service
     ) : BaseController
 {
     #region API/Ajax

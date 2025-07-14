@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+﻿@* @using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @model SWSA.MvcPortal.Entities.Company
 
@@ -81,27 +81,6 @@
 							<input readonly value="@Model.CompanyActivityLevel.GetDisplayName()" class="form-control" />
 						</div>
 					</div>
-
-				@* 	@if (Model.StrikeOffStatus != StrikeOffStatus.NotApplied)
-					{
-						<div class="form-info-label col-12">
-							<label>Strike Off Status</label>
-						</div>
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="StrikeOffStatus">Strike Off Status</label>
-								<input readonly value="@Model.StrikeOffStatus.GetDisplayName()" class="form-control" />
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="StrikeOffEffectiveDate">Effective Date</label>
-								<input readonly value="@Model.StrikeOffEffectiveDate.ToFormattedString()" class="form-control" />
-							</div>
-						</div>
-					} *@
-
 					<div class="col-md-12">
 						<label for="msicCodes">Msic Codes</label>
 
@@ -500,3 +479,4 @@
 	<script src="~/js/companies/overview-company.js" asp-append-version="true"></script>
 	<!-- date-range-picker -->
     }
+ *@

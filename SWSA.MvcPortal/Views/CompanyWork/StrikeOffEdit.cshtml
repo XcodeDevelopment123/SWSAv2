@@ -5,13 +5,13 @@
 @inject IUserContext UserContext
 @{
 	ViewData["Title"] = "Strike Off Details";
-	var cpInfo = Model.Company;
+	var cpInfo = Model.Client;
 
 	<input id="workAssignmentId" value="@Model.Id" type="hidden" />
 	<input id="companyId" value="@cpInfo.Id" type="hidden" />
 }
 
-<h3>Update Strike Off Work for @cpInfo.Name (@cpInfo.RegistrationNumber)</h3>
+<h3>Update Strike Off Work for @cpInfo.Name </h3>
 
 <div class="row">
 	@await Component.InvokeAsync("CompanyInfo", new { input = cpInfo })

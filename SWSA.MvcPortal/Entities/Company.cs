@@ -27,8 +27,10 @@ public class Company
 
     [SystemAuditLog("Company Type")]
     public ClientType CompanyType { get; set; }
+
     [SystemAuditLog("Company Status")]
     public CompanyStatus CompanyStatus { get; set; } // Dormant, Active, etc
+
     [SystemAuditLog("Company Activity Level")]
     public CompanyActivityLevel CompanyActivityLevel { get; set; }
 
