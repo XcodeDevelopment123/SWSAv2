@@ -126,3 +126,11 @@ input:disabled {
 .table > :not(:last-child) > :last-child > * {
     border-bottom: 2px solid #dee2e6 !important
 }
+
+.vertical-rl {
+    writing-mode: vertical-rl;
+}
+
+.cp-item{
+    cursor:pointer
+}

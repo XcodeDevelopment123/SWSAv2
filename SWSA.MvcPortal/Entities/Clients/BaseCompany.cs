@@ -3,10 +3,13 @@ using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Entities.Clients;
 
-public class BaseCompany : BaseClient
+public abstract class BaseCompany : BaseClient
 {
     [SystemAuditLog("File Number")]
     public string? FileNo { get; set; } = null!; //User input
+
+    [SystemAuditLog("Registration Number")]
+    public string RegistrationNumber { get; set; } = null!;
 
     [SystemAuditLog("Company Type")]
     public CompanyType CompanyType { get; set; }
@@ -14,14 +17,9 @@ public class BaseCompany : BaseClient
     [SystemAuditLog("Incorporation Date")]
     public DateTime? IncorporationDate { get; set; }
 
-    [SystemAuditLog("Registration Number")]
-    public string? RegistrationNumber { get; set; }
 
     [SystemAuditLog("Employer Number")]
     public string? EmployerNumber { get; set; } // E Number
     public virtual ICollection<CompanyOwner> Owners { get; set; } = [];
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = [];
-
-
-  
 }

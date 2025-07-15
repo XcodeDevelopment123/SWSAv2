@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities.Clients;
 
-public class BaseClient
+public abstract class BaseClient
 {
     [Key]
     public int Id { get; set; }
@@ -25,9 +25,9 @@ public class BaseClient
     [SystemAuditLog("Tax Identification Number")]
     public string? TaxIdentificationNumber { get; set; } // TIN
 
-    public ClientType ClintType { get; set; }
+    public ClientType ClientType { get; set; }
 
-    public virtual ICollection<ClientWorkAllocation> WorkAllocation { get; set; } = [];
+    public virtual ICollection<ClientWorkAllocation> WorkAllocations { get; set; } = [];
     public virtual ICollection<OfficialContact> OfficialContacts { get; set; } = [];
     public virtual ICollection<CommunicationContact> CommunicationContacts { get; set; } = [];
 

@@ -3,6 +3,8 @@
 // Write your JavaScript code.
 const urls = {
     "auth": "/Auth",
+    "client": "/clients",
+    "new_client": "/clients/create",
     "companies": "/companies",
     "company_owner": "/companies/owner",
     "company_official_contact": "/companies/official-contact",
@@ -142,6 +144,15 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function getLastDay(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+
+    const lastDay = new Date(year, month, 0);
+
+    return lastDay;
+}
+
 function ConvertTimeFormat(dateString, format = "DD-MM-YYYY hh:mm A") {
     if (!dateString)
         return null;
@@ -150,6 +161,23 @@ function ConvertTimeFormat(dateString, format = "DD-MM-YYYY hh:mm A") {
     var formattedDate = momentDate.format(format);
 
     return formattedDate;
+}
+
+function formatMonthLabel(monthNumber) {
+    const month = parseInt(monthNumber);
+    if (isNaN(month) || month < 1 || month > 12) {
+        return monthNumber;
+    }
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const date = new Date(1990, monthNumber - 1, 1);
+    const lastDay = getLastDay(date);
+
+    const monthName = monthNames[month - 1];
+
+    return `${ConvertTimeFormat(lastDay, 'DD')} ${monthName}`;
 }
 
 function throttle(fn, wait) {
@@ -193,21 +221,6 @@ function adjustResponsiveTables() {
             $(this).css('display', 'block');
         }
     });
-}
-
-function formatMonthLabel(monthNumber) {
-    const month = parseInt(monthNumber);
-    if (isNaN(month) || month < 1 || month > 12) {
-        return monthNumber; 
-    }
-
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'] ;
-
-    const zeroPad = month.toString().padStart(2, '0');
-    const monthName = monthNames[month - 1];
-
-    return `${zeroPad} (${monthName})`;
 }
 
 function reorderSelect2OptionsByText(selectElement) {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 
 namespace SWSA.MvcPortal.Persistence;
@@ -7,7 +8,16 @@ namespace SWSA.MvcPortal.Persistence;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     internal DbSet<User> Users { get; set; }
-    internal DbSet<CommunicationContact> CommunicationContact { get; set; }
+
+    #region Client
+    internal DbSet<SdnBhdClient> SdnBhdClients { get; set; }
+    internal DbSet<LLPClient> LLPClients { get; set; }
+    internal DbSet<EnterpriseClient> EnterpriseClients { get; set; }
+    internal DbSet<IndividualClient> IndividualClients { get; set; }
+    internal DbSet<ClientWorkAllocation> ClientWorkAllocations { get; set; }
+    #endregion
+
+    internal DbSet<CommunicationContact> CommunicationContacts { get; set; }
     internal DbSet<OfficialContact> OfficialContacts { get; set; }
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
@@ -16,7 +26,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     #region Work Assignment
     internal DbSet<WorkAssignment> WorkAssignments { get; set; }
     internal DbSet<WorkProgress> WorkProgresses { get; set; }
-    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; } 
+    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
     internal DbSet<AnnualReturnWorkAssignment> AnnualReturnWorkAssignments { get; set; }
     internal DbSet<AuditWorkAssignment> AuditWorkAssignments { get; set; }
     internal DbSet<LLPWorkAssignment> LLPWorkAssignments { get; set; }
@@ -42,6 +52,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.PerformedByUser).HasForeignKey(c => c.PerformedByUserId).OnDelete(DeleteBehavior.SetNull);
 
         });
+
+        modelBuilder.Entity<SdnBhdClient>()
+            .ToTable("SdnBhdClients");
+
+        modelBuilder.Entity<LLPClient>()
+            .ToTable("LLPClients");
+
+        modelBuilder.Entity<EnterpriseClient>()
+            .ToTable("EnterpriseClients");
+
+        modelBuilder.Entity<IndividualClient>()
+            .ToTable("IndividualClients");
 
         modelBuilder.Entity<CommunicationContact>(entity => { });
 

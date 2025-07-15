@@ -1,0 +1,194 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Models.Companies
+@using SWSA.MvcPortal.Services.Interfaces
+@using SWSA.MvcPortal.Services.Interfaces.SystemCore
+@inject IUserContext UserContext
+@model CompanyCreatePageVM
+@{
+    ViewData["Title"] = "Create New Sdn Bhd Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var groupedMsicCodes = Model.MsicCodes
+                .GroupBy(m => m.CategoryReferences)
+                .ToList();
+
+    var departments = SelectHelper.GetDepartments(null);
+    var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
+    var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(ClientType.SdnBhd);
+    var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(CompanyType.SdnBhd);
+    var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
+    var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
+    var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
+    var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null!);
+}
+
+<h3>Create New Sdn Bhd Client</h3>
+
+<div class="row">
+
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="adminForm">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Admin
+                        <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Category Information."></i>
+
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="group">Group</label>
+                                <input name="group" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="referral">Referral</label>
+                                <input name="referral" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fileNo">File No</label>
+                                <input name="fileNo" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <form id="companyForm">
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Company Info</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+
+                    <div class="col-md-12 d-none">
+                        <div class="form-group">
+                            <label for="clientType">Client Type</label>
+                            <select disabled asp-items="@clientTypes" name="clientType" class="form-control select2">  </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="companyType">Company Type</label>
+                            <select disabled asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyName">Company Name*</label>
+                            <input  name="companyName" class="form-control " placeholder="xxx sdn.bhd." />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="regisNumber">Registration Number</label>
+                            <input  name="regisNumber" class="form-control " placeholder="2025041153513" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="eNumber">Employer Number (E Number)</label>
+                            <input  name="eNumber" class="form-control " placeholder="12-3456789" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tinNumber">Tax Identification Number (TIN)</label>
+                            <input name="tinNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="incorpDate">Incorporation Date</label>
+                            <div class="input-group">
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="yearEndMonth">Year End Month</label>
+                            <div class="input-group">
+                                <input type="text" id="yearEndMonth" name="yearEndMonth" class="form-control" placeholder="Select month" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>
+                            <select id="msicCodesIds" name="msicCodesIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+                                @foreach (var group in groupedMsicCodes)
+                                {
+                                    <optgroup label="@group.Key">
+                                        @foreach (var msicCode in group)
+                                        {
+                                            <option value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
+                                        }
+                                    </optgroup>
+                                }
+                                )
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
+ 
+    <div class="col-md-12">
+        <!-- /.card-body -->
+        <div class="float-end">
+            <button id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/new-clients/create-company.js" asp-append-version="true"></script>
+    <!-- date-range-picker -->
+}

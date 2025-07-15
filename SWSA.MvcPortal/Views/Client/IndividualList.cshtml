@@ -1,0 +1,57 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@model IEnumerable<SWSA.MvcPortal.Entities.Clients.IndividualClient>
+
+@{
+    ViewData["Title"] = "Individual List";
+    var clientType = ClientType.Individual;
+    <input hidden value="@clientType" id="clientType" />
+}
+
+<h1>Individual Client List</h1>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        @await Component.InvokeAsync("FilterClientList", clientType)
+
+        <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <table id="clientDatatable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Admin</th>
+                            <th colspan="5">Client Information</th>
+                        </tr>
+                        <tr>
+                            <th class="vertical-rl">Grouping</th>
+                            <th class="vertical-rl">Referral </th>
+                            <th>Individual Name </th>
+                            <th>IC/Passport # </th>
+                            <th>Year End </th>
+                            <th>TIN Number </th>
+                            <th>Profession </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        @await Component.InvokeAsync("ClientListDetails", clientType)
+
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+    <script src="~/js/clients/list.js" asp-append-version="true"></script>
+    <script src="~/js/clients/load-client-list-details.js" asp-append-version="true"></script>
+    <script src="~/js/clients/client-list-details.js" asp-append-version="true"></script>
+}

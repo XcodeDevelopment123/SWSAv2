@@ -46,6 +46,7 @@ using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Clients;
+using SWSA.MvcPortal.Entities.Clients;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -73,7 +74,7 @@ public static class DependencyInjector
             options.Filters.Add<LoginSessionFilter>();
         }).AddNewtonsoftJson(options =>
            {
-               options.SerializerSettings.ReferenceLoopHandling =ReferenceLoopHandling.Ignore;
+               options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                options.SerializerSettings.Converters.Add(new DisplayEnumConverter());
            });
 
@@ -122,6 +123,10 @@ public static class DependencyInjector
     {
         string connString = configuration.GetConnectionString(AppSettings.DbConnString)!;
 
+        services.AddDbContextFactory<AppDbContext>(options =>
+        {
+            options.UseSqlServer(connString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+        });
 
         services.AddDbContext<AppDbContext>(options =>
         {
@@ -142,7 +147,8 @@ public static class DependencyInjector
         //#Repository DI (auto generated)
         services.AddScoped<ICommunicationContactRepository, CommunicationContactRepository>();
         services.AddScoped<IOfficialContactRepository, OfficialContactRepository>();
-  
+        services.AddScoped<IClientRepository, ClientRepository>();
+
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
 
         services.AddScoped<IWorkAssignmentRepository, WorkAssignmentRepository>();
@@ -171,6 +177,8 @@ public static class DependencyInjector
 
         //#Service DI (auto generated)
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IClientService, ClientService>();
+        services.AddScoped<IClientOptionService, ClientOptionService>();
         services.AddScoped<ICommunicationContactService, CommunicationContactService>();
         services.AddScoped<IOfficialContactService, OfficialContactService>();
         services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
@@ -186,6 +194,7 @@ public static class DependencyInjector
         //#Service DI end
 
         //Factory
+        services.AddScoped<IClientCreationFactory, ClientCreationFactory>();
         services.AddScoped<IWorkAssignmentFactory, WorkAssignmentFactory>();
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();

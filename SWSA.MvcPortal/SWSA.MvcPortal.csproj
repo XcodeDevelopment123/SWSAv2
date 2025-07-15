@@ -66,6 +66,7 @@
 
 	<ItemGroup>
 		<Folder Include="Datas\uploads\" />
+		<Folder Include="Models\Clients\" />
 		<Folder Include="Views\Company\" />
 		<Folder Include="wwwroot\lib\yearpicker\" />
 	</ItemGroup>

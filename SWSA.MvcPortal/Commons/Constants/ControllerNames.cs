@@ -2,6 +2,7 @@
 public class ControllerNames
 {
     public const string Dashboard = "Dashboard";
+    public const string Client = "Client";
     public const string Company = "Company";
     public const string NewCompany = "NewCompany";
     public const string Secretary = "Secretary";

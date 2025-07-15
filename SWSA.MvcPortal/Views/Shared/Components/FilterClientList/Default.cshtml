@@ -1,0 +1,121 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@model ClientType
+@{
+    var isIndividual = Model == ClientType.Individual;
+
+}
+<div class="card card-secondary  collapsed-card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-filter"></i>  Filter
+        </h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body pt-0" style="display:none">
+        <form id="filterForm" class="mb-2">
+            <div class="row">
+                <div class="form-info-label col-12">
+                    <label>Admin</label>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="grouping">Group</label>
+                        <select class="form-control select2" name="grouping">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="referral">Referral</label>
+                        <input type="text" class="form-control" name="referral" placeholder="referral">
+                    </div>
+                </div>
+
+                @if (!isIndividual)
+                {
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="fileNo">File No</label>
+                            <input type="text" class="form-control" name="fileNo" placeholder="File No">
+                        </div>
+                    </div>
+                }
+
+
+                <div class="divider-line"></div>
+
+          
+                @if (isIndividual)
+                {
+                    <div class="form-info-label col-12">
+                        <label>Individual Info</label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="individualName">Individual Name</label>
+                            <input type="text" class="form-control" name="individualName" placeholder="Enter client name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="profession">Profession</label>
+                            <select class="form-control select2" name="profession">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-info-label col-12">
+                        <label>Company Info</label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" class="form-control" name="companyName" placeholder="Enter company name">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="companyNumber">Company #</label>
+                            <input type="text" class="form-control" name="companyNumber" placeholder="Enter company registration number">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="incorpDateRange">Incorp Date</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="incorpDateFrom" name="incorpDateFrom" placeholder="start date">
+                                <div class="input-group-append input-group-prepend">
+                                    <span class="input-group-text">to</span>
+                                </div>
+                                <input type="text" class="form-control" id="incorpDateTo" name="incorpDateTo" placeholder="end date">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" id="searchBtn">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-secondary ml-2" id="resetBtn">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
