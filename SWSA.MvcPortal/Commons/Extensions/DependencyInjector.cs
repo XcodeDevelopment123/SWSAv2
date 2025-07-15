@@ -147,7 +147,6 @@ public static class DependencyInjector
         //#Repository DI (auto generated)
         services.AddScoped<ICommunicationContactRepository, CommunicationContactRepository>();
         services.AddScoped<IOfficialContactRepository, OfficialContactRepository>();
-        services.AddScoped<IClientRepository, ClientRepository>();
 
         services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
 

@@ -3,18 +3,21 @@ using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
-using SWSA.MvcPortal.Dtos.Responses.Clients;
 using SWSA.MvcPortal.Entities.Clients;
-using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Persistence;
+using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Services.Clients;
 
 public class ClientService(
-   IClientRepository _repo,
-   IClientCreationFactory _clientCreationFactory
+   IClientCreationFactory _clientCreationFactory,
+   AppDbContext db
     ) : IClientService
 {
+    private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
+    private readonly DbSet<BaseCompany> _companies = db.Set<BaseCompany>();
+    private readonly DbSet<IndividualClient> _individualClients = db.Set<IndividualClient>();
 
     public async Task<IEnumerable<object>> SearchClientsAsync(ClientType type, ClientFilterRequest request)
     {
@@ -30,14 +33,14 @@ public class ClientService(
 
     public async Task<List<T>> GetClientsAsync<T>() where T : BaseClient
     {
-        var data = await _repo.Query().OfType<T>().ToListAsync();
+        var data = await _clients.OfType<T>().ToListAsync();
 
         return data;
     }
 
     public async Task<BaseClient> GetClientByIdAsync(int id)
     {
-        var data = await _repo.GetByIdAsync(id);
+        var data = await _clients.FirstOrDefaultAsync(c => c.Id == id);
         Guard.AgainstNullData(data, "Client Not Found");
 
         return data!;
@@ -46,36 +49,37 @@ public class ClientService(
 
     public async Task<BaseCompany> CreateCompanyAsync(CreateCompanyRequest req)
     {
-        var isExist = await _repo.CompanyExists(req.RegistrationNumber, req.CompanyName);
+        var isExist = await _companies.CompanyExistsAsync(req.RegistrationNumber, req.CompanyName);
         if (isExist)
         {
             throw new BusinessLogicException("Company Name / Number already exists");
         }
 
         var entity = _clientCreationFactory.CreateCompanyAsync(req);
-        _repo.Add(entity);
-        await _repo.SaveChangesAsync();
+
+        await db.AddAsync(entity);
+        await db.SaveChangesAsync();
 
         return entity;
     }
 
     public async Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req)
     {
-        var isExist = await _repo.CompanyExists(req.IndividualName, req.ICOrPassportNumber);
+        var isExist = await _individualClients.ExistsAsync(req.ICOrPassportNumber);
         if (isExist)
         {
             throw new BusinessLogicException("IC/Passport already exists");
         }
 
         var entity = _clientCreationFactory.CreateIndividualAsync(req);
-        _repo.Add(entity);
-        await _repo.SaveChangesAsync();
-        return new();
+        await db.AddAsync(entity);
+        await db.SaveChangesAsync();
+        return entity;
     }
 
     private async Task<IEnumerable<T>> GetFilteredCompanyClientsAsync<T>(ClientFilterRequest req) where T : BaseCompany
     {
-        var query = _repo.Query().OfType<T>();
+        var query = _clients.OfType<T>();
 
         if (!string.IsNullOrEmpty(req.Grouping))
         {
@@ -117,7 +121,7 @@ public class ClientService(
 
     private async Task<IEnumerable<IndividualClient>> GetFilteredIndividualClientsAsync(ClientFilterRequest req)
     {
-        var query = _repo.Query().OfType<IndividualClient>();
+        var query = _clients.OfType<IndividualClient>();
 
         if (!string.IsNullOrEmpty(req.Grouping))
         {

@@ -121,6 +121,7 @@
             if (res) {
                 updateSelectOption(res);
             }
+
         }
     })
 
@@ -165,6 +166,7 @@
     });
 
     initSelect2();
+
 
     flatpickr("#incorpDateFrom, #incorpDateTo", {
         allowInput: true,
@@ -223,22 +225,22 @@
     function updateSelectOption(res) {
         console.log(res);
 
-        if (res.professions.length > 0) {
-            const html = '';
+        if (res.professions && res.professions.length > 0) {
+            let html = '';
             $.each(res.professions, function (i, item) {
                 html += `<option value="${item}">${item}</option>`
             });
 
-            filterFormInputs.profession.add(html);
+            filterFormInputs.profession.append(html);
         }
 
-        if (res.groups.length > 0) {
-            const html = '';
+        if (res.groups && res.groups.length > 0) {
+            let html = '';
             $.each(res.groups, function (i, item) {
                 html += `<option value="${item}">${item}</option>`
             });
 
-            filterFormInputs.grouping.add(html);
+            filterFormInputs.grouping.append(html);
         }
     }
 })
