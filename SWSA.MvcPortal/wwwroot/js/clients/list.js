@@ -125,6 +125,10 @@
         }
     })
 
+    flatpickr("#incorpDateFrom, #incorpDateTo", {
+        allowInput: true,
+        dateFormat: "Y-m-d"
+    });
 
     $("#searchBtn").on('click', function (e) {
         e.preventDefault();
@@ -165,15 +169,8 @@
         $("#searchBtn").trigger("click");
     });
 
-    initSelect2();
-
-
-    flatpickr("#incorpDateFrom, #incorpDateTo", {
-        allowInput: true,
-        dateFormat: "Y-m-d"
-    });
-
     $("#searchBtn").trigger("click");
+
     function updateSearchResults(data) {
         clientDatatable.clear().draw();
         if (!Array.isArray(data) || data.length === 0) {
@@ -181,22 +178,40 @@
         }
 
         $.each(data, function (i, item) {
-            clientDatatable.row.add({
-                DT_RowClass: "cp-item",
-                DT_RowAttr: {
-                    'data-id': item.id
-                },
-                0: item.group,
-                1: item.referral,
-                2: item.fileNo,
-                3: item.name,
-                4: item.companyType,
-                5: formatMonthLabel(item.yearEndMonth),
-                6: ConvertTimeFormat(item.incorporationDate, "YYYY-MM-DD"),
-                7: item.registrationNumber,
-                8: item.employerNumber,
-                9: item.taxIdentificationNumber
-            });
+            //Will only have 1 type of client
+            if (item.clientType === "Individual") {
+                clientDatatable.row.add({
+                    DT_RowClass: "cp-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.group,
+                    1: item.referral,
+                    2: item.name,
+                    3: item.icOrPassportNumber,
+                    4: formatMonthLabel(item.yearEndMonth),
+                    5: item.taxIdentificationNumber,
+                    6: item.profession
+                });
+            } else {
+                clientDatatable.row.add({
+                    DT_RowClass: "cp-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.group,
+                    1: item.referral,
+                    2: item.fileNo,
+                    3: item.name,
+                    4: item.companyType,
+                    5: formatMonthLabel(item.yearEndMonth),
+                    6: ConvertTimeFormat(item.incorporationDate, "YYYY-MM-DD"),
+                    7: item.registrationNumber,
+                    8: item.employerNumber,
+                    9: item.taxIdentificationNumber
+                });
+            }
+
         })
 
         clientDatatable.draw();
@@ -223,12 +238,12 @@
     }
 
     function updateSelectOption(res) {
-        console.log(res);
 
         if (res.professions && res.professions.length > 0) {
             let html = '';
             $.each(res.professions, function (i, item) {
-                html += `<option value="${item}">${item}</option>`
+                if (item && item.trim() !== "")
+                    html += `<option value="${item}">${item}</option>`
             });
 
             filterFormInputs.profession.append(html);
@@ -237,7 +252,8 @@
         if (res.groups && res.groups.length > 0) {
             let html = '';
             $.each(res.groups, function (i, item) {
-                html += `<option value="${item}">${item}</option>`
+                if (item && item.trim() !== "")
+                    html += `<option value="${item}">${item}</option>`
             });
 
             filterFormInputs.grouping.append(html);

@@ -4,45 +4,16 @@ namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum CompanyActivityLevel
 {
-    Other = 0,
-
-    /// <summary>
-    /// Dormant
-    /// </summary>
     [Display(Name = "D")]
-    D = 1,
-
-    /// <summary>
-    /// Semi-Dormant
-    /// </summary>
-    [Display(Name = "SD")]
-    SD = 2,
-
-    /// <summary>
-    /// Active
-    /// </summary>
-    [Display(Name = "A")]
-
-    A = 3,
-
-    /// <summary>
-    /// Active Above Average 
-    /// </summary>
-
-    [Display(Name = "AA")]
-    AA = 4,
-
-    /// <summary>
-    /// Very Active
-    /// </summary>
-
-    [Display(Name = "AAA")]
-    AAA = 5,
-
-    /// <summary>
-    /// Extremely Active 
-    /// </summary>
-    [Display(Name = "AAAAA")]
-
-    AAAAA = 6
+    D = 0,
+    [Display(Name = "1")]
+    One = 1,
+    [Display(Name = "2")]
+    Two = 2,
+    [Display(Name = "3")]
+    Three = 3,
+    [Display(Name = "4")]
+    Four = 4,
+    [Display(Name = "5")]
+    Five = 5
 }

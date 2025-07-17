@@ -4,7 +4,13 @@
 const urls = {
     "auth": "/Auth",
     "client": "/clients",
+    "client_comm": "/clients/comm-contact",
+    "client_official": "/clients/official-contact",
+    "client_cp_owner": "/clients/company-owner",
+    "client_work_alloc": "/clients/work-alloc",
+
     "new_client": "/clients/create",
+    "edit_client": "/clients/edit",
     "companies": "/companies",
     "company_owner": "/companies/owner",
     "company_official_contact": "/companies/official-contact",
@@ -95,6 +101,8 @@ function getFormData(formInputs) {
             else if ($input.is('input[type="file"]')) {
                 const file = $input[0].files[0];
                 formData[key] = file ?? null;
+            } else if ($input.is('input[type="checkbox"]')) {
+                formData[key] = $input.prop("checked");
             }
             //  input/select
             else {
@@ -245,4 +253,19 @@ function tableResizeEventListener() {
     window.addEventListener('resize', throttle(adjustResponsiveTables, 150));
     window.addEventListener('resize', debounce(adjustResponsiveTables, 250));
     window.addEventListener('load', adjustResponsiveTables);
+}
+
+
+function selectByDisplayText(selectId, displayText) {
+    const option = $(`#${selectId} option`).filter(function () {
+        return $(this).text().trim() === displayText;
+    }).first();
+
+    if (option.length) {
+        $(`#${selectId}`).val(option.val()).trigger("change");
+    }
+}
+
+function toCleanLower(str) {
+    return String(str).toLowerCase().replace(/\s+/g, '');
 }

@@ -47,6 +47,7 @@ using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Clients;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -145,15 +146,12 @@ public static class DependencyInjector
         });
 
         //#Repository DI (auto generated)
-        services.AddScoped<ICommunicationContactRepository, CommunicationContactRepository>();
         services.AddScoped<IOfficialContactRepository, OfficialContactRepository>();
 
-        services.AddScoped<ICompanyMsicCodeRepository, CompanyMsicCodeRepository>();
 
         services.AddScoped<IWorkAssignmentRepository, WorkAssignmentRepository>();
         services.AddScoped<IWorkProgressRepository, WorkProgressRepository>();
         services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
-        services.AddScoped<IMsicCodeRepository, MsicCodeRepository>();
         services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
         services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
         services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
@@ -180,7 +178,7 @@ public static class DependencyInjector
         services.AddScoped<IClientOptionService, ClientOptionService>();
         services.AddScoped<ICommunicationContactService, CommunicationContactService>();
         services.AddScoped<IOfficialContactService, OfficialContactService>();
-        services.AddScoped<ICompanyMsicCodeService, CompanyMsicCodeService>();
+        services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
@@ -190,6 +188,7 @@ public static class DependencyInjector
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
+        services.AddScoped<IWorkAllocationService, WorkAllocationService>();
         //#Service DI end
 
         //Factory

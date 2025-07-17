@@ -1,0 +1,121 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@model ClientType
+@{
+    var isIndividual = Model == ClientType.Individual;
+    var isSdnBhd = Model == ClientType.SdnBhd;
+    var serviceScopes = SelectHelper.GetServiceScopes(Model);
+
+    var activitySizes = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null);
+    var auditStatus = SelectHelper.GetEnumSelectList<AuditStatus>(null);
+    var auditCompanyStatus = SelectHelper.GetEnumSelectList<AuditCompanyStatus>(null);
+}
+
+<div class="modal fade" id="upsertWorkAllocModal" tabindex="-1" role="dialog" aria-labelledby="upsertWorkAllocModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title" id="upsertWorkAllocModalLabel">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="modalTitle">Work Allocation</span>
+                </h4>
+                <button type="button" class="modal-close close text-white" data-modal-id="upsertWorkAllocModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="upsertWorkAllocForm">
+                    <input type="hidden" id="work_alloc_id" name="Id" value="0">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-cogs"></i> Service
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="work_alloc_service">Service Scope <span class="text-danger">*</span></label>
+                                        <select asp-items="serviceScopes" class="form-control select2" id="work_alloc_service" name="Service">
+                                        </select>
+                                    </div>
+
+                                    @if (!isIndividual)
+                                    {
+                                        <div class="form-group">
+                                            <label for="work_alloc_activity">Activity / Co Size  </label>
+                                            <select asp-items="activitySizes" class="form-control select2" id="work_alloc_activity" name="ActivitySize">
+                                            </select>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        @if (isSdnBhd)
+                        {
+                            <div class="col-md-6">
+                                <div class="card card-success card-outline">
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            <i class="fas fa-clipboard-check"></i> Audit Status
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="work_alloc_cp_status">Company Status </label>
+                                            <select asp-items="auditCompanyStatus" class="form-control select2" id="work_alloc_cp_status" name="AuditCompanyStatus">
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="work_alloc_audit_status">Audit Status </label>
+                                            <select asp-items="auditStatus" class="form-control select2" id="work_alloc_audit_status" name="AuditStatus">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-info card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-sticky-note"></i> Remarks
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="work_alloc_remark">Remark</label>
+                                        <textarea class="form-control" id="work_alloc_remark" name="Remark" rows="3" placeholder="Other information..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light">
+                <button type="button" class="modal-close btn btn-secondary" data-modal-id="upsertWorkAllocModal" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button id="work_alloc_submitBtn" type="button" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

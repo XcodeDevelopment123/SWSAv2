@@ -27,10 +27,21 @@ public abstract class BaseClient
 
     public ClientType ClientType { get; set; }
 
+    public bool IsActive { get; set; }  
+
     public virtual ICollection<ClientWorkAllocation> WorkAllocations { get; set; } = [];
     public virtual ICollection<OfficialContact> OfficialContacts { get; set; } = [];
     public virtual ICollection<CommunicationContact> CommunicationContacts { get; set; } = [];
 
+    public void Deactivate()
+    {
+        IsActive = false;   
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
 
     public string GetYearEnd()
     {

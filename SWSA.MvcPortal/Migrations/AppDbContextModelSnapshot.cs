@@ -36,13 +36,13 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyActivityLevel")
+                    b.Property<int?>("CompanyActivityLevel")
                         .HasColumnType("int");
 
                     b.Property<int?>("CompanyStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("Label")
+                    b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ServiceScope")
@@ -69,6 +69,9 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -84,7 +87,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseClient");
+                    b.ToTable("Clients");
 
                     b.UseTptMappingStrategy();
                 });
@@ -159,10 +162,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BaseCompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClientId")
+                    b.Property<int>("ClientCompanyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -180,9 +180,6 @@ namespace SWSA.MvcPortal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnershipType")
-                        .HasColumnType("int");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -190,15 +187,16 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
+                    b.Property<bool>("RequiresFormBESubmission")
+                        .HasColumnType("bit");
+
                     b.Property<string>("TaxReferenceNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseCompanyId");
-
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientCompanyId");
 
                     b.ToTable("CompanyOwners");
                 });
@@ -661,9 +659,10 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RegistrationNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("BaseCompany");
+                    b.ToTable("BaseCompanies", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.IndividualClient", b =>
@@ -805,7 +804,7 @@ namespace SWSA.MvcPortal.Migrations
             modelBuilder.Entity("SWSA.MvcPortal.Entities.ClientWorkAllocation", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", "Client")
-                        .WithMany("WorkAllocation")
+                        .WithMany("WorkAllocations")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -845,17 +844,13 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.CompanyOwner", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", null)
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Company")
                         .WithMany("Owners")
-                        .HasForeignKey("BaseCompanyId");
-
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
+                        .HasForeignKey("ClientCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.DocumentRecord", b =>
@@ -949,6 +944,15 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("WorkAssignment");
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseCompany", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", null)
+                        .WithOne()
+                        .HasForeignKey("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.IndividualClient", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", null)
@@ -1027,7 +1031,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.Navigation("OfficialContacts");
 
-                    b.Navigation("WorkAllocation");
+                    b.Navigation("WorkAllocations");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.MsicCode", b =>

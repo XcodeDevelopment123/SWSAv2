@@ -1,36 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Dtos.Requests.Companies;
+using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers;
 
-[Route("companies/cm-contact")]
+[Route("clients/comm-contact")]
 public class CommunicationContactController(
     ICommunicationContactService service
     ) : BaseController
 {
     #region API/Ajax
     [InternalAjaxOnly]
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateStaffContact(CreateCompanyCommunicationContactRequest req)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var result = await service.Create(req);
+        var result = await service.GetByIdAsync(id);
         return Ok(result);
     }
 
     [InternalAjaxOnly]
-    [HttpPost("update")]
-    public async Task<IActionResult> EditStaffContact(EditCompanyCommunicationContactRequest req)
+    [HttpPost("")]
+    public async Task<IActionResult> UpsertContact(UpsertCommunicationContactRequest req)
     {
-        var result = await service.Edit(req);
+        var result = await service.UpsertContact(req);
         return Ok(result);
     }
 
+
     [InternalAjaxOnly]
-    [HttpDelete("{contactId}/delete")]
-    public async Task<IActionResult> DeleteStaffContact([FromRoute] int contactId)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteContact([FromRoute] int id)
     {
-        var result = await service.Delete(contactId);
+        var result = await service.Delete(id);
         return Ok(result);
     }
     #endregion

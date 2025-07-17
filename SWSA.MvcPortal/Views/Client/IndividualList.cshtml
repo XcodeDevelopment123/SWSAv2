@@ -19,7 +19,7 @@
             <!-- /.card-header -->
             <div class="card-body">
 
-                <table id="clientDatatable" class="table table-bordered table-hover">
+                <table id="clientDatatable" class="table table-bordered table-hover table-striped">
                     <thead>
                         <tr>
                             <th colspan="2">Admin</th>
@@ -47,6 +47,9 @@
     </div>
 </div>
 
+@await Component.InvokeAsync("UpsertCommContact", clientType)
+@await Component.InvokeAsync("UpsertOfficialContact", clientType)
+@await Component.InvokeAsync("UpsertWorkAllocation", clientType)
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -54,4 +57,8 @@
     <script src="~/js/clients/list.js" asp-append-version="true"></script>
     <script src="~/js/clients/load-client-list-details.js" asp-append-version="true"></script>
     <script src="~/js/clients/client-list-details.js" asp-append-version="true"></script>
+
+    <script src="~/js/clients/upsert-modal/upsert-comm-contact.js" asp-append-version="true"></script>
+    <script src="~/js/clients/upsert-modal/upsert-official-contact.js" asp-append-version="true"></script>
+    <script src="~/js/clients/upsert-modal/upsert-work-alloc.js" asp-append-version="true"></script>
 }

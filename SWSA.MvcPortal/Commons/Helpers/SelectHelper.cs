@@ -8,6 +8,38 @@ namespace SWSA.MvcPortal.Commons.Helpers;
 
 public class SelectHelper
 {
+    private static readonly Dictionary<ClientType, ServiceScope[]> _clientServiceScopes = new()
+    {
+        [ClientType.SdnBhd] =
+       [
+            ServiceScope.Sec,
+            ServiceScope.Audit,
+            ServiceScope.Tax,
+            ServiceScope.Acc,
+            ServiceScope.FormE,
+            ServiceScope.OthersPCB,
+            ServiceScope.NotSecFilingOnly,
+        ],
+        [ClientType.LLP] =
+       [
+            ServiceScope.Sec,
+            ServiceScope.FormE,
+            ServiceScope.ReviewAndTax,
+        ],
+        [ClientType.Enterprise] =
+       [
+            ServiceScope.Acc,
+            ServiceScope.FormB_P,
+            ServiceScope.FormE,
+            ServiceScope.OthersMonthlyEInvoice,
+        ],
+        [ClientType.Individual] =
+        [
+
+            ServiceScope.FormBE
+       ]
+    };
+
     public static List<SelectListItem> GetEnumSelectList<TEnum>(TEnum? selected = null, string defaultText = "Please select")
         where TEnum : struct, Enum
     {
@@ -24,6 +56,38 @@ public class SelectHelper
             new SelectListItem { Text = DepartmentType.Tax, Value = DepartmentType.Tax, Selected = type == DepartmentType.Tax },
             new SelectListItem { Text = DepartmentType.Secretary, Value = DepartmentType.Secretary, Selected = type == DepartmentType.Secretary },
         };
+    }
+
+    public static List<SelectListItem> GetEnterpriseCompanyType(CompanyType? type)
+    {
+        return ToSelectList<CompanyType>(type,
+           filter: x => x == CompanyType.SoleProprietorships || x == CompanyType.Partnership);
+    }
+
+    public static List<SelectListItem> GetServiceScopes(ClientType type)
+    {
+        if (!_clientServiceScopes.TryGetValue(type, out var scopes))
+        {
+            //Fall back return empty list
+            return [];
+        }
+        var selectList = new List<SelectListItem>()
+        {
+            new() {
+            Value = "",
+            Text = "Please select",
+            Disabled = true
+        }
+        };
+
+        var list = scopes.Select(scope => new SelectListItem()
+        {
+            Value = ((int)scope).ToString(),
+            Text = scope.GetDisplayName()
+        });
+
+        selectList.AddRange(list);
+        return selectList;
     }
 
     public static List<SelectListItem> GetEnableDisabledSelection(bool? isEnabled)

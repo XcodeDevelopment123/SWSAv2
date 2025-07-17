@@ -21,7 +21,7 @@ public class WorkAssignmentFactory : IWorkAssignmentFactory
             WorkType = request.Type,
             ForYear = request.Year,
             CreatedAt = DateTime.Now,
-            ServiceScope = ServiceScope.Other,
+            ServiceScope = ServiceScope.NotSecFilingOnly,
         };
 
         return request.Type switch

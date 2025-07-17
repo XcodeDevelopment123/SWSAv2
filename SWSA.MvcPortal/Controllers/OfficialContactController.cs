@@ -1,36 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Dtos.Requests.Companies;
+using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Services.Interfaces;
 
 namespace SWSA.MvcPortal.Controllers;
 
-[Route("companies/official-contact")]
+[Route("clients/official-contact")]
 public class OfficialContactController(
         IOfficialContactService service
     ) : BaseController
 {
     #region API/Ajax
     [InternalAjaxOnly]
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateOfficeContact(CreateCompanyOfficialContactRequest req)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var result = await service.Create(req);
+        var result = await service.GetByIdAsync(id);
         return Ok(result);
     }
 
     [InternalAjaxOnly]
-    [HttpPost("update")]
-    public async Task<IActionResult> EditOfficeContact(EditCompanyOfficialContactRequest req)
+    [HttpPost("")]
+    public async Task<IActionResult> UpsertContact(UpsertOfficialContactRequest req)
     {
-        var result = await service.Edit(req);
+        var result = await service.UpsertContact(req);
         return Ok(result);
     }
 
     [InternalAjaxOnly]
-    [HttpDelete("{contactId}/delete")]
-    public async Task<IActionResult> DeleteOfficeContact([FromRoute] int contactId)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteOfficeContact([FromRoute] int id)
     {
-        var result = await service.Delete(contactId);
+        var result = await service.Delete(id);
         return Ok(result);
     }
     #endregion

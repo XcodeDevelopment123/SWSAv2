@@ -4,8 +4,6 @@ namespace SWSA.MvcPortal.Dtos.Requests.Clients;
 
 public class CreateIndividualRequest
 {
-    public string? Group { get; set; }
-    public string? Referral { get; set; }
     public string IndividualName { get; set; }
     public string ICOrPassportNumber { get; set; } = null!;
     public string Professions { get; set; }

@@ -1,0 +1,118 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Helpers
+@model ClientType
+@{
+    var isIndividual = Model == ClientType.Individual;
+    var ownerPosition = SelectHelper.GetEnumSelectList<PositionType>(null);
+}
+
+<div class="modal fade" id="upsertOwnerModal" tabindex="-1" role="dialog" aria-labelledby="upsertOwnerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title" id="upsertOwnerModalLabel">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="modalTitle">Owner</span>
+                </h4>
+                <button type="button" class="modal-close close text-white" data-modal-id="upsertOwnerModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="upsertOwnerForm">
+                    <input type="hidden" id="owner_id" name="Id" value="0">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-user"></i> Infomation
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="owner_name">Name Per IC <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="owner_name" name="Name" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="owner_icPassport">IC / Passport <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="owner_icPassport" name="IcPassport" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="owner_position">Position  <span class="text-danger">*</span></label>
+                                        <select asp-items="ownerPosition" class="form-control select2" id="owner_position" name="Position">  </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="owner_taxRef">Tax Reference Number <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="owner_taxRef" name="Tax" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="icheck-primary">
+                                            <input type="checkbox" id="owner_requireFormBE" name="RequireFormBE" value="true">
+                                            <label for="owner_requireFormBE">
+                                                <i class="fas fa-file-alt mr-1"></i>
+                                                Require to submit Form BE
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-success card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-phone"></i> Method
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="owner_telephone">Telephone <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                                            </div>
+                                            <input type="tel" class="form-control" id="owner_telephone" name="Phone" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="owner_Email">Email <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control" id="owner_Email" name="Email" placeholder="example@company.com">
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light">
+                <button type="button" class="modal-close btn btn-secondary" data-modal-id="upsertOwnerModal" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button id="owner_submitBtn" type="button" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

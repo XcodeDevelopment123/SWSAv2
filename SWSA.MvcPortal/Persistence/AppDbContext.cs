@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<User> Users { get; set; }
 
     #region Client
+    internal DbSet<BaseClient> Clients { get; set; }
     internal DbSet<SdnBhdClient> SdnBhdClients { get; set; }
     internal DbSet<LLPClient> LLPClients { get; set; }
     internal DbSet<EnterpriseClient> EnterpriseClients { get; set; }
@@ -53,17 +54,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         });
 
-        modelBuilder.Entity<SdnBhdClient>()
-            .ToTable("SdnBhdClients");
-
-        modelBuilder.Entity<LLPClient>()
-            .ToTable("LLPClients");
-
-        modelBuilder.Entity<EnterpriseClient>()
-            .ToTable("EnterpriseClients");
-
-        modelBuilder.Entity<IndividualClient>()
-            .ToTable("IndividualClients");
+        modelBuilder.Entity<BaseClient>().UseTptMappingStrategy();
+        modelBuilder.Entity<IndividualClient>().ToTable("IndividualClients");
+        modelBuilder.Entity<BaseCompany>().ToTable("BaseCompanies");
+        modelBuilder.Entity<SdnBhdClient>().ToTable("SdnBhdClients");
+        modelBuilder.Entity<LLPClient>().ToTable("LLPClients");
+        modelBuilder.Entity<EnterpriseClient>().ToTable("EnterpriseClients");
 
         modelBuilder.Entity<CommunicationContact>(entity => { });
 

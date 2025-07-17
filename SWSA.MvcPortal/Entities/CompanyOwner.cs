@@ -11,8 +11,8 @@ public class CompanyOwner
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey(nameof(Client))]
-    public int ClientId { get; set; }
+    [ForeignKey(nameof(Company))]
+    public int ClientCompanyId { get; set; }
     [SystemAuditLog("Owner Name (per IC)")]
     public string NamePerIC { get; set; } = null!;
     [SystemAuditLog("IC or Passport Number")]
@@ -25,11 +25,8 @@ public class CompanyOwner
     public string Email { get; set; } = null!;
     [SystemAuditLog("Phone Number")]
     public string PhoneNumber { get; set; } = null!;
-    [SystemAuditLog("Ownership Type")]
-    public OwnershipType OwnershipType { get; set; } //Its own or corp with other
-
+    [SystemAuditLog("Form BE submission")]
+    public bool RequiresFormBESubmission { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-    public virtual BaseClient Client { get; set; } = null!;
-
+    public virtual BaseCompany Company { get; set; } = null!;
 }

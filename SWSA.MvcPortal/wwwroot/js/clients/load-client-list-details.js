@@ -1,12 +1,19 @@
 ﻿$(function () {
+    let queryId = getQueryParam("id");
+    if (queryId) {
+        loadClientData(queryId);
+    }
 
     $(document).on("click", ".cp-item", function () {
         const id = $(this).data("id");
+        loadClientData(id);
+    });
 
+    function loadClientData(id) {
         if ($("#clientId")?.val() == id) {
             Toast_Fire(ICON_INFO, "Client already selected");
-            return
-        };
+            return;
+        }
 
         $.ajax({
             url: `${urls.client}/${id}`,
@@ -19,8 +26,8 @@
             error: function () {
                 Toast_Fire(ICON_ERROR, "Client not found", `Client Id with ${id} is not exist`);
             }
-        })
-    })
+        });
+    }
 
     const msicCodeTable = $("#msicCodeDatatable").DataTable({
         "paging": true,
@@ -46,6 +53,8 @@
         "info": true,
         "autoWidth": false,
         "responsive": true,
+        order: [[0, 'asc']],
+
     });
 
     const ownerDatatable = $("#ownerDatatable").DataTable({
@@ -56,6 +65,14 @@
         "info": true,
         "autoWidth": false,
         "responsive": true,
+        "pageLength": 5,
+        order: [[0, 'desc']],
+        "columnDefs": [
+            {
+                targets: 0,
+                visible: false,
+            }
+        ]
     });
 
     const officialCtDatatable = $("#officialCtDatatable").DataTable({
@@ -66,6 +83,14 @@
         "info": true,
         "autoWidth": false,
         "responsive": true,
+        "pageLength": 5,
+        order: [[0, 'desc']],
+        "columnDefs": [
+            {
+                targets: 0,
+                visible: false,
+            }
+        ]
     });
 
     const communicationCtDatatable = $("#communicationCtDatatable").DataTable({
@@ -76,6 +101,14 @@
         "info": true,
         "autoWidth": false,
         "responsive": true,
+        "pageLength": 5,
+        order: [[0, 'desc']],
+        "columnDefs": [
+            {
+                targets: 0,
+                visible: false,
+            }
+        ]
     });
 
     function updateClientDetails(data) {
@@ -89,7 +122,9 @@
             updateMsicCodeTable(data.msicCodes);
             updateOwnerTable(data.owners);
         } else {
-
+            $("#individualName").val(data.name);
+            $("#icOrPassport").val(data.icOrPassportNumber);
+            $("#profession").val(data.profession);
         }
 
         $("#clientId").val(data.id);
@@ -109,10 +144,10 @@
         msicCodeTable.clear();
         if (data.length > 0) {
             $.each(data, function (i, item) {
-                console.log(item);
-                msicCodeTable.add([
-                    item.code,
-                    item.descriptions
+                const code = item.msicCode;
+                msicCodeTable.row.add([
+                    code.code,
+                    code.description
                 ])
             })
         }
@@ -123,10 +158,25 @@
         workAllocationDatatable.clear();
         if (data.length > 0) {
             $.each(data, function (i, item) {
-                console.log(item);
-                workAllocationDatatable.add([
-
-                ])
+                workAllocationDatatable.row.add({
+                    DT_RowClass: "work-alloc-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.serviceScope,
+                    1: item.companyStatus,
+                    2: item.auditStatus,
+                    3: item.companyActivityLevel,
+                    4: item.remarks,
+                    5: `
+                    <div class="btn-group" role="group">
+						<button type="button" class="btn btn-sm btn-warning btn-edit-work-alloc mr-2" data-id="${item.id}" data-name="${item.serviceScope}" title="Edit">
+							<i class="fa fa-edit"></i>
+						</button>
+						<button type="button" class="btn btn-sm btn-danger btn-delete-work-alloc" data-id="${item.id}" data-name="${item.serviceScope}"><i class="fa fa-trash"></i></button>
+					</div>
+                    `
+                })
             })
         }
         workAllocationDatatable.draw();
@@ -136,10 +186,28 @@
         ownerDatatable.clear();
         if (data.length > 0) {
             $.each(data, function (i, item) {
-                console.log(item);
-                ownerDatatable.add([
-
-                ])
+                ownerDatatable.row.add({
+                    DT_RowClass: "owner-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.id,
+                    1: item.namePerIC,
+                    2: item.requiresFormBESubmission ? "Yes" : "No",
+                    3: item.icOrPassportNumber,
+                    4: item.position,
+                    5: item.taxReferenceNumber,
+                    6: item.phoneNumber,
+                    7: item.email,
+                    8: `
+                    <div class="btn-group" role="group">
+						<button type="button" class="btn btn-sm btn-warning btn-edit-owner mr-2" data-id="${item.id}" data-name="${item.namePerIC}" title="Edit">
+							<i class="fa fa-edit"></i>
+						</button>
+						<button type="button" class="btn btn-sm btn-danger btn-delete-owner" data-id="${item.id}" data-name="${item.namePerIC}"><i class="fa fa-trash"></i></button>
+					</div>
+                    `
+                })
             })
         }
         ownerDatatable.draw();
@@ -149,10 +217,25 @@
         officialCtDatatable.clear();
         if (data.length > 0) {
             $.each(data, function (i, item) {
-                console.log(item);
-                officialCtDatatable.add([
-
-                ])
+                officialCtDatatable.row.add({
+                    DT_RowClass: "official-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.id,
+                    1: item.address,
+                    2: item.officeTel,
+                    3: item.email,
+                    4: item.remark,
+                    5: `
+                    <div class="btn-group" role="group">
+						<button type="button" class="btn btn-sm btn-warning btn-edit-official-ct mr-2" data-id="${item.id}" data-name="${item.officeTel}" title="Edit">
+							<i class="fa fa-edit"></i>
+						</button>
+						<button type="button" class="btn btn-sm btn-danger btn-delete-official-ct" data-id="${item.id}" data-name="${item.officeTel}"><i class="fa fa-trash"></i></button>
+					</div>
+                    `
+                })
             })
         }
         officialCtDatatable.draw();
@@ -162,10 +245,25 @@
         communicationCtDatatable.clear();
         if (data.length > 0) {
             $.each(data, function (i, item) {
-                console.log(item);
-                communicationCtDatatable.add([
-
-                ])
+                communicationCtDatatable.row.add({
+                    DT_RowClass: "comm-item",
+                    DT_RowAttr: {
+                        'data-id': item.id
+                    },
+                    0: item.id,
+                    1: item.contactName,
+                    2: item.position,
+                    3: item.whatsApp,
+                    4: item.email,
+                    5: item.remark,
+                    6: `
+                    <div class="btn-group" role="group">
+						<button type="button" class="btn btn-sm btn-warning btn-edit-communication-ct mr-2" data-id="${item.id}" data-name="${item.contactName}" title="Edit">
+							<i class="fa fa-edit"></i>
+						</button>
+						<button type="button" class="btn btn-sm btn-danger btn-delete-communication-ct" data-id="${item.id}" data-name="${item.contactName}"><i class="fa fa-trash"></i></button>
+					</div>`
+                })
             })
         }
         communicationCtDatatable.draw();
@@ -178,7 +276,6 @@
             toggleBtn.trigger("click");
         }
     }
-
-
+    initSelect2();
 
 })

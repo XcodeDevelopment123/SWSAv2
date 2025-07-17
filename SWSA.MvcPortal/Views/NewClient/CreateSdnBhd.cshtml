@@ -14,14 +14,8 @@
                 .GroupBy(m => m.CategoryReferences)
                 .ToList();
 
-    var departments = SelectHelper.GetDepartments(null);
-    var ownershipTypes = SelectHelper.GetEnumSelectList<OwnershipType>(null);
     var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(ClientType.SdnBhd);
     var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(CompanyType.SdnBhd);
-    var ownerPosition = SelectHelper.GetOwnerPositionTypes(null);
-    var cmContactPosition = SelectHelper.GetCompanyCommunicationContactPositionTypes(null);
-    var companyActivityLevels = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null!);
-    var companyStatus = SelectHelper.GetEnumSelectList<CompanyStatus>(null!);
 }
 
 <h3>Create New Sdn Bhd Client</h3>
@@ -189,6 +183,6 @@
     <partial name="_ValidationScriptsPartial" />
     <partial name="_DatatablesScriptsPartial" />
 
-    <script src="~/js/new-clients/create-company.js" asp-append-version="true"></script>
+    <script src="~/js/clients/new-clients/create-company.js" asp-append-version="true"></script>
     <!-- date-range-picker -->
 }

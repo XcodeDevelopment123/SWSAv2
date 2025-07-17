@@ -1,0 +1,210 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Entities.Clients
+@using SWSA.MvcPortal.Models.Clients
+@using SWSA.MvcPortal.Models.Companies
+@using SWSA.MvcPortal.Services.Interfaces
+@using SWSA.MvcPortal.Services.Interfaces.SystemCore
+@inject IUserContext UserContext
+@model CompanyClientEditPageVM<EnterpriseClient>
+@{
+    ViewData["Title"] = "Edit Enterprise Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var client = Model.CompanyClient;
+    var cpMsicCodeIds = client.MsicCodes.Select(m => m.MsicCodeId).ToList();
+    var groupedMsicCodes = Model.MsicCodes
+                .GroupBy(m => m.CategoryReferences)
+                .ToList();
+
+
+
+    var year = DateTime.Now.Year;
+    DateTime? yearEndMonth = client.YearEndMonth.HasValue
+        ? new DateTime(DateTime.Now.Year, (int)client.YearEndMonth.Value, DateTime.DaysInMonth(year, (int)client.YearEndMonth.Value))
+        : null;
+
+
+    var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(client.ClientType);
+    var companyTypes = SelectHelper.GetEnterpriseCompanyType(client.CompanyType);
+}
+
+<h3>Edit @client.Name</h3>
+
+<div class="row">
+
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="adminForm">
+            <input hidden id="clientId" value="@client.Id" />
+
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Admin
+                        <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Category Information."></i>
+
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="group">Group</label>
+                                <input value="@client.Group" name="group" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="referral">Referral</label>
+                                <input value="@client.Referral" name="referral" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fileNo">File No</label>
+                                <input value="@client.FileNo" name="fileNo" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <form id="companyForm">
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Company Info</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+
+                    <div class="col-md-12 d-none">
+                        <div class="form-group">
+                            <label for="clientType">Client Type</label>
+                            <select disabled asp-items="@clientTypes" name="clientType" class="form-control select2">  </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="companyType">Company Type</label>
+                            <select disabled asp-items="@companyTypes" id="companyType" name="companyType" class="form-control select2">  </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="companyName">Company Name*</label>
+                            <input value="@client.Name" name="companyName" class="form-control " placeholder="xxx enterprise." />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="regisNumber">Registration Number</label>
+                            <input value="@client.RegistrationNumber" name="regisNumber" class="form-control " placeholder="2025041153513" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="eNumber">Employer Number (E Number)</label>
+                            <input value="@client.EmployerNumber" name="eNumber" class="form-control " placeholder="12-3456789" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tinNumber">Tax Identification Number (TIN)</label>
+                            <input value="@client.TaxIdentificationNumber" name="tinNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="incorpDate">Incorporation Date</label>
+                            <div class="input-group">
+                                <input value="@client.IncorporationDate?.ToFormattedString()" type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="yearEndMonth">Year End Month</label>
+                            <div class="input-group">
+
+                                <input value="@client.YearEndMonth?.GetIntValue()" type="text" id="yearEndMonth" name="yearEndMonth" class="form-control" placeholder="Select month" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>
+                            <select id="msicCodesIds" name="msicCodesIds" class="form-control select2" multiple="multiple" style="max-width:95%">
+                                @foreach (var group in groupedMsicCodes)
+                                {
+                                    <optgroup label="@group.Key">
+                                        @foreach (var msicCode in group)
+                                        {
+                                            if (cpMsicCodeIds.Contains(msicCode.Id))
+                                            {
+                                                <option selected value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@msicCode.Id">@msicCode.Code (@msicCode.Description)</option>
+                                            }
+                                        }
+                                    </optgroup>
+                                }
+                                )
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
+
+    <div class="col-md-12">
+        <!-- /.card-body -->
+        <div class="float-end">
+            <button id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/clients/edit-clients/edit-company.js" asp-append-version="true"></script>
+    <!-- date-range-picker -->
+}

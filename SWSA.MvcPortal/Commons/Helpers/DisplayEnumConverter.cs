@@ -7,7 +7,8 @@ public class DisplayEnumConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {
-        return objectType.IsEnum;
+        var type = Nullable.GetUnderlyingType(objectType) ?? objectType;
+        return type.IsEnum;
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -23,7 +24,7 @@ public class DisplayEnumConverter : JsonConverter
 
         if (enumName == null)
         {
-            writer.WriteValue(value.ToString()); 
+            writer.WriteValue(value.ToString());
             return;
         }
 
@@ -36,15 +37,25 @@ public class DisplayEnumConverter : JsonConverter
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
+        if (reader.TokenType == JsonToken.Null)
+        {
+            if (Nullable.GetUnderlyingType(objectType) != null)
+                return null;
+            throw new JsonSerializationException("Cannot convert null to non-nullable enum.");
+        }
+
         var str = reader.Value?.ToString();
-        foreach (var field in objectType.GetFields())
+        var enumType = Nullable.GetUnderlyingType(objectType) ?? objectType;
+
+        foreach (var field in enumType.GetFields(BindingFlags.Public | BindingFlags.Static))
         {
             var displayAttr = field.GetCustomAttribute<DisplayAttribute>();
             if ((displayAttr != null && displayAttr.Name == str) || field.Name == str)
             {
-                return Enum.Parse(objectType, field.Name);
+                return Enum.Parse(enumType, field.Name);
             }
         }
+
         throw new JsonSerializationException($"Unknown value: {str}");
     }
 }

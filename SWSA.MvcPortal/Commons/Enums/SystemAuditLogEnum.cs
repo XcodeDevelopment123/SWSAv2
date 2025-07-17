@@ -9,9 +9,9 @@ public enum SystemAuditModule
     ScheduleJob,
     Company,
     CompanyComplianceDate,
-    CompanyOfficialContact,
+    OfficialContact,
     CompanyOwner,
-    CompanyCommunicationContact,
+    CommunicationContact,
     CompanyWorkAssignment,
     DocumentRecord,
     User

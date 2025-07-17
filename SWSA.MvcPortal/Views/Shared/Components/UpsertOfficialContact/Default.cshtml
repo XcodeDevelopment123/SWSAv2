@@ -1,0 +1,108 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Helpers
+@model ClientType
+@{
+    var isIndividual = Model == ClientType.Individual;
+}
+
+<div class="modal fade" id="upsertOfficialModal" tabindex="-1" role="dialog" aria-labelledby="upsertOfficialModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title" id="upsertOfficialModalLabel">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="modalTitle">Contact</span>
+                </h4>
+                <button type="button" class="modal-close close text-white" data-modal-id="upsertOfficialModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="upsertOfficialForm">
+                    <input type="hidden" id="official_id" name="Id" value="0">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-user"></i> Infomation
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="official_address">Address</label>
+                                        <textarea class="form-control" id="official_address" name="Address" rows="3" placeholder="29,Jalan cxxx.."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-success card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-phone"></i> Method
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="official_telephone">Official Telephone <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                                            </div>
+                                            <input type="tel" class="form-control" id="official_telephone" name="Phone" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="official_Email">Email</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control" id="official_Email" name="Email" placeholder="example@company.com">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-info card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-sticky-note"></i> Remarks
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="official_remark">Remark</label>
+                                        <textarea class="form-control" id="official_remark" name="Remark" rows="3" placeholder="Other information..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light">
+                <button type="button" class="modal-close btn btn-secondary" data-modal-id="upsertOfficialModal" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button id="official_submitBtn" type="button" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span >Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -78,7 +78,7 @@ public class ClientCreationFactory : IClientCreationFactory
 
     public IndividualClient CreateIndividualAsync(CreateIndividualRequest req)
     {
-        return new IndividualClient
+        var entity = new IndividualClient
         {
             Group = req.CategoryInfo?.Group,
             Referral = req.CategoryInfo?.Referral,
@@ -90,5 +90,9 @@ public class ClientCreationFactory : IClientCreationFactory
             TaxIdentificationNumber = req.TaxIdentificationNumber,
             ClientType = req.ClientType,
         };
+
+        entity.CreateWorkAlloc();
+
+        return entity ;
     }
 }

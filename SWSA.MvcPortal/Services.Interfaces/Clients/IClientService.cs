@@ -8,7 +8,11 @@ public interface IClientService
 {
     Task<BaseCompany> CreateCompanyAsync(CreateCompanyRequest req);
     Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req);
-    Task<BaseClient> GetClientByIdAsync(int id);
+    Task<T> GetClientByIdAsync<T>(int id) where T : BaseClient;
     Task<List<T>> GetClientsAsync<T>() where T : BaseClient;
+    Task<BaseClient> GetClientWithDetailByIdAsync(int id);
+    Task<BaseClient> GetEditClientByIdAsync(int id);
     Task<IEnumerable<object>> SearchClientsAsync(ClientType type, ClientFilterRequest request);
+    Task<BaseCompany> UpdateCompanyAsync(UpdateCompanyRequest req);
+    Task<IndividualClient> UpdateIndividualAsync(UpdateIndividualRequest req);
 }

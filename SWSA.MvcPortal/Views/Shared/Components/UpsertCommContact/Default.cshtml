@@ -1,0 +1,114 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Helpers
+@model ClientType
+@{
+    var isIndividual = Model == ClientType.Individual;
+    var positionType = SelectHelper.GetEnumSelectList<PositionType>(null);
+}
+
+<div class="modal fade" id="upsertCommModal" tabindex="-1" role="dialog" aria-labelledby="upsertCommModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title" id="upsertCommModalLabel">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="modalTitle"> Contact</span>
+                </h4>
+                <button type="button" class="modal-close close text-white" data-modal-id="upsertCommModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="upsertCommForm">
+                    <input type="hidden" id="comm_id" name="Id" value="0">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-user"></i> Infomation
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="comm_contactName">Contact Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="comm_contactName" name="Name" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="comm_position">Position  <span class="text-danger">*</span></label>
+                                        <select asp-items="positionType" class="form-control select2 modal-select2" id="comm_position" name="Position">  </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-success card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-phone"></i> Method
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="whatsapp">Whatsapp <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                                            </div>
+                                            <input type="tel" class="form-control" id="comm_whatsapp" name="Phone" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="contactEmail">Email  <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control" id="comm_Email" name="Email" placeholder="example@company.com">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-info card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-sticky-note"></i> Remarks
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="comm_remark">Remark</label>
+                                        <textarea class="form-control" id="comm_remark" name="Remark" rows="3" placeholder="Other information..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light">
+                <button type="button" class="modal-close btn btn-secondary" data-dismiss="modal" data-modal-id="upsertCommModal">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button id="comm_submitBtn" class=" btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,16 @@
-﻿using SWSA.MvcPortal.Services.Interfaces;
-using SWSA.MvcPortal.Repositories.Interfaces;
-using AutoMapper;
+﻿using AutoMapper;
+using Force.DeepCloner;
+using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Companies;
+using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
-using Force.DeepCloner;
+using SWSA.MvcPortal.Persistence;
+using SWSA.MvcPortal.Persistence.QueryExtensions;
+using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 
@@ -16,69 +21,68 @@ public class OfficialContactService(
 IMapper mapper,
 IUserContext userContext,
 IOfficialContactRepository repo,
-ISystemAuditLogService sysAuditService
+ISystemAuditLogService sysAuditService,
+AppDbContext db
 ) : IOfficialContactService
 {
+    private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
+
+    private readonly DbSet<OfficialContact> _contact = db.Set<OfficialContact>();
     #region VM/DTO Query Method 
+
+    public async Task<OfficialContact?> GetByIdAsync(int id)
+    {
+        var data = await _contact.FirstOrDefaultAsync(c => c.Id == id);
+        return data;
+    }
+
     #endregion
 
-    public async Task<int> Create(CreateCompanyOfficialContactRequest req)
+    public async Task<OfficialContact> UpsertContact(UpsertOfficialContactRequest req)
     {
-        if (!req.CompanyId.HasValue)
+        var clientExist = await _clients.ExistsAsync(req.ClientId);
+        Guard.AgainstNotExist(clientExist, "Client Not Found : " + req.ClientId);
+
+        OfficialContact? entity = null;
+        if (req.Id.HasValue)
         {
-            throw new BadHttpRequestException("CompanyId is required");
+            entity = await _contact.FirstOrDefaultAsync(c => c.Id == req.Id.Value);
         }
 
-        Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
+        if (entity != null)
+        {
+            entity.Address = req.Address;
+            entity.OfficeTel = req.Phone;
+            entity.Email = req.Email;
+            entity.Remark = req.Remark;
+            _contact.Update(entity);
+        }
+        else
+        {
+            entity = new OfficialContact
+            {
+                ClientId = req.ClientId,
+                Address = req.Address,
+                OfficeTel = req.Phone,
+                Email = req.Email,
+                Remark = req.Remark,
+            };
+            await _contact.AddAsync(entity);
+        }
 
-        var data = mapper.Map<OfficialContact>(req);
-        repo.Add(data);
-        await repo.SaveChangesAsync();
-
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.CompanyOfficialContact, data.ClientId.ToString(), $"Company Official Contact", data);
-        sysAuditService.LogInBackground(log);
-        return data.Id;
+        await db.SaveChangesAsync();
+        return entity;
     }
 
-    public async Task<bool> Edit(EditCompanyOfficialContactRequest req)
+    public async Task<bool> Delete(int id)
     {
-        if (req.CompanyId.HasValue)
-        {
-            Guard.AgainstUnauthorizedCompanyAccess((int)req.CompanyId, null, userContext);
-        }
-
-        var data = await repo.GetByIdAsync(req.ContactId);
-
+        var data = await GetByIdAsync(id);
         Guard.AgainstNullData(data, "Company Official Contact not found");
 
-        if (data!.ClientId != req.CompanyId)
-        {
-            return false;
-        }
+        db.Remove(data!);
+        await db.SaveChangesAsync();
 
-        var oldData = data.DeepClone();
-        data.Address = req.Address;
-        data.OfficeTel = req.OfficeTel;
-        data.Email = req.Email;
-        data.Remark = req.Remark;
-
-        repo.Update(data);
-        await repo.SaveChangesAsync();
-
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.CompanyOfficialContact, data.ClientId.ToString(), $"Company Official Contact", oldData, data);
-        sysAuditService.LogInBackground(log);
-        return true;
-    }
-
-    public async Task<bool> Delete(int ownerId)
-    {
-        var data = await repo.GetByIdAsync(ownerId);
-        Guard.AgainstNullData(data, "Company Official Contact not found");
-
-        repo.Remove(data!);
-        await repo.SaveChangesAsync();
-
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOfficialContact, data.ClientId.ToString(), $"Company Official Contact", data);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.OfficialContact, data.ClientId.ToString(), $"Company Official Contact", data);
         sysAuditService.LogInBackground(log);
         return true;
     }

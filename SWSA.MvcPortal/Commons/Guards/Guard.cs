@@ -14,6 +14,14 @@ public static class Guard
         }
     }
 
+    public static void AgainstNotExist(bool exist, string message = "Data not found.")
+    {
+        if (!exist)
+        {
+            throw new DataNotFoundException(message);
+        }
+    }
+
     public static void AgainstNotSuperAdmin(IUserContext user)
     {
         if (!user.IsSuperAdmin)

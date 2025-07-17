@@ -39,7 +39,7 @@
 @{
 	var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
 	var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-	var currentCompanyType = new ActionInfo(ViewData["company-type"]?.ToString() ?? "");
+	var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
 	var url = Url.ActionContext.HttpContext.Request.Path.ToString();
 	var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
@@ -249,7 +249,7 @@
 							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Client) ? @"display:block" : "display:none")">
 
 								<li class="nav-item">
-									<a href="/clients/sdn-bhd"
+									<a href="/clients/sdnbhd"
 									   class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("SdnBhdList") ? "active" : "")">
 										<span class="nav-icon ">1.1</span>
 										<p>
@@ -290,29 +290,29 @@
 							</ul>
 						</li>
 
-						<li class="nav-item @(currentController.Is(ControllerNames.NewCompany) ?"menu-is-opening menu-open":"")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewCompany) ?"active":"")">
+						<li class="nav-item @(currentController.Is(ControllerNames.NewClient) ?"menu-is-opening menu-open":"")">
+							<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewClient) ?"active":"")">
 								<span class="nav-icon">2</span>
 								<p>
 									New Client
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewCompany) ? @"display:block" : "display:none")">
-								<li class="nav-item @(currentController.Is(ControllerNames.NewCompany) ?"menu-is-opening menu-open":"")">
-									<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewCompany) ?"active":"")">
+							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
+								<li class="nav-item @(currentController.Is(ControllerNames.NewClient) ?"menu-is-opening menu-open":"")">
+									<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewClient) ?"active":"")">
 										<span class="nav-icon">2.1</span>
 										<p>
 											New Client Profile
 											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
-									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewCompany) ? @"display:block" : "display:none")">
+									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
 
 
 										<li class="nav-item">
-											<a href="/clients/create/sdn-bhd"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.SdnBhd.ToString()) ?"active":"")">
+											<a href="/clients/create/sdnbhd"
+											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.SdnBhd.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.1</span>
 												<p>
 													Sdn Bhd
@@ -321,8 +321,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/clients/llp"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.LLP.ToString()) ?"active":"")">
+											<a href="/clients/create/llp"
+											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.LLP.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.2</span>
 												<p>
 													LLP
@@ -331,8 +331,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/clients/enterprise"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.Enterprise.ToString()) ?"active":"")">
+											<a href="/clients/create/enterprise"
+											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Enterprise.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.3</span>
 												<p>
 													Enterprise
@@ -341,8 +341,8 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="/clients/individual"
-											   class="nav-link @(currentController.Is(ControllerNames.NewCompany) && currentCompanyType.Is(ClientType.Individual.ToString()) ?"active":"")">
+											<a href="/clients/create/individual"
+											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Individual.ToString()) ?"active":"")">
 												<span class="nav-icon ">2.1.4</span>
 												<p>
 													Individual
@@ -801,9 +801,9 @@
 		<i class="fas fa-2x fa-sync-alt fa-spin"></i>
 	</div>
 
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="~/admin-lte/dist/js/adminlte.min.js"></script>
 	<!-- daterangepicker -->

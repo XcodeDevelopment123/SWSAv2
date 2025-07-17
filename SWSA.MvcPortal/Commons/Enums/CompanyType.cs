@@ -9,4 +9,6 @@ public enum CompanyType
     [Display(Name = "LLP")]
     LLP,
     Partnership,
+    [Display(Name = "Sole Proprietorships")]
+    SoleProprietorships
 }

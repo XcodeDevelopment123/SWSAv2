@@ -12,9 +12,9 @@ public static class AuditNavigationService
             SystemAuditModule.ScheduleJob => $"/scheduler-jobs/{entityId}/overview",
             SystemAuditModule.Company => $"/companies/{entityId}/overview",
             SystemAuditModule.CompanyComplianceDate => $"/companies/{entityId}/overview",
-            SystemAuditModule.CompanyOfficialContact => $"/companies/{entityId}/overview",
+            SystemAuditModule.OfficialContact => $"/companies/{entityId}/overview",
             SystemAuditModule.CompanyOwner => $"/companies/{entityId}/overview",
-            SystemAuditModule.CompanyCommunicationContact => $"/companies/staffs/{entityId}/edit",//Should be overview
+            SystemAuditModule.CommunicationContact => $"/companies/staffs/{entityId}/edit",//Should be overview
             SystemAuditModule.CompanyWorkAssignment => $"/companies/works/{entityId}/edit", //Should be overview
             SystemAuditModule.DocumentRecord => $"/companies/docs?docId={entityId}",
             SystemAuditModule.User => $"/users/{entityId}/overview",

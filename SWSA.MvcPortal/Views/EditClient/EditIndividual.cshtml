@@ -1,0 +1,149 @@
+﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Models.Clients
+@using SWSA.MvcPortal.Models.Companies
+@using SWSA.MvcPortal.Services.Interfaces
+@using SWSA.MvcPortal.Services.Interfaces.SystemCore
+@inject IUserContext UserContext
+@model IndividualClientEditPageVM
+@{
+    ViewData["Title"] = "Edit Individual Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var client = Model.IndividualClient;
+    var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(client.ClientType);
+}
+
+<h3>@client.Name Client</h3>
+
+<div class="row">
+
+    <div class="col-md-12">
+        <!-- jquery validation -->
+        <form id="adminForm">
+
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Admin
+                        <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Category Information."></i>
+
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="group">Group</label>
+                                <input value="@client.Group" name="group" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="referral">Referral</label>
+                                <input value="@client.Referral" name="referral" class="form-control" placeholder="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <form id="individualForm">
+            <input hidden id="clientId" value="@client.Id" />
+
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Individual Info</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
+
+                    <div class="col-md-12 d-none">
+                        <div class="form-group">
+                            <label for="clientType">Client Type</label>
+                            <select disabled asp-items="@clientTypes" name="clientType" class="form-control select2">  </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Individual Name</label>
+                            <input value="@client.Name" id="individualName" name="name" class="form-control " placeholder="John Dee" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>IC or Passport Number</label>
+                            <input value="@client.ICOrPassportNumber" name="icOrPassport" class="form-control " placeholder="1512121212" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="yearEndMonth">Year End Month</label>
+                            <div class="input-group">
+                                <input value="@client.YearEndMonth?.GetIntValue()" type="text" id="yearEndMonth" name="yearEndMonth" class="form-control" placeholder="Select month" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tinNumber">Tax Identification Number (TIN)</label>
+                            <input value="@client.TaxIdentificationNumber" name="tinNumber" class="form-control " placeholder="E 16164351 / C 16513513" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Professions</label>
+                            <input value="@client.Profession" id="professions" name="professions" class="form-control " placeholder="worker.." />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
+
+    <div class="col-md-12">
+        <!-- /.card-body -->
+        <div class="float-end">
+            <button id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/clients/edit-clients/edit-individual.js" asp-append-version="true"></script>
+    <!-- date-range-picker -->
+}

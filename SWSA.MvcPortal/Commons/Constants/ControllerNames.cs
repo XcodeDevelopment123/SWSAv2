@@ -4,7 +4,7 @@ public class ControllerNames
     public const string Dashboard = "Dashboard";
     public const string Client = "Client";
     public const string Company = "Company";
-    public const string NewCompany = "NewCompany";
+    public const string NewClient = "NewClient";
     public const string Secretary = "Secretary";
     public const string CompanyStaff = "CompanyStaff";
     public const string User = "User";
