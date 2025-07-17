@@ -9,15 +9,12 @@ public interface ICompanyWorkAssignmentService
     Task<int> Create(CreateCompanyWorkAssignmentRequest req);
     Task<int> RequestWorkAssignment(WorkAssignmentRequest req);
 
-    Task<Entities.WorkAssignment> Delete(int taskId);
-    Task<bool> Edit(EditCompanyWorkAssignmentRequest req);
-    Task<Entities.WorkAssignment> GetWorkAssignmentById(int taskId);
-    Task<T> GetWorkAssignmentById<T>(int taskId) where T : Entities.WorkAssignment;
+    Task<WorkAssignment> Delete(int taskId);
+
+    Task<T> GetWorkAssignmentById<T>(int taskId) where T : WorkAssignment;
 
     // Define your method here
-    Task<List<Entities.WorkAssignment>> GetWorkAssignments();
-    Task<List<T>> GetWorkAssignments<T>() where T : Entities.WorkAssignment;
-    Task<List<CompanyWorkCalendarVM>> GetWorkCalendarEvents();
+    Task<List<T>> GetWorkAssignments<T>() where T : WorkAssignment;
     Task<bool> UpdateWork<TRequest, TEntity>(TRequest req)
         where TRequest : IWorkAssignmentUpdater<TEntity>
         where TEntity : Entities.WorkAssignment;

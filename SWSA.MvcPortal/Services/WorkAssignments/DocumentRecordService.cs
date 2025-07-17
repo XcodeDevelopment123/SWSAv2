@@ -1,5 +1,4 @@
-﻿using SWSA.MvcPortal.Repositories.Interfaces;
-using SWSA.MvcPortal.Commons.Guards;
+﻿using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.DocumentRecords;
@@ -8,6 +7,8 @@ using AutoMapper;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
+using SWSA.MvcPortal.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWSA.MvcPortal.Services.WorkAssignments;
 
@@ -15,57 +16,40 @@ namespace SWSA.MvcPortal.Services.WorkAssignments;
 public class DocumentRecordService(
 IMapper mapper,
 IUserContext userContext,
-IDocumentRecordRepository repo,
 ISystemAuditLogService sysAuditService,
-IWorkAssignmentRepository workAssignmentRepo,
-IUserRepository userRepo
+AppDbContext db
 ) : IDocumentRecordService
 {
+    private readonly DbSet<DocumentRecord> documentRecords = db.Set<DocumentRecord>();
+
     #region VM/DTO Query Method 
     public async Task<List<DocumentRecord>> GetDocumentRecordsByDepartment(string department)
     {
-        var data = await repo.GetDocumentRecordsByDepartment(department);
+        var data = await documentRecords.Where(c => c.Department == department).ToListAsync();
         return data;
     }
 
     public async Task<List<DocumentRecordVM>> GetDocumentRecords()
     {
-        var data = userContext.IsSuperAdmin ? [.. await repo.GetAllAsync()] :
-            await repo.GetDocumentRecordsByCompanyIds(userContext.AllowedCompanyIds);
+        var data = await documentRecords.ToListAsync();
         return mapper.Map<List<DocumentRecordVM>>(data);
     }
 
     public async Task<DocumentRecordVM> GetDocumentRecordById(int id)
     {
-        var data = await repo.GetByIdAsync(id);
+        var data = await documentRecords.FirstOrDefaultAsync(c => c.Id == id);
         Guard.AgainstNullData(data, "DocumentRecord not found");
-        ///TODO : Check if the user has access to the company and department
         return mapper.Map<DocumentRecordVM>(data!);
     }
-
-    public async Task<List<DocumentRecordVM>> GetDocumentRecordByCompanyId(int companyId)
-    {
-        Guard.AgainstUnauthorizedCompanyAccess(companyId, null, userContext);
-
-        var data = await repo.GetDocumentRecordsByCompanyId(companyId);
-        return mapper.Map<List<DocumentRecordVM>>(data);
-    }
-
     #endregion
 
     public async Task<DocumentRecord> CreateDocument(DocumentRecordRequest doc)
     {
-        //var cp = await companyRepo.GetByIdAsync(doc.CompanyId);
-        //Guard.AgainstNullData(cp, "Company not found");
-        var user = await userRepo.GetByIdAsync(userContext.EntityId);
-        Guard.AgainstNullData(user, "User not found");
-       // Guard.AgainstUnauthorizedCompanyAccess(cp!.Id, null, userContext);
-
         var data = mapper.Map<DocumentRecord>(doc);
-        data.HandledByStaffId = user!.Id;
-        repo.Add(data);
+        data.HandledByStaffId = userContext.EntityId;
+        db.Add(data);
 
-        await repo.SaveChangesAsync();
+        await db.SaveChangesAsync();
 
         var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.DocumentRecord, data.Id.ToString(), $"Document: {data.Id}", data);
         sysAuditService.LogInBackground(log);
@@ -74,16 +58,16 @@ IUserRepository userRepo
 
     public async Task<bool> CreateDocuments(DocumentRecordListRequest req, List<IFormFile> files)
     {
-        List<DocumentRecord> records = new List<DocumentRecord>();
+        List<DocumentRecord> records = [];
         for (int i = 0; i < req.Documents.Count; i++)
         {
             var doc = req.Documents[i];
             var data = mapper.Map<DocumentRecord>(doc);
             data.HandledByStaffId = userContext.EntityId;
-            repo.Add(data);
+            db.Add(data);
         }
 
-        await repo.SaveChangesAsync();
+        await db.SaveChangesAsync();
         foreach (var doc in records)
         {
             var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.Id}", doc);
@@ -94,15 +78,13 @@ IUserRepository userRepo
 
     public async Task<bool> Delete(int docId)
     {
-        var doc = await repo.GetByIdAsync(docId);
-
+        var doc = await documentRecords.FirstOrDefaultAsync(c => c.Id == docId);
         Guard.AgainstNullData(doc, "Document not found");
-        ///TODO : Check if the user has access to the company and department
-        repo.Remove(doc!);
-        await repo.SaveChangesAsync();
+        db.Remove(doc!);
+        await db.SaveChangesAsync();
 
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc.Id.ToString(), $"Document: {doc.Id}", doc);
+        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, doc!.Id.ToString(), $"Document: {doc.Id}", doc);
         sysAuditService.LogInBackground(log);
         return true;
     }

@@ -9,8 +9,8 @@ using SWSA.MvcPortal.Services.Interfaces.Clients;
 namespace SWSA.MvcPortal.Services.Clients;
 
 public class ClientOptionService(
+  //use context factory to resolve concurency issue
   IDbContextFactory<AppDbContext> dbFactory
-    //use context factory to resolve concurency issue
     ) : IClientOptionService
 {
     public async Task<ClientOptionResponse?> GetOptionValuesAsync(ClientOptionRequest req)
@@ -41,30 +41,12 @@ public class ClientOptionService(
         await using var db = await dbFactory.CreateDbContextAsync();
         var query = db.Set<BaseClient>().AsQueryable().AsNoTracking();
         //Can do cahing here
-        var groups = clientType switch
-        {
-            ClientType.LLP => await query.OfType<LLPClient>()
+        var groups = await query
+            .Where(c => c.ClientType == clientType)
             .Select(c => c.Group ?? "")
             .Distinct()
             .OrderBy(c => c)
-            .ToListAsync(),
-            ClientType.Enterprise => await query.OfType<EnterpriseClient>()
-            .Select(c => c.Group ?? "")
-            .Distinct()
-            .OrderBy(c => c)
-            .ToListAsync(),
-            ClientType.SdnBhd => await query.OfType<SdnBhdClient>()
-            .Select(c => c.Group ?? "")
-            .Distinct()
-            .OrderBy(c => c)
-            .ToListAsync(),
-            ClientType.Individual => await query.OfType<IndividualClient>()
-            .Select(c => c.Group ?? "")
-            .Distinct()
-            .OrderBy(c => c)
-            .ToListAsync(),
-            _ => []
-        };
+            .ToListAsync();
 
         res.Groups = groups ?? [];
     }

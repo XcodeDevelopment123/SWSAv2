@@ -11,7 +11,11 @@ public class UserMapsterConfig : IMapsterConfig
     {
         config.ForType<User, User>();
         config.ForType<User, UserOverviewVM>()
-            .Map(dest=>dest.AssignedWorks,src=>src.AssignedWorks);
+            .Map(dest => dest.AssignedWorks, src => src.AssignedWorks);
+
+        config.ForType<User, UserSelectionVM>()
+        .Map(dest => dest.StaffId, src => src.StaffId)
+        .Map(dest => dest.Role, src => src.Role)
+        .Map(dest => dest.FullName, src => src.FullName);
     }
 }
-        

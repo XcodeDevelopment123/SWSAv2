@@ -1,25 +1,27 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Commons.Services.Session;
 using SWSA.MvcPortal.Dtos.Responses;
-using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 
 namespace SWSA.MvcPortal.Services.SystemCore;
 
 public class AuthService(
-    IUserRepository userRepo,
-    IMapper mapper,
     IHttpContextAccessor httpContextAccessor,
-    IUserSessionWriter userSessionWriter
+    IUserSessionWriter userSessionWriter,
+    AppDbContext db
     ) : IAuthService
 {
+    private readonly DbSet<User> users = db.Set<User>();
+
     private readonly ISession _session =
        httpContextAccessor.HttpContext?.Session
        ?? throw new InvalidOperationException("Session is not available.");
     public async Task<LoginResult> Login(string username, string password)
     {
-        var user = await userRepo.GetByUsernameAsync(username);
+        var user = await users.FirstOrDefaultAsync(c => c.Username == username);
         if (user == null)
         {
             return new LoginResult().Failed(LoginResult.LoginResultType.UserNotFound);
@@ -38,8 +40,8 @@ public class AuthService(
         userSessionWriter.Write(user);
 
         user.LastLoginAt = DateTime.Now;
-        userRepo.Update(user);
-        await userRepo.SaveChangesAsync();
+        db.Update(user);
+        await db.SaveChangesAsync();
         return new LoginResult().Success(user.StaffId);
     }
 

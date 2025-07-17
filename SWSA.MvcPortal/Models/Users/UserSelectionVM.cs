@@ -6,6 +6,5 @@ public class UserSelectionVM
 {
     public string StaffId { get; set; }
     public string FullName { get; set; }
-    public Dictionary<int, List<string>> CompanyDepartments { get; set; } // CompanyId, Department name
     public UserRole Role { get; set; }
 }

@@ -8,16 +8,16 @@ namespace SWSA.MvcPortal.Services.WorkAssignments;
 
 public interface IWorkAssignmentFactory
 {
-    Entities.WorkAssignment Create(WorkAssignmentRequest request, BaseClient cp);
+    WorkAssignment Create(WorkAssignmentRequest request, BaseClient cp);
 }
 
 public class WorkAssignmentFactory : IWorkAssignmentFactory
 {
-    public Entities.WorkAssignment Create(WorkAssignmentRequest request, BaseClient cp)
+    public WorkAssignment Create(WorkAssignmentRequest request, BaseClient cp)
     {
         var baseInfo = new
         {
-            request.CompanyId,
+            request.ClientId,
             WorkType = request.Type,
             ForYear = request.Year,
             CreatedAt = DateTime.Now,
@@ -29,7 +29,7 @@ public class WorkAssignmentFactory : IWorkAssignmentFactory
             WorkType.AnnualReturn => new AnnualReturnWorkAssignment
             {
                 ForYear = baseInfo.ForYear,
-                ClientId = baseInfo.CompanyId,
+                ClientId = baseInfo.ClientId,
                 WorkType = baseInfo.WorkType,
                 CreatedAt = baseInfo.CreatedAt,
                 ServiceScope = baseInfo.ServiceScope,
@@ -38,7 +38,7 @@ public class WorkAssignmentFactory : IWorkAssignmentFactory
 
             WorkType.Audit => new AuditWorkAssignment
             {
-                ClientId = baseInfo.CompanyId,
+                ClientId = baseInfo.ClientId,
                 ForYear = baseInfo.ForYear,
                 WorkType = baseInfo.WorkType,
                 CreatedAt = baseInfo.CreatedAt,
@@ -52,7 +52,7 @@ public class WorkAssignmentFactory : IWorkAssignmentFactory
             WorkType.StrikeOff => new StrikeOffWorkAssignment
             {
                 ForYear = baseInfo.ForYear,
-                ClientId = baseInfo.CompanyId,
+                ClientId = baseInfo.ClientId,
                 WorkType = baseInfo.WorkType,
                 CreatedAt = baseInfo.CreatedAt,
                 ServiceScope = baseInfo.ServiceScope,
@@ -62,7 +62,7 @@ public class WorkAssignmentFactory : IWorkAssignmentFactory
             WorkType.LLP => new LLPWorkAssignment
             {
                 ForYear = baseInfo.ForYear,
-                ClientId = baseInfo.CompanyId,
+                ClientId = baseInfo.ClientId,
                 WorkType = baseInfo.WorkType,
                 CreatedAt = baseInfo.CreatedAt,
                 ServiceScope = baseInfo.ServiceScope,

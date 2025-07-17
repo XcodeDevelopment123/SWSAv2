@@ -1,11 +1,14 @@
-﻿using Quartz;
+﻿using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Quartz.Impl.Matchers;
 using Serilog;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
-using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Persistence;
+using SWSA.MvcPortal.Persistence.QueryExtensions;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Services;
 
@@ -33,9 +36,10 @@ public class JobSchedulerService(
 
     public async Task ScheduleBackgroundJob()
     {
-        var scheduledJobsRepo = serviceProvider.GetRequiredService<IScheduledJobRepository>();
+        var db = serviceProvider.GetRequiredService<AppDbContext>();
+        var scheduleJobs = db.Set<ScheduledJob>();
         var resolver = serviceProvider.GetRequiredService<IJobExecutionResolver>();
-        var jobs = await scheduledJobsRepo.GetDefaultAndEnabledJobs();
+        var jobs = await scheduleJobs.GetDefaultJobs().ToListAsync();
 
         foreach (var jobEntity in jobs)
         {

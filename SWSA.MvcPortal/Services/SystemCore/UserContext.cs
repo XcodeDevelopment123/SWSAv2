@@ -12,9 +12,6 @@ public class UserContext : IUserContext
     public DateTime LoginTime { get; }
     public UserRole Role { get; }
 
-    public List<int> AllowedCompanyIds { get; }
-    public Dictionary<int, List<string>> AllowedDepartments { get; }
-
     public UserContext(IHttpContextAccessor accessor)
     {
         var session = accessor.HttpContext?.Session;
@@ -28,8 +25,6 @@ public class UserContext : IUserContext
         LoginTime = DateTime.TryParse(session?.GetString(SessionKeys.LoginTime), out var time)
             ? time
             : DateTime.MinValue;
-        AllowedCompanyIds = DeserializeListInt(session?.GetString(SessionKeys.AllowedCompanyIds));
-        AllowedDepartments = DeserializeDictListString(session?.GetString(SessionKeys.AllowedDepartments));
     }
 
     public bool IsSuperAdmin => Role == UserRole.SuperAdmin;

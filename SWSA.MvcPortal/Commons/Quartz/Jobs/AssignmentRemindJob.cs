@@ -1,24 +1,28 @@
-﻿using Quartz;
+﻿using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Serilog;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
 using SWSA.MvcPortal.Commons.Services.Messaging.TemplateData;
-using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Persistence;
+using SWSA.MvcPortal.Persistence.QueryExtensions;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Jobs;
 
 public class AssignmentRemindJob(
-IWorkAssignmentUserMappingRepository workAssignmentUserMapRepo,
-IMessagingService messagingService
+IMessagingService messagingService,
+AppDbContext db
 ) : IJob
 {
+    private readonly DbSet<WorkAssignmentUserMapping> workUserMapping = db.Set<WorkAssignmentUserMapping>();
     public async Task Execute(IJobExecutionContext context)
     {
         Log.Information("[AssignmentRemindJob] Execute time: {Time}", DateTime.Now);
         try
         {
-            var userAssignments = await workAssignmentUserMapRepo.GetTodayRemindUserAssignmentsAsync();
+            var userAssignments = await workUserMapping.GetTodayRemind().ToListAsync();
 
             var grouped = userAssignments
                 .Where(x => x.User != null && !string.IsNullOrEmpty(x.User.PhoneNumber))

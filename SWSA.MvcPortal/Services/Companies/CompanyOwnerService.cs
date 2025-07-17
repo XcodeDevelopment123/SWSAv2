@@ -3,17 +3,13 @@ using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
-using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
-using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
-using System.Diagnostics.Contracts;
 
-namespace SWSA.MvcPortal.Services.CompanyProfile;
+namespace SWSA.MvcPortal.Services.Companies;
 
 public class CompanyOwnerService(
-    ISystemAuditLogService sysAuditService,
     AppDbContext db
     ) : ICompanyOwnerService
 {
@@ -27,20 +23,7 @@ public class CompanyOwnerService(
         var data = await _owners.FirstOrDefaultAsync(c => c.Id == id);
         return data;
     }
-
     #endregion
-    public async Task<bool> Delete(int id)
-    {
-        var data = await GetByIdAsync(id);
-        Guard.AgainstNullData(data, "Company owner not found");
-
-        db.Remove(data!);
-        await db.SaveChangesAsync();
-
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CompanyOwner, data!.ClientCompanyId.ToString(), $"Company owner : {data.NamePerIC}", data);
-        sysAuditService.LogInBackground(log);
-        return true;
-    }
 
     public async Task<CompanyOwner> UpsertContact(UpsertCompanyOwnerRequest req)
     {
@@ -82,5 +65,16 @@ public class CompanyOwnerService(
 
         await db.SaveChangesAsync();
         return entity;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var data = await GetByIdAsync(id);
+        Guard.AgainstNullData(data, "Company owner not found");
+
+        db.Remove(data!);
+        await db.SaveChangesAsync();
+
+        return true;
     }
 }

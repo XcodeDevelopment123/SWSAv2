@@ -5,8 +5,6 @@ using SWSA.MvcPortal.Commons.Filters;
 using SWSA.MvcPortal.Commons.Middlewares;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.Seeders;
-using SWSA.MvcPortal.Repositories.Interfaces;
-using SWSA.MvcPortal.Repositories.Repo;
 using SWSA.MvcPortal.Services;
 using SWSA.MvcPortal.Services.Interfaces;
 using Microsoft.Extensions.Options;
@@ -35,19 +33,18 @@ using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.Scheduler;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.CompanyProfile;
 using SWSA.MvcPortal.Services.WorkAssignments;
 using SWSA.MvcPortal.Services.SystemInfra;
 using SWSA.MvcPortal.Services.UserAccess;
-using SWSA.MvcPortal.Services.Scheduler;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Clients;
-using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Services.Companies;
 using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Schedulers;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -144,20 +141,6 @@ public static class DependencyInjector
         {
             return new SqlConnection(connString);
         });
-
-        //#Repository DI (auto generated)
-        services.AddScoped<IOfficialContactRepository, OfficialContactRepository>();
-
-
-        services.AddScoped<IWorkAssignmentRepository, WorkAssignmentRepository>();
-        services.AddScoped<IWorkProgressRepository, WorkProgressRepository>();
-        services.AddScoped<IDocumentRecordRepository, DocumentRecordRepository>();
-        services.AddScoped<IScheduledJobRepository, ScheduledJobRepository>();
-        services.AddScoped<ISystemAuditLogRepository, SystemAuditLogRepository>();
-        services.AddScoped<ISystemNotificationLogRepository, SystemNotificationLogRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IWorkAssignmentUserMappingRepository, WorkAssignmentUserMappingRepository>();
-        //#Repository DI end
     }
 
     public static void ConfigureAppService(this IServiceCollection services, IConfiguration config)
@@ -180,7 +163,6 @@ public static class DependencyInjector
         services.AddScoped<IOfficialContactService, OfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
         services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
-        services.AddScoped<ICompanyWorkProgressService, CompanyWorkProgressService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();

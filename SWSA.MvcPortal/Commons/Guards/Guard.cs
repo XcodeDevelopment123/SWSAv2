@@ -30,22 +30,22 @@ public static class Guard
         }
     }
 
-    public static void AgainstUnauthorizedCompanyAccess(int targetCompanyId, string? targetDepartment, IUserContext user)
-    {
-        if (user.Role == UserRole.SuperAdmin)
-            return;
+    //public static void AgainstUnauthorizedCompanyAccess(int targetCompanyId, string? targetDepartment, IUserContext user)
+    //{
+    //    if (user.Role == UserRole.SuperAdmin)
+    //        return;
 
 
-        if (!user.AllowedCompanyIds.Contains(targetCompanyId))
-            throw new UnauthorizedAccessException("Access denied to the specified company.");
+    //    if (!user.AllowedCompanyIds.Contains(targetCompanyId))
+    //        throw new UnauthorizedAccessException("Access denied to the specified company.");
 
-        if (string.IsNullOrEmpty(targetDepartment))
-            return;
+    //    if (string.IsNullOrEmpty(targetDepartment))
+    //        return;
         
-        if (!user.AllowedDepartments.TryGetValue(targetCompanyId, out var depts) || !depts.Contains(targetDepartment))
-        {
-            throw new UnauthorizedAccessException("Access denied to the specified department.");
-        }
-    }
+    //    if (!user.AllowedDepartments.TryGetValue(targetCompanyId, out var depts) || !depts.Contains(targetDepartment))
+    //    {
+    //        throw new UnauthorizedAccessException("Access denied to the specified department.");
+    //    }
+    //}
 
 }

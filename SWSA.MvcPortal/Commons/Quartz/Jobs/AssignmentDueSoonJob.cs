@@ -1,24 +1,27 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Serilog;
-using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
-using SWSA.MvcPortal.Commons.Services.Messaging.TemplateData;
-using SWSA.MvcPortal.Repositories.Interfaces;
+using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Persistence;
+using SWSA.MvcPortal.Persistence.QueryExtensions;
 
 namespace SWSA.MvcPortal.Commons.Quartz.Jobs;
 
 public class AssignmentDueSoonJob(
-    IWorkAssignmentRepository companyWorkAssignmentRepository,
+    AppDbContext db,
     IMessagingService messagingService
     ) : IJob
 {
+
+    private readonly DbSet<WorkAssignment> workAssignments = db.Set<WorkAssignment>();
+   
     public async Task Execute(IJobExecutionContext context)
     {
         Log.Information("[AssignmentDueSoonJob] Execute time: {Time}", DateTime.Now);
         try
         {
-            var tasks = await companyWorkAssignmentRepository.GetDueSoonAssignments();
+            var tasks = await workAssignments.GetDuesoon().ToListAsync();
             if (tasks.Count > 0)
             {
 

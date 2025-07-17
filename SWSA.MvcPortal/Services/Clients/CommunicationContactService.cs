@@ -1,17 +1,12 @@
-﻿using AutoMapper;
-using Force.DeepCloner;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Guards;
-using SWSA.MvcPortal.Dtos.Requests.Companies;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
-using SWSA.MvcPortal.Repositories.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 
 namespace SWSA.MvcPortal.Services.Clients;
@@ -26,7 +21,7 @@ AppDbContext db
 
     private readonly DbSet<CommunicationContact> _contact = db.Set<CommunicationContact>();
 
-    #region VM/DTO Query Method 
+    #region Get Data
     public async Task<CommunicationContact?> GetByIdAsync(int id)
     {
         var data = await _contact.FirstOrDefaultAsync(c => c.Id == id);

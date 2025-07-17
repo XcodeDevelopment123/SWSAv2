@@ -2,10 +2,8 @@
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
-using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
-using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;

@@ -10,6 +10,4 @@ public interface IUserContext
     int EntityId { get; }
     UserRole Role { get; }
     bool IsSuperAdmin { get; }
-    List<int> AllowedCompanyIds { get; }
-    Dictionary<int, List<string>> AllowedDepartments { get; } // CompanyId → List<string> == Department name
 }

@@ -25,14 +25,15 @@ public class ClientService(
     private readonly DbSet<BaseCompany> _companies = db.Set<BaseCompany>();
     private readonly DbSet<IndividualClient> _individualClients = db.Set<IndividualClient>();
 
+    #region Get Data
     public async Task<IEnumerable<object>> SearchClientsAsync(ClientType type, ClientFilterRequest request)
     {
         return type switch
         {
-            ClientType.SdnBhd => await GetFilteredCompanyClientsAsync<SdnBhdClient>(request),
-            ClientType.LLP => await GetFilteredCompanyClientsAsync<LLPClient>(request),
-            ClientType.Individual => await GetFilteredIndividualClientsAsync(request),
-            ClientType.Enterprise => await GetFilteredCompanyClientsAsync<EnterpriseClient>(request),
+            ClientType.SdnBhd => await _companies.OfType<SdnBhdClient>().ApplyFilter(request).ToListAsync(),
+            ClientType.LLP => await _companies.OfType<LLPClient>().ApplyFilter(request).ToListAsync(),
+            ClientType.Enterprise => await _companies.OfType<EnterpriseClient>().ApplyFilter(request).ToListAsync(),
+            ClientType.Individual => await _individualClients.ApplyFilter(request).ToListAsync(),
             _ => throw new ArgumentException($"Unsupported client type: {type}")
         };
     }
@@ -120,6 +121,7 @@ public class ClientService(
 
         return result!;
     }
+    #endregion
 
     public async Task<BaseCompany> CreateCompanyAsync(CreateCompanyRequest req)
     {
@@ -207,75 +209,6 @@ public class ClientService(
         return entity;
     }
 
-    private async Task<IEnumerable<T>> GetFilteredCompanyClientsAsync<T>(ClientFilterRequest req) where T : BaseCompany
-    {
-        var query = _companies.OfType<T>();
-
-        if (!string.IsNullOrEmpty(req.Grouping))
-        {
-            query = query.Where(c => c.Group != null && c.Group.Contains(req.Grouping));
-        }
-
-        if (!string.IsNullOrEmpty(req.Referral))
-        {
-            query = query.Where(c => c.Referral != null && c.Referral.Contains(req.Referral));
-        }
-
-        if (!string.IsNullOrEmpty(req.FileNo))
-        {
-            query = query.Where(c => c.FileNo != null && c.FileNo.Contains(req.FileNo));
-        }
-
-        if (!string.IsNullOrEmpty(req.Name))
-        {
-            query = query.Where(c => c.Name != null && c.Name.Contains(req.Name));
-        }
-
-        if (!string.IsNullOrEmpty(req.CompanyNumber))
-        {
-            query = query.Where(c => c.RegistrationNumber != null && c.RegistrationNumber.Contains(req.CompanyNumber));
-        }
-
-        if (req.IncorpDateFrom.HasValue)
-        {
-            query = query.Where(x => x.IncorporationDate >= req.IncorpDateFrom.Value);
-        }
-
-        if (req.IncorpDateTo.HasValue)
-        {
-            query = query.Where(x => x.IncorporationDate <= req.IncorpDateTo.Value);
-        }
-
-        return await query.ToListAsync();
-    }
-
-    private async Task<IEnumerable<IndividualClient>> GetFilteredIndividualClientsAsync(ClientFilterRequest req)
-    {
-        var query = _clients.OfType<IndividualClient>();
-
-        if (!string.IsNullOrEmpty(req.Grouping))
-        {
-            query = query.Where(c => c.Group != null && c.Group.Contains(req.Grouping));
-        }
-
-        if (!string.IsNullOrEmpty(req.Referral))
-        {
-            query = query.Where(c => c.Referral != null && c.Referral.Contains(req.Referral));
-        }
-
-        if (!string.IsNullOrEmpty(req.Name))
-        {
-            query = query.Where(c => c.Name != null && c.Name.Contains(req.Name));
-        }
-
-        if (!string.IsNullOrEmpty(req.Profession))
-        {
-            query = query.Where(c => c.Profession != null && c.Profession.Contains(req.Profession));
-        }
-
-        return await query.ToListAsync();
-    }
-
     private async Task SyncMsicCodes(BaseCompany data, HashSet<int> requestedMsicIds)
     {
         var existingMsicIds = data.MsicCodes.Select(x => x.MsicCodeId).ToHashSet();
@@ -283,7 +216,6 @@ public class ClientService(
         var msicsToRemove = data.MsicCodes
           .Where(x => !requestedMsicIds.Contains(x.MsicCodeId)).ToList();
         var msicIdsToRemove = msicsToRemove.Select(x => x.MsicCodeId).ToList();
-
 
         if (msicIdsToAdd.Count > 0)
         {
