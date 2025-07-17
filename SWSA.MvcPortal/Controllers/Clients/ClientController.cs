@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
+using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.Clients;
@@ -41,6 +42,14 @@ public class ClientController(
     public async Task<IActionResult> GetClientById([FromRoute] int id)
     {
         var data = await _service.GetClientWithDetailByIdAsync(id);
+        return Ok(data);
+    }
+
+    [InternalAjaxOnly]
+    [HttpGet("{id:int}/simple-info")]
+    public async Task<IActionResult> GetClientSimpleInfo([FromRoute] int id)
+    {
+        var data = await _service.GetClientByIdAsync<BaseClient>(id);
         return Ok(data);
     }
 

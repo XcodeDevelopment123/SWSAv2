@@ -3,6 +3,7 @@ using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
@@ -12,26 +13,28 @@ namespace SWSA.MvcPortal.Controllers;
 [Route("documents")]
 public class DocumentController(
     IDocumentRecordService service,
+    IClientService _clientService,
     IUserService userService
     ) : BaseController
 {
-    //#region Page/View
-    //[Route("audit-dept")]
-    //public async Task<IActionResult> AuditDepartment()
-    //{
-    //    var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Audit);
-    //    var companies = await companyService.GetCompanySelectionAsync();
-    //    var vm = new DocumentRecordAuditDeptPageVM(companies, documents);
-    //    return View(vm);
-    //}
+    #region Page/View
+    [Route("audit-dept")]
+    public async Task<IActionResult> AuditDepartment()
+    {
+        var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Audit);
+        //Only Sdn Bhd has audit document;
+        var clients = await _clientService.GetClientSelectionVM([ClientType.SdnBhd]);
+        var vm = new DocumentRecordAuditDeptPageVM(clients, documents);
+        return View(vm);
+    }
 
-    //[Route("account-dept")]
-    //public async Task<IActionResult> AccountDepartment()
-    //{
-    //    var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Account);
-    //    return View(documents);
-    //}
-
+    [Route("account-dept")]
+    public async Task<IActionResult> AccountDepartment()
+    {
+        var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Account);
+        return View(documents);
+    }
+    #endregion
     //[Route("docs")]
     //public async Task<IActionResult> List()
     //{
@@ -47,7 +50,7 @@ public class DocumentController(
     //    var vm = new DocumentRecordCreatePageVM(cp, staff);
     //    return View(vm);
     //}
-    //#endregion
+
 
 
     //#region API/Ajax

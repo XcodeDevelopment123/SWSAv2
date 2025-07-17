@@ -151,7 +151,7 @@
         $("#in_client").val(id).trigger("change");
         if (id) {
             $.ajax({
-                url: `${urls.companies}/${id}/simple-info`,
+                url: `${urls.client}/${id}/simple-info`,
                 method: "GET",
                 success: function (res) {
                     currentCp = res;

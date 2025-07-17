@@ -1,4 +1,5 @@
 using Mapster;
+using SWSA.MvcPortal.Commons.MapsterConfigs.Clients;
 using SWSA.MvcPortal.Commons.MapsterConfigs.CompanyProfile;
 using SWSA.MvcPortal.Commons.MapsterConfigs.Scheduler;
 using SWSA.MvcPortal.Commons.MapsterConfigs.SystemInfra;
@@ -20,6 +21,7 @@ public static class MapsterConfig
         var configs = new List<IMapsterConfig>
         {
             //#Mapster Config (auto generated)
+new ClientMapster(),
 new CompanyCommunicationContactMapsterConfig(),
 new CompanyComplianceDateMapsterConfig(),
 new CompanyMsicCodeMapsterConfig(),

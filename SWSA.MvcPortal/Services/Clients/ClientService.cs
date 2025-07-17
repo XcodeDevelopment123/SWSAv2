@@ -7,10 +7,10 @@ using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Models.Clients;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWSA.MvcPortal.Services.Clients;
 
@@ -35,6 +35,17 @@ public class ClientService(
             ClientType.Enterprise => await GetFilteredCompanyClientsAsync<EnterpriseClient>(request),
             _ => throw new ArgumentException($"Unsupported client type: {type}")
         };
+    }
+
+    public async Task<List<ClientSelectionVM>> GetClientSelectionVM(List<ClientType> types)
+    {
+        if (types.Count == 0)
+        {
+            return await _clients.ProjectToType<ClientSelectionVM>().ToListAsync();
+        }
+
+        return await _clients.Where(c => types.Contains(c.ClientType))
+            .ProjectToType<ClientSelectionVM>().ToListAsync();
     }
 
     public async Task<List<T>> GetClientsAsync<T>() where T : BaseClient
