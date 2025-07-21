@@ -4,8 +4,6 @@ using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
-
-[Module("WorkAssignments")]
 public class WorkProgress
 {
     [Key]

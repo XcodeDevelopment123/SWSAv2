@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("WorkAssignments")]
 public abstract class WorkAssignment
 {
     [Key]

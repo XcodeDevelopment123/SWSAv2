@@ -75,7 +75,7 @@ AppDbContext db
         };
         db.Add(jobEntity);
         await db.SaveChangesAsync();
-        var log = SystemAuditLogEntry.Create(Commons.Enums.SystemAuditModule.ScheduleJob, jobEntity.JobKey.ToString(), $"Schedule Job: {jobEntity.JobType.GetDisplayName()}", jobEntity);
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.ScheduleJob, jobEntity.JobKey.ToString(), $"Schedule Job: {jobEntity.JobType.GetDisplayName()}", jobEntity);
         sysAuditService.LogInBackground(log);
         return jobEntity.JobKey;
     }
@@ -96,7 +96,7 @@ AppDbContext db
         string cronExpression = CronExpressionBuilder.BuildCronExpression(req.CronFields, req.CronExpression, req.ScheduleType);
         var triggerTime = req.ScheduleType == ScheduleType.Once ? req.TriggerTime : null;
 
-        data!.IsEnabled = req.IsEnabled;
+        data.IsEnabled = req.IsEnabled;
         data.ScheduleType = req.ScheduleType;
         data.CronExpression = cronExpression;
         data.UpdatedAt = DateTime.Now;
@@ -119,7 +119,7 @@ AppDbContext db
             await schedulerService.ClearTriggersByJobkey(req.JobKey);
         }
 
-        var log = SystemAuditLogEntry.Update(Commons.Enums.SystemAuditModule.ScheduleJob, data.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", oldData, data);
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.ScheduleJob, data.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", oldData, data);
         sysAuditService.LogInBackground(log);
 
         return true;
@@ -135,13 +135,13 @@ AppDbContext db
         {
             StartTime = DateTime.Now,
         };
-        await schedulerService.ScheduleJob(request, data!.JobType);
+        await schedulerService.ScheduleJob(request, data.JobType);
 
         data.LastExecuteAt = DateTime.Now;
         db.Update(data);
         await db.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Execute(SystemAuditModule.ScheduleJob, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}");
+        var log = SystemAuditLogEntry.Execute(SystemAuditModule.ScheduleJob, data.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}");
         sysAuditService.LogInBackground(log);
         return true;
     }
@@ -152,12 +152,12 @@ AppDbContext db
         var data = await scheduledJobs.FirstOrDefaultAsync(c => c.JobKey == jobKey);
         Guard.AgainstNullData(data, "Job Not Found");
 
-        db.Remove(data!);
+        db.Remove(data);
         await db.SaveChangesAsync();
 
         await schedulerService.ClearSpecificJobByKey(jobKey);
 
-        var log = SystemAuditLogEntry.Delete(SystemAuditModule.CommunicationContact, data!.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.CommunicationContact, data.JobKey.ToString(), $"Schedule Job: {data.JobType.GetDisplayName()}", data);
         sysAuditService.LogInBackground(log);
         return true;
     }

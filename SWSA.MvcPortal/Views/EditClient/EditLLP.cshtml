@@ -19,7 +19,7 @@
                 .ToList();
 
     var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(client.ClientType);
-    var companyTypes = SelectHelper.GetEnterpriseCompanyType(client.CompanyType);
+    var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(client.CompanyType);
 }
 
 <h3>Edit @client.Name</h3>

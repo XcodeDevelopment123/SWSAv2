@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
-using SWSA.MvcPortal.Services.Interfaces;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers;
 

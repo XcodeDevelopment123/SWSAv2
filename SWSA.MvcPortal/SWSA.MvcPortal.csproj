@@ -52,9 +52,6 @@
 		<Content Update="Datas\MSICcodes-2025-04-07.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Update="Tools\TemplateGenCli\appsettings.json">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
 		<Content Update="wwwroot\js\users\overview.js">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>

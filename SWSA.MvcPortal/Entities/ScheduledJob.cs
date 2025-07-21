@@ -7,8 +7,6 @@ using System.Reflection;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("Scheduler")]
-
 public class ScheduledJob
 {
     [Key]

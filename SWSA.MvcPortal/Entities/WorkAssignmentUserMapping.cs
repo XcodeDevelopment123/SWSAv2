@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
-[Module("WorkAssignment")]
 public class WorkAssignmentUserMapping
 {
     [Key]

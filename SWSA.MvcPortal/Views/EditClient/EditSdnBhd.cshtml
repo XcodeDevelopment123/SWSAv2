@@ -7,9 +7,9 @@
 @using SWSA.MvcPortal.Services.Interfaces
 @using SWSA.MvcPortal.Services.Interfaces.SystemCore
 @inject IUserContext UserContext
-@model CompanyClientEditPageVM<EnterpriseClient>
+@model CompanyClientEditPageVM<SdnBhdClient>
 @{
-    ViewData["Title"] = "Edit Enterprise Client";
+    ViewData["Title"] = "Edit Sdn Bhd Client";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var client = Model.CompanyClient;
@@ -18,16 +18,8 @@
                 .GroupBy(m => m.CategoryReferences)
                 .ToList();
 
-
-
-    var year = DateTime.Now.Year;
-    DateTime? yearEndMonth = client.YearEndMonth.HasValue
-        ? new DateTime(DateTime.Now.Year, (int)client.YearEndMonth.Value, DateTime.DaysInMonth(year, (int)client.YearEndMonth.Value))
-        : null;
-
-
     var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(client.ClientType);
-    var companyTypes = SelectHelper.GetEnterpriseCompanyType(client.CompanyType);
+    var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(client.CompanyType);
 }
 
 <h3>Edit @client.Name</h3>

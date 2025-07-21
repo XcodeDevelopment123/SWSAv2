@@ -34,7 +34,7 @@ AppDbContext db
         var data = await GetByIdAsync(id);
         Guard.AgainstNullData(data, "Communication Contact not found");
 
-        db.Remove(data!);
+        db.Remove(data);
         await db.SaveChangesAsync();
 
         var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CommunicationContact, data!.ClientId.ToString(), $"Company communication contact: {data.ContactName}", data);

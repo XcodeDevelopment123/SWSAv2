@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("CompanyProfile")]
 public class OfficialContact
 {
     [Key]

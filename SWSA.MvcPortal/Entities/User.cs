@@ -6,7 +6,6 @@ using SWSA.MvcPortal.Commons.Helpers;
 
 namespace SWSA.MvcPortal.Entities;
 
-[Module("UserAccess")]
 public class User
 {
     [Key]

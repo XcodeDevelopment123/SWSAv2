@@ -38,7 +38,7 @@ AppDbContext db
 
         var entity = new WorkAssignmentUserMapping()
         {
-            UserId = user!.Id,
+            UserId = user.Id,
             WorkAssignmentId = req.TaskId,
         };
 
@@ -61,7 +61,7 @@ AppDbContext db
         var userMap = await userMappings.GetByTaskIdAndUserId(req.TaskId, user!.Id);
         Guard.AgainstNullData(userMap, "User Mapping not found");
 
-        db.Remove(userMap!);
+        db.Remove(userMap);
         await db.SaveChangesAsync();
 
         var log = SystemAuditLogEntry.Delete(SystemAuditModule.CompanyWorkAssignment,

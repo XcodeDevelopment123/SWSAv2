@@ -1,12 +1,12 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Exceptions;
+﻿using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SWSA.MvcPortal.Commons.Guards;
 
 public static class Guard
 {
-    public static void AgainstNullData<T>(T data, string message = "Data not found.")
+    public static void AgainstNullData<T>([NotNull]T? data, string message = "Data not found.")
     {
         if (data == null)
         {
@@ -19,6 +19,14 @@ public static class Guard
         if (!exist)
         {
             throw new DataNotFoundException(message);
+        }
+    }
+
+    public static void AgainstExist(bool exist, string message = "Data found.")
+    {
+        if (!exist)
+        {
+            throw new BusinessLogicException(message);
         }
     }
 

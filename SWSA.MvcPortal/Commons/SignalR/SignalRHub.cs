@@ -9,7 +9,6 @@ namespace SWSA.MvcPortal.Commons.SignalR;
 //[Authorize]
 public class SignalRHub : Hub
 {
-    // 连接成功时触发
     public override async Task OnConnectedAsync()
     {
         //Add staff to group 

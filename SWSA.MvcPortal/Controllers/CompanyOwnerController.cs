@@ -4,7 +4,6 @@ using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
 
 namespace SWSA.MvcPortal.Controllers;
 
-
 [Route("clients/company-owner")]
 public class CompanyOwnerController(
 ICompanyOwnerService service
@@ -26,7 +25,6 @@ ICompanyOwnerService service
         var result = await service.UpsertContact(req);
         return Ok(result);
     }
-
 
     [InternalAjaxOnly]
     [HttpDelete("{id}")]

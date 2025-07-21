@@ -11,5 +11,4 @@ public class CreateIndividualRequest
     public string? TaxIdentificationNumber { get; set; }
     public ClientType ClientType { get; set; }
     public ClientCategoryRequest CategoryInfo { get; set; }
-
 }
