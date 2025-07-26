@@ -1,5 +1,6 @@
 ﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities.Clients;
 
@@ -22,4 +23,12 @@ public abstract class BaseCompany : BaseClient
     public string? EmployerNumber { get; set; } // E Number
     public virtual ICollection<CompanyOwner> Owners { get; set; } = [];
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = [];
+
+    [NotMapped]
+    [SystemAuditLog("Msic Codes")]
+    public string MsicCodesString
+    {
+        get => string.Join(", ", MsicCodes.Select(m => m.MsicCode.Code));
+        set { } // This setter is intentionally left empty to prevent modification
+    }
 }

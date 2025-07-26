@@ -1,4 +1,5 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.SystemAuditLogs
 @model List<SystemAuditLogListVM>
 @{
@@ -19,7 +20,8 @@
                     <thead>
                         <tr>
                             <th>Performed At</th>
-                            <th>Title</th>
+                            <th>Data</th>
+                            <th>Message</th>
                             <th>Action</th>
                             <th>Performed By</th>
                             <th>Action</th>
@@ -31,10 +33,11 @@
                             <tr>
                                 <td>@log.PerformedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
                                 <td>
-                                    <a href="@log.NavigateUrl" target="_blank">
-                                        @log.EntityName
+                                    <a href="@AppUrlHelper.GenerateAuditUrl(log.Module, log.EntityId)" target="_blank">
+                                        @log.Module.GetDisplayName()
                                     </a>
                                 </td>
+                                <td>@log.Message</td>
                                 <td>@log.ActionType.GetDisplayName()</td>
                                 <td>@log.PerformedBy</td>
                                 <td>
@@ -49,7 +52,8 @@
                     <tfoot>
                         <tr>
                             <th>Performed At</th>
-                            <th>Title</th>
+                            <th>Data</th>
+                            <th>Message</th>
                             <th>Action</th>
                             <th>Performed By</th>
                             <th>Action</th>
@@ -76,7 +80,7 @@
 
             <div class="modal-body">
                 <form id="systemAuditLogForm" class="row">
-                    <div class="col-md-6" >
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label for="performedAt">Performed At</label>
                             <div class="input-group">
@@ -104,8 +108,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="title">Title</label>
-                            <input readonly id="title" name="title" class="form-control" />
+                            <label for="message">Message</label>
+                            <input readonly id="message" name="message" class="form-control" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -121,7 +125,7 @@
                 <table id="auditLogSummaryTable" class="display table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Changed</th>
+                            <th>Changed Field</th>
                             <th>Old</th>
                             <th>New</th>
                         </tr>

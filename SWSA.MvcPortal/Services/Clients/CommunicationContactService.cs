@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Force.DeepCloner;
+using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
@@ -29,18 +31,6 @@ AppDbContext db
     }
 
     #endregion
-    public async Task<bool> Delete(int id)
-    {
-        var data = await GetByIdAsync(id);
-        Guard.AgainstNullData(data, "Communication Contact not found");
-
-        db.Remove(data);
-        await db.SaveChangesAsync();
-
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.CommunicationContact, data!.ClientId.ToString(), $"Company communication contact: {data.ContactName}", data);
-        sysAuditService.LogInBackground(log);
-        return true;
-    }
 
     public async Task<CommunicationContact> UpsertContact(UpsertCommunicationContactRequest req)
     {
@@ -53,14 +43,18 @@ AppDbContext db
             entity = await _contact.FirstOrDefaultAsync(c => c.Id == req.Id.Value);
         }
 
+        SystemAuditLogEntry? log = null;
+
         if (entity != null)
         {
+            var oldData = entity.DeepClone();
             entity.ContactName = req.Name;
             entity.WhatsApp = req.Phone;
             entity.Email = req.Email;
             entity.Position = req.Position;
             entity.Remark = req.Remark;
             _contact.Update(entity);
+            log = SystemAuditLogEntry.Update(SystemAuditModule.CommunicationContact, entity.Id.ToString(), $"Contact: {entity.ContactName}", oldData, entity);
         }
         else
         {
@@ -77,6 +71,23 @@ AppDbContext db
         }
 
         await db.SaveChangesAsync();
+
+        log ??= SystemAuditLogEntry.Create(SystemAuditModule.CommunicationContact, entity.Id.ToString(), $"Contact: {entity.ContactName}", entity);
+        sysAuditService.LogInBackground(log);
+
         return entity;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var data = await GetByIdAsync(id);
+        Guard.AgainstNullData(data, "Communication Contact not found");
+
+        db.Remove(data);
+        await db.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.CommunicationContact, data!.Id.ToString(), $"Contact: {data.ContactName}", data);
+        sysAuditService.LogInBackground(log);
+        return true;
     }
 }

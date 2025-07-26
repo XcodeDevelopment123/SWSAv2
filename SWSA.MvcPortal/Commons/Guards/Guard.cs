@@ -24,7 +24,7 @@ public static class Guard
 
     public static void AgainstExist(bool exist, string message = "Data found.")
     {
-        if (!exist)
+        if (exist)
         {
             throw new BusinessLogicException(message);
         }

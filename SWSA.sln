@@ -5,8 +5,6 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWSA.MvcPortal", "SWSA.MvcPortal\SWSA.MvcPortal.csproj", "{3A7D32E7-1D35-495E-BD98-30B62A798849}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWSA.WebPortal", "SWSA.WebPortal\SWSA.WebPortal.csproj", "{A7D7A366-24D3-4144-9253-A82443F480DB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{3A7D32E7-1D35-495E-BD98-30B62A798849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A7D32E7-1D35-495E-BD98-30B62A798849}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A7D32E7-1D35-495E-BD98-30B62A798849}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7D7A366-24D3-4144-9253-A82443F480DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7D7A366-24D3-4144-9253-A82443F480DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7D7A366-24D3-4144-9253-A82443F480DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7D7A366-24D3-4144-9253-A82443F480DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

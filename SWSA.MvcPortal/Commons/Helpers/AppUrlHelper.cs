@@ -17,4 +17,24 @@ public static class AppUrlHelper
     {
         return "/" + WorkTypeEditRoutes[type].Replace("{taskId}", taskId.ToString());
     }
+
+    public static string? GenerateAuditUrl(SystemAuditModule module, string entityId)
+    {
+        return module switch
+        {
+            SystemAuditModule.ScheduleJob => $"/scheduler-jobs/{entityId}/overview",
+            SystemAuditModule.Company => $"/companies/{entityId}/overview",
+            SystemAuditModule.CompanyComplianceDate => $"/companies/{entityId}/overview",
+            SystemAuditModule.CompanyWorkAssignment => $"/companies/works/{entityId}/edit",
+            SystemAuditModule.DocumentRecord => $"/companies/docs?docId={entityId}",
+            SystemAuditModule.User => $"/users/{entityId}/overview",
+
+            SystemAuditModule.Client => $"/clients/{entityId}/navigate",
+            SystemAuditModule.WorkAllocation => $"/clients/{entityId}/navigate?target=workAllocation",
+            SystemAuditModule.OfficialContact => $"/clients/{entityId}/navigate?target=officialContact",
+            SystemAuditModule.CompanyOwner => $"/clients/{entityId}/navigate?target=cpOwner",
+            SystemAuditModule.CommunicationContact => $"/clients/{entityId}/navigate?target=commContact",
+            _ => null
+        };
+    }
 }

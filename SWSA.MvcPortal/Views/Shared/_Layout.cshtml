@@ -37,22 +37,22 @@
 
 
 @{
-     var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-     var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-     var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+                 var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+                 var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+                 var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-     var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-     var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-     var submissionNav = new List<string> {
-          "AuditRepotSubmissionList", "EditAuditRepotSubmission",
-          "CompanyStrikeOffList", "EditCompanyStrikeOffSubmission",
-          "ARSubmissionList", "EditARSubmission",
-          "LLPSubmissionList", "EditLLPSubmission",
-     };
+                 var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+                 var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+                 var submissionNav = new List<string> {
+                                                                                "AuditRepotSubmissionList", "EditAuditRepotSubmission",
+                                                                                "CompanyStrikeOffList", "EditCompanyStrikeOffSubmission",
+                                                                                "ARSubmissionList", "EditARSubmission",
+                                                                                "LLPSubmissionList", "EditLLPSubmission",
+                                        };
 
-     var secretaryCompanyNav = new List<string> {
-          "CompanyList",
-     };
+                 var secretaryCompanyNav = new List<string> {
+                                                                                "CompanyList",
+                                        };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -661,42 +661,42 @@
                             </ul>
                         </li>
 
-                        @if (false)
-                        {
-                            <li class="nav-header">Users & Systems</li>
+                        <li class="nav-header">Users & Systems</li>
 
-                            <li class="nav-item @(currentController == ControllerNames.User ? "menu-is-opening menu-open" : "")">
-                                <a href="#" class="nav-link @(currentController == ControllerNames.User ? "active" : "")">
-                                    <i class="fas fa-users nav-icon"></i>
-                                    <p>
-                                        Users
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
+                        <li class="nav-item @(currentController == ControllerNames.User ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController == ControllerNames.User ? "active" : "")">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>
+                                    Users
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
 
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("List") ? "active" : "")">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            List
+                                        </p>
+                                    </a>
+                                </li>
+                                @if (UserContext.IsSuperAdmin)
+                                {
                                     <li class="nav-item">
-                                        <a href="/users" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("List") ? "active" : "")">
-                                            <i class="nav-icon fas fa-list"></i>
+                                        <a href="/users/create" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("Create") ? "active" : "")">
+                                            <i class="nav-icon fas fa-plus"></i>
                                             <p>
-                                                List
+                                                New User
                                             </p>
                                         </a>
                                     </li>
-                                    @if (UserContext.IsSuperAdmin)
-                                    {
-                                        <li class="nav-item">
-                                            <a href="/users/create" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("Create") ? "active" : "")">
-                                                <i class="nav-icon fas fa-plus"></i>
-                                                <p>
-                                                    New User
-                                                </p>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </li>
+                                }
+                            </ul>
+                        </li>
 
+                        @if (false)
+                        {
                             <li class="nav-item">
                                 <a href="/notifications/logs" class="nav-link @(currentController == ControllerNames.Notification ? "active" : "")">
                                     <i class="nav-icon fas fa-bell"></i>
@@ -705,49 +705,49 @@
                                     </p>
                                 </a>
                             </li>
+                        }
+                        <li class="nav-item">
+                            <a href="/sys-audit-logs" class="nav-link @(currentController == ControllerNames.SystemAuditLog ? "active" : "")">
+                                <i class="nav-icon fas fa-history"></i>
+                                <p>
+                                    System Audit Log
+                                </p>
+                            </a>
+                        </li>
 
-                            <li class="nav-item">
-                                <a href="/sys-audit-logs" class="nav-link @(currentController == ControllerNames.SystemAuditLog ? "active" : "")">
-                                    <i class="nav-icon fas fa-history"></i>
-                                    <p>
-                                        System Audit Log
+                        @if (UserContext.IsSuperAdmin && false)
+                        {
+                            <li class="nav-item @(currentController == ControllerNames.SchedulerJob ? "menu-is-opening menu-open" : "")">
+                                <a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
+                                    <i class="nav-icon fas fa-clock"></i>                                    <p>
+                                        Scheduled Task
+                                        <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>
+                                <ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
+
+                                    <li class="nav-item">
+                                        <a href="/scheduler-jobs" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("List") ? "active" : "")">
+                                            <i class="nav-icon fas fa-list"></i>
+                                            <p>
+                                                List
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/scheduler-jobs/create" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("Create") ? "active" : "")">
+                                            <i class="nav-icon fas fa-plus"></i>
+                                            <p>
+                                                Add new task
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
-                            @if (UserContext.IsSuperAdmin)
-                            {
-                                <li class="nav-item @(currentController == ControllerNames.SchedulerJob ? "menu-is-opening menu-open" : "")">
-                                    <a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
-                                        <i class="nav-icon fas fa-clock"></i>                                    <p>
-                                            Scheduled Task
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
-
-                                        <li class="nav-item">
-                                            <a href="/scheduler-jobs" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("List") ? "active" : "")">
-                                                <i class="nav-icon fas fa-list"></i>
-                                                <p>
-                                                    List
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="/scheduler-jobs/create" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("Create") ? "active" : "")">
-                                                <i class="nav-icon fas fa-plus"></i>
-                                                <p>
-                                                    Add new task
-                                                </p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                            }
-
                         }
+
+
 
 
                         <li class="nav-item">

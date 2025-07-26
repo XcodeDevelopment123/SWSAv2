@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.WorkAllocations;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 
 namespace SWSA.MvcPortal.Persistence;

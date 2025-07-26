@@ -35,7 +35,6 @@ public class SelectHelper
         ],
         [ClientType.Individual] =
         [
-
             ServiceScope.FormBE
        ]
     };
@@ -50,7 +49,7 @@ public class SelectHelper
     {
         return new List<SelectListItem>
         {
-            new SelectListItem { Text = "Please select", Value = "", Selected = false, Disabled=true },
+            new SelectListItem { Text = "Please select", Value = "", Selected = true, Disabled=true },
             new SelectListItem { Text = DepartmentType.Account, Value = DepartmentType.Account, Selected = type == DepartmentType.Account },
             new SelectListItem { Text = DepartmentType.Audit, Value = DepartmentType.Audit, Selected = type == DepartmentType.Audit },
             new SelectListItem { Text = DepartmentType.Tax, Value = DepartmentType.Tax, Selected = type == DepartmentType.Tax },

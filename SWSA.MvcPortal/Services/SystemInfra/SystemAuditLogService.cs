@@ -6,7 +6,6 @@ using SWSA.MvcPortal.Services.Interfaces.SystemCore;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Extensions;
-using SWSA.MvcPortal.Commons.Services.SystemAuditLog;
 using System.Reflection;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Persistence;
@@ -51,14 +50,12 @@ AppDbContext db
         {
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var url = AuditNavigationService.GenerateUrl(entry.Module, entry.EntityId);
             var log = new SystemAuditLog
             {
                 Module = entry.Module.ToString(),
                 ActionType = entry.ActionType.ToString(),
                 EntityId = entry.EntityId,
-                EntityName = entry.EntityName,
-                NavigateUrl = url,
+                Message = entry.Message,
                 ChangeSummaryJson = BuildChangeSummary(entry.OldData, entry.NewData),
                 PerformedBy = performedBy,
                 PerformedByUserId = performedById,

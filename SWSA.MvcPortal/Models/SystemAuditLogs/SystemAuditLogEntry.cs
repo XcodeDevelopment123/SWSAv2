@@ -7,35 +7,35 @@ public class SystemAuditLogEntry
     public SystemAuditModule Module { get; set; } = default!;
     public SystemAuditActionType ActionType { get; set; } = default!;
     public string EntityId { get; set; } = default!;
-    public string? EntityName { get; set; }
+    public string? Message { get; set; }
     public object? OldData { get; set; }
     public object? NewData { get; set; }
-    private SystemAuditLogEntry(SystemAuditModule module, SystemAuditActionType actionType, string entityId, string? entityName, object? oldData, object? newData)
+    private SystemAuditLogEntry(SystemAuditModule module, SystemAuditActionType actionType, string entityId, string? message, object? oldData, object? newData)
     {
         Module = module;
         ActionType = actionType;
         EntityId = entityId;
-        EntityName = entityName;
+        Message = message;
         OldData = oldData;
         NewData = newData;
     }
-    public static SystemAuditLogEntry Create(SystemAuditModule module, string entityId, string? entityName, object newData)
+    public static SystemAuditLogEntry Create(SystemAuditModule module, string entityId, string? message, object newData)
     {
-        return new SystemAuditLogEntry(module, SystemAuditActionType.Create, entityId, entityName, null, newData);
+        return new SystemAuditLogEntry(module, SystemAuditActionType.Create, entityId, message, null, newData);
     }
 
-    public static SystemAuditLogEntry Update(SystemAuditModule module, string entityId, string? entityName, object oldData, object newData)
+    public static SystemAuditLogEntry Update(SystemAuditModule module, string entityId, string? message, object oldData, object newData)
     {
-        return new SystemAuditLogEntry(module, SystemAuditActionType.Update, entityId, entityName, oldData, newData);
+        return new SystemAuditLogEntry(module, SystemAuditActionType.Update, entityId, message, oldData, newData);
     }
 
-    public static SystemAuditLogEntry Delete(SystemAuditModule module, string entityId, string? entityName, object oldData)
+    public static SystemAuditLogEntry Delete(SystemAuditModule module, string entityId, string? message, object oldData)
     {
-        return new SystemAuditLogEntry(module, SystemAuditActionType.Delete, entityId, entityName, oldData, null);
+        return new SystemAuditLogEntry(module, SystemAuditActionType.Delete, entityId, message, oldData, null);
     }
 
-    public static SystemAuditLogEntry Execute(SystemAuditModule module, string entityId, string? entityName)
+    public static SystemAuditLogEntry Execute(SystemAuditModule module, string entityId, string? message)
     {
-        return new SystemAuditLogEntry(module, SystemAuditActionType.Execute, entityId, entityName, null, null);
+        return new SystemAuditLogEntry(module, SystemAuditActionType.Execute, entityId, message, null, null);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Force.DeepCloner;
+using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
@@ -42,13 +44,17 @@ AppDbContext db
             entity = await _contact.FirstOrDefaultAsync(c => c.Id == req.Id.Value);
         }
 
+        SystemAuditLogEntry? log = null;
+
         if (entity != null)
         {
+            var oldData = entity.DeepClone();
             entity.Address = req.Address;
             entity.OfficeTel = req.Phone;
             entity.Email = req.Email;
             entity.Remark = req.Remark;
             _contact.Update(entity);
+            log = SystemAuditLogEntry.Update(SystemAuditModule.OfficialContact, entity.Id.ToString(), $"Contact: {entity.OfficeTel}", oldData, entity);
         }
         else
         {
@@ -64,6 +70,10 @@ AppDbContext db
         }
 
         await db.SaveChangesAsync();
+
+        log ??= SystemAuditLogEntry.Create(SystemAuditModule.OfficialContact, entity.Id.ToString(), $"Contact: {entity.OfficeTel}", entity);
+        sysAuditService.LogInBackground(log);
+
         return entity;
     }
 
@@ -75,7 +85,7 @@ AppDbContext db
         db.Remove(data!);
         await db.SaveChangesAsync();
 
-        var log = SystemAuditLogEntry.Delete(Commons.Enums.SystemAuditModule.OfficialContact, data.ClientId.ToString(), $"Company Official Contact", data);
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.OfficialContact, data.Id.ToString(), $"Official Contact", data);
         sysAuditService.LogInBackground(log);
         return true;
     }

@@ -1,17 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Force.DeepCloner;
+using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
+using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
-using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.WorkAllocations;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
+using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 
 namespace SWSA.MvcPortal.Services.Clients;
 
 public class WorkAllocationService(
-       AppDbContext db
+    ISystemAuditLogService sysAuditService,
+    AppDbContext db
     ) : IWorkAllocationService
 {
     private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
@@ -22,8 +28,6 @@ public class WorkAllocationService(
     public async Task<ClientWorkAllocation?> GetByIdAsync(int id)
     {
         var data = await _workAllocs.FirstOrDefaultAsync(c => c.Id == id);
-        Guard.AgainstNullData(data, "Work Allocation not found");
-
         return data;
     }
 
@@ -46,14 +50,19 @@ public class WorkAllocationService(
             entity = await _workAllocs.FirstOrDefaultAsync(c => c.Id == req.Id.Value);
         }
 
+        SystemAuditLogEntry? log = null;
+
         if (entity != null)
         {
+            var oldData = entity.DeepClone();
             entity.ServiceScope = req.Service;
             entity.Remarks = req.Remarks;
             entity.CompanyActivityLevel = req.ActivitySize;
             entity.AuditStatus = req.AuditStatus;
             entity.CompanyStatus = req.AuditCpStatus;
             _workAllocs.Update(entity);
+            log = SystemAuditLogEntry.Update(SystemAuditModule.WorkAllocation, entity.Id.ToString(), $"Work Allocation: {entity.ServiceScope.GetDisplayName()}", oldData, entity);
+
         }
         else
         {
@@ -70,16 +79,22 @@ public class WorkAllocationService(
         }
 
         await db.SaveChangesAsync();
+
+        log ??= SystemAuditLogEntry.Create(SystemAuditModule.WorkAllocation, entity.Id.ToString(), $"Work Allocation: {entity.ServiceScope.GetDisplayName()}", entity);
+        sysAuditService.LogInBackground(log);
         return entity;
     }
 
     public async Task<bool> Delete(int id)
     {
         var data = await GetByIdAsync(id);
+        Guard.AgainstNullData(data, "Work Allocation not found with id: " + id);
 
         db.Remove(data!);
         await db.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Delete(SystemAuditModule.WorkAllocation, data.Id.ToString(), $"Work Allocation: {data.ServiceScope.GetDisplayName()}", data);
+        sysAuditService.LogInBackground(log);
         return true;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Force.DeepCloner;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Enums;
@@ -8,15 +9,18 @@ using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Models.Clients;
+using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
+using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 
 namespace SWSA.MvcPortal.Services.Clients;
 
 public class ClientService(
    IClientCreationFactory _clientCreationFactory,
-   AppDbContext db
+   AppDbContext db,
+   ISystemAuditLogService _sysAuditService
     ) : IClientService
 {
     private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
@@ -136,6 +140,8 @@ public class ClientService(
         await db.AddAsync(entity);
         await db.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Client, entity.Id.ToString(), $"Client: {entity.Name}", entity);
+        _sysAuditService.LogInBackground(log);
         return entity;
     }
 
@@ -150,6 +156,9 @@ public class ClientService(
         var entity = _clientCreationFactory.CreateIndividualAsync(req);
         await db.AddAsync(entity);
         await db.SaveChangesAsync();
+
+        var log = SystemAuditLogEntry.Create(SystemAuditModule.Client, entity.Id.ToString(), $"Client: {entity.Name}", entity);
+        _sysAuditService.LogInBackground(log);
         return entity;
     }
 
@@ -161,8 +170,14 @@ public class ClientService(
             throw new BusinessLogicException("The new Company Name / Number already exists");
         }
 
-        var entity = await _companies.Include(c => c.MsicCodes).FirstOrDefaultAsync(c => c.Id == req.ClientId);
+        var entity = await _companies
+            .Include(c => c.MsicCodes)
+            .ThenInclude(c => c.MsicCode)
+            .FirstOrDefaultAsync(c => c.Id == req.ClientId);
+
         Guard.AgainstNullData(entity, "Client Not Found");
+
+        var oldData = entity.DeepClone();
 
         entity!.Group = req.CategoryInfo?.Group;
         entity!.Referral = req.CategoryInfo?.Referral;
@@ -179,6 +194,8 @@ public class ClientService(
         db.Update(entity);
         await db.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.Client, entity.Id.ToString(), $"Client: {entity.Name}", oldData, entity);
+        _sysAuditService.LogInBackground(log);
         return entity;
     }
 
@@ -193,6 +210,8 @@ public class ClientService(
         var entity = await _individualClients.FirstOrDefaultAsync(c => c.Id == req.ClientId);
         Guard.AgainstNullData(entity, "Client Not Found");
 
+        var oldData = entity.DeepClone();
+
         entity!.Group = req.CategoryInfo?.Group;
         entity!.Referral = req.CategoryInfo?.Referral;
 
@@ -206,6 +225,8 @@ public class ClientService(
         db.Update(entity);
         await db.SaveChangesAsync();
 
+        var log = SystemAuditLogEntry.Update(SystemAuditModule.Client, entity.Id.ToString(), $"Client: {entity.Name}", oldData, entity);
+        _sysAuditService.LogInBackground(log);
         return entity;
     }
 
@@ -233,5 +254,4 @@ public class ClientService(
         var msicRemoveEntities = await _cpMsicCodeds.GetMsicCodes(msicIdsToRemove).ToListAsync();
         _cpMsicCodeds.RemoveRange(msicRemoveEntities);
     }
-
 }

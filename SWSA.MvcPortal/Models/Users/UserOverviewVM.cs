@@ -1,5 +1,4 @@
 ﻿using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Models.Companies;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 
 namespace SWSA.MvcPortal.Models.Users;

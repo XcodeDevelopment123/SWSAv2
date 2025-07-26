@@ -1,5 +1,5 @@
 ﻿using SWSA.MvcPortal.Dtos.Requests.Clients;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.WorkAllocations;
 
 namespace SWSA.MvcPortal.Services.Interfaces.Clients;
 

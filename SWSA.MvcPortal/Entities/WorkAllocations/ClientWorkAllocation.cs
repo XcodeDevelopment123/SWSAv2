@@ -3,7 +3,7 @@ using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWSA.MvcPortal.Entities;
+namespace SWSA.MvcPortal.Entities.WorkAllocations;
 
 public class ClientWorkAllocation
 {

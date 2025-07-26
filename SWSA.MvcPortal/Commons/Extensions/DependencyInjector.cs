@@ -43,7 +43,7 @@ using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Clients;
 using SWSA.MvcPortal.Services.Companies;
-using SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+using SWSA.MvcPortal.Services.Interfaces.Companies;
 using SWSA.MvcPortal.Services.Schedulers;
 
 namespace SWSA.MvcPortal.Commons.Extensions;

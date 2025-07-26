@@ -8,13 +8,17 @@ public enum SystemAuditModule
     Unknown = 0,
     ScheduleJob,
     Company,
+
     CompanyComplianceDate,
-    OfficialContact,
     CompanyOwner,
-    CommunicationContact,
     CompanyWorkAssignment,
     DocumentRecord,
-    User
+    User,
+
+    Client,
+    OfficialContact,
+    CommunicationContact,
+    WorkAllocation,
 }
 
 public enum SystemAuditActionType

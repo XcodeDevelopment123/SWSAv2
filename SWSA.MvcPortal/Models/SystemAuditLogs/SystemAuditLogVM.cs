@@ -8,8 +8,7 @@ public class SystemAuditLogVM
     public SystemAuditModule Module { get; set; }
     public SystemAuditActionType ActionType { get; set; }
     public string EntityId { get; set; } = default!;
-    public string EntityName { get; set; } = default!;
-    public string? NavigateUrl { get; set; }
+    public string Message { get; set; } = default!;
     public string PerformedBy { get; set; } = default!;
     public string? PerformedByStaffId { get; set; }
     public DateTime PerformedAt { get; set; }

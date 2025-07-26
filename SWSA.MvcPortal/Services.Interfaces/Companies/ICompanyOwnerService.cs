@@ -1,7 +1,7 @@
 ﻿using SWSA.MvcPortal.Dtos.Requests.Contacts;
 using SWSA.MvcPortal.Entities;
 
-namespace SWSA.MvcPortal.Services.Interfaces.CompanyProfile;
+namespace SWSA.MvcPortal.Services.Interfaces.Companies;
 
 public interface ICompanyOwnerService
 {

@@ -6,97 +6,108 @@
 @using SWSA.MvcPortal.Services.Interfaces.SystemCore
 @inject IUserContext UserContext
 @{
-	ViewData["Title"] = "Create";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	var userRoles = SelectHelper.GetUserRoleList(null,UserContext.Role);
-	var yesNo = SelectHelper.GetYesNoSelection(null);
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userRoles = SelectHelper.GetUserRoleList(null, UserContext.Role);
+    var departments = SelectHelper.GetDepartments(null);
+    var yesNo = SelectHelper.GetYesNoSelection(null);
 }
 <h3>Create New User</h3>
 
 <div class="row">
-	<div class="col-md-12">
-		<form id="userForm">
-			<!-- jquery validation -->
-			<div class="card card-primary">
-				<div class="card-header">
-					<h3 class="card-title">User Info</h3>
-				</div>
+    <div class="col-md-12">
+        <form id="userForm">
+            <!-- jquery validation -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">User Info</h3>
+                </div>
 
-				<!-- /.card-header -->
-				<!-- form start -->
-				<div class="card-body row">
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="Username">Username</label>
-							<input id="Username" name="username" class="form-control" placeholder="Enter username" />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="role">User Role</label>
-							<select asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
-						</div>
-					</div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body row">
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="FullName">Full Name</label>
-							<input id="FullName" name="fullName" class="form-control" placeholder="John Dee" />
-						</div>
-					</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Username">Username</label>
+                            <input id="Username" name="username" class="form-control" placeholder="Enter username" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="FullName">Full Name</label>
+                            <input id="FullName" name="fullName" class="form-control" placeholder="John Dee" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="PhoneNumber">Phone Number</label>
+                            <input id="PhoneNumber" name="phoneNumber" class="form-control" placeholder="+6012xxxxxxx" />
+                        </div>
+                    </div>
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="PhoneNumber">Phone Number</label>
-							<input id="PhoneNumber" name="phoneNumber" class="form-control" placeholder="+6012xxxxxxx" />
-						</div>
-					</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Email">Email</label>
+                            <input type="email" id="Email" name="email" class="form-control" placeholder="example@gmail.com" />
+                        </div>
+                    </div>
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="Email">Email</label>
-							<input type="email" id="Email" name="email" class="form-control" placeholder="example@gmail.com" />
-						</div>
-					</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Password">Password</label>
+                            <input type="password" id="Password" name="password" class="form-control" placeholder="Enter password" />
+                        </div>
+                    </div>
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="Password">Password</label>
-							<input type="password" id="Password" name="password" class="form-control" placeholder="Enter password" />
-						</div>
-					</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="RePassword">Re-enter Password</label>
+                            <input type="password" id="RePassword" name="rePassword" class="form-control" placeholder="Re-enter password" />
+                        </div>
+                    </div>
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="RePassword">Re-enter Password</label>
-							<input type="password" id="RePassword" name="rePassword" class="form-control" placeholder="Re-enter password" />
-						</div>
-					</div>
+                    <div class="form-info-label col-12">
+                        <label>Work Info</label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <select asp-items="departments" id="department" name="department" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="role">User Role</label>
+                            <select asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="IsActive">Is Active</label>
+                            <select asp-items="yesNo" id="IsActive" name="isActive" class="form-control select2"></select>
+                        </div>
+                    </div>
+                  
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="IsActive">Is Active</label>
-							<select asp-items="yesNo" id="IsActive" name="isActive" class="form-control select2"></select>
-						</div>
-					</div>
 
-				</div>
-				<div class="card-footer">
-					<!-- /.card-body -->
-					<div class="float-end">
-						<button type="submit" id="btnSubmitRequest" class="btn btn-primary">Submit</button>
-					</div>
-				</div>
-			</div>
-		</form>
-		<!-- /.card -->
-	</div>
+                </div>
+                <div class="card-footer">
+                    <!-- /.card-body -->
+                    <div class="float-end">
+                        <button type="submit" id="btnSubmitRequest" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- /.card -->
+    </div>
 
 
 </div>
 
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 
-	<script src="~/js/users/create-user.js" asp-append-version="true"></script>
-    }
+    <script src="~/js/users/create-user.js" asp-append-version="true"></script>
+}

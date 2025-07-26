@@ -59,12 +59,11 @@
             method: "GET",
             success: function (res) {
                 $("#auditLogModal").modal("show");
-                $("#systemAuditLogForm").find("input[name='performedAt']").val(ConvertTimeFormat(res.performedAt));
+                $("#systemAuditLogForm").find("input[name='performedAt']").val(ConvertTimeFormat(res.performedAt,"YYYY-MM-DD hh:mm A"));
                 $("#systemAuditLogForm").find("input[name='performedBy']").val(res.performedBy);
                 $("#systemAuditLogForm").find("input[name='logId']").val(res.logId);
-                $("#systemAuditLogForm").find("input[name='title']").val(res.entityName);
+                $("#systemAuditLogForm").find("input[name='message']").val(res.message);
                 $("#systemAuditLogForm").find("input[name='actionType']").val(res.actionType);
-
 
                 auditLogDatatable.rows().clear().draw();
                 $.each(res.changeSummaries, function (index, item) {
