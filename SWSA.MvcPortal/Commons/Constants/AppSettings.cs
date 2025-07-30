@@ -48,12 +48,7 @@ public class FileSettings
     public string CloudDomain { get; set; } = string.Empty;
 }
 
-public class WappySettings
-{
-    public string WhatsappName { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
-    public string ApiToken { get; set; } = string.Empty;
-}
+
 
 public class MessagingTemplateCode
 {

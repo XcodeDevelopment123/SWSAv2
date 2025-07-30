@@ -1,8 +1,8 @@
-﻿using SWSA.MvcPortal.Commons.Services.Messaging;
-using SWSA.MvcPortal.Entities;
+﻿using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
 using SWSA.MvcPortal.Persistence;
 using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Commons.Services.Messaging.Models;
 
 namespace SWSA.MvcPortal.Services.SystemInfra;
 
@@ -25,12 +25,10 @@ public class SystemNotificationLogService(
     {
         var log = new SystemNotificationLog
         {
-            Channel = result.MessageEnvelope.Channel,
-            Recipient = result.MessageEnvelope.Recipient,
-            TemplateCode = result.MessageEnvelope.TemplateCode,
+            Channel = result.Channel,
+            Recipient = result.Recipient,
             IsSuccess = result.IsSuccess,
             ResultMessage = result.Message,
-            Reason = result.MessageEnvelope.Reason,
         };
 
         db.Add(log);

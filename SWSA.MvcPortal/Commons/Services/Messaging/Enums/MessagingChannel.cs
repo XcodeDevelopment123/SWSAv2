@@ -2,6 +2,7 @@
 
 public enum MessagingChannel
 {
+    Unknown = 0,
     Email,
     SMS,
     WhatsApp,

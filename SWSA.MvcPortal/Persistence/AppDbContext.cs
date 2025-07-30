@@ -98,7 +98,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<SystemNotificationLog>(entity =>
         {
             entity.HasIndex(c => new { c.CreatedAt, c.Channel });
-            entity.HasIndex(c => new { c.CreatedAt, c.TemplateCode });
         });
 
         modelBuilder.Entity<ScheduledJob>(entity =>

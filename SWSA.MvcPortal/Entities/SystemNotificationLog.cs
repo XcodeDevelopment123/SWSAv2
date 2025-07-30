@@ -10,12 +10,8 @@ public class SystemNotificationLog
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     [StringLength(255)]
     public string Recipient { get; set; } = null!;
-    [StringLength(128)]
-    public string TemplateCode { get; set; } = null!;
     public MessagingChannel Channel { get; set; }
     public bool IsSuccess { get; set; }
     [StringLength(255)]
     public string ResultMessage { get; set; } = null!;
-    [StringLength(255)]
-    public string? Reason { get; set; }
 }

@@ -20,8 +20,6 @@
                             <th>Send At</th>
                             <th>Recipient</th>
                             <th>Channel</th>
-                            <th>Code</th>
-                            <th>Reason</th>
                             <th>Status</th>
                             <th>Message</th>
                         </tr>
@@ -33,8 +31,6 @@
                                <td>@doc.CreatedAt.ToFormattedString(DateTimeFormatType.DateTime12H)</td>
                                <td>@doc.Recipient</td>
                                <td>@doc.Channel.GetDisplayName()</td>
-                               <td>@doc.TemplateCode</td>
-                               <td>@doc.Reason</td>
                                <td>@(doc.IsSuccess?"Success":"Failed")</td>
                                 <td>@doc.ResultMessage</td>
                             </tr>
@@ -45,8 +41,6 @@
                             <th>Send At</th>
                             <th>Recipient</th>
                             <th>Channel</th>
-                            <th>Code</th>
-                            <th>Reason</th>
                             <th>Status</th>
                             <th>Message</th>
                         </tr>

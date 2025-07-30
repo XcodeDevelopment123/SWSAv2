@@ -9,8 +9,7 @@ using SWSA.MvcPortal.Persistence.QueryExtensions;
 namespace SWSA.MvcPortal.Commons.Quartz.Jobs;
 
 public class AssignmentDueSoonJob(
-    AppDbContext db,
-    IMessagingService messagingService
+    AppDbContext db
     ) : IJob
 {
 

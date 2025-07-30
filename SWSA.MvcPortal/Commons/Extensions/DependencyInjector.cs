@@ -19,8 +19,6 @@ using Quartz.Spi;
 using Quartz.Impl;
 using SWSA.MvcPortal.Commons.Quartz.Config;
 using SWSA.MvcPortal.Commons.Quartz;
-using SWSA.MvcPortal.Commons.Services.Messaging.Implementation;
-using SWSA.MvcPortal.Commons.Services.Messaging.Intefaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
 using Serilog;
 using AspNetCoreRateLimit;
@@ -45,6 +43,8 @@ using SWSA.MvcPortal.Services.Clients;
 using SWSA.MvcPortal.Services.Companies;
 using SWSA.MvcPortal.Services.Interfaces.Companies;
 using SWSA.MvcPortal.Services.Schedulers;
+using SWSA.MvcPortal.Commons.Services.Messaging;
+using SWSA.MvcPortal.Commons.Services.Messaging.Configs;
 
 namespace SWSA.MvcPortal.Commons.Extensions;
 
@@ -182,19 +182,9 @@ public static class DependencyInjector
 
         //Messaging service
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-        services.AddSingleton<IMessageDispatcher, DefaultDispatcher>();
-        services.AddSingleton<ITemplateRegistry, InMemoryTemplateRegistry>();
-        services.AddSingleton<IMessageProducer, InMemoryMessageQueue>();
-        services.AddSingleton(sp => (IMessageConsumer)sp.GetRequiredService<IMessageProducer>());
-        services.AddSingleton<IMessagingService, MessagingService>();
         services.AddSingleton<IPermissionRefreshTracker, MemoryPermissionRefreshTracker>();
+        services.AddSingleton<WappySender>();
 
-        // 注册所有 Sender（可多个）
-        services.AddSingleton<IMessageSender, SmsSender>();
-        services.AddSingleton<IMessageSender>(sp => sp.GetRequiredService<WappySender>());
-
-        // Background 消费服务
-        services.AddHostedService<MessageQueueWorker>();
         services.AddHostedService<BackgroundTaskWorker>();
     }
 
@@ -215,7 +205,7 @@ public static class DependencyInjector
         //  {
         //      client.BaseAddress = new Uri("baseUrl");
         //  });
-        services.AddHttpClient<WappySender>((serviceProvider, client) =>
+        services.AddHttpClient<WappySender>("WappyClient",(serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<WappySettings>>();
             var token = options.Value.ApiToken;
@@ -223,7 +213,6 @@ public static class DependencyInjector
             client.BaseAddress = new Uri(url);
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token} ");
-
         });
     }
 
