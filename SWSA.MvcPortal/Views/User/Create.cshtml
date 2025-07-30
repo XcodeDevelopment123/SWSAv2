@@ -35,6 +35,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label for="role">User Role</label>
+                            <select asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label for="FullName">Full Name</label>
                             <input id="FullName" name="fullName" class="form-control" placeholder="John Dee" />
                         </div>
@@ -67,8 +73,15 @@
                         </div>
                     </div>
 
+
                     <div class="form-info-label col-12">
                         <label>Work Info</label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" id="title" name="title" class="form-control" placeholder="Senior Audit Manager" />
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -76,10 +89,18 @@
                             <select asp-items="departments" id="department" name="department" class="form-control select2"></select>
                         </div>
                     </div>
+
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="role">User Role</label>
-                            <select asp-items="userRoles" id="role" name="role" class="form-control select2"></select>
+                            <label for="joinDate">Join Date</label>
+                            <div class="input-group">
+                                <input type="text" id="joinDate" name="joinDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -88,9 +109,6 @@
                             <select asp-items="yesNo" id="IsActive" name="isActive" class="form-control select2"></select>
                         </div>
                     </div>
-                  
-
-
                 </div>
                 <div class="card-footer">
                     <!-- /.card-body -->

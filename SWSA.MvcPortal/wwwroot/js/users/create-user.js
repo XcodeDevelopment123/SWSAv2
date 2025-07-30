@@ -10,64 +10,54 @@
         password: $userForm.find('input[name="password"]'),
         rePassword: $userForm.find('input[name="rePassword"]'),
         isActive: $userForm.find('select[name="isActive"]'),
+        department: $userForm.find('select[name="department"]'),
+        title: $userForm.find('input[name="title"]'),
+        joinDate: $userForm.find('input[name="joinDate"]'),
         role: $userForm.find('select[name="role"]')
     };
 
     $userForm.validate({
         rules: {
-            username: {
-                required: true
-            },
-            fullName: {
-                required: true
-            },
-            phoneNumber: {
-                required: true
-            },
+            username: { required: true },
+            fullName: { required: true },
+            phoneNumber: { required: true },
             email: {
                 required: true,
                 email: true
             },
-            password: {
-                required: true
-            },
+            password: { required: true },
             rePassword: {
                 required: true,
                 equalTo: 'input[name="password"]'
             },
-            isActive: {
-                required: true
-            },
-            role: {
-                required: true
-            }
+            isActive: { required: true },
+            role: { required: true },
+
+            title: { required: true },
+            department: { required: true },
+            joinDate: { required: true, date: true }
         },
         messages: {
-            username: {
-                required: "Username is required."
-            },
-            fullName: {
-                required: "Full name is required."
-            },
-            phoneNumber: {
-                required: "Phone number is required."
-            },
+            username: { required: "Username is required." },
+            fullName: { required: "Full name is required." },
+            phoneNumber: { required: "Phone number is required." },
             email: {
                 required: "Email is required.",
                 email: "Please enter a valid email address."
             },
-            password: {
-                required: "Password is required."
-            },
+            password: { required: "Password is required." },
             rePassword: {
                 required: "Please re-enter your password.",
                 equalTo: "Passwords do not match."
             },
-            isActive: {
-                required: "Please select an active status."
-            },
-            role: {
-                required: "Please select an role."
+            isActive: { required: "Please select an active status." },
+            role: { required: "Please select a role." },
+
+            title: { required: "Title is required." },
+            department: { required: "Please select a department." },
+            joinDate: {
+                required: "Join date is required.",
+                date: "Please enter a valid date."
             }
         },
         errorElement: 'span',
@@ -85,6 +75,10 @@
         unhighlight: function (element) {
             $(element).removeClass('is-invalid');
         }
+    });
+
+    flatpickr("#joinDate", {
+        allowInput: true
     });
 
     $userForm.on('submit', function (e) {
@@ -105,8 +99,8 @@
                     Toast_Fire(ICON_SUCCESS, "Created", "User created successfully.");
                     setTimeout(() => {
                         window.location.href = `${urls.users}/${res}/overview`;
-                    },200)
-           
+                    }, 200)
+
                 }
             },
             error: (jqxhr) => {

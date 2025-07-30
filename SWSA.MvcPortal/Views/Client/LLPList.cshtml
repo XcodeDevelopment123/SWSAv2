@@ -56,7 +56,7 @@
 
     </div>
 </div>
-
+@await Component.InvokeAsync("ScheduleWorkModal", clientType)
 @await Component.InvokeAsync("UpsertCommContact", clientType)
 @await Component.InvokeAsync("UpsertOfficialContact", clientType)
 @await Component.InvokeAsync("UpsertOwnerContact", clientType)
@@ -68,7 +68,8 @@
     <script src="~/js/clients/list.js" asp-append-version="true"></script>
     <script src="~/js/clients/load-client-list-details.js" asp-append-version="true"></script>
     <script src="~/js/clients/client-list-details.js" asp-append-version="true"></script>
-
+   
+    <script src="~/js/clients-works/schedule-work.js" asp-append-version="true"></script>
     <script src="~/js/clients/upsert-modal/upsert-comm-contact.js" asp-append-version="true"></script>
     <script src="~/js/clients/upsert-modal/upsert-official-contact.js" asp-append-version="true"></script>
     <script src="~/js/clients/upsert-modal/upsert-owner.js" asp-append-version="true"></script>

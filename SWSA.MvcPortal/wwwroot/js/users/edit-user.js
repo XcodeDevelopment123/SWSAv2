@@ -36,7 +36,7 @@
                 email: true
             },
             password: {
-                required: false 
+                required: false
             },
             rePassword: {
                 required: {
@@ -56,7 +56,10 @@
             },
             role: {
                 required: true
-            }
+            },
+            title: { required: true },
+            department: { required: true },
+            joinDate: { required: true, date: true }
         },
         messages: {
             fullName: {
@@ -80,6 +83,13 @@
             },
             role: {
                 required: "Please select an role."
+            },
+
+            title: { required: "Title is required." },
+            department: { required: "Please select a department." },
+            joinDate: {
+                required: "Join date is required.",
+                date: "Please enter a valid date."
             }
         },
         errorElement: 'span',
@@ -98,7 +108,12 @@
             $(element).removeClass('is-invalid');
         }
     });
- 
+
+    flatpickr("#joinDate", {
+        allowInput: true
+    });
+
+
     $userForm.on('submit', function (e) {
         e.preventDefault();
 
@@ -109,14 +124,14 @@
         const userData = getFormData(userFormInputs);
         userData.staffId = $("#staffId").val();
         $.ajax({
-            url: `${urls.users}/edit`, 
+            url: `${urls.users}/edit`,
             method: "POST",
             data: userData,
             success: function (res) {
                 if (res) {
                     Toast_Fire(ICON_SUCCESS, "Updated", "User updated successfully.");
                     setTimeout(() => {
-                      //  window.location.href = `${urls.users}/${userData.staffId}/overview`;
+                        //  window.location.href = `${urls.users}/${userData.staffId}/overview`;
                     }, 200);
                 }
             },

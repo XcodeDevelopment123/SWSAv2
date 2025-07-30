@@ -1,0 +1,108 @@
+﻿<link rel="stylesheet" href="/css/schedule-work.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet" />
+<!-- Work Schedule Modal -->
+<div class="modal fade" id="scheduleWorkModal" tabindex="-1" aria-labelledby="scheduleWorkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleWorkModalLabel">
+                    <i class="bi bi-briefcase me-2"></i>
+                    Schedule Work
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 75vh; overflow-y: auto">
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active" data-step="1">1</div>
+                    <div class="step" data-step="2">2</div>
+                </div>
+
+                <!-- Step 1: Year Selection -->
+                <div class="step-content active" id="step1">
+                    <h5 class="text-center mb-4">Select For Year</h5>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="row" id="yearSelection">
+                                @{
+                                    var currentYear = DateTime.Now.Year;
+                                    @foreach (var year in Enumerable.Range(currentYear - 1, 3))
+                                    {
+                                        <div class="col-md-4">
+                                            <div class="year-card" data-year="@year">
+                                                @if (year < currentYear)
+                                                {
+                                                    <i class="bi bi-calendar2 fs-1 text-primary mb-3"></i>
+                                                    <h5>@year</h5>
+                                                    <p class="text-muted small">Previous Year</p>
+
+                                                }
+                                                else if (year > currentYear)
+                                                {
+                                                    <i class="bi bi-calendar2 fs-1 text-info mb-3"></i>
+                                                    <h5>@year</h5>
+                                                    <p class="text-muted small">Future Year</p>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-calendar2 fs-1 text-success mb-3"></i>
+                                                    <h5>@year</h5>
+                                                    <p class="text-muted small">Current Year</p>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Service Configuration -->
+                <div class="step-content" id="step2">
+                    <h5 class="text-center mb-4">Configure Service Reminder</h5>
+
+                    <!-- Progress indicator -->
+                    <div class="spacing-y">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h6 class="mb-1">Configuration Progress</h6>
+                                <div class="progress" style="width: 300px; height: 10px">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                <span id="completedCount">0</span>
+                                /
+                                <span id="totalCount">0</span>
+                                Completed
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Container -->
+                    <div id="servicesContainer" class="spacing-y">
+                        <!-- Service items will be dynamically generated -->
+                    </div>
+                </div>
+
+       </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Previous
+                </button>
+                <button type="button" class="btn btn-primary" id="nextBtn">
+                    Next
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+                <button type="button" class="btn btn-success" id="submitBtn" style="display: none">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Create Engagements
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
