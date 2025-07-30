@@ -9,5 +9,6 @@ public enum UserRole
     Unknown = 0,
     [Display(Name = "Super Admin")]
     SuperAdmin = 100,
-    Staff = 200
+    Manager = 200,
+    Staff = 201,
 }

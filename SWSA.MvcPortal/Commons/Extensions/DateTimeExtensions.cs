@@ -38,7 +38,23 @@ public static class DateTimeExtensions
         return dateTime.Value.ToString(format);
     }
 
-   
+    public static string GetExperienceString(this DateTime dateTime)
+    {
+        var now = DateTime.Today;
+        var years = now.Year - dateTime.Year;
+
+        if (dateTime > now.AddYears(-years))
+            years--;
+
+        return years switch
+        {
+            < 1 => "Less than 1 year",
+            1 => "1 year",
+            _ => $"{years} years"
+        };
+    }
+
+
 }
 
 /// <summary>
