@@ -6,7 +6,6 @@ using SWSA.MvcPortal.Commons.Middlewares;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Persistence.Seeders;
 using Serilog;
-using SWSA.MvcPortal.Commons.SignalR;
 using AspNetCoreRateLimit;
 
 
@@ -67,9 +66,6 @@ try
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Auth}/{action=Login}");
-
-    //Signal R
-    app.MapHub<SignalRHub>("/hubs/notification");
 
     app.Run();
 }
