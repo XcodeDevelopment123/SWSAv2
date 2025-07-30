@@ -4,6 +4,7 @@ using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities;
+[Obsolete]
 public class WorkProgress
 {
     [Key]

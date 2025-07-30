@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities;
+[Obsolete]
 public class WorkAssignmentUserMapping
 {
     [Key]

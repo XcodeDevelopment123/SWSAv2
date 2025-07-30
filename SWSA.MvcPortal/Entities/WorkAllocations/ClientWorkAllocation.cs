@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities.WorkAllocations;
 
+//Just for reference and log, not actually work for year
 public class ClientWorkAllocation
 {
 
@@ -28,4 +29,16 @@ public class ClientWorkAllocation
     [NotMapped]
     public bool IsOther => (int)ServiceScope >= 20;
 
+    public void ChangeServiceScope(ServiceScope service)
+    {
+        ServiceScope = service;
+    }
+
+    public void UpdateInfo(string? remarks, CompanyActivityLevel? companyActivityLevel, AuditCompanyStatus? companyStatus, AuditStatus? auditStatus)
+    {
+        Remarks = remarks;
+        CompanyActivityLevel = companyActivityLevel;
+        CompanyStatus = companyStatus;
+        AuditStatus = auditStatus;
+    }
 }

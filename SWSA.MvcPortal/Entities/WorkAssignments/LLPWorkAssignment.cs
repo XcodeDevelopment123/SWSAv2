@@ -1,6 +1,7 @@
 ﻿using SWSA.MvcPortal.Commons.Attributes;
 
 namespace SWSA.MvcPortal.Entities.WorkAssignments;
+[Obsolete]
 
 public class LLPWorkAssignment : WorkAssignment
 {
