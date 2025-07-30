@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
+using SWSA.MvcPortal.Services.Interfaces.Systems;
 
 namespace SWSA.MvcPortal.Controllers.Systems;
 

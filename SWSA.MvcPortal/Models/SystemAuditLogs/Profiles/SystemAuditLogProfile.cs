@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Models.SystemAuditLogs.Profiles;
 

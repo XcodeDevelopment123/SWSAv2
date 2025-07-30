@@ -1,7 +1,7 @@
-﻿using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace SWSA.MvcPortal.Entities;
+namespace SWSA.MvcPortal.Entities.Systems;
 
 public class SystemNotificationLog
 {

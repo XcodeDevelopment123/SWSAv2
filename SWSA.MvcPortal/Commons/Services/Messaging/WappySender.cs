@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Serilog;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Services.Messaging.Configs;
-using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
 using SWSA.MvcPortal.Commons.Services.Messaging.Models;
 
 namespace SWSA.MvcPortal.Commons.Services.Messaging;

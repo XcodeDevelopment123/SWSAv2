@@ -1,6 +1,7 @@
 ﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
+using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Entities.WorkAllocations;
 using System.ComponentModel.DataAnnotations;
 

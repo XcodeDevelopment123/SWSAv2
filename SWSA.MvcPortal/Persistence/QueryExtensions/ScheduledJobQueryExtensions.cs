@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Entities;
+﻿using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Persistence.QueryExtensions;
 

@@ -1,5 +1,5 @@
 ﻿using Mapster;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Commons.MapsterConfigs.Scheduler;
 

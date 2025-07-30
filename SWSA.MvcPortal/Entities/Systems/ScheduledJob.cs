@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
-namespace SWSA.MvcPortal.Entities;
+namespace SWSA.MvcPortal.Entities.Systems;
 
 public class ScheduledJob
 {
@@ -15,7 +15,7 @@ public class ScheduledJob
     [SystemAuditLog("Job Key")]
     /// <summary>Quartz JobKey, 如 AssignmentDueSoonJob</summary>
     public string JobKey { get; set; } = default!;
-   
+
     [SystemAuditLog("Job Group")]
     /// <summary>Quartz Job Group，如 NotificationGroup </summary>
     public string JobGroup { get; set; } = default!;
@@ -56,6 +56,16 @@ public class ScheduledJob
     public User? User { get; set; } = default!;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
+
+    public void UpdateInfo(bool isEnable, ScheduleType type, string? cron, DateTime? triggerTime)
+    {
+        IsEnabled = isEnable;
+        ScheduleType = type;
+        CronExpression = cron;
+        TriggerTime = triggerTime;
+        UpdatedAt = DateTime.Now;
+    }
+
 }
 
 public static class ScheduledJobExtensions

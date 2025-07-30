@@ -1,5 +1,5 @@
 ﻿using SWSA.MvcPortal.Commons.Exceptions;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SWSA.MvcPortal.Commons.Guards;

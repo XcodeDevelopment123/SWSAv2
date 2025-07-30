@@ -6,7 +6,7 @@ using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
 using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
 using SWSA.MvcPortal.Commons.Quartz.Support;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 

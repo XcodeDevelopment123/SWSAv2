@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
 
 namespace SWSA.MvcPortal.Controllers;
 

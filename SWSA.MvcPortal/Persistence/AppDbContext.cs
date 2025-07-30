@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Entities.Reminders;
+using SWSA.MvcPortal.Entities.Systems;
 using SWSA.MvcPortal.Entities.WorkAllocations;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 

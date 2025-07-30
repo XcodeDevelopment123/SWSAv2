@@ -24,7 +24,6 @@ public static class MapsterConfig
             //#Mapster Config (auto generated)
 new ClientMapster(),
 new CommunicationContactMapsterConfig(),
-new CompanyMsicCodeMapsterConfig(),
 new OfficialContactMapsterConfig(),
 new CompanyOwnerMapsterConfig(),
 new CompanyWorkAssignmentMapsterConfig(),

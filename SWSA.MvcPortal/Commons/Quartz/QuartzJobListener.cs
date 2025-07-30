@@ -1,6 +1,6 @@
 ﻿using Quartz;
 using Serilog;
-using SWSA.MvcPortal.Services.Interfaces.Scheduler;
+using SWSA.MvcPortal.Services.Interfaces.Systems;
 
 namespace SWSA.MvcPortal.Commons.Quartz;
 

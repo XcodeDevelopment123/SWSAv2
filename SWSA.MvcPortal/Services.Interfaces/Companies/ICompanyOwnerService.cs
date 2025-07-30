@@ -1,5 +1,5 @@
 ﻿using SWSA.MvcPortal.Dtos.Requests.Contacts;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Contacts;
 
 namespace SWSA.MvcPortal.Services.Interfaces.Companies;
 

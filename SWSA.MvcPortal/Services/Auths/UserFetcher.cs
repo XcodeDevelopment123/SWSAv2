@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Persistence;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
 
-namespace SWSA.MvcPortal.Services.SystemCore;
+namespace SWSA.MvcPortal.Services.Auths;
 
 public class UserFetcher(
     AppDbContext db

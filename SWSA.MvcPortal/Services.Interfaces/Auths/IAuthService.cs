@@ -1,6 +1,6 @@
 ﻿using SWSA.MvcPortal.Dtos.Responses;
 
-namespace SWSA.MvcPortal.Services.Interfaces.SystemCore;
+namespace SWSA.MvcPortal.Services.Interfaces.Auths;
 
 public interface IAuthService
 {

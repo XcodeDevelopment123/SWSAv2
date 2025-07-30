@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Commons.Services.Messaging.Enums;
+﻿namespace SWSA.MvcPortal.Commons.Enums;
 
 public enum MessagingChannel
 {

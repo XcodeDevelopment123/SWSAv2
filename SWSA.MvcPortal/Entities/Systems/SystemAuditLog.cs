@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SWSA.MvcPortal.Entities;
+namespace SWSA.MvcPortal.Entities.Systems;
 
 public class SystemAuditLog
 {

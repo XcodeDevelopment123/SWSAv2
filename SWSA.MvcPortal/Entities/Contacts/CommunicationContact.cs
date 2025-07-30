@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
-namespace SWSA.MvcPortal.Entities;
+namespace SWSA.MvcPortal.Entities.Contacts;
 
 public class CommunicationContact
 {
@@ -27,7 +27,7 @@ public class CommunicationContact
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public string GetWhatsappNumber()
     {
-        return Regex.Replace(this.WhatsApp ?? "", @"\D", "");
+        return Regex.Replace(WhatsApp ?? "", @"\D", "");
     }
 
     public void UpdateInfo(string name, string phone, string email, PositionType position,string? remark)

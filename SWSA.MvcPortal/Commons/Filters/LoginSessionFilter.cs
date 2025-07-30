@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Services.Session;
 using SWSA.MvcPortal.Commons.Services.Permission;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
 
 namespace SWSA.MvcPortal.Commons.Filters;
 

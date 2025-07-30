@@ -1,5 +1,5 @@
 ﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Models.Companies;
 public class CompanyCreatePageVM

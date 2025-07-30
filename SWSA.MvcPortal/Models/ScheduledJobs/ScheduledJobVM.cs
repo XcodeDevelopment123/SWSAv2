@@ -1,5 +1,4 @@
 ﻿using CronExpressionDescriptor;
-using Newtonsoft.Json;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
@@ -72,7 +71,6 @@ public class ScheduledJobVM
         {
             return CronExpression ?? "Invalid schedule";
         }
-
     }
 
     public CronFields ParseCron()

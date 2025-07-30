@@ -1,5 +1,5 @@
-﻿using SWSA.MvcPortal.Entities;
-using SWSA.MvcPortal.Entities.Clients;
+﻿using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Models.Clients;
 

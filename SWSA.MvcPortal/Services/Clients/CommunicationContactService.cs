@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Contacts;
-using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
-using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
+using SWSA.MvcPortal.Services.Interfaces.Systems;
 
 namespace SWSA.MvcPortal.Services.Clients;
 

@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Persistence.Seeders;
 

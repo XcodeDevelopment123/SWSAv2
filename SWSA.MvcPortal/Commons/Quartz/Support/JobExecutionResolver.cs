@@ -2,7 +2,7 @@
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Quartz.Factories;
 using SWSA.MvcPortal.Commons.Quartz.Requests;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 namespace SWSA.MvcPortal.Commons.Quartz.Support;
 
 /// <summary>

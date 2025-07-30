@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Services.Messaging.Enums;
+﻿using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Commons.Services.Messaging.Models;
 

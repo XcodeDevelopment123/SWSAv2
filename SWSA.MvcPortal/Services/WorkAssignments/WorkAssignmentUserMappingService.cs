@@ -6,8 +6,8 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.SystemAuditLogs;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.QueryExtensions;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
-using SWSA.MvcPortal.Services.Interfaces.SystemInfra;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
+using SWSA.MvcPortal.Services.Interfaces.Systems;
 using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Services.WorkAssignments;

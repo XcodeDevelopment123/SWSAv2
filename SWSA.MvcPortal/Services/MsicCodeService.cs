@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SWSA.MvcPortal.Commons.Constants;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Systems;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Services.Interfaces;
 

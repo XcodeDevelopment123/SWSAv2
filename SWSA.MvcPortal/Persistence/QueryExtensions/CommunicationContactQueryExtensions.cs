@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Contacts;
 
 namespace SWSA.MvcPortal.Persistence.QueryExtensions;
 

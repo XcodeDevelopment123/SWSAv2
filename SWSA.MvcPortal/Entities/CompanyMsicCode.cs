@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Systems;
 
 namespace SWSA.MvcPortal.Entities;
 

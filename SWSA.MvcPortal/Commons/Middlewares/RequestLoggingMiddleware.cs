@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Context;
-using SWSA.MvcPortal.Services.Interfaces.SystemCore;
+using SWSA.MvcPortal.Services.Interfaces.Auths;
 using System.Diagnostics;
 using System.Text;
 
