@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Reminders;
 using SWSA.MvcPortal.Entities.WorkAllocations;
 using SWSA.MvcPortal.Entities.WorkAssignments;
 
@@ -39,6 +40,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
+    
+    #region Work Allocation & Reminders
+    internal DbSet<ScheduledWorkAllocation> ScheduledWorkAllocations { get; set; }
+    internal DbSet<Reminder> Reminders { get; set; }
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -106,6 +112,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             entity.HasIndex(c => new { c.JobGroup, c.JobKey }).IsUnique();
         });
+
+        // Reminder Configuration
+        modelBuilder.Entity<Reminder>(entity =>
+        {
+            entity.HasIndex(r => new { r.TargetAt, r.Status });
+            entity.HasIndex(r => r.ScheduledWorkAllocationId);
+            
+            entity.Property(r => r.Title).HasMaxLength(200).IsRequired();
+        });
+        
+        modelBuilder.Entity<ScheduledWorkAllocation>()
+            .HasMany(swa => swa.Reminders)
+            .WithOne(r => r.ScheduledWorkAllocation)
+            .HasForeignKey(r => r.ScheduledWorkAllocationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }
