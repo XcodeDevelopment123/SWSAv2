@@ -1,7 +1,6 @@
 ﻿using Force.DeepCloner;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
 using SWSA.MvcPortal.Commons.Guards;
@@ -25,7 +24,6 @@ public class ClientService(
 {
     private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
     private readonly DbSet<MsicCode> _msicCodeds = db.Set<MsicCode>();
-    private readonly DbSet<CompanyMsicCode> _cpMsicCodeds = db.Set<CompanyMsicCode>();
     private readonly DbSet<BaseCompany> _companies = db.Set<BaseCompany>();
     private readonly DbSet<IndividualClient> _individualClients = db.Set<IndividualClient>();
 
@@ -113,7 +111,6 @@ public class ClientService(
         query = clientType switch
         {
             ClientType.Individual => _individualClients,
-
             ClientType.Enterprise
             or ClientType.SdnBhd
             or ClientType.LLP => _companies
@@ -130,10 +127,7 @@ public class ClientService(
     public async Task<BaseCompany> CreateCompanyAsync(CreateCompanyRequest req)
     {
         var isExist = await _companies.CompanyExistsAsync(req.RegistrationNumber, req.CompanyName);
-        if (isExist)
-        {
-            throw new BusinessLogicException("Company Name / Number already exists");
-        }
+        Guard.AgainstExist(isExist, "Company Name / Number already exists");
 
         var entity = _clientCreationFactory.CreateCompanyAsync(req);
 
@@ -148,10 +142,7 @@ public class ClientService(
     public async Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req)
     {
         var isExist = await _individualClients.IcOrPassportExistsAsync(req.ICOrPassportNumber);
-        if (isExist)
-        {
-            throw new BusinessLogicException("IC/Passport already exists");
-        }
+        Guard.AgainstExist(isExist, "IC/Passport already exists");
 
         var entity = _clientCreationFactory.CreateIndividualAsync(req);
         await db.AddAsync(entity);
@@ -165,31 +156,28 @@ public class ClientService(
     public async Task<BaseCompany> UpdateCompanyAsync(UpdateCompanyRequest req)
     {
         var isExist = await _companies.CompanyExistsAsync(req.ClientId, req.CompanyName, req.RegistrationNumber);
-        if (isExist)
-        {
-            throw new BusinessLogicException("The new Company Name / Number already exists");
-        }
+        Guard.AgainstExist(isExist, "The new Company Name / Number already exists");
 
         var entity = await _companies
             .Include(c => c.MsicCodes)
             .ThenInclude(c => c.MsicCode)
             .FirstOrDefaultAsync(c => c.Id == req.ClientId);
-
         Guard.AgainstNullData(entity, "Client Not Found");
 
         var oldData = entity.DeepClone();
 
-        entity!.Group = req.CategoryInfo?.Group;
-        entity!.Referral = req.CategoryInfo?.Referral;
-        entity!.FileNo = req.CategoryInfo?.FileNo;
-        entity!.Name = req.CompanyName;
-        entity.RegistrationNumber = req.RegistrationNumber;
-        entity.TaxIdentificationNumber = req.TaxIdentificationNumber;
-        entity.EmployerNumber = req.EmployerNumber;
-        entity.YearEndMonth = req.YearEndMonth;
-        entity.IncorporationDate = req.IncorporationDate;
+        entity.UpdateCompanyInfo(req.CompanyName, req.RegistrationNumber, req.TaxIdentificationNumber, req.EmployerNumber, req.YearEndMonth, req.IncorporationDate);
+        entity.UpdateAdminInfo(req.CategoryInfo?.Group, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
+        entity.SyncMsicCode(req.MsicCodeIds);
 
-        await SyncMsicCodes(entity, req.MsicCodeIds?.ToHashSet() ?? []);
+        var currentMsicCodesId = entity.MsicCodes.Select(m => m.MsicCodeId).ToList();
+        var validIds = await _msicCodeds
+                 .Where(m => currentMsicCodesId.Contains(m.Id))
+                 .Select(m => m.Id)
+                 .ToListAsync();
+
+        if (validIds.Count != currentMsicCodesId.Count)
+            throw new BusinessLogicException("Invalid MSIC Code(s) provided");
 
         db.Update(entity);
         await db.SaveChangesAsync();
@@ -202,25 +190,15 @@ public class ClientService(
     public async Task<IndividualClient> UpdateIndividualAsync(UpdateIndividualRequest req)
     {
         var isExist = await _individualClients.IcOrPassportExistsAsync(req.ClientId, req.ICOrPassportNumber);
-        if (isExist)
-        {
-            throw new BusinessLogicException("The new IC/Passport already exists");
-        }
+        Guard.AgainstExist(isExist, "The new IC/Passport already exists");
 
         var entity = await _individualClients.FirstOrDefaultAsync(c => c.Id == req.ClientId);
         Guard.AgainstNullData(entity, "Client Not Found");
 
         var oldData = entity.DeepClone();
 
-        entity!.Group = req.CategoryInfo?.Group;
-        entity!.Referral = req.CategoryInfo?.Referral;
-
-        entity!.Name = req.IndividualName;
-        entity.ICOrPassportNumber = req.ICOrPassportNumber;
-        entity.TaxIdentificationNumber = req.TaxIdentificationNumber;
-        entity.Profession = req.Professions;
-        entity.YearEndMonth = req.YearEndMonth;
-        entity.TaxIdentificationNumber = req.TaxIdentificationNumber;
+        entity.UpdateAdminInfo(req.CategoryInfo?.Group, req.CategoryInfo?.Referral);
+        entity.UpdateClientInfo(req.IndividualName, req.TaxIdentificationNumber, req.YearEndMonth, req.ICOrPassportNumber, req.Professions);
 
         db.Update(entity);
         await db.SaveChangesAsync();
@@ -228,30 +206,5 @@ public class ClientService(
         var log = SystemAuditLogEntry.Update(SystemAuditModule.Client, entity.Id.ToString(), $"Client: {entity.Name}", oldData, entity);
         _sysAuditService.LogInBackground(log);
         return entity;
-    }
-
-    private async Task SyncMsicCodes(BaseCompany data, HashSet<int> requestedMsicIds)
-    {
-        var existingMsicIds = data.MsicCodes.Select(x => x.MsicCodeId).ToHashSet();
-        var msicIdsToAdd = requestedMsicIds.Except(existingMsicIds).ToList();
-        var msicsToRemove = data.MsicCodes
-          .Where(x => !requestedMsicIds.Contains(x.MsicCodeId)).ToList();
-        var msicIdsToRemove = msicsToRemove.Select(x => x.MsicCodeId).ToList();
-
-        if (msicIdsToAdd.Count > 0)
-        {
-            var msicEntities = await _msicCodeds.GetMsicCodes(msicIdsToAdd).ToListAsync();
-            data.MsicCodes.AddRange(msicEntities.Select(msic => new CompanyMsicCode(msic.Id)));
-        }
-
-        foreach (var msic in msicsToRemove)
-        {
-            //Remove in data entity
-            data.MsicCodes.Remove(msic);
-        }
-
-        //Remove in db
-        var msicRemoveEntities = await _cpMsicCodeds.GetMsicCodes(msicIdsToRemove).ToListAsync();
-        _cpMsicCodeds.RemoveRange(msicRemoveEntities);
     }
 }

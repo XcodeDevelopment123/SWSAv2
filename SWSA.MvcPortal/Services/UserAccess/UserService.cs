@@ -42,6 +42,15 @@ IUserContext userContext) : IUserService
         return data;
     }
 
+    public async Task<List<UserCardVM>> GetUserCardVMAsync()
+    {
+        var data = userContext.IsSuperAdmin
+             ? await users.GetActive().ProjectToType<UserCardVM>().ToListAsync()
+             : await users.Where(c => c.Id == userContext.EntityId).ProjectToType<UserCardVM>().ToListAsync();
+
+        return data;
+    }
+
     public async Task<UserOverviewVM> GetUserOverviewVMAsync(string staffId)
     {
         var data = await users.Where(c => c.StaffId == staffId).ProjectToType<UserOverviewVM>().FirstOrDefaultAsync();
@@ -62,10 +71,8 @@ IUserContext userContext) : IUserService
     {
         Guard.AgainstNotSuperAdmin(userContext);
 
-        if (await users.ExistUsernameAsync(req.Username))
-        {
-            throw new BusinessLogicException("Username already exists");
-        }
+        var isUsernameExist = await users.ExistUsernameAsync(req.Username);
+        Guard.AgainstExist(isUsernameExist, "Username already exists");
 
         var user = mapper.Map<User>(req);
         user.SetAndHashPassword(req.Password);
@@ -91,11 +98,10 @@ IUserContext userContext) : IUserService
 
         var oldData = user.DeepClone();
 
-        user.FullName = req.FullName;
-        user.Email = req.Email;
-        user.PhoneNumber = req.PhoneNumber;
-        user.IsActive = req.IsActive;
-        user.Role = req.Role;
+        user.UpdateInfo(req.StaffId, req.FullName, req.PhoneNumber, req.Email);
+        user.UpdateDepartmentAndTitle(req.Department, req.Title);
+        user.UpdateRole(req.Role);
+        user.SetIsActive(req.IsActive);
 
         if (!string.IsNullOrEmpty(req.Password))
         {

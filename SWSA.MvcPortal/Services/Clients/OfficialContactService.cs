@@ -49,10 +49,7 @@ AppDbContext db
         if (entity != null)
         {
             var oldData = entity.DeepClone();
-            entity.Address = req.Address;
-            entity.OfficeTel = req.Phone;
-            entity.Email = req.Email;
-            entity.Remark = req.Remark;
+            entity.UpdateInfo(req.Address, req.Phone, req.Email, req.Remark);
             _contact.Update(entity);
             log = SystemAuditLogEntry.Update(SystemAuditModule.OfficialContact, entity.Id.ToString(), $"Contact: {entity.OfficeTel}", oldData, entity);
         }

@@ -12,4 +12,5 @@ public interface IUserService
     Task<List<UserListVM>> GetUsersAsync();
     Task<List<UserSelectionVM>> GetUserSelectionAsync();
     Task<bool> Edit(EditUserRequest req);
+    Task<List<UserCardVM>> GetUserCardVMAsync();
 }

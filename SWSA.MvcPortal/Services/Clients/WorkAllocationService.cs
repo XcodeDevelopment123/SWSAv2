@@ -31,6 +31,12 @@ public class WorkAllocationService(
         return data;
     }
 
+    public async Task<List<ClientWorkAllocation>> GetWorksByClientId(int clientId)
+    {
+        var data = await _workAllocs.Where(c => c.ClientId == clientId).OrderByDescending(c => c.ServiceScope).ToListAsync();
+        return data;
+    }
+
     #endregion
 
     public async Task<ClientWorkAllocation> UpsertWorkAlloc(UpsertWorkAllocationRequest req)
@@ -39,10 +45,7 @@ public class WorkAllocationService(
         Guard.AgainstNotExist(clientExist, "Client Not Found : " + req.ClientId);
 
         var serviceExists = await _workAllocs.ClientServiceExistAsync(req.ClientId, req.Id, req.Service);
-        if (serviceExists)
-        {
-            throw new BusinessLogicException("Service already exists for this client");
-        }
+        Guard.AgainstExist(serviceExists,"Service already exists for this client");
 
         ClientWorkAllocation? entity = null;
         if (req.Id.HasValue && req.Id > 0)
@@ -55,11 +58,8 @@ public class WorkAllocationService(
         if (entity != null)
         {
             var oldData = entity.DeepClone();
-            entity.ServiceScope = req.Service;
-            entity.Remarks = req.Remarks;
-            entity.CompanyActivityLevel = req.ActivitySize;
-            entity.AuditStatus = req.AuditStatus;
-            entity.CompanyStatus = req.AuditCpStatus;
+            entity.ChangeServiceScope(req.Service);
+            entity.UpdateInfo(entity.Remarks, req.ActivitySize, req.AuditCpStatus, req.AuditStatus);
             _workAllocs.Update(entity);
             log = SystemAuditLogEntry.Update(SystemAuditModule.WorkAllocation, entity.Id.ToString(), $"Work Allocation: {entity.ServiceScope.GetDisplayName()}", oldData, entity);
 
@@ -97,4 +97,5 @@ public class WorkAllocationService(
         sysAuditService.LogInBackground(log);
         return true;
     }
+
 }

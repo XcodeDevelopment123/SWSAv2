@@ -7,5 +7,6 @@ public interface IWorkAllocationService
 {
     Task<bool> Delete(int id);
     Task<ClientWorkAllocation?> GetByIdAsync(int id);
+    Task<List<ClientWorkAllocation>> GetWorksByClientId(int clientId);
     Task<ClientWorkAllocation> UpsertWorkAlloc(UpsertWorkAllocationRequest req);
 }

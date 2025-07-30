@@ -46,13 +46,7 @@ public class CompanyOwnerService(
         if (entity != null)
         {
             var oldData = entity.DeepClone();
-            entity.NamePerIC = req.Name;
-            entity.ICOrPassportNumber = req.ICOrPassport;
-            entity.Position = req.Position;
-            entity.TaxReferenceNumber = req.TaxRef;
-            entity.Email = req.Email;
-            entity.PhoneNumber = req.PhoneNumber;
-            entity.RequiresFormBESubmission = req.IsRequireSubmitFormBE;
+            entity.UpdateInfo(entity.NamePerIC, req.ICOrPassport, req.Position, req.TaxRef, req.Email, req.PhoneNumber, req.IsRequireSubmitFormBE);
             _owners.Update(entity);
             log = SystemAuditLogEntry.Update(SystemAuditModule.CompanyOwner, entity.Id.ToString(), $"Owner: {entity.NamePerIC}", oldData, entity);
         }

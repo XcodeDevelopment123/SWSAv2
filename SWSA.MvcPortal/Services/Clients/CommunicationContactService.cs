@@ -44,15 +44,10 @@ AppDbContext db
         }
 
         SystemAuditLogEntry? log = null;
-
         if (entity != null)
         {
             var oldData = entity.DeepClone();
-            entity.ContactName = req.Name;
-            entity.WhatsApp = req.Phone;
-            entity.Email = req.Email;
-            entity.Position = req.Position;
-            entity.Remark = req.Remark;
+            entity.UpdateInfo(req.Name, req.Phone, req.Email, req.Position, req.Remark);
             _contact.Update(entity);
             log = SystemAuditLogEntry.Update(SystemAuditModule.CommunicationContact, entity.Id.ToString(), $"Contact: {entity.ContactName}", oldData, entity);
         }
