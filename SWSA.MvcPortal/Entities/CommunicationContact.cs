@@ -29,4 +29,13 @@ public class CommunicationContact
     {
         return Regex.Replace(this.WhatsApp ?? "", @"\D", "");
     }
+
+    public void UpdateInfo(string name, string phone, string email, PositionType position,string? remark)
+    {
+        ContactName = name;
+        WhatsApp = phone;
+        Email = email;
+        Position = position;
+        Remark = remark;
+    }
 }

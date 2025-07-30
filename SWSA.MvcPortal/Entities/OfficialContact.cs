@@ -26,4 +26,12 @@ public class OfficialContact
     [ForeignKey(nameof(Client))]
     public int ClientId { get; set; }
     public virtual BaseClient Client { get; set; } = null!;
+
+    public void UpdateInfo(string address,string officeTel,string email, string? remark)
+    {
+        Address = address;
+        OfficeTel = officeTel;
+        Email = email;
+        Remark = email;
+    }
 }

@@ -28,4 +28,15 @@ public class CompanyOwner
     public bool RequiresFormBESubmission { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public virtual BaseCompany Company { get; set; } = null!;
+
+    public void UpdateInfo(string name, string icOrPassport, PositionType position, string taxRef, string email, string phoneNumber, bool isRequireSubmitFormBE)
+    {
+        NamePerIC = name;
+        ICOrPassportNumber = icOrPassport;
+        Position = position;
+        TaxReferenceNumber = taxRef;
+        Email = email;
+        PhoneNumber = phoneNumber;
+        RequiresFormBESubmission = isRequireSubmitFormBE;
+    }
 }
