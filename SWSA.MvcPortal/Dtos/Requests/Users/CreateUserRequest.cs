@@ -11,4 +11,7 @@ public class CreateUserRequest
     public string Password { get; set; } = null!;
     public bool IsActive { get; set; }
     public UserRole Role { get; set; }
+    public string Title { get; set; }
+    public string Department { get; set; }
+    public DateTime JoinDate { get; set; }
 }

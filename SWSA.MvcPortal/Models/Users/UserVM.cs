@@ -14,8 +14,9 @@ public class UserVM
     public DateTime CreatedAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
     public UserRole Role { get; set; }
-
-
+    public DateTime JoinDate { get; set; }
+    public string Title { get; set; } = null!;
+    public string Department { get; set; }
     public string ToJsonData()
     {
         return JsonConvert.SerializeObject(this);

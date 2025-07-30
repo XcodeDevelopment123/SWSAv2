@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Models.Users;
 
@@ -17,5 +18,12 @@ public class UserMapsterConfig : IMapsterConfig
         .Map(dest => dest.StaffId, src => src.StaffId)
         .Map(dest => dest.Role, src => src.Role)
         .Map(dest => dest.FullName, src => src.FullName);
+
+        config.ForType<User, UserCardVM>()
+            .Map(dest => dest.StaffId, src => src.StaffId)
+            .Map(dest => dest.Name, src => src.FullName)
+            .Map(dest => dest.Title, src => src.Title)
+            .Map(dest => dest.Experience, src => src.JoinDate.GetExperienceString())
+            .Map(dest => dest.Department, src => src.Department);
     }
 }
