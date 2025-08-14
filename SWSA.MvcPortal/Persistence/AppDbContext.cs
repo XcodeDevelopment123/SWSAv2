@@ -3,6 +3,7 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Entities.Reminders;
+using SWSA.MvcPortal.Entities.SecretaryDept;
 using SWSA.MvcPortal.Entities.Systems;
 namespace SWSA.MvcPortal.Persistence;
 
@@ -30,6 +31,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     #region  Reminders
     internal DbSet<Reminder> Reminders { get; set; }
+    #endregion
+
+    #region Template
+    internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
