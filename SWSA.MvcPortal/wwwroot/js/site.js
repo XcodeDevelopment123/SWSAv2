@@ -23,6 +23,7 @@ const urls = {
     "schedule_job": "/scheduler-jobs",
     "system_audit_log": "/sys-audit-logs",
     "secretary_dept": "/secretary-dept",
+    "secretary_dept_template": "/secretary-dept/template",
     "secretary_dept_submission": "/secretary-dept/submissions",
     "users": "/users",
 };

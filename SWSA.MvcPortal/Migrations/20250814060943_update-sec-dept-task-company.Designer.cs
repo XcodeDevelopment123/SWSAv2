@@ -12,8 +12,8 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250814044156_add-sec-dept-task-template")]
-    partial class addsecdepttasktemplate
+    [Migration("20250814060943_update-sec-dept-task-company")]
+    partial class updatesecdepttaskcompany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -316,25 +316,25 @@ namespace SWSA.MvcPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ADReturnByClientDate")
+                    b.Property<DateTime?>("ADReturnByClientDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ADSendToClientDate")
+                    b.Property<DateTime?>("ADSendToClientDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ADSubmitDate")
+                    b.Property<DateTime?>("ADSubmitDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ARDueDate")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ARReturnByClientDate")
+                    b.Property<DateTime?>("ARDueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ARSendToClientDate")
+                    b.Property<DateTime?>("ARReturnByClientDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ARSubmitDate")
+                    b.Property<DateTime?>("ARSendToClientDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARSubmitDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ClientId")
@@ -717,7 +717,7 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.SecretaryDept.SecDeptTaskTemplate", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", "Client")
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)

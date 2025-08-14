@@ -18,13 +18,13 @@ namespace SWSA.MvcPortal.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    ARDueDate = table.Column<int>(type: "int", nullable: false),
-                    ARSubmitDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ARSendToClientDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ARReturnByClientDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ADSubmitDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ADSendToClientDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ADReturnByClientDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ARDueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ARSubmitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ARSendToClientDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ARReturnByClientDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ADSubmitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ADSendToClientDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ADReturnByClientDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Remarks = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

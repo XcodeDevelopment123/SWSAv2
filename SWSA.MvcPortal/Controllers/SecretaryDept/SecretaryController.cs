@@ -1,17 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Helpers;
+using SWSA.MvcPortal.Entities.SecretaryDept;
+using SWSA.MvcPortal.Persistence;
+using System.Threading.Tasks;
 
-namespace SWSA.MvcPortal.Controllers;
+namespace SWSA.MvcPortal.Controllers.SecretaryDept;
 
 [Route("secretary-dept")]
 public class SecretaryController(
+       AppDbContext db
     ) : BaseController
 {
+    private readonly DbSet<SecDeptTaskTemplate> _tasks = db.Set<SecDeptTaskTemplate>();
+
     #region Page/View
     [Route("landing")]
-    public IActionResult Landing()
+    public async Task<IActionResult> Landing()
     {
-        return View();
+        var data = await _tasks.Include(c => c.Client).ToListAsync();
+        return View(data);
     }
 
     [Route("companies")]

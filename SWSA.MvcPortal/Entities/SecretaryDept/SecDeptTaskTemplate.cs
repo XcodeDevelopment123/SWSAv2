@@ -14,16 +14,16 @@ public class SecDeptTaskTemplate
     public int Id { get; set; }
     public int ClientId { get; set; }
 
-    public MonthOfYear ARDueDate { get; set; }
-    public DateTime ARSubmitDate { get; set; }
-    public DateTime ARSendToClientDate { get; set; }
-    public DateTime ARReturnByClientDate { get; set; }
+    public DateTime? ARDueDate { get; set; }
+    public DateTime? ARSubmitDate { get; set; }
+    public DateTime? ARSendToClientDate { get; set; }
+    public DateTime? ARReturnByClientDate { get; set; }
 
-    public DateTime ADSubmitDate { get; set; }
-    public DateTime ADSendToClientDate { get; set; }
-    public DateTime ADReturnByClientDate { get; set; }
+    public DateTime? ADSubmitDate { get; set; }
+    public DateTime? ADSendToClientDate { get; set; }
+    public DateTime? ADReturnByClientDate { get; set; }
     public string? Remarks { get; set; } = string.Empty;
 
     [ForeignKey(nameof(ClientId))]
-    public BaseClient Client { get; set; } = null!;
+    public BaseCompany Client { get; set; } = null!;
 }

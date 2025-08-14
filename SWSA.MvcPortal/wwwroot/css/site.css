@@ -134,6 +134,10 @@ table thead tr th {
     writing-mode: vertical-rl;
 }
 
+.sideways-lr {
+    writing-mode: sideways-lr;
+}
+
 .cp-item {
     cursor: pointer
 }

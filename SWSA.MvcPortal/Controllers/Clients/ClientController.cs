@@ -54,6 +54,27 @@ public class ClientController(
     }
 
     [InternalAjaxOnly]
+    [HttpGet("selections")]
+    public async Task<IActionResult> Search([FromQuery] List<ClientType> type)
+    {
+        if (type == null || type.Count == 0)
+        {
+            return BadRequest("At least one client type must be specified");
+        }
+
+        try
+        {
+            var data = await _service.GetClientSelectionVM(type);
+            return Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while searching clients");
+        }
+    }
+
+
+    [InternalAjaxOnly]
     [HttpPost("search")]
     public async Task<IActionResult> Search([FromQuery] ClientType type, ClientFilterRequest req)
     {

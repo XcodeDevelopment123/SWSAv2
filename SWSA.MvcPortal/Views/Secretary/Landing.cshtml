@@ -1,80 +1,281 @@
-﻿@{
-	ViewData["Title"] = "Landing";
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities.SecretaryDept
+@model List<SecDeptTaskTemplate>
+
+@{
+    ViewData["Title"] = "Landing";
 }
 <link rel='stylesheet' href='~/lib/yearpicker/yearpicker.css' asp-append-version="true" />
 
 <h3> Company List (Sec Dept)</h3>
 
 <div class="row">
-	<div class="col-md-12">
-		<!-- /.card -->
-		<div class="card">
-			<!-- /.card-header -->
-			<div class="card-body">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
 
-				<table id="companyDatatable" class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th colspan="3">Company Info</th>
-							<th colspan="4">Actual Submission Dates</th>
-							<th colspan="2">Sign And Return
-								<i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Annual Return submission"></i>
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
 
-							</th>
-							<th rowspan="2">Remarks</th>
-						</tr>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Year End</th>
 
-							<th>Date of Annual Return
-								</th>
-							<th>Date of AR Due 
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="3" class="sideways-lr">Sec File No</th>
+                            <th rowspan="2" colspan="3">Co Information</th>
+                            <th colspan="4">Sdn Bhd Annual Return</th>
+                            <th colspan="3">LLP Annual Declaration</th>
+                            <th rowspan="3">Remarks</th>
+                            <th rowspan="3">Action</th>
+                        </tr>
+                        <tr>
+                           
+                            <th colspan="2">Actual submission dates</th>
+                            <th colspan="2">Sign And Return</th>
+                            <th>Actual submission dates</th>
+                            <th colspan="2">AD Sign and return</th>
+                        </tr>
+                        <tr>
+                            <th>Co Name</th>
+                            <th>Co Type</th>
+                            <th>Year End</th>
+                            <th>AR Due date(anniversary mth)</th>
+                            <th>Date AR Submitted</th>
+                            <th>Date Send to client</th>
+                            <th>Date Returned</th>
+                            <th>Date of Annual Declaration(AD) Submitted</th>
+                            <th>Date Send to client</th>
+                            <th>Date Returned</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td>@data.Client.FileNo</td>
+                                    <td>@data.Client.Name</td>
+                                    <td>@data.Client.CompanyType.GetDisplayName()</td>
+                                    <td>@data.Client.YearEndMonth?.GetDisplayName()</td>
+                                    <td>@data.ARDueDate.ToFormattedString()</td>
+                                    <td>@data.ARSubmitDate.ToFormattedString()</td>
+                                    <td>@data.ARSendToClientDate.ToFormattedString()</td>
+                                    <td>@data.ARReturnByClientDate.ToFormattedString()</td>
+                                    <td>@data.ADSubmitDate.ToFormattedString()</td>
+                                    <td>@data.ADSendToClientDate.ToFormattedString()</td>
+                                    <td>@data.ADReturnByClientDate.ToFormattedString()</td>
+                                    <td>@data.Remarks</td>
+                                    <td>
 
-							</th>
-							<th>Date AR Submited 
+                                        <button class="btn btn-sm btn-primary edit-task" data-id="@data.Id">Edit</button>
+                                        <button class="btn btn-sm btn-danger delete-task" data-id="@data.Id">Delete</button>
 
-							</th>
-							<th>Date of acc Submited 
+                                    </td>
 
-							</th>
-
-							<th>Date send to Client</th>
-							<th>Date Returned</th>
-
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-					<tfoot>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Year End</th>
-
-							<th>Date of Annual Return </th>
-							<th>Date of AR Due </th>
-							<th>Date AR Submited </th>
-							<th>Date of acc Submited </th>
-
-							<th>Date send to Client</th>
-							<th>Date Returned</th>
-							<th>Remarks</th>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-			<!-- /.card-body -->
-		</div>
-		<!-- /.card -->
-	</div>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
 </div>
 
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientSelect">Client</label>
+                                <select id="clientSelect" name="clientSelect" class="form-control select2" required>
+                                    <option selected disabled value="">Please select client</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyType">Company Type</label>
+                                <input id="companyType" name="companyType" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEndDate">Year End</label>
+                                <div class="input-group">
+                                    <input type="text" disabled id="yearEndDate" name="yearEndDate" class="form-control" placeholder="Select date" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>Sdn Bhd Annual Return</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arDueDate">AR Due Date (Anniversary Month)</label>
+                                <input id="arDueDate" name="arDueDate" class="form-control" placeholder="e.g: TO KEY IN" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arSubmittedDate">Date AR Submitted</label>
+                                <div class="input-group">
+                                    <input type="text" id="arSubmittedDate" name="arSubmittedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arSentToClientDate">Date Sent to Client</label>
+                                <div class="input-group">
+                                    <input type="text" id="arSentToClientDate" name="arSentToClientDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arReturnedDate">Date Returned</label>
+                                <div class="input-group">
+                                    <input type="text" id="arReturnedDate" name="arReturnedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>LLP Annual Declaration</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="adSubmittedDate">Date of Annual Declaration (AD) Submitted</label>
+                                <div class="input-group">
+                                    <input type="text" id="adSubmittedDate" name="adSubmittedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adSentToClientDate">Date Sent to Client</label>
+                                <div class="input-group">
+                                    <input type="text" id="adSentToClientDate" name="adSentToClientDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adReturnedDate">Date Returned</label>
+                                <div class="input-group">
+                                    <input type="text" id="adReturnedDate" name="adReturnedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea id="remarks" name="remarks" class="form-control" rows="3" placeholder="Enter remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
-	<partial name="_DatatablesScriptsPartial" />
-	<script src='~/lib/yearpicker/yearpicker.js'></script>
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
 
-	<script src="~/js/secertary/landing.js" asp-append-version="true"></script>
+    <script src='~/lib/yearpicker/yearpicker.js'></script>
+
+    <script src="~/js/secertary/landing.js" asp-append-version="true"></script>
 }
