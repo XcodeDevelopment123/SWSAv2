@@ -12,6 +12,19 @@ public class SecretaryTemplateController(
     ) : BaseController
 {
     private readonly DbSet<SecDeptTaskTemplate> _tasks = db.Set<SecDeptTaskTemplate>();
+    private readonly DbSet<SecStrikeOffTemplate> _strikeOffs = db.Set<SecStrikeOffTemplate>();
+
+    #region Page/View
+    [Route("strike-off-template")]
+    public async Task<IActionResult> StrikeOffTemplate()
+    {
+        var data = await _strikeOffs.Include(c => c.Client)
+            .ToListAsync();
+        return View(data);
+    }
+    #endregion
+
+
 
     #region API/Ajax
     [InternalAjaxOnly]

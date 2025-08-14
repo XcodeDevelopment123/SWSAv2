@@ -35,6 +35,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     #region Template
     internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
+    internal DbSet<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; }
 
     #endregion
 

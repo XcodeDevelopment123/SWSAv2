@@ -37,22 +37,22 @@
 
 
 @{
-                     var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-                     var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-                     var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+                         var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+                         var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+                         var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-                     var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-                     var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-                     var submissionNav = new List<string> {
-                                                                                                                                                                "AuditRepotSubmissionList", "EditAuditRepotSubmission",
-                                                                                                                                                                "CompanyStrikeOffList", "EditCompanyStrikeOffSubmission",
-                                                                                                                                                                "ARSubmissionList", "EditARSubmission",
-                                                                                                                                                                "LLPSubmissionList", "EditLLPSubmission",
-                                                                                };
+                         var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+                         var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+                         var submissionNav = new List<string> {
+                                                                                                                                                                                                                                                                                                                                "AuditRepotSubmissionList", "EditAuditRepotSubmission",
+                                                                                                                                                                                                                                                                                                                                "CompanyStrikeOffList", "EditCompanyStrikeOffSubmission",
+                                                                                                                                                                                                                                                                                                                                "ARSubmissionList", "EditARSubmission",
+                                                                                                                                                                                                                                                                                                                                "LLPSubmissionList", "EditLLPSubmission",
+                                                                                                                                                                };
 
-                     var secretaryCompanyNav = new List<string> {
-                                                                                                                                                                "CompanyList",
-                                                                                };
+                         var secretaryCompanyNav = new List<string> {
+                                                                                                                                                                                                                                                                                                                                "CompanyList",
+                                                                                                                                                                };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -672,10 +672,19 @@
                             <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
-                                    <a href="/secretary-dept/landing" class="nav-link ">
+                                    <a href="/secretary-dept/landing" class="nav-link @(currentAction.Is(" Landing") ? "active" :"")">
                                         <span class="nav-icon "></span>
                                         <p>
                                             Landing
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/secretary-dept/strike-off-template" class="nav-link  @(currentAction.Is(" StrikeOffTemplate") ? "active" : "") ">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Strike Off Template
                                         </p>
                                     </a>
                                 </li>
