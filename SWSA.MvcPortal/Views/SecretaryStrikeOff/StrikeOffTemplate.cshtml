@@ -1,12 +1,12 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Entities.SecretaryDept
-@model List<SecDeptTaskTemplate>
+@model List<SecStrikeOffTemplate>
 
 @{
-    ViewData["Title"] = "Landing";
+    ViewData["Title"] = "Strike Off Template";
 }
 
-<h3> Landing (Sec Dept)</h3>
+<h3>Strike Off (Sec Dept)</h3>
 
 <div class="row">
     <div class="col-md-12">
@@ -23,38 +23,44 @@
                     </button>
                 </div>
             </div>
-
-
             <!-- /.card-header -->
-            <div class="card-body">
-                <table id="taskDatatable" class="table table-bordered table-striped">
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th rowspan="3" class="sideways-lr">Sec File No</th>
-                            <th rowspan="2" colspan="3">Co Information</th>
-                            <th colspan="4">Sdn Bhd Annual Return</th>
-                            <th colspan="3">LLP Annual Declaration</th>
-                            <th rowspan="3">Remarks</th>
-                            <th rowspan="3">Action</th>
+                            <th rowspan="3">Ref</th>
+                            <th rowspan="3">Company Name</th>
+                            <th rowspan="3">Company No</th>
+                            <th rowspan="3">Incorp Date</th>
+                            <th rowspan="3">Year End</th>
+
+                            <th colspan="14">Sec Dept</th>
                         </tr>
                         <tr>
-                           
-                            <th colspan="2">Actual submission dates</th>
-                            <th colspan="2">Sign And Return</th>
-                            <th>Actual submission dates</th>
-                            <th colspan="2">AD Sign and return</th>
+                            <th rowspan="2">Start Date</th>
+                            <th rowspan="2">Complete Date</th>
+
+                            <th colspan="2">Management Account</th>
+                            <th colspan="4">SSM Penalties</th>
+
+                            <th rowspan="2">S/Off Doc send to client</th>
+                            <th rowspan="2">SSM Submission Date</th>
+
+                            <th colspan="2">SSM Status</th>
+
                         </tr>
                         <tr>
-                            <th>Co Name</th>
-                            <th>Co Type</th>
-                            <th>Year End</th>
-                            <th>AR Due date(anniversary mth)</th>
-                            <th>Date AR Submitted</th>
-                            <th>Date Send to client</th>
-                            <th>Date Returned</th>
-                            <th>Date of Annual Declaration(AD) Submitted</th>
-                            <th>Date Send to client</th>
-                            <th>Date Returned</th>
+
+                            <th>Done By</th>
+                            <th>Complete Date</th>
+
+                            <th>Penalties RM</th>
+                            <th>Revised Penalties RM</th>
+                            <th>Appeal date</th>
+                            <th>Payment date</th>
+
+                            <th>Remarks</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,17 +69,25 @@
                             foreach (var data in Model)
                             {
                                 <tr>
-                                    <td>@data.Client.FileNo</td>
+                                    <td>@data.Client.Referral</td>
                                     <td>@data.Client.Name</td>
-                                    <td>@data.Client.CompanyType.GetDisplayName()</td>
+                                    <td>@data.Client.RegistrationNumber</td>
+                                    <td>@data.Client.IncorporationDate.ToFormattedString()</td>
                                     <td>@data.Client.YearEndMonth?.GetDisplayName()</td>
-                                    <td>@data.ARDueDate.ToFormattedString()</td>
-                                    <td>@data.ARSubmitDate.ToFormattedString()</td>
-                                    <td>@data.ARSendToClientDate.ToFormattedString()</td>
-                                    <td>@data.ARReturnByClientDate.ToFormattedString()</td>
-                                    <td>@data.ADSubmitDate.ToFormattedString()</td>
-                                    <td>@data.ADSendToClientDate.ToFormattedString()</td>
-                                    <td>@data.ADReturnByClientDate.ToFormattedString()</td>
+
+                                    <td>@data.StartDate.ToFormattedString()</td>
+                                    <td>@data.CompleteDate.ToFormattedString()</td>
+
+                                    <td>@data.DoneBy?.FullName</td>
+                                    <td>@data.CompleteDate.ToFormattedString()</td>
+
+                                    <td>@data.PenaltiesAmount</td>
+                                    <td>@data.RevisedPenaltiesAmount</td>
+                                    <td>@data.SSMPenaltiesAppealDate.ToFormattedString()</td>
+                                    <td>@data.SSMPenaltiesPaymentDate.ToFormattedString()</td>
+
+                                    <td>@data.SSMDocSentDate.ToFormattedString()</td>
+                                    <td>@data.SSMSubmissionDate.ToFormattedString()</td>
                                     <td>@data.Remarks</td>
                                     <td>
 
@@ -81,7 +95,6 @@
                                         <button class="btn btn-sm btn-danger delete-task" data-id="@data.Id">Delete</button>
 
                                     </td>
-
                                 </tr>
                             }
                         }
@@ -120,13 +133,25 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyType">Company Type</label>
-                                <input id="companyType" name="companyType" class="form-control" readonly />
+                                <label for="companyNo">Company No</label>
+                                <input id="companyNo" name="companyNo" class="form-control" readonly />
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="incorpDate">Incorp Date</label>
+                                <div class="input-group">
+                                    <input type="text" disabled id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEndDate">Year End</label>
@@ -142,39 +167,17 @@
                         </div>
                     </div>
 
+
                     <div class="form-info-label col-12">
-                        <label>Sdn Bhd Annual Return</label>
+                        <label>Date </label>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="arDueDate">AR Due Date (Anniversary Month)</label>
-                                <input id="arDueDate" name="arDueDate" class="form-control" placeholder="e.g: TO KEY IN" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="arSubmittedDate">Date AR Submitted</label>
+                                <label for="startDate">Start Date</label>
                                 <div class="input-group">
-                                    <input type="text" id="arSubmittedDate" name="arSubmittedDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="arSentToClientDate">Date Sent to Client</label>
-                                <div class="input-group">
-                                    <input type="text" id="arSentToClientDate" name="arSentToClientDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -186,9 +189,9 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="arReturnedDate">Date Returned</label>
+                                <label for="completeDate">Complete Date</label>
                                 <div class="input-group">
-                                    <input type="text" id="arReturnedDate" name="arReturnedDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="completeDate" name="completeDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -197,24 +200,35 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-info-label col-12">
-                        <label>LLP Annual Declaration</label>
                     </div>
 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="adSubmittedDate">Date of Annual Declaration (AD) Submitted</label>
-                                <div class="input-group">
-                                    <input type="text" id="adSubmittedDate" name="adSubmittedDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <label for="doneByUserId">Done By</label>
+                                <select id="doneByUserId" name="doneByUserId" class="form-control select2" >
+                                    <option selected disabled value="">Please select user</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>SSM penalties</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="penaltiesAmount">Penalties Amount</label>
+                                <input id="penaltiesAmount" name="penaltiesAmount" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="revisedPenaltiesAmount">Revised Penalties Amount</label>
+                                <input id="revisedPenaltiesAmount" name="revisedPenaltiesAmount" class="form-control" type="number" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -222,9 +236,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adSentToClientDate">Date Sent to Client</label>
+                                <label for="ssmPenaltiesAppealDate">SSM Penalties Appeal Date</label>
                                 <div class="input-group">
-                                    <input type="text" id="adSentToClientDate" name="adSentToClientDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="ssmPenaltiesAppealDate" name="ssmPenaltiesAppealDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -236,9 +250,9 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="adReturnedDate">Date Returned</label>
+                                <label for="ssmPenaltiesPaymentDate">SSM Penalties Payment Date</label>
                                 <div class="input-group">
-                                    <input type="text" id="adReturnedDate" name="adReturnedDate" class="form-control" placeholder="Select date" />
+                                    <input type="text" id="ssmPenaltiesPaymentDate" name="ssmPenaltiesPaymentDate" class="form-control" placeholder="Select date" />
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -248,6 +262,36 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmDocSentDate">SSM Doc Sent Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="ssmDocSentDate" name="ssmDocSentDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmSubmissionDate">SSM Submission Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class="col-md-12">
@@ -274,5 +318,5 @@
     <partial name="_ValidationScriptsPartial" />
     <partial name="_DatatablesScriptsPartial" />
 
-    <script src="~/js/secertary/landing.js" asp-append-version="true"></script>
+    <script src="~/js/secertary/strike-off-template.js" asp-append-version="true"></script>
 }

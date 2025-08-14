@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.SecretaryDept;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,20 +10,7 @@ public class SecretaryTemplateController(
    AppDbContext db
     ) : BaseController
 {
-    private readonly DbSet<SecDeptTaskTemplate> _tasks = db.Set<SecDeptTaskTemplate>();
-    private readonly DbSet<SecStrikeOffTemplate> _strikeOffs = db.Set<SecStrikeOffTemplate>();
-
-    #region Page/View
-    [Route("strike-off-template")]
-    public async Task<IActionResult> StrikeOffTemplate()
-    {
-        var data = await _strikeOffs.Include(c => c.Client)
-            .ToListAsync();
-        return View(data);
-    }
-    #endregion
-
-
+    private readonly DbSet<SecDeptTaskTemplate> _tasks = db.Set<SecDeptTaskTemplate>(); 
 
     #region API/Ajax
     [InternalAjaxOnly]
@@ -34,6 +20,7 @@ public class SecretaryTemplateController(
         var task = await _tasks.Where(c => c.Id == id).Include(c => c.Client).FirstOrDefaultAsync();
         return Ok(task);
     }
+
     [InternalAjaxOnly]
     [HttpPost("create")]
     public async Task<IActionResult> Create(SecDeptTaskTemplate req)
@@ -66,7 +53,7 @@ public class SecretaryTemplateController(
         _tasks.Update(task);
         await db.SaveChangesAsync();
 
-        return Ok(task);
+        return RedirectToAction(nameof(GetById), new { id = task.Id });
     }
 
     [InternalAjaxOnly]

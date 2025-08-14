@@ -20,7 +20,7 @@ public class SecStrikeOffTemplate
     public DateTime? SSMPenaltiesPaymentDate { get; set; }
     public DateTime? SSMDocSentDate { get; set; }
     public DateTime? SSMSubmissionDate { get; set; }
-    public string? SSMStatus { get; set; }
+    public string? Remarks { get; set; }
 
     [ForeignKey(nameof(DoneByUserId))]
     public User DoneBy { get; set; } = null!;

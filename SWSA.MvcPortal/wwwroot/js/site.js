@@ -24,6 +24,7 @@ const urls = {
     "system_audit_log": "/sys-audit-logs",
     "secretary_dept": "/secretary-dept",
     "secretary_dept_template": "/secretary-dept/template",
+    "secretary_dept_strike_off": "/secretary-dept/strike-off-template",
     "secretary_dept_submission": "/secretary-dept/submissions",
     "users": "/users",
 };

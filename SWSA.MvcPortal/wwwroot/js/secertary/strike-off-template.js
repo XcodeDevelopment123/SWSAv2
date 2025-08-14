@@ -2,13 +2,14 @@
 
     initSelect2();
 
-    flatpickr("#arDueDate,#arSubmittedDate,#arSentToClientDate,#arReturnedDate,#adSubmittedDate,#adSentToClientDate,#adReturnedDate", {
+    flatpickr("#startDate,#completeDate,#ssmPenaltiesAppealDate,#ssmPenaltiesPaymentDate,#ssmDocSentDate,#ssmSubmissionDate", {
         allowInput: true
     });
 
     const params = new URLSearchParams();
     params.append('type', 'SdnBhd');
     params.append('type', 'LLP');
+    params.append('type', 'Enterprise');
 
     $.ajax({
         method: "GET",
@@ -24,6 +25,21 @@
         }
     })
 
+    $.ajax({
+        method: "GET",
+        manualLoading: true,
+        url: `${urls.users}/pic`,
+        success: function (res) {
+            let html = "";
+            $.each(res, function (index, item) {
+                html += `<option value="${item.id}">${item.name} (Dept: ${item.department})</option>`;
+            })
+
+            $("#doneByUserId").append(html);
+        }
+    })
+
+
     $("#clientSelect").on("change", function () {
         const id = $(this).val();
         if (!id) return;
@@ -32,7 +48,8 @@
             manualLoading: true,
             url: `${urls.client}/${id}/simple-info`,
             success: function (res) {
-                $("#companyType").val(res.clientType);
+                $("#companyNo").val(res.registrationNumber);
+                $("#incorpDate").val(ConvertTimeFormat(res.incorporationDate, "YYYY-MM-DD"));
                 $("#yearEndDate").val(res.yearEndMonth).trigger("change");
             }
         })
@@ -44,8 +61,8 @@
         "searching": true,
         "ordering": true,
         "info": true,
-        "autoWidth": false,
-        "responsive": true,
+        "autoWidth": true,
+        "responsive": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
 
     });
@@ -59,30 +76,36 @@
     const $taskForm = $("#taskForm");
     const taskFormInputs = {
         clientId: $taskForm.find('select[name="clientSelect"]'),
-        companyType: $taskForm.find('input[name="companyType"]'),
-        yearEnd: $taskForm.find('input[name="yearEndDate"]'),
-        arDueDate: $taskForm.find('input[name="arDueDate"]'),
-        arSubmitDate: $taskForm.find('input[name="arSubmittedDate"]'),
-        arSendToClientDate: $taskForm.find('input[name="arSentToClientDate"]'),
-        arReturnByClientDate: $taskForm.find('input[name="arReturnedDate"]'),
-        adSubmitDate: $taskForm.find('input[name="adSubmittedDate"]'),
-        adSendToClientDate: $taskForm.find('input[name="adSentToClientDate"]'),
-        adReturnByClientDate: $taskForm.find('input[name="adReturnedDate"]'),
+        companyNo: $taskForm.find('input[name="companyNo"]'),
+        incorpDate: $taskForm.find('input[name="incorpDate"]'),
+        yearEndDate: $taskForm.find('input[name="yearEndDate"]'),
+        startDate: $taskForm.find('input[name="startDate"]'),
+        completeDate: $taskForm.find('input[name="completeDate"]'),
+        doneByUserId: $taskForm.find('select[name="doneByUserId"]'),
+        penaltiesAmount: $taskForm.find('input[name="penaltiesAmount"]'),
+        revisedPenaltiesAmount: $taskForm.find('input[name="revisedPenaltiesAmount"]'),
+        ssmPenaltiesAppealDate: $taskForm.find('input[name="ssmPenaltiesAppealDate"]'),
+        ssmPenaltiesPaymentDate: $taskForm.find('input[name="ssmPenaltiesPaymentDate"]'),
+        ssmDocSentDate: $taskForm.find('input[name="ssmDocSentDate"]'),
+        ssmSubmissionDate: $taskForm.find('input[name="ssmSubmissionDate"]'),
         remarks: $taskForm.find('textarea[name="remarks"]')
     };
+
     let editId = 0;
     let dataRow = null;
+
+    // Form validation
     $taskForm.validate({
         rules: {
             clientSelect: {
                 required: true
-            }
-
+            },
         },
         messages: {
             clientSelect: {
                 required: "Please select a client."
-            }
+            },
+
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -101,18 +124,19 @@
         }
     });
 
+    // Save button click
     $("#saveBtn").on("click", function () {
         if (!$taskForm.valid()) {
             return;
         }
 
         const taskData = getFormData(taskFormInputs);
-        let url = `${urls.secretary_dept_template}`;
+        let url = `${urls.secretary_dept_strike_off}`;
 
         if (editId > 0) {
-            url += `/${editId}/update`
+            url += `/${editId}/update`;
         } else {
-            url += `/create`
+            url += `/create`;
         }
 
         $.ajax({
@@ -123,60 +147,70 @@
             },
             success: function (res) {
                 if (res) {
-               
+
                     if (editId > 0) {
                         Toast_Fire(ICON_SUCCESS, "Save", "Task saved successfully.");
                         dataRow.remove();
                     } else {
                         Toast_Fire(ICON_SUCCESS, "Create", "Task create successfully.");
                     }
-
                     taskDatatable.row.add([
-                        res.client.fileNo,
+                        res.client.referral,
                         res.client.name,
-                        res.client.companyType,
-                        res.client.yearEndMonth,
-                        ConvertTimeFormat(res.arDueDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.arSubmitDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.arSentToClientDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.arReturnByClientDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.adSubmitDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.adSentToClientDate, "YYYY-MM-DD"),
-                        ConvertTimeFormat(res.adReturnByClientDate, "YYYY-MM-DD"),
+                        taskData.companyNo,
+                        taskData.incorpDate,
+                        taskData.yearEndDate,
+
+                        ConvertTimeFormat(res.startDate, "YYYY-MM-DD"),
+                        ConvertTimeFormat(res.completeDate, "YYYY-MM-DD"),
+                        res.doneByUser?.fullName || '',
+                        ConvertTimeFormat(res.completeDate, "YYYY-MM-DD"),
+                        res.penaltiesAmount || '',
+                        res.revisedPenaltiesAmount || '',
+                        ConvertTimeFormat(res.ssmPenaltiesAppealDate, "YYYY-MM-DD"),
+                        ConvertTimeFormat(res.ssmPenaltiesPaymentDate, "YYYY-MM-DD"),
+                        ConvertTimeFormat(res.ssmDocSentDate, "YYYY-MM-DD"),
+                        ConvertTimeFormat(res.ssmSubmissionDate, "YYYY-MM-DD"),
                         res.remarks,
                         `<button class="btn btn-sm btn-primary edit-task" data-id="${res.id}">Edit</button>
-   <button class="btn btn-sm btn-danger delete-task" data-id="${res.id}">Delete</button>`
+                     <button class="btn btn-sm btn-danger delete-task" data-id="${res.id}">Delete</button>`
                     ]).draw();
 
                     $('#taskModal').modal('hide');
                 }
             },
             error: function (xhr, status, error) {
-                console.error('Error creating task:', error);
-                Toast_Fire(ICON_ERROR, "Error", "Failed to create task. Please try again.");
+                console.error('Error saving task:', error);
+                Toast_Fire(ICON_ERROR, "Error", "Failed to save task. Please try again.");
             }
         });
     });
 
+    // Edit task
     $(document).on("click", ".edit-task", function () {
         const taskId = $(this).data("id");
-        editId = taskId;
-        dataRow = taskDatatable.row($(this).closest("tr"));
+        const row = taskDatatable.row($(this).closest("tr"));
+
         $.ajax({
-            url: `${urls.secretary_dept_template}/${taskId}`,
+            url: `${urls.secretary_dept_strike_off}/${taskId}`,
             method: "GET",
             success: function (res) {
                 if (res) {
+                    editId = taskId;
+                    dataRow = row;
                     $taskForm.find('select[name="clientSelect"]').prop("disabled", true).val(res.clientId).trigger('change');
-                    $taskForm.find('input[name="companyType"]').val(res.companyType);
-                    $taskForm.find('input[name="yearEndDate"]').val(res.yearEnd);
-                    $taskForm.find('input[name="arDueDate"]').val(ConvertTimeFormat(res.arDueDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="arSubmittedDate"]').val(ConvertTimeFormat(res.arSubmitDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="arSentToClientDate"]').val(ConvertTimeFormat(res.arSentToClientDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="arReturnedDate"]').val(ConvertTimeFormat(res.arReturnByClientDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="adSubmittedDate"]').val(ConvertTimeFormat(res.adSubmitDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="adSentToClientDate"]').val(ConvertTimeFormat(res.adSentToClientDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="adReturnedDate"]').val(ConvertTimeFormat(res.adReturnByClientDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="companyNo"]').val(res.companyNo);
+                    $taskForm.find('input[name="incorpDate"]').val(ConvertTimeFormat(res.incorpDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="yearEndDate"]').val(ConvertTimeFormat(res.yearEndDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="startDate"]').val(ConvertTimeFormat(res.startDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="completeDate"]').val(ConvertTimeFormat(res.completeDate, "YYYY-MM-DD"));
+                    $taskForm.find('select[name="doneByUserId"]').val(res.doneByUserId).trigger('change');
+                    $taskForm.find('input[name="penaltiesAmount"]').val(res.penaltiesAmount);
+                    $taskForm.find('input[name="revisedPenaltiesAmount"]').val(res.revisedPenaltiesAmount);
+                    $taskForm.find('input[name="ssmPenaltiesAppealDate"]').val(ConvertTimeFormat(res.ssmPenaltiesAppealDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="ssmPenaltiesPaymentDate"]').val(ConvertTimeFormat(res.ssmPenaltiesPaymentDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="ssmDocSentDate"]').val(ConvertTimeFormat(res.ssmDocSentDate, "YYYY-MM-DD"));
+                    $taskForm.find('input[name="ssmSubmissionDate"]').val(ConvertTimeFormat(res.ssmSubmissionDate, "YYYY-MM-DD"));
                     $taskForm.find('textarea[name="remarks"]').val(res.remarks);
                     $('#taskModal').modal('show');
                 }
@@ -188,33 +222,31 @@
         });
     });
 
+    // Delete task
     $(document).on("click", ".delete-task", function () {
         const taskId = $(this).data("id");
         const row = taskDatatable.row($(this).closest("tr"));
 
-        if (confirm(`Are you sure you want to delete the task?`)) {
+        if (confirm("Are you sure you want to delete this task?")) {
             $.ajax({
-                url: `${urls.secretary_dept_template}/${taskId}/delete`,
+                url: `${urls.secretary_dept_strike_off}/${taskId}/delete`,
                 method: "DELETE",
                 success: function (res) {
                     Toast_Fire(ICON_SUCCESS, "Success", "Task deleted successfully.");
                     row.remove();
                     taskDatatable.draw(false);
-
                 },
-                error: (res) => {
-                    Toast_Fire(ICON_ERROR, "Somethign went wrong", "Please try again later.");
+                error: function (res) {
+                    Toast_Fire(ICON_ERROR, "Error", "Something went wrong. Please try again later.");
                 }
-            })
-
+            });
         }
-
-    })
+    });
 
     $('#taskModal').on('hide.bs.modal', function () {
-
         resetTaskForm();
     });
+
 
     $('#taskModal').on('show.bs.modal', function () {
         if (editId === 0) {
@@ -230,6 +262,7 @@
         $taskForm.find('.is-invalid').removeClass('is-invalid');
         $taskForm.find('.invalid-feedback').remove();
         $('#clientSelect').val(null).trigger('change');
+        $('#doneByUserId').val(null).trigger('change');
         $taskForm.find('select[name="clientSelect"]').prop("disabled", false);
         editId = 0;
         dataRow = null;

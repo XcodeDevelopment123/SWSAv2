@@ -2,6 +2,7 @@
 
 public class UserCardVM
 {
+    public int Id { get; set; }
     public string StaffId { get; set; }
     public string Name { get; set; }
     public string Title { get; set; }
