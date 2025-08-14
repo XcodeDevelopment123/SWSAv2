@@ -11,8 +11,7 @@ public class UserMapsterConfig : IMapsterConfig
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<User, User>();
-        config.ForType<User, UserOverviewVM>()
-            .Map(dest => dest.AssignedWorks, src => src.AssignedWorks);
+        config.ForType<User, UserOverviewVM>();
 
         config.ForType<User, UserSelectionVM>()
         .Map(dest => dest.StaffId, src => src.StaffId)

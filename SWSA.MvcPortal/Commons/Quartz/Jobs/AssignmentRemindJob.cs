@@ -13,7 +13,7 @@ public class AssignmentRemindJob(
 AppDbContext db
 ) : IJob
 {
-    private readonly DbSet<WorkAssignmentUserMapping> workUserMapping = db.Set<WorkAssignmentUserMapping>();
+  //  private readonly DbSet<WorkAssignmentUserMapping> workUserMapping = db.Set<WorkAssignmentUserMapping>();
     public async Task Execute(IJobExecutionContext context)
     {
         //Log.Information("[AssignmentRemindJob] Execute time: {Time}", DateTime.Now);

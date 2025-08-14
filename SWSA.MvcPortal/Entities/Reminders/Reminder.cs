@@ -1,6 +1,5 @@
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Entities.WorkAllocations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,15 +33,6 @@ public class Reminder // Reminder Template, each entity is a remind action
     public DateTime? SentAt { get; set; }
     public string? SentToEmail { get; set; }
     public string? SentToPhone { get; set; }
-    
-    [ForeignKey(nameof(ScheduledWorkAllocationId))]
-    public ScheduledWorkAllocation ScheduledWorkAllocation { get; set; } = null!;
-    
-    [NotMapped]
-    public User AssignedUser => ScheduledWorkAllocation?.AssignedUser!;
-    
-    [NotMapped] 
-    public int AssignedUserId => ScheduledWorkAllocation?.AssignedUserId ?? 0;
     
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }

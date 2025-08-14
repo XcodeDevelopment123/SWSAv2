@@ -63,9 +63,6 @@
 
 	<ItemGroup>
 		<Folder Include="Datas\uploads\" />
-		<Folder Include="Entities\WorkAllocations\Account\" />
-		<Folder Include="Entities\WorkAllocations\Audit\" />
-		<Folder Include="Entities\WorkAllocations\Tax\" />
 		<Folder Include="Migrations\" />
 		<Folder Include="Views\Company\" />
 		<Folder Include="wwwroot\lib\yearpicker\" />

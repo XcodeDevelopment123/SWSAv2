@@ -30,12 +30,10 @@ using SWSA.MvcPortal.Services.Auths;
 using SWSA.MvcPortal.Services.Interfaces.Auths;
 using SWSA.MvcPortal.Services.Interfaces.Systems;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.WorkAssignments;
 using SWSA.MvcPortal.Services.Systems;
 using SWSA.MvcPortal.Services.UserAccess;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 using SWSA.MvcPortal.Commons.Services.BackgroundQueue;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Clients;
@@ -160,20 +158,17 @@ public static class DependencyInjector
         services.AddScoped<ICommunicationContactService, CommunicationContactService>();
         services.AddScoped<IOfficialContactService, OfficialContactService>();
         services.AddScoped<ICompanyOwnerService, CompanyOwnerService>();
-        services.AddScoped<ICompanyWorkAssignmentService, CompanyWorkAssignmentService>();
         services.AddScoped<IDocumentRecordService, DocumentRecordService>();
         services.AddScoped<IMsicCodeService, MsicCodeService>();
         services.AddScoped<IScheduledJobService, ScheduledJobService>();
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IWorkAssignmentUserMappingService, WorkAssignmentUserMappingService>();
-        services.AddScoped<IWorkAllocationService, WorkAllocationService>();
+   
         //#Service DI end
 
         //Factory
         services.AddScoped<IClientCreationFactory, ClientCreationFactory>();
-        services.AddScoped<IWorkAssignmentFactory, WorkAssignmentFactory>();
 
         services.AddScoped<IUserSessionWriter, UserSessionWriter>();
         services.AddScoped<IUserFetcher, UserFetcher>();

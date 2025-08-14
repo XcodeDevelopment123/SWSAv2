@@ -91,7 +91,6 @@ public class ClientCreationFactory : IClientCreationFactory
             ClientType = req.ClientType,
         };
 
-        entity.CreateWorkAlloc();
 
         return entity ;
     }

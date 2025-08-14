@@ -2,7 +2,6 @@
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Entities.Contacts;
-using SWSA.MvcPortal.Entities.WorkAllocations;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities.Clients;
@@ -31,7 +30,6 @@ public abstract class BaseClient
 
     public bool IsActive { get; set; }  
 
-    public virtual ICollection<ClientWorkAllocation> WorkAllocations { get; set; } = [];
     public virtual ICollection<OfficialContact> OfficialContacts { get; set; } = [];
     public virtual ICollection<CommunicationContact> CommunicationContacts { get; set; } = [];
 

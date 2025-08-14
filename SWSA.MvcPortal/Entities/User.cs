@@ -39,8 +39,6 @@ public class User
 
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
-    public virtual ICollection<WorkAssignmentUserMapping> AssignedWorks { get; set; } = new List<WorkAssignmentUserMapping>(); // The user handle work
-
 
     public void UpdateInfo(string staffId, string fullName, string phoneNumber, string email)
     {

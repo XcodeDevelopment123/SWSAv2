@@ -46,6 +46,7 @@ public class UserSeeder(AppDbContext db) : ISeeder
             FullName = "SWSA Admin",
             PhoneNumber = "+60123456789",
             Department = "Full",
+            Title = "Administrator",
             Role = UserRole.SuperAdmin
         };
     }

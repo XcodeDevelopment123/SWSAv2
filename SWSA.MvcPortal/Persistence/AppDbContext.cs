@@ -4,9 +4,6 @@ using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Entities.Reminders;
 using SWSA.MvcPortal.Entities.Systems;
-using SWSA.MvcPortal.Entities.WorkAllocations;
-using SWSA.MvcPortal.Entities.WorkAssignments;
-
 namespace SWSA.MvcPortal.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
@@ -19,7 +16,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<LLPClient> LLPClients { get; set; }
     internal DbSet<EnterpriseClient> EnterpriseClients { get; set; }
     internal DbSet<IndividualClient> IndividualClients { get; set; }
-    internal DbSet<ClientWorkAllocation> ClientWorkAllocations { get; set; }
     #endregion
 
     internal DbSet<CommunicationContact> CommunicationContacts { get; set; }
@@ -27,24 +23,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<CompanyMsicCode> CompanyMsicCodes { get; set; }
     internal DbSet<CompanyOwner> CompanyOwners { get; set; }
     internal DbSet<DocumentRecord> DocumentRecords { get; set; }
-
-    #region Work Assignment
-    internal DbSet<WorkAssignment> WorkAssignments { get; set; }
-    internal DbSet<WorkProgress> WorkProgresses { get; set; }
-    internal DbSet<WorkAssignmentUserMapping> WorkAssignmentUserMappings { get; set; }
-    internal DbSet<AnnualReturnWorkAssignment> AnnualReturnWorkAssignments { get; set; }
-    internal DbSet<AuditWorkAssignment> AuditWorkAssignments { get; set; }
-    internal DbSet<LLPWorkAssignment> LLPWorkAssignments { get; set; }
-    internal DbSet<StrikeOffWorkAssignment> StrikeOffWorkAssignments { get; set; }
-    #endregion
-
     internal DbSet<SystemNotificationLog> SystemNotificationLogs { get; set; }
     internal DbSet<SystemAuditLog> SystemAuditLogs { get; set; }
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
-    
-    #region Work Allocation & Reminders
-    internal DbSet<ScheduledWorkAllocation> ScheduledWorkAllocations { get; set; }
+
+    #region  Reminders
     internal DbSet<Reminder> Reminders { get; set; }
     #endregion
 
@@ -72,31 +56,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<CommunicationContact>(entity => { });
 
-        modelBuilder.Entity<WorkAssignment>(entity =>
-        {
-            entity.HasOne(x => x.Progress)
-            .WithOne(p => p.WorkAssignment)
-            .HasForeignKey<WorkProgress>(p => p.WorkAssignmentId);
-        });
-
-        //Add new Assignment at here
-        modelBuilder.Entity<AnnualReturnWorkAssignment>()
-            .ToTable("AnnualReturnWorkAssignments");
-
-        modelBuilder.Entity<AuditWorkAssignment>()
-            .ToTable("AuditWorkAssignments");
-
-        modelBuilder.Entity<LLPWorkAssignment>()
-            .ToTable("LLPWorkAssignments");
-
-        modelBuilder.Entity<StrikeOffWorkAssignment>()
-            .ToTable("StrikeOffWorkAssignments");
-
-        modelBuilder.Entity<WorkAssignmentUserMapping>(entity =>
-        {
-            entity.HasIndex(entity => new { entity.WorkAssignmentId, entity.UserId }).IsUnique();
-        });
-
         modelBuilder.Entity<SystemNotificationLog>(entity =>
         {
             entity.HasIndex(c => new { c.CreatedAt, c.Channel });
@@ -119,15 +78,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         {
             entity.HasIndex(r => new { r.TargetAt, r.Status });
             entity.HasIndex(r => r.ScheduledWorkAllocationId);
-            
+
             entity.Property(r => r.Title).HasMaxLength(200).IsRequired();
         });
-        
-        modelBuilder.Entity<ScheduledWorkAllocation>()
-            .HasMany(swa => swa.Reminders)
-            .WithOne(r => r.ScheduledWorkAllocation)
-            .HasForeignKey(r => r.ScheduledWorkAllocationId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }

@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Helpers;
-using SWSA.MvcPortal.Dtos.Requests.CompanyWorks;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 
 [Route("secretary-dept")]
 public class SecretaryController(
-    ICompanyWorkAssignmentService companyWorkAssignmentService
     ) : BaseController
 {
     #region Page/View
@@ -67,12 +64,6 @@ public class SecretaryController(
     #endregion
 
     #region API/Ajax
-    [InternalAjaxOnly]
-    [HttpPost("submissions/create")]
-    public async Task<IActionResult> RequestSubmission(WorkAssignmentRequest req)
-    {
-        var result = await companyWorkAssignmentService.RequestWorkAssignment(req);
-        return Ok(AppUrlHelper.GenerateWorkEditUrl(req.Type, result));
-    }
+
     #endregion
 }

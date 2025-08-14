@@ -3,9 +3,9 @@ using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.DocumentRecords;
 using SWSA.MvcPortal.Models.DocumentRecords;
+using SWSA.MvcPortal.Services.Interfaces;
 using SWSA.MvcPortal.Services.Interfaces.Clients;
 using SWSA.MvcPortal.Services.Interfaces.UserAccess;
-using SWSA.MvcPortal.Services.Interfaces.WorkAssignments;
 
 namespace SWSA.MvcPortal.Controllers;
 

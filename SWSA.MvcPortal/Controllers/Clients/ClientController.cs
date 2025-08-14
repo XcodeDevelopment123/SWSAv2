@@ -10,7 +10,6 @@ namespace SWSA.MvcPortal.Controllers.Clients;
 [Route("clients")]
 public class ClientController(
     IClientService _service,
-    IWorkAllocationService _workAllocService,
     IClientOptionService _optionService
     ) : BaseController
 {
@@ -43,13 +42,6 @@ public class ClientController(
     public async Task<IActionResult> GetClientById([FromRoute] int id)
     {
         var data = await _service.GetClientWithDetailByIdAsync(id);
-        return Ok(data);
-    }
-
-    [HttpGet("{id:int}/work-allocs")]
-    public async Task<IActionResult> GetWorkAllocationsByClientId([FromRoute] int id)
-    {
-        var data = await _workAllocService.GetWorksByClientId(id);
         return Ok(data);
     }
 

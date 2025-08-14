@@ -72,8 +72,7 @@ public class ClientService(
         {
             ClientType.Individual => _individualClients
                                 .Include(c => c.CommunicationContacts)
-                                .Include(c => c.OfficialContacts)
-                                .Include(c => c.WorkAllocations),
+                                .Include(c => c.OfficialContacts),
 
             ClientType.Enterprise
             or ClientType.SdnBhd
@@ -81,8 +80,7 @@ public class ClientService(
                                 .Include(c => c.MsicCodes).ThenInclude(c => c.MsicCode)
                                 .Include(c => c.CommunicationContacts)
                                 .Include(c => c.OfficialContacts)
-                                .Include(c => c.Owners)
-                                .Include(c => c.WorkAllocations),
+                                .Include(c => c.Owners),
             _ => throw new InvalidOperationException("Unknown client type"),
         };
         var result = await query.FirstOrDefaultAsync(c => c.Id == id);
