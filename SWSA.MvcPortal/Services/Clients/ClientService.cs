@@ -164,7 +164,7 @@ public class ClientService(
 
         var oldData = entity.DeepClone();
 
-        entity.UpdateCompanyInfo(req.CompanyName, req.RegistrationNumber, req.TaxIdentificationNumber, req.EmployerNumber, req.YearEndMonth, req.IncorporationDate);
+        entity.UpdateCompanyInfo(req.CompanyName, req.RegistrationNumber,req.ActivitySize, req.TaxIdentificationNumber, req.EmployerNumber, req.YearEndMonth, req.IncorporationDate);
         entity.UpdateAdminInfo(req.CategoryInfo?.Group, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
         entity.SyncMsicCode(req.MsicCodeIds);
 

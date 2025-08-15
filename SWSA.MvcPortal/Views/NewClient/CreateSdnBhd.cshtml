@@ -16,6 +16,8 @@
 
     var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(ClientType.SdnBhd);
     var companyTypes = SelectHelper.GetEnumSelectList<CompanyType>(CompanyType.SdnBhd);
+    var activitySizes = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null);
+
 }
 
 <h3>Create New Sdn Bhd Client</h3>
@@ -147,7 +149,12 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="activitySizes">Activity Size</label>
+                            <select asp-items="@activitySizes" id="activitySizes" name="activitySizes" class="form-control select2">  </select>
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="msicCodesIds">Malaysia Standard Industrial Classification (MSIC) </label>

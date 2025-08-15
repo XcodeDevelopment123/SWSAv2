@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250815033930_add-audit-back-log")]
+    partial class addauditbacklog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -663,9 +666,6 @@ namespace SWSA.MvcPortal.Migrations
                 {
                     b.HasBaseType("SWSA.MvcPortal.Entities.Clients.BaseClient");
 
-                    b.Property<int>("ActivitySize")
-                        .HasColumnType("int");
-
                     b.Property<int>("CompanyType")
                         .HasColumnType("int");
 
@@ -723,7 +723,7 @@ namespace SWSA.MvcPortal.Migrations
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Backlogs.AuditBacklogSchedule", b =>
                 {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseClient", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)

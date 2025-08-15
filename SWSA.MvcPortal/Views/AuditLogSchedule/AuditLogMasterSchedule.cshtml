@@ -1,0 +1,175 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities.Backlogs
+@model List<AuditBacklogSchedule>
+@{
+    ViewData["Title"] = "Audit Log Master Schedule";
+}
+
+<link rel='stylesheet' href='~/lib/yearpicker/yearpicker.css' asp-append-version="true" />
+
+<style>
+    .yearpicker-container{
+        margin-top:4.5rem;
+    }
+</style>
+<h3>Audit Backlog Master Schedule for all years</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+
+                        <tr>
+                            <th>Group </th>
+                            <th>Companny Name </th>
+                            <th>Quarter to do audit</th>
+                            <th>Activity</th>
+                            <th>Year End</th>
+                            <th>Year To Do</th>
+                            <th>Move to active / AEX Sch</th>
+                            <th>Date Doc In</th>
+                            <th>Accounting work</th>
+                            <th>Reason why backlog</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td>@data.Client.Group</td>
+                                    <td>@data.Client.Name</td>
+                                    <td>@data.QuarterToDoAudit</td>
+                                    <td>@data.Client.ActivitySize.GetDisplayName()</td>
+                                    <td>@data.Client.YearEndMonth?.GetDisplayName()</td>
+                                    <td>@data.YearToDo</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>@data.ReasonForBacklog</td>
+                                    <td>
+
+                                        <button class="btn btn-sm btn-primary edit-task" data-id="@data.Id">Edit</button>
+                                        <button class="btn btn-sm btn-danger delete-task" data-id="@data.Id">Delete</button>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientSelect">Client</label>
+                                <select id="clientSelect" name="clientSelect" class="form-control select2" required>
+                                    <option selected disabled value="">Please select client</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activitySize">Activity Size</label>
+                                <input id="activitySize" name="activitySize" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEndDate">Year End</label>
+                                <div class="input-group">
+                                    <input type="text" disabled id="yearEndDate" name="yearEndDate" class="form-control" placeholder="Select date" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-info-label col-12">
+                        <label>Backlog</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quarter">Quarter to do Audit</label>
+                                <input id="quarter" name="quarter" class="form-control" type="number" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do</label>
+                                <input id="yearToDo" name="yearToDo" class="form-control" type="number" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="reason">Reason</label>
+                                <textarea id="reason" name="reason" class="form-control" rows="3" placeholder="Enter reason"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+    <script src='~/lib/yearpicker/yearpicker.js'></script>
+
+    <script src="~/js/backlogs/audit-master.js" asp-append-version="true"></script>
+}

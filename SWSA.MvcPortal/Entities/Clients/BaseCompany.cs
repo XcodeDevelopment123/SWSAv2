@@ -21,6 +21,9 @@ public abstract class BaseCompany : BaseClient
     [SystemAuditLog("Incorporation Date")]
     public DateTime? IncorporationDate { get; set; }
 
+    [SystemAuditLog("Activity Size")]
+    public CompanyActivityLevel ActivitySize { get; set; }
+
 
     [SystemAuditLog("Employer Number")]
     public string? EmployerNumber { get; set; } // E Number
@@ -35,10 +38,11 @@ public abstract class BaseCompany : BaseClient
         set { } // This setter is intentionally left empty to prevent modification
     }
 
-    public void UpdateCompanyInfo(string name, string registrationNumber, string? tin, string? employerNumber, MonthOfYear? yearEnd, DateTime? incorpDate)
+    public void UpdateCompanyInfo(string name, string registrationNumber, CompanyActivityLevel activityLevel, string? tin, string? employerNumber, MonthOfYear? yearEnd, DateTime? incorpDate)
     {
         Name = name;
         RegistrationNumber = registrationNumber;
+        ActivitySize = activityLevel;
         TaxIdentificationNumber = tin;
         EmployerNumber = employerNumber;
         YearEndMonth = yearEnd;
@@ -62,8 +66,9 @@ public abstract class BaseCompany : BaseClient
         MsicCodes.AddRange(toAdd.Select(id => new CompanyMsicCode(id)));
 
 
-        var toRemove = MsicCodes.Where(c=>!limitIds.Contains(c.MsicCodeId)).ToList();
-        foreach (var item in toRemove) {
+        var toRemove = MsicCodes.Where(c => !limitIds.Contains(c.MsicCodeId)).ToList();
+        foreach (var item in toRemove)
+        {
 
             MsicCodes.Remove(item);
         }

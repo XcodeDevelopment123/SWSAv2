@@ -27,6 +27,8 @@ const urls = {
     "secretary_dept_strike_off": "/secretary-dept/strike-off-template",
     "secretary_dept_submission": "/secretary-dept/submissions",
     "users": "/users",
+
+    "backlog_audit_master": "/backlogs/audit-master",
 };
 
 // example use

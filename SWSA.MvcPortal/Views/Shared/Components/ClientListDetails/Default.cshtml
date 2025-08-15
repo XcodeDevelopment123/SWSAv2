@@ -32,9 +32,9 @@
 
                         @if (!isIndividual)
                         {
-                            <button type="button" class="btn btn-warning mr-2 mb-2 btn-work-alloc" data-table-id="workAllocationDatatable">
+                            @*                         <button type="button" class="btn btn-warning mr-2 mb-2 btn-work-alloc" data-table-id="workAllocationDatatable">
                                 <i class="fas fa-tasks mr-1"></i> Add Work Allocation
-                            </button>
+                            </button> *@
 
                             <button type="button" class="btn btn-secondary mr-2 mb-2 btn-add-owner" data-table-id="ownerDatatable">
                                 <i class="fas fa-user-plus mr-1"></i> Add Owner Contact
@@ -181,6 +181,16 @@
                         </div>
                     </div>
 
+                    if (!isIndividual)
+                    {
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activitySize">Activity Size</label>
+                                <input readonly type="text" class="form-control" id="activitySize">
+                            </div>
+                        </div>
+                    }
+
                     <div class="form-info-label col-12">
                         <label>MSIC Code</label>
                     </div>
@@ -198,7 +208,7 @@
                         </table>
                     </div>
                 }
-
+                @* 
                 <div class="form-info-label col-12">
                     <label>
                         Work Allocations
@@ -240,7 +250,7 @@
                         </tbody>
                     </table>
                 </div>
-
+ *@
 
                 <div class="divider-line"></div>
 

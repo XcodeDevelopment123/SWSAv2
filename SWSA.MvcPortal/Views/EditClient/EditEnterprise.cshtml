@@ -20,6 +20,7 @@
 
     var clientTypes = SelectHelper.GetEnumSelectList<ClientType>(client.ClientType);
     var companyTypes = SelectHelper.GetEnterpriseCompanyType(client.CompanyType);
+    var activitySizes = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(client.ActivitySize);
 }
 
 <h3>Edit @client.Name</h3>
@@ -152,6 +153,12 @@
                                     </span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="activitySizes">Activity Size</label>
+                            <select asp-items="@activitySizes" id="activitySizes" name="activitySizes" class="form-control select2">  </select>
                         </div>
                     </div>
 

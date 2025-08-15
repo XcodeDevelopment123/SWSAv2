@@ -26,7 +26,7 @@ public class ClientCreationFactory : IClientCreationFactory
                 Group = req.CategoryInfo?.Group,
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
-
+                ActivitySize = req.ActivitySize,
                 Name = req.CompanyName,
                 YearEndMonth = req.YearEndMonth,
                 RegistrationNumber = req.RegistrationNumber,
@@ -43,7 +43,7 @@ public class ClientCreationFactory : IClientCreationFactory
                 Group = req.CategoryInfo?.Group,
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
-
+                ActivitySize = req.ActivitySize,
                 Name = req.CompanyName,
                 YearEndMonth = req.YearEndMonth,
                 RegistrationNumber = req.RegistrationNumber,
@@ -60,7 +60,7 @@ public class ClientCreationFactory : IClientCreationFactory
                 Group = req.CategoryInfo?.Group,
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
-
+                ActivitySize = req.ActivitySize,
                 Name = req.CompanyName,
                 YearEndMonth = req.YearEndMonth,
                 RegistrationNumber = req.RegistrationNumber,

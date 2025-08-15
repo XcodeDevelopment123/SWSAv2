@@ -656,15 +656,15 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item @(currentController.Is("Secretary") ? "menu-is-opening menu-open" : "")">
-                            <a href="#" class="nav-link @(currentController.Is("Secretary") ? "active" : "")">
+                        <li class="nav-item @(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? "active" : "")">
                                 <span class="nav-icon">6</span>
                                 <p>
                                     Secretary
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
                                     <a href="/secretary-dept/landing" class="nav-link @(currentAction.Is("Landing") ? "active" : "")">
@@ -680,15 +680,6 @@
                                         <span class="nav-icon "></span>
                                         <p>
                                             Strike Off Template
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at2.1-master-log" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 2.1 Auit Master Log Book
                                         </p>
                                     </a>
                                 </li>
@@ -737,6 +728,28 @@
                                         </p>
                                     </a>
                                 </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item @(currentController.Is("AuditLogSchedule") ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is("AuditLogSchedule") ? "active" : "")">
+                                <span class="nav-icon">7</span>
+                                <p>
+                                    Backlogs
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController.Is("AuditLogSchedule") ? @"display:block" : "display:none")">
+
+                                <li class="nav-item">
+                                    <a href="/backlogs/audit-master" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Audit Master Schedule
+                                        </p>
+                                    </a>
+                                </li>
+
                             </ul>
                         </li>
 

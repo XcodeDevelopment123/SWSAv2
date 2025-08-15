@@ -119,6 +119,7 @@
             $("#companyNumber").val(data.registrationNumber);
             $("#incorpDate").val(ConvertTimeFormat(data.incorporationDate, "YYYY-MM-DD"));
             $("#eNumber").val(data.employerNumber);
+            $("#activitySize").val(data.activitySize);
             updateMsicCodeTable(data.msicCodes);
             updateOwnerTable(data.owners);
         } else {
@@ -132,7 +133,7 @@
         $("#referral").val(data.referral);
         $("#yearEnd").val(formatMonthLabel(data.yearEndMonth));
         $("#tinNumber").val(data.taxIdentificationNumber);
-        updateWorkAllocTable(data.workAllocations);
+   //     updateWorkAllocTable(data.workAllocations);
         updateOfficialTable(data.officialContacts);
         updateCommTable(data.communicationContacts);
 

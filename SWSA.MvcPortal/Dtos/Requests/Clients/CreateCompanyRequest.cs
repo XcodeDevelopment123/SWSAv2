@@ -12,6 +12,7 @@ public class CreateCompanyRequest
     public DateTime? IncorporationDate { get; set; }
     public ClientType ClientType { get; set; }
     public CompanyType CompanyType { get; set; }
+    public CompanyActivityLevel ActivitySize { get; set; }
     public List<int> MsicCodeIds { get; set; } = [];
     public ClientCategoryRequest CategoryInfo { get; set; }
 }

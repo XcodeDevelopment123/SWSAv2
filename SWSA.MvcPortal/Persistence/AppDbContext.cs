@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities;
+using SWSA.MvcPortal.Entities.Backlogs;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.Contacts;
 using SWSA.MvcPortal.Entities.Reminders;
@@ -36,6 +37,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     #region Template
     internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
     internal DbSet<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; }
+
+    #endregion
+
+    #region BackLogs
+    internal DbSet<AuditBacklogSchedule> AuditBacklogSchedules { get; set; }
 
     #endregion
 

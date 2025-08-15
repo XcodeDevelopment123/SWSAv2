@@ -19,6 +19,7 @@
         companyType: $companyForm.find('select[name="companyType"]'),
         clientType: $companyForm.find('select[name="clientType"]'),
         yearEndMonth: $companyForm.find('input[name="yearEndMonth"]'),
+        activitySize: $companyForm.find('select[name="activitySizes"]'),
         msicCodeIds: $companyForm.find('select[name="msicCodesIds"]'),
     }
 
@@ -47,7 +48,10 @@
                 maxlength: 3
             },
             companyType: {
-                required:true
+                required: true
+            },
+            activitySizes: {
+                required: true
             }
         },
         messages: {
@@ -76,6 +80,9 @@
                 required: "Please select at least one MSIC code.",
                 maxlength: "You can select up to 3 MSIC codes only."
             },
+            activitySizes: {
+                required: "Please select activity size.",
+            }
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -115,7 +122,7 @@
             const selectedDate = selectedDates[0];
 
             var lastDay = getLastDay(selectedDate);
-  
+
             if (selectedDate.getTime() === lastDay.getTime()) return;
 
             instance.setDate(lastDay, true);
@@ -134,7 +141,7 @@
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.categoryInfo = adminInfo;
-  
+
         $.ajax({
             url: `${urls.new_client}/company`,
             method: "POST",
