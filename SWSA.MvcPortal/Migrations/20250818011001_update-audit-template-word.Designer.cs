@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250818011001_update-audit-template-word")]
+    partial class updateaudittemplateword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -516,9 +519,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<DateTime>("AuditStartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("AuditWIPResult")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -619,6 +619,9 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("TotalFieldWorkDays")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VarianceType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("YearEndToDo")

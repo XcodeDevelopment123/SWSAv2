@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Helpers;
-using SWSA.MvcPortal.Entities.SecretaryDept;
+using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;
 using System.Threading.Tasks;
 

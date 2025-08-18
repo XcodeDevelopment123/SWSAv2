@@ -29,6 +29,7 @@ const urls = {
     "users": "/users",
 
     "backlog_audit_master": "/backlogs/audit-master",
+    "audit_template":"/audit-templates"
 };
 
 // example use
@@ -173,6 +174,21 @@ function ConvertTimeFormat(dateString, format = "DD-MM-YYYY hh:mm A") {
     var formattedDate = momentDate.format(format);
 
     return formattedDate;
+}
+
+function convertMonthStringToLastDay(monthString) {
+    // monthString 格式: "June 2025" 或 "September 2025"
+    const date = new Date(monthString + " 1"); // 添加日期 1 来创建有效日期
+
+    // 获取该月的最后一天
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    // 格式化为 YYYY-MM-DD
+    const year = lastDay.getFullYear();
+    const month = String(lastDay.getMonth() + 1).padStart(2, '0');
+    const day = String(lastDay.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 function formatMonthLabel(monthNumber) {

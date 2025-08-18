@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SWSA.MvcPortal.Entities.SecretaryDept;
+using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;
 
-namespace SWSA.MvcPortal.Controllers.SecretaryDept;
+namespace SWSA.MvcPortal.Controllers.Templates;
 [Route("secretary-dept/strike-off-template")]
 public class SecretaryStrikeOffController(
    AppDbContext db

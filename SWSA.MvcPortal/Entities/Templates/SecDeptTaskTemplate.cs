@@ -3,7 +3,7 @@ using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWSA.MvcPortal.Entities.SecretaryDept;
+namespace SWSA.MvcPortal.Entities.Templates;
 
 //Sdn Bhd AR
 //LLP AD

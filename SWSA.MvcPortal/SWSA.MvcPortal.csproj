@@ -63,6 +63,7 @@
 
 	<ItemGroup>
 		<Folder Include="Datas\uploads\" />
+		<Folder Include="Entities\SecretaryDept\" />
 		<Folder Include="Migrations\" />
 		<Folder Include="Views\Company\" />
 		<Folder Include="wwwroot\lib\yearpicker\" />

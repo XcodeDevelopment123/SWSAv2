@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SWSA.MvcPortal.Entities.SecretaryDept;
+namespace SWSA.MvcPortal.Entities.Templates;
 
 public class SecStrikeOffTemplate
 {

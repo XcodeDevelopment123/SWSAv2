@@ -2,7 +2,6 @@
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Entities.Contacts;
-using SWSA.MvcPortal.Entities.SecretaryDept;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities.Clients;

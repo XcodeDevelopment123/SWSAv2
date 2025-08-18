@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250815090115_add-audit-template")]
+    partial class addaudittemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,140 @@ namespace SWSA.MvcPortal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.AuditTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AuditEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("AuditFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("AuditStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Database")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateBilled")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DatePassToSecDept")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DatePasswordTaxDept")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DirectorCommOfOathsDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DirectorDateReceived")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DirectorDateSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DirectorFollowUpDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FirstReviewEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FirstReviewResult")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FirstReviewSendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAccSetupComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAccSummaryComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAuditExecutionComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAuditPlanningComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsExecutionAuditComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("KualaLumpurOfficeAuditReportReceivedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("KualaLumpurOfficeDateSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("KualaLumpurOfficeDirectorsReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("KualaLumpurOfficeReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PersonInChargeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PostAuditDateBinded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PostAuditDespatchDateToClient")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Profit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("QuarterToDo")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Revenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("SecSSMDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SecondReviewEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SecondReviewResult")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SecondReviewSendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("TaxDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TotalFieldWorkDays")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VarianceType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("YearEndToDo")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("PersonInChargeId");
+
+                    b.ToTable("AuditTemplates");
+                });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Backlogs.AuditBacklogSchedule", b =>
                 {
@@ -332,6 +469,98 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("Reminders");
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.SecretaryDept.SecDeptTaskTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ADReturnByClientDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ADSendToClientDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ADSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARDueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARReturnByClientDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARSendToClientDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ARSubmitDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("SecDeptTaskTemplates");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.SecretaryDept.SecStrikeOffTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DoneByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("PenaltiesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("RevisedPenaltiesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("SSMDocSentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMPenaltiesAppealDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMPenaltiesPaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SSMSubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("DoneByUserId");
+
+                    b.ToTable("SecStrikeOffTemplates");
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.MsicCode", b =>
                 {
                     b.Property<int>("Id")
@@ -499,232 +728,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("SystemNotificationLogs");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AuditTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AuditEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("AuditFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("AuditStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("AuditWIPResult")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Database")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DateBilled")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DatePassToSecDept")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DatePassToTaxDept")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DirectorCommOfOathsDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DirectorDateReceived")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DirectorDateSent")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DirectorFollowUpDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FirstReviewEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("FirstReviewResult")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("FirstReviewSendDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsAccSetupComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAccSummaryComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAuditExecutionComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAuditPlanningComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsExecutionAuditComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("KualaLumpurOfficeAuditReportReceivedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("KualaLumpurOfficeDateSent")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("KualaLumpurOfficeDirectorsReportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("KualaLumpurOfficeReportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PersonInChargeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("PostAuditDateBinded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("PostAuditDespatchDateToClient")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Profit")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("QuarterToDo")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Revenue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("SecSSMDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SecondReviewEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("SecondReviewResult")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("SecondReviewSendDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TaxDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalFieldWorkDays")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("YearEndToDo")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("PersonInChargeId");
-
-                    b.ToTable("AuditTemplates");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecDeptTaskTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ADReturnByClientDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ADSendToClientDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ADSubmitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ARDueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ARReturnByClientDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ARSendToClientDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ARSubmitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("SecDeptTaskTemplates");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecStrikeOffTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CompleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DoneByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("PenaltiesAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("RevisedPenaltiesAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("SSMDocSentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SSMPenaltiesAppealDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SSMPenaltiesPaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SSMSubmissionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("DoneByUserId");
-
-                    b.ToTable("SecStrikeOffTemplates");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -855,6 +858,23 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("SdnBhdClients", (string)null);
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.AuditTemplate", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWSA.MvcPortal.Entities.User", "PersonInCharge")
+                        .WithMany()
+                        .HasForeignKey("PersonInChargeId");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("PersonInCharge");
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Backlogs.AuditBacklogSchedule", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
@@ -937,6 +957,34 @@ namespace SWSA.MvcPortal.Migrations
                     b.Navigation("HandledByStaff");
                 });
 
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.SecretaryDept.SecDeptTaskTemplate", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("SWSA.MvcPortal.Entities.SecretaryDept.SecStrikeOffTemplate", b =>
+                {
+                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWSA.MvcPortal.Entities.User", "DoneBy")
+                        .WithMany()
+                        .HasForeignKey("DoneByUserId");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("DoneBy");
+                });
+
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.ScheduledJob", b =>
                 {
                     b.HasOne("SWSA.MvcPortal.Entities.User", "User")
@@ -955,51 +1003,6 @@ namespace SWSA.MvcPortal.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("PerformedByUser");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AuditTemplate", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SWSA.MvcPortal.Entities.User", "PersonInCharge")
-                        .WithMany()
-                        .HasForeignKey("PersonInChargeId");
-
-                    b.Navigation("Client");
-
-                    b.Navigation("PersonInCharge");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecDeptTaskTemplate", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecStrikeOffTemplate", b =>
-                {
-                    b.HasOne("SWSA.MvcPortal.Entities.Clients.BaseCompany", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SWSA.MvcPortal.Entities.User", "DoneBy")
-                        .WithMany()
-                        .HasForeignKey("DoneByUserId");
-
-                    b.Navigation("Client");
-
-                    b.Navigation("DoneBy");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseCompany", b =>
