@@ -37,17 +37,13 @@
 
 
 @{
-  var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-  var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-  var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+              var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+              var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+              var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-  var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-  var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-  var submissionNav = new List<string> { };
-
-  var secretaryCompanyNav = new List<string> {
-                                                                                                                                                                                                                                                                                                         "CompanyList",
-                                                                                                                                                                };
+              var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+              var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+              var submissionNav = new List<string> { };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -581,90 +577,49 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item @(currentController.Is("Sample") ? "menu-is-opening menu-open" : "")">
-                            <a href="#" class="nav-link @(currentController.Is("Sample") ? "active" : "")">
+                        @{
+                            var templateController = new List<string> { "AuditTemplate", "SecretaryStrikeOff" };
+                        }
+                        <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
                                 <span class="nav-icon">5</span>
                                 <p>
-                                    Sample
+                                    Templates
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview" style="@(currentController.Is("Sample") ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(templateController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
-                                    <a href="/samples/at1.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
+                                    <a href="/secretary-dept/strike-off-template" class="nav-link  @(currentAction.Is("StrikeOffTemplate") ? "active" : "") ">
+                                        <span class="nav-icon"></span>
                                         <p>
-                                            AT 1.2 Audit Reinder Schedule
+                                            Strike Off Template
                                         </p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="/samples/at2.1-master-log" class="nav-link ">
-                                        <span class="nav-icon "></span>
+                                    <a href="/audit-templates" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
+                                        <span class="nav-icon"></span>
                                         <p>
-                                            AT 2.1 Auit Master Log Book
+                                            Audit Template
                                         </p>
                                     </a>
                                 </li>
 
-                                <li class="nav-item">
-                                    <a href="/samples/at2.1-master-schedule" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 2.1 Auit Master Schedule
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at2.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 2.2 Audit Back Log Master Schedule
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at3.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 3.2 Audit Work Done WIP
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at4.1" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AEX 4.1 Audit OT / AEX Scheduling for current year
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at4.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AEX 4.2 Audit OT / AEX Backlog
-                                        </p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
 
-                        <li class="nav-item @(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? "menu-is-opening menu-open" : "")">
-                            <a href="#" class="nav-link @(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? "active" : "")">
+                        <li class="nav-item @(currentController.Is("Secretary") ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is("Secretary") ? "active" : "")">
                                 <span class="nav-icon">6</span>
                                 <p>
                                     Secretary
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") || currentController.Is("SecretaryStrikeOff") ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
                                     <a href="/secretary-dept/landing" class="nav-link @(currentAction.Is("Landing") ? "active" : "")">
@@ -675,59 +630,7 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item">
-                                    <a href="/secretary-dept/strike-off-template" class="nav-link  @(currentAction.Is("StrikeOffTemplate") ? "active" : "") ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            Strike Off Template
-                                        </p>
-                                    </a>
-                                </li>
 
-                                <li class="nav-item">
-                                    <a href="/samples/at2.1-master-schedule" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 2.1 Auit Master Schedule
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at2.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 2.2 Audit Back Log Master Schedule
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at3.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AT 3.2 Audit Work Done WIP
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at4.1" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AEX 4.1 Audit OT / AEX Scheduling for current year
-                                        </p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/samples/at4.2" class="nav-link ">
-                                        <span class="nav-icon "></span>
-                                        <p>
-                                            AEX 4.2 Audit OT / AEX Backlog
-                                        </p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
 
@@ -753,14 +656,6 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="/audit-templates" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
-                                <span class="nav-icon">8</span>
-                                <p>
-                                   Audit Template
-                                </p>
-                            </a>
-                        </li>
 
 
                         <li class="nav-header">Users & Systems</li>
