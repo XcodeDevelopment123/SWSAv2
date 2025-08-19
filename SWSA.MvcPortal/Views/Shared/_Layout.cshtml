@@ -578,7 +578,7 @@
                         </li>
 
                         @{
-                            var templateController = new List<string> { "AuditTemplate", "SecretaryStrikeOff" };
+                            var templateController = new List<string> { "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
                         }
                         <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
                             <a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
@@ -608,6 +608,14 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a href="/aex-templates" class="nav-link @(currentController == "AEXTemplate" ? "active" : "")">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                            AEX Template
+                                        </p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

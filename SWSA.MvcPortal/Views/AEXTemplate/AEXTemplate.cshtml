@@ -1,0 +1,881 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Helpers
+@using SWSA.MvcPortal.Entities.Templates
+@model List<AEXTemplate>
+@{
+    ViewData["Title"] = "AEXTemplate";
+    var resultVariantypes = SelectHelper.GetEnumSelectList<AuditVarianceType>(null);
+    var database = SelectHelper.GetEnumSelectList<AuditDatabase>(null);
+    var statusTypes = SelectHelper.GetEnumSelectList<AuditStatus>(null);
+}
+
+
+<h3>AEX Template</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th colspan="11"></th>
+                            <th colspan="5"> Audit WIP (days)</th>
+                            <th colspan="6"> Audit work WIP (%)</th>
+                            <th colspan="7"> Review</th>
+                            <th colspan="4"> AT3.3 Audit Reports from KK</th>
+                            <th colspan="4"> AT3.4 Directors' Signing pages</th>
+                            <th colspan="2"> 5.Tax dept</th>
+                            <th colspan="2"> 6.Sec dept</th>
+                            <th colspan="2"> 7.Post Audit Work</th>
+                            <th rowspan="3">Action</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">Company Name</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Which database?</th>
+                            <th rowspan="2">YE to do</th>
+                            <th rowspan="2">Quarter to do</th>
+                            <th rowspan="2">PIC</th>
+                            <th rowspan="2">Status</th>
+
+
+                            <th colspan="2">Est current yr result '000'</th>
+                            <th colspan="2">Billing</th>
+
+                            <th rowspan="2">a.Start date</th>
+                            <th rowspan="2">b.As at</th>
+                            <th rowspan="2">c.No of days</th>
+                            <th rowspan="2">Total field work days</th>
+                            <th rowspan="2">result over/Under</th>
+
+                            <!--Col 5-->
+
+                            <th colspan="2">A.prog tracker %</th>
+                            <th colspan="3">B.Task %</th>
+                            <th>A+B+C</th>
+
+                            <th colspan="3">Kuching 1st Review</th>
+                            <th colspan="4">2nd Review KK</th>
+
+
+                            <th rowspan="2">Date sent to KK</th>
+                            <th rowspan="2">Date received AR</th>
+                            <th rowspan="2">Date of Report</th>
+                            <th rowspan="2">Date of directors rept</th>
+
+                            <th rowspan="2">Date sent</th>
+                            <th rowspan="2">Follow up dates</th>
+                            <th rowspan="2">Date received</th>
+                            <th rowspan="2">Comm of Oaths date</th>
+
+                            <th rowspan="2">Tax due date</th>
+                            <th rowspan="2">Pass to tax dept</th>
+                            <th rowspan="2">SSM Due date</th>
+                            <th rowspan="2">Date pass <br /> to sec dept  <br /> (MBRS)</th>
+                            <th rowspan="2">Date binded</th>
+                            <th rowspan="2">Despatch date to client</th>
+                        </tr>
+
+                        <tr>
+                            <th>Revenue</th>
+                            <th>Profit/Loss</th>
+                            <th>Audit Fee</th>
+                            <th>Date billed</th>
+
+                            <th>a.Account setup <br />(J)</th>
+                            <th>b.Ac summary<br /> (J)</th>
+
+                            <th>c.audit planning <br />(PIC)</th>
+                            <th>d.audit execution</th>
+                            <th>e.execution <br /> audit completion <br />(PIC)</th>
+
+                            <th>Total %</th>
+
+                            <th>Date sent</th>
+                            <th>End date</th>
+                            <th>A.Result over/under</th>
+
+                            <th>Date sent</th>
+                            <th>End date</th>
+                            <th>B.Result over/under</th>
+                            <th>Final</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td>@data.Client.Name</td>
+                                    <td>@data.Client.ActivitySize.GetDisplayName()</td>
+                                    <td>@data.Database.GetDisplayName()</td>
+                                    <td>@data.YearEndToDo.ToFormattedString()</td>
+                                    <td> @($"Q{data.QuarterToDo}") </td>
+                                    <td>
+
+                                        @if (data.PersonInCharge != null)
+                                        {
+                                            var userUrl = $"/users/{data.PersonInCharge?.StaffId}/overview";
+                                            <a href="@userUrl">  @data.PersonInCharge?.FullName</a>
+                                        }
+                                        else
+                                        {
+                                            @data.PersonInCharge?.FullName
+                                        }
+
+                                    </td>
+                                    <td>@data.Status.GetDisplayName()</td>
+                                    <td>@data.Revenue</td>
+                                    <td>@data.Profit</td>
+                                    <td>@data.AuditFee</td>
+                                    <td>@data.DateBilled.ToFormattedString()</td>
+                                    <td>@data.AuditStartDate.ToFormattedString()</td>
+                                    <td>@data.AuditEndDate.ToFormattedString()</td>
+                                    <td>@data.NumberOfDays</td>
+                                    <td>@data.TotalFieldWorkDays</td>
+                                    <td>@data.AuditWIPResult?.GetDisplayName()</td>
+                                    <td>@(data.IsAccSetupComplete ? "✓" : "")</td>
+                                    <td>@(data.IsAccSummaryComplete ? "✓" : "")</td>
+                                    <td>@(data.IsAuditPlanningComplete ? "✓" : "")</td>
+                                    <td>@(data.IsAuditExecutionComplete ? "✓" : "")</td>
+                                    <td>@(data.IsExecutionAuditComplete ? "✓" : "")</td>
+                                    <td>@data.ProgressInPercent</td>
+                                    <td>@data.FirstReviewSendDate.ToFormattedString()</td>
+                                    <td>@data.FirstReviewEndDate.ToFormattedString()</td>
+                                    <td>@data.FirstReviewResult?.GetDisplayName()</td>
+                                    <td>@data.SecondReviewSendDate.ToFormattedString()</td>
+                                    <td>@data.SecondReviewEndDate.ToFormattedString()</td>
+                                    <td>@data.SecondReviewResult?.GetDisplayName()</td>
+                                    <td>@data.SecondReviewFinal.ToFormattedString()</td>
+                                    <td>@data.KualaLumpurOfficeDateSent.ToFormattedString()</td>
+                                    <td>@data.KualaLumpurOfficeAuditReportReceivedDate.ToFormattedString()</td>
+                                    <td>@data.KualaLumpurOfficeReportDate.ToFormattedString()</td>
+                                    <td>@data.KualaLumpurOfficeDirectorsReportDate.ToFormattedString()</td>
+                                    <td>@data.DirectorDateSent.ToFormattedString()</td>
+                                    <td>@data.DirectorFollowUpDate.ToFormattedString()</td>
+                                    <td>@data.DirectorDateReceived.ToFormattedString()</td>
+                                    <td>@data.DirectorCommOfOathsDate.ToFormattedString()</td>
+                                    <td>@data.TaxDueDate.ToFormattedString()</td>
+                                    <td>@data.DatePassToTaxDept.ToFormattedString()</td>
+                                    <td>@data.SecSSMDueDate.ToFormattedString()</td>
+                                    <td>@data.DatePassToSecDept.ToFormattedString()</td>
+                                    <td>@data.PostAuditDateBinded.ToFormattedString()</td>
+                                    <td>@data.PostAuditDespatchDateToClient.ToFormattedString()</td>
+
+                                    <td>
+
+                                        <button class="btn btn-sm btn-primary edit-task" data-id="@data.Id">Edit</button>
+                                        <button class="btn btn-sm btn-danger delete-task" data-id="@data.Id">Delete</button>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientSelect">Client</label>
+                                <select id="clientSelect" name="clientSelect" class="form-control select2" required>
+                                    <option selected disabled value="">Please select client</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="database">Which database?</label>
+                                <select asp-items="database" id="database" name="database" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEndToDo">YE to do</label>
+                                <div class="input-group">
+                                    <input type="text" id="yearEndToDo" name="yearEndToDo" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quarterToDo">Quarter to do</label>
+                                <select id="quarterToDo" name="quarterToDo" class="form-control select2">
+                                    <option selected disabled value="">Please select quarter</option>
+                                    <option value="1">Q1</option>
+                                    <option value="2">Q2</option>
+                                    <option value="3">Q3</option>
+                                    <option value="4">Q4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="personInCharge">PIC</label>
+                                <select id="personInCharge" name="personInCharge" class="form-control select2">
+                                    <option selected disabled value="">Please select PIC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select asp-items="statusTypes" id="status" name="status" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>Est current yr result '000'</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="revenue">Revenue</label>
+                                <input id="revenue" name="revenue" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="profitLoss">Profit/Loss</label>
+                                <input id="profitLoss" name="profitLoss" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>Billing</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditFee">Audit Fee</label>
+                                <input id="auditFee" name="auditFee" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateBilled">Date billed</label>
+                                <div class="input-group">
+                                    <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-info-label col-12">
+                        <label> Audit WIP (days)</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditStartDate">Start date</label>
+                                <div class="input-group">
+                                    <input type="text" id="auditStartDate" name="auditStartDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="asAtDate">As at</label>
+                                <div class="input-group">
+                                    <input type="text" id="asAtDate" name="asAtDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="numberOfDays">No of days</label>
+                                <input readonly id="numberOfDays" name="numberOfDays" class="form-control" type="number" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="totalFieldWorkDays">Total field work days</label>
+                                <input id="totalFieldWorkDays" name="totalFieldWorkDays" class="form-control" type="number" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="auditWIPResult">Result over/Under</label>
+                                <select asp-items="resultVariantypes" id="auditWIPResult" name="auditWIPResult" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Collapsible Audit Work WIP Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#auditWorkWipSection" aria-expanded="false" aria-controls="auditWorkWipSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="auditWorkWipChevron"></i>
+                                Audit work WIP (%)
+                            </button>
+                        </label>
+                    </div>
+                    <div class="collapse" id="auditWorkWipSection">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="isAccSetupComplete">Account setup (J)</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isAccSetupComplete" name="isAccSetupComplete" class="form-check-input audit-wip-prog" />
+                                        <label class="form-check-label" for="isAccSetupComplete">Complete</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="isAccSummaryComplete">Ac summary (J)</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isAccSummaryComplete" name="isAccSummaryComplete" class="form-check-input audit-wip-prog" />
+                                        <label class="form-check-label" for="isAccSummaryComplete">Complete</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="isAuditPlanningComplete">Audit planning (PIC)</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isAuditPlanningComplete" name="isAuditPlanningComplete" class="form-check-input audit-wip-prog" />
+                                        <label class="form-check-label" for="isAuditPlanningComplete">Complete</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="isAuditExecutionComplete">Audit execution</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isAuditExecutionComplete" name="isAuditExecutionComplete" class="form-check-input audit-wip-prog" />
+                                        <label class="form-check-label" for="isAuditExecutionComplete">Complete</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="isExecutionAuditComplete">Execution audit completion (PIC)</label>
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isExecutionAuditComplete" name="isExecutionAuditComplete" class="form-check-input audit-wip-prog" />
+                                        <label class="form-check-label" for="isExecutionAuditComplete">Complete</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="totalPercent">Total %</label>
+                                    <input id="totalPercent" name="totalPercent" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Review Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#reviewSection" aria-expanded="false" aria-controls="reviewSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="reviewChevron"></i>
+                                Review
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="reviewSection">
+                        <div class="form-info-label col-12">
+                            <label>Review - Kuching 1st Review</label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="firstReviewSendDate">Date sent</label>
+                                    <div class="input-group">
+                                        <input type="text" id="firstReviewSendDate" name="firstReviewSendDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="firstReviewEndDate">End date</label>
+                                    <div class="input-group">
+                                        <input type="text" id="firstReviewEndDate" name="firstReviewEndDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="firstReviewResult">Result over/under</label>
+                                    <select asp-items="resultVariantypes" id="firstReviewResult" name="firstReviewResult" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-info-label col-12">
+                            <label>Review - 2nd Review KK</label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="secondReviewSendDate">Date sent</label>
+                                    <div class="input-group">
+                                        <input type="text" id="secondReviewSendDate" name="secondReviewSendDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="secondReviewEndDate">End date</label>
+                                    <div class="input-group">
+                                        <input type="text" id="secondReviewEndDate" name="secondReviewEndDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="secondReviewResult">Result over/under</label>
+                                    <select asp-items="resultVariantypes" id="secondReviewResult" name="secondReviewResult" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="secondReviewFinal">Final</label>
+                                    <div class="input-group">
+                                        <input type="text" id="secondReviewFinal" name="secondReviewFinal" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible AT3.3 Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#at33Section" aria-expanded="false" aria-controls="at33Section" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="at33Chevron"></i>
+                                AT3.3 Audit Reports from KK
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="at33Section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dateSentToKK">Date sent to KK</label>
+                                    <div class="input-group">
+                                        <input type="text" id="dateSentToKK" name="dateSentToKK" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dateReceivedAR">Date received AR</label>
+                                    <div class="input-group">
+                                        <input type="text" id="dateReceivedAR" name="dateReceivedAR" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dateOfReport">Date of Report</label>
+                                    <div class="input-group">
+                                        <input type="text" id="dateOfReport" name="dateOfReport" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dateOfDirectorsReport">Date of directors rept</label>
+                                    <div class="input-group">
+                                        <input type="text" id="dateOfDirectorsReport" name="dateOfDirectorsReport" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible AT3.4 Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#at34Section" aria-expanded="false" aria-controls="at34Section" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="at34Chevron"></i>
+                                AT3.4 Directors' Signing pages
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="at34Section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="directorDateSent">Date sent</label>
+                                    <div class="input-group">
+                                        <input type="text" id="directorDateSent" name="directorDateSent" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="directorFollowUpDate">Follow up dates</label>
+                                    <div class="input-group">
+                                        <input type="text" id="directorFollowUpDate" name="directorFollowUpDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="directorDateReceived">Date received</label>
+                                    <div class="input-group">
+                                        <input type="text" id="directorDateReceived" name="directorDateReceived" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="directorCommOfOathsDate">Comm of Oaths date</label>
+                                    <div class="input-group">
+                                        <input type="text" id="directorCommOfOathsDate" name="directorCommOfOathsDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Tax Dept Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#taxDeptSection" aria-expanded="false" aria-controls="taxDeptSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="taxDeptChevron"></i>
+                                Tax dept
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="taxDeptSection">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="taxDueDate">Tax due date</label>
+                                    <div class="input-group">
+                                        <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="datePassToTaxDept">Pass to tax dept</label>
+                                    <div class="input-group">
+                                        <input type="text" id="datePassToTaxDept" name="datePassToTaxDept" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Sec Dept Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#secDeptSection" aria-expanded="false" aria-controls="secDeptSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="secDeptChevron"></i>
+                                Sec dept
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="secDeptSection">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="secSSMDueDate">SSM Due date</label>
+                                    <div class="input-group">
+                                        <input type="text" id="secSSMDueDate" name="secSSMDueDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="datePassToSecDept">Date pass to sec dept (MBRS)</label>
+                                    <div class="input-group">
+                                        <input type="text" id="datePassToSecDept" name="datePassToSecDept" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Post Audit Work Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#postAuditSection" aria-expanded="false" aria-controls="postAuditSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="postAuditChevron"></i>
+                                Post Audit Work
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="postAuditSection">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="postAuditDateBinded">Date binded</label>
+                                    <div class="input-group">
+                                        <input type="text" id="postAuditDateBinded" name="postAuditDateBinded" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="postAuditDespatchDateToClient">Despatch date to client</label>
+                                    <div class="input-group">
+                                        <input type="text" id="postAuditDespatchDateToClient" name="postAuditDespatchDateToClient" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle collapse chevron rotation
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapseElements = [
+            '#auditWorkWipSection',
+            '#reviewSection',
+            '#at33Section',
+            '#at34Section',
+            '#taxDeptSection',
+            '#secDeptSection',
+            '#postAuditSection'
+        ];
+
+        const chevronIds = [
+            '#auditWorkWipChevron',
+            '#reviewChevron',
+            '#at33Chevron',
+            '#at34Chevron',
+            '#taxDeptChevron',
+            '#secDeptChevron',
+            '#postAuditChevron'
+        ];
+
+        collapseElements.forEach((element, index) => {
+            const collapseEl = document.querySelector(element);
+            const chevronEl = document.querySelector(chevronIds[index]);
+
+            if (collapseEl && chevronEl) {
+                collapseEl.addEventListener('show.bs.collapse', function () {
+                    chevronEl.style.transform = 'rotate(90deg)';
+                });
+
+                collapseEl.addEventListener('hide.bs.collapse', function () {
+                    chevronEl.style.transform = 'rotate(0deg)';
+                });
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/templates/aex-template.js" asp-append-version="true"></script>
+}

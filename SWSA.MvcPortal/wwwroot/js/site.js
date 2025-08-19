@@ -30,7 +30,8 @@ const urls = {
 
     "backlog_audit_master": "/backlogs/audit-master",
     "backlog_aex": "/backlogs/aex",
-    "audit_template":"/audit-templates"
+    "audit_template":"/audit-templates",
+    "aex_template":"/aex-templates"
 };
 
 // example use
