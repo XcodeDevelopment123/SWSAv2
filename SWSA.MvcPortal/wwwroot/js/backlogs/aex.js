@@ -123,7 +123,7 @@
         }
 
         const taskData = getFormData(taskFormInputs);
-        let url = `${urls.backlog_audit_master}`;
+        let url = `${urls.backlog_aex}`;
 
         if (editId > 0) {
             url += `/${editId}/update`;
@@ -177,7 +177,7 @@
         const row = taskDatatable.row($(this).closest("tr"));
 
         $.ajax({
-            url: `${urls.backlog_audit_master}/${taskId}`,
+            url: `${urls.backlog_aex}/${taskId}`,
             method: "GET",
             success: function (res) {
                 if (res) {
@@ -206,7 +206,7 @@
 
         if (confirm("Are you sure you want to delete this log?")) {
             $.ajax({
-                url: `${urls.backlog_audit_master}/${taskId}/delete`,
+                url: `${urls.backlog_aex}/${taskId}/delete`,
                 method: "DELETE",
                 success: function (res) {
                     Toast_Fire(ICON_SUCCESS, "Success", "Log deleted successfully.");

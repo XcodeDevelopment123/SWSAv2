@@ -126,7 +126,7 @@
                                     <td>@data.Client.ActivitySize.GetDisplayName()</td>
                                     <td>@data.Database.GetDisplayName()</td>
                                     <td>@data.YearEndToDo.ToFormattedString()</td>
-                                    <td>@data.QuarterToDo</td>
+                                    <td> @($"Q{data.QuarterToDo}") </td>
                                     <td>
 
                                         @if (data.PersonInCharge != null)

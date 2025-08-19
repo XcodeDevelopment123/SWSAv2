@@ -29,6 +29,7 @@ const urls = {
     "users": "/users",
 
     "backlog_audit_master": "/backlogs/audit-master",
+    "backlog_aex": "/backlogs/aex",
     "audit_template":"/audit-templates"
 };
 

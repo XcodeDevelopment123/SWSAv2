@@ -37,13 +37,13 @@
 
 
 @{
-              var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-              var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-              var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+                  var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+                  var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+                  var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-              var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-              var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-              var submissionNav = new List<string> { };
+                  var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+                  var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+                  var submissionNav = new List<string> { };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -633,16 +633,19 @@
 
                             </ul>
                         </li>
-
-                        <li class="nav-item @(currentController.Is("AuditLogSchedule") ? "menu-is-opening menu-open" : "")">
-                            <a href="#" class="nav-link @(currentController.Is("AuditLogSchedule") ? "active" : "")">
+                        @{
+                            var backlogController = new List<string> { "AuditLogSchedule", "AEXBacklog" };
+                        }
+                        <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
                                 <span class="nav-icon">7</span>
                                 <p>
                                     Backlogs
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview" style="@(currentController.Is("AuditLogSchedule") ? @"display:block" : "display:none")">
+                        
+                            <ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
                                 <li class="nav-item">
                                     <a href="/backlogs/audit-master" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
@@ -653,6 +656,14 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a href="/backlogs/aex" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                           AEX Backlos
+                                        </p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

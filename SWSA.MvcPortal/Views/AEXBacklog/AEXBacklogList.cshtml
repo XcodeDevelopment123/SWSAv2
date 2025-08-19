@@ -1,18 +1,19 @@
 ﻿@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Entities.Backlogs
-@model List<AuditBacklogSchedule>
+@model List<AEXBacklog>
 @{
-    ViewData["Title"] = "Audit Log Master Schedule";
+    ViewData["Title"] = "AEX Backlogs";
 }
 
 <link rel='stylesheet' href='~/lib/yearpicker/yearpicker.css' asp-append-version="true" />
 
 <style>
-    .yearpicker-container{
-        margin-top:4.5rem;
+    .yearpicker-container {
+        margin-top: 4.5rem;
     }
 </style>
-<h3>Audit Backlog Master Schedule for all years</h3>
+
+<h3>AEX4.2 AEX Backlog</h3>
 
 <div class="row">
     <div class="col-md-12">
@@ -41,7 +42,7 @@
                             <th>Activity</th>
                             <th>Year End</th>
                             <th>Year To Do</th>
-                            <th>Move to active / AEX Sch</th>
+                            <th>Move to active sch</th>
                             <th>Date Doc In</th>
                             <th>Accounting work</th>
                             <th>Reason why backlog</th>
@@ -177,5 +178,5 @@
     <partial name="_DatatablesScriptsPartial" />
     <script src='~/lib/yearpicker/yearpicker.js'></script>
 
-    <script src="~/js/backlogs/audit-master.js" asp-append-version="true"></script>
+    <script src="~/js/backlogs/aex.js" asp-append-version="true"></script>
 }
