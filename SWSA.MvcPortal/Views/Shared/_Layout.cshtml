@@ -578,7 +578,7 @@
                         </li>
 
                         @{
-                            var templateController = new List<string> { "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
+                            var templateController = new List<string> { "TaxStrikeOffTemplate", "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
                         }
                         <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
                             <a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
@@ -598,9 +598,16 @@
                                         </p>
                                     </a>
                                 </li>
-
                                 <li class="nav-item">
-                                    <a href="/audit-templates" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
+                                    <a href="/templates/tax-strike-off" class="nav-link  @(currentAction.Is("TaxStrikeOffTemplate") ? "active" : "") ">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                           Tax Strike Off Template
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/templates/audit" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
                                         <span class="nav-icon"></span>
                                         <p>
                                             Audit Template
@@ -609,7 +616,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="/aex-templates" class="nav-link @(currentController == "AEXTemplate" ? "active" : "")">
+                                    <a href="/templates/aex" class="nav-link @(currentController == "AEXTemplate" ? "active" : "")">
                                         <span class="nav-icon"></span>
                                         <p>
                                             AEX Template

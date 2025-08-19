@@ -5,7 +5,7 @@ using SWSA.MvcPortal.Persistence;
 
 namespace SWSA.MvcPortal.Controllers.Templates;
 
-[Route("audit-templates")]
+[Route("templates/audit")]
 public class AuditTemplateController(
    AppDbContext db
     ) : BaseController

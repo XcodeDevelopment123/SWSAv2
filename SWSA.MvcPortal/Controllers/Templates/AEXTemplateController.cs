@@ -6,7 +6,7 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Controllers.Templates;
 
 
-[Route("aex-templates")]
+[Route("templates/aex")]
 public class AEXTemplateController(
    AppDbContext db
     ) : BaseController

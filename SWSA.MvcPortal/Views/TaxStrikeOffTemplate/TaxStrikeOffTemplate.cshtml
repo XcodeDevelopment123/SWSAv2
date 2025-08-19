@@ -1,0 +1,293 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities.Templates
+@model List<TaxStrikeOffTemplate>
+
+@{
+    ViewData["Title"] = "Tax Strike Off Template";
+}
+
+<h3>Strike Off (Tax Dept)</h3>
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th rowspan="3">Ref</th>
+                            <th rowspan="3">Company Name</th>
+                            <th rowspan="3">Year End</th>
+
+                            <th colspan="10">Tax Dept</th>
+                            <th rowspan="3">Action</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Penalties</th>
+                            <th colspan="4"></th>
+                            <th colspan="2">Biling</th>
+                            <th rowspan="2">Clients Copy Sent</th>
+                        </tr>
+                        <tr>
+                            <th>IRB Penalties</th>
+                            <th>Appeal Date</th>
+                            <th>Payment Date</th>
+
+                            <th>Remarks</th>
+                            <th>Account work done</th>
+
+                            <th>Form E Submitted date</th>
+                            <th>Form C Submitted date</th>
+                            <th>Invoice Date</th>
+                            <th>Amount(RM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td>@data.Client.Referral</td>
+                                    <td>@data.Client.Name</td>
+                                    <td>@data.Client.YearEndMonth?.GetDisplayName()</td>
+
+                                    <td>@data.IRBPenaltiesAmount</td>
+                                    <td>@data.PenaltiesAppealDate.ToFormattedString()</td>
+                                    <td>@data.PenaltiesPaymentDate.ToFormattedString()</td>
+
+                                    <td>@data.Remarks</td>
+                                    <td>@(data.IsAccountWorkComplete ? "✓" : "")</td>
+                                    <td>@data.FormESubmitDate.ToFormattedString()</td>
+                                    <td>@data.FormCSubmitDate.ToFormattedString()</td>
+                                    <td>@data.InvoiceDate.ToFormattedString()</td>
+                                    <td>@data.InvoiceAmount</td>
+                                    <td>@(data.IsClientCopySent ? "✓" : "")</td>
+
+                                    <td>
+                                        <button class="btn btn-sm btn-primary edit-task" data-id="@data.Id">Edit</button>
+                                        <button class="btn btn-sm btn-danger delete-task" data-id="@data.Id">Delete</button>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <!-- Client Selection -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientSelect">Client</label>
+                                <select id="clientSelect" name="clientSelect" class="form-control select2" required>
+                                    <option selected disabled value="">Please select client</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEndDate">Year End</label>
+                                <div class="input-group">
+                                    <input type="text" disabled id="yearEndDate" name="yearEndDate" class="form-control" placeholder="Select date" readonly />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IRB Penalties -->
+                    <div class="form-info-label col-12">
+                        <label>IRB Penalties</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="irbPenaltiesAmount">IRB Penalties Amount</label>
+                                <input id="irbPenaltiesAmount" name="irbPenaltiesAmount" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="penaltiesAppealDate">Penalties Appeal Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="penaltiesAppealDate" name="penaltiesAppealDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="penaltiesPaymentDate">Penalties Payment Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="penaltiesPaymentDate" name="penaltiesPaymentDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea id="remarks" name="remarks" class="form-control" rows="3" placeholder="Enter remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Status -->
+                    <div class="form-info-label col-12">
+                        <label>Work Status</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" id="isAccountWorkComplete" name="isAccountWorkComplete" class="form-check-input" />
+                                    <label class="form-check-label" for="isAccountWorkComplete">Account Work Complete</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Submissions -->
+                    <div class="form-info-label col-12">
+                        <label>Form Submissions</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formESubmitDate">Form E Submit Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="formESubmitDate" name="formESubmitDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCSubmitDate">Form C Submit Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="formCSubmitDate" name="formCSubmitDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Information -->
+                    <div class="form-info-label col-12">
+                        <label>Invoice Information</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="invoiceDate">Invoice Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="invoiceAmount">Invoice Amount</label>
+                                <input id="invoiceAmount" name="invoiceAmount" class="form-control" type="number" step="0.01" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" id="isClientCopySent" name="isClientCopySent" class="form-check-input" />
+                                    <label class="form-check-label" for="isClientCopySent">Client Copy Sent</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/templates/tax-strike-off-template.js" asp-append-version="true"></script>
+}
