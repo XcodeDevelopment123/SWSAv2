@@ -35,47 +35,5 @@ public class DocumentController(
         return View(documents);
     }
     #endregion
-    //[Route("docs")]
-    //public async Task<IActionResult> List()
-    //{
-    //    var documents = await service.GetDocumentRecords();
-    //    return View(documents);
-    //}
-
-    //[Route("{companyId}/docs/create")]
-    //public async Task<IActionResult> Create([FromRoute] int companyId)
-    //{
-    //    var cp = await companyService.GetCompanySimpleInfoVMByIdAsync(companyId);
-    //    var staff = await userService.GetUserSelectionAsync();
-    //    var vm = new DocumentRecordCreatePageVM(cp, staff);
-    //    return View(vm);
-    //}
-
-
-
-    //#region API/Ajax
-    //[InternalAjaxOnly]
-    //[HttpPost("submit-doc-record")]
-    //public async Task<IActionResult> CreateDocument(DocumentRecordRequest req)
-    //{
-    //    var result = await service.CreateDocument(req);
-    //    return Ok(result);
-    //}
-
-    //[InternalAjaxOnly]
-    //[HttpPost("docs/create")]
-    //public async Task<IActionResult> CreateDocuments([FromForm] DocumentRecordListRequest req, List<IFormFile> files)
-    //{
-    //    var result = await service.CreateDocuments(req, files);
-    //    return Ok(result);
-    //}
-
-    //[InternalAjaxOnly]
-    //[HttpDelete("{docId}/delete")]
-    //public async Task<IActionResult> Delete([FromRoute] int docId)
-    //{
-    //    var result = await service.Delete(docId);
-    //    return Ok(result);
-    //}
-    //#endregion
+ 
 }
