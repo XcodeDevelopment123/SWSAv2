@@ -37,12 +37,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     #region Template
     internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
     internal DbSet<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; }
+    internal DbSet<TaxStrikeOffTemplate> TaxStrikeOffTemplates { get; set; }
     internal DbSet<AuditTemplate> AuditTemplates { get; set; }
+    internal DbSet<AEXTemplate> AEXTemplates { get; set; }
 
     #endregion
 
     #region BackLogs
     internal DbSet<AuditBacklogSchedule> AuditBacklogSchedules { get; set; }
+    internal DbSet<AEXBacklog> AEXBcklogs { get; set; }
 
     #endregion
 
