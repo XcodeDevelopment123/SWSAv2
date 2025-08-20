@@ -3,7 +3,6 @@ using SWSA.MvcPortal.Entities;
 using SWSA.MvcPortal.Entities.Backlogs;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Entities.Contacts;
-using SWSA.MvcPortal.Entities.Reminders;
 using SWSA.MvcPortal.Entities.Systems;
 using SWSA.MvcPortal.Entities.Templates;
 namespace SWSA.MvcPortal.Persistence;
@@ -30,9 +29,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
 
-    #region  Reminders
-    internal DbSet<Reminder> Reminders { get; set; }
-    #endregion
 
     #region Template
     internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
@@ -88,15 +84,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(c => c.JobKey);
 
             entity.HasIndex(c => new { c.JobGroup, c.JobKey }).IsUnique();
-        });
-
-        // Reminder Configuration
-        modelBuilder.Entity<Reminder>(entity =>
-        {
-            entity.HasIndex(r => new { r.TargetAt, r.Status });
-            entity.HasIndex(r => r.ScheduledWorkAllocationId);
-
-            entity.Property(r => r.Title).HasMaxLength(200).IsRequired();
         });
 
         base.OnModelCreating(modelBuilder);
