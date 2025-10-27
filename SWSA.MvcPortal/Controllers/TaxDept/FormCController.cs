@@ -8,5 +8,21 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
         {
             return View();
         }
+
+        public IActionResult TaxDeptWorkSchedule()
+        {
+            return View();
+        }
+
+        public IActionResult TaxWorkLogbook()
+        {
+            return View();
+        }
+
+        public IActionResult StrikeOffTaxWork()
+        {
+            return View();
+        }
+
     }
 }

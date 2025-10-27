@@ -37,23 +37,23 @@
 
 
 @{
-	        /*
-	        var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-	        var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-	        var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+		        /*
+		        var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+		        var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+		        var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-	        var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-	        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-	        var submissionNav = new List<string> { };
-	        */
+		        var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+		        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+		        var submissionNav = new List<string> { };
+		        */
 
-	        // 临时使用默认值
-	        var currentController = new ControllerInfo("Home");
-	        var currentAction = new ActionInfo("Index");
-	        var currentClientType = new ActionInfo("");
-	        var url = Context.Request.Path.ToString();
-	        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-	        var submissionNav = new List<string> { };
+		        // 临时使用默认值
+		        var currentController = new ControllerInfo("Home");
+		        var currentAction = new ActionInfo("Index");
+		        var currentClientType = new ActionInfo("");
+		        var url = Context.Request.Path.ToString();
+		        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+		        var submissionNav = new List<string> { };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -817,7 +817,91 @@
 							</ul>
 						</li>
 
+						<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+							<a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
+								<span class="nav-icon">8</span>
+								<p>
+									Others
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
 
+							<ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
+
+								<li class="nav-item">
+									<a href="/FormC/TaxDeptWorkSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											Tax Dept Work Schedule
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/FormC/TaxWorkLogbook" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											Tax Work Logbook
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/FormC/StrikeOffTaxWork" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											Strike Off Tax Work
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/AuditDept/AuditMasterSchedule" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											Audit Master Schedule
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/AuditDept/AuditMasterLogBook" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											Audit Master Log Book
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/AuditDept/AT32Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											AT32 Audit
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/AuditDept/AT33Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											AT33 Audit
+										</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="/AuditDept/AT34Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+										<span class="nav-icon "></span>
+										<p>
+											AT34 Audit
+										</p>
+									</a>
+								</li>
+							</ul>
+
+						</li>
 
 						<li class="nav-header">Users & Systems</li>
 

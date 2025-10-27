@@ -20,5 +20,28 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         {
             return View();
         }
+
+        public IActionResult AuditMasterSchedule()
+        {
+            return View();
+        }
+
+        public IActionResult AuditMasterLogBook()
+        {
+            return View();
+        }
+
+        public IActionResult AT32Audit()
+        {
+            return View();
+        }
+        public IActionResult AT33Audit()
+        {
+            return View();
+        }
+        public IActionResult AT34Audit()
+        {
+            return View();
+        }
     }
 }
