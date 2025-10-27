@@ -1,0 +1,498 @@
+﻿@{
+    ViewData["Title"] = "Audit Aex Template";
+}
+
+<h1>Audit Aex Template</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <!-- 第一行：主标题 -->
+                        <tr>
+                            <th colspan="11"></th>
+                            <th colspan="17">AT3.2 Audit Work done WIP</th>
+                            <th colspan="14"></th>
+                        </tr>
+
+                        <tr>
+                            <th colspan="11"></th>
+                            <th colspan="4">Audit WIP (days)</th>
+                            <th colspan="6">Audit Work WIP %</th>
+                            <th colspan="7">Review</th>
+                            <th colspan="4">AT3.3 Audit Reports from KK</th>
+                            <th colspan="4">AT3.4 Directors' signing pages</th>
+                            <th colspan="2">4. Tax Dept</th>
+                            <th colspan="2">5. Sec Dept</th>
+                            <th colspan="2">6. Post Audit Work</th>
+                        </tr>
+
+                        <tr>
+                            <th rowspan="3">No</th>
+                            <th rowspan="3">Company Name</th>
+                            <th rowspan="3">Activity</th>
+                            <th rowspan="3">YE to do</th>
+                            <th rowspan="3">Quarter to do</th>
+                            <th rowspan="3">PIC</th>
+                            <th rowspan="3">Status</th>
+
+                            <th colspan="2">Est current yr result '000</th>
+                            <th colspan="2">Billing</th>
+
+                            <th rowspan="3">a. Start Date</th>
+                            <th rowspan="3">b. As at</th>
+                            <th rowspan="3">c. No of Days</th>
+                            <th rowspan="3">Result Over/Under</th>
+
+                            <th colspan="2">A. Prog tracker %</th>
+                            <th colspan="2">B. Task %</th>
+                            <th colspan="2">A+B+C</th>
+
+                            <th colspan="3">Kuching 1st Review</th>
+                            <th colspan="4">2nd Review KK</th>
+
+                            <th rowspan="3">Date Sent to KK</th>
+                            <th rowspan="3">Date received AR</th>
+                            <th rowspan="3">Date of Report</th>
+                            <th rowspan="3">Date of Directors</th>
+
+                            <th rowspan="3">Date Sent</th>
+                            <th rowspan="3">Follow up dates</th>
+                            <th rowspan="3">Date received</th>
+                            <th rowspan="3">Comm of Oaths date</th>
+
+                            <th rowspan="3">Tax Due Date</th>
+                            <th rowspan="3">Pass to Tax Dept</th>
+
+                            <th rowspan="3">SSM Due Date</th>
+                            <th rowspan="3">Date pass to Sec Dept(MBRS)</th>
+
+                            <th rowspan="3">Date Binded</th>
+                            <th rowspan="3">Despatch Date to Client</th>
+                        </tr>
+
+                        <tr>
+                            <th>Revenue</th>
+                            <th>Profit/(loss)</th>
+
+                            <th>Audit Fee</th>
+                            <th>Date billed</th>
+
+                            <th>a. Acc setup(J)</th>
+                            <th>b. Ac summary(J)</th>
+
+                            <th>c. Audit Planning(PIC)</th>
+                            <th>d. Audit Execution</th>
+
+                            <th>e. Audit Completion(PIC)</th>
+                            <th>Total %</th>
+
+                            <th>Date Sent</th>
+                            <th>End Date</th>
+                            <th>A. Result Over/Under</th>
+
+                            <th>Date Sent</th>
+                            <th>End Date</th>
+                            <th>B. Result Over/Under</th>
+                            <th>Final</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>TECH SOLUTIONS SDN BHD</td>
+                            <td>Technology</td>
+                            <td>Dec 2024</td>
+                            <td>Q4</td>
+                            <td>John Doe</td>
+                            <td>In Progress</td>
+                            <td>1,500</td>
+                            <td>250</td>
+                            <td>5,000</td>
+                            <td>15/03/2025</td>
+                            <td>01/02/2025</td>
+                            <td>15/03/2025</td>
+                            <td>30</td>
+                            <td>Over</td>
+                            <td>80%</td>
+                            <td>90%</td>
+                            <td>70%</td>
+                            <td>85%</td>
+                            <td>75%</td>
+                            <td>85%</td>
+                            <td>10/03/2025</td>
+                            <td>15/03/2025</td>
+                            <td>Over</td>
+                            <td>20/03/2025</td>
+                            <td>25/03/2025</td>
+                            <td>Under</td>
+                            <td>Final</td>
+                            <td>30/03/2025</td>
+                            <td>05/04/2025</td>
+                            <td>10/04/2025</td>
+                            <td>15/04/2025</td>
+                            <td>20/04/2025</td>
+                            <td>25/04/2025</td>
+                            <td>28/04/2025</td>
+                            <td>30/04/2025</td>
+                            <td>30/04/2025</td>
+                            <td>10/05/2025</td>
+                            <td>15/05/2025</td>
+                            <td>20/05/2025</td>
+                            <td>25/05/2025</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>GLOBAL TRADING SDN BHD</td>
+                            <td>Trading</td>
+                            <td>Mar 2024</td>
+                            <td>Q1</td>
+                            <td>Jane Smith</td>
+                            <td>Completed</td>
+                            <td>2,000</td>
+                            <td>300</td>
+                            <td>6,000</td>
+                            <td>20/02/2025</td>
+                            <td>15/01/2025</td>
+                            <td>20/02/2025</td>
+                            <td>25</td>
+                            <td>Under</td>
+                            <td>95%</td>
+                            <td>85%</td>
+                            <td>90%</td>
+                            <td>80%</td>
+                            <td>95%</td>
+                            <td>90%</td>
+                            <td>05/02/2025</td>
+                            <td>10/02/2025</td>
+                            <td>Under</td>
+                            <td>15/02/2025</td>
+                            <td>20/02/2025</td>
+                            <td>Over</td>
+                            <td>Final</td>
+                            <td>25/02/2025</td>
+                            <td>02/03/2025</td>
+                            <td>08/03/2025</td>
+                            <td>12/03/2025</td>
+                            <td>15/03/2025</td>
+                            <td>18/03/2025</td>
+                            <td>20/03/2025</td>
+                            <td>22/03/2025</td>
+                            <td>25/03/2025</td>
+                            <td>28/03/2025</td>
+                            <td>30/03/2025</td>
+                            <td>05/04/2025</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Audit AEX Template Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <!-- Basic Information -->
+                    <div class="form-info-label col-12">
+                        <label>Basic Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activity">Activity</label>
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yeToDo">YE to do</label>
+                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year end" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quarterToDo">Quarter to do</label>
+                                <select id="quarterToDo" name="quarterToDo" class="form-control">
+                                    <option value="">Select Quarter</option>
+                                    <option value="Q1">Q1</option>
+                                    <option value="Q2">Q2</option>
+                                    <option value="Q3">Q3</option>
+                                    <option value="Q4">Q4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pic">PIC</label>
+                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Information -->
+                    <div class="form-info-label col-12">
+                        <label>Financial Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="revenue">Revenue ('000)</label>
+                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="profitLoss">Profit/(Loss) ('000)</label>
+                                <input type="number" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditFee">Audit Fee</label>
+                                <input type="number" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateBilled">Date Billed</label>
+                                <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audit WIP (days) -->
+                    <div class="form-info-label col-12">
+                        <label>Audit WIP (days)</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">a. Start Date</label>
+                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="asAtDate">b. As at</label>
+                                <input type="text" id="asAtDate" name="asAtDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="noOfDays">c. No of Days</label>
+                                <input type="number" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="resultOverUnder">Result Over/Under</label>
+                                <select id="resultOverUnder" name="resultOverUnder" class="form-control">
+                                    <option value="">Select Result</option>
+                                    <option value="Over">Over</option>
+                                    <option value="Under">Under</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audit Work WIP % -->
+                    <div class="form-info-label col-12">
+                        <label>Audit Work WIP %</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="accSetup">a. Acc setup(J) %</label>
+                                <input type="number" id="accSetup" name="accSetup" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="acSummary">b. Ac summary(J) %</label>
+                                <input type="number" id="acSummary" name="acSummary" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditPlanning">c. Audit Planning(PIC) %</label>
+                                <input type="number" id="auditPlanning" name="auditPlanning" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditExecution">d. Audit Execution %</label>
+                                <input type="number" id="auditExecution" name="auditExecution" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditCompletion">e. Audit Completion(PIC) %</label>
+                                <input type="number" id="auditCompletion" name="auditCompletion" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="totalPercentage">Total %</label>
+                                <input type="number" id="totalPercentage" name="totalPercentage" class="form-control" placeholder="Enter total percentage" min="0" max="100" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Section -->
+                    <div class="form-info-label col-12">
+                        <label>Review</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="firstReviewSent">1st Review Date Sent</label>
+                                <input type="text" id="firstReviewSent" name="firstReviewSent" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="firstReviewEnd">1st Review End Date</label>
+                                <input type="text" id="firstReviewEnd" name="firstReviewEnd" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="firstReviewResult">1st Review Result</label>
+                                <select id="firstReviewResult" name="firstReviewResult" class="form-control">
+                                    <option value="">Select Result</option>
+                                    <option value="Over">Over</option>
+                                    <option value="Under">Under</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="secondReviewSent">2nd Review Date Sent</label>
+                                <input type="text" id="secondReviewSent" name="secondReviewSent" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="secondReviewEnd">2nd Review End Date</label>
+                                <input type="text" id="secondReviewEnd" name="secondReviewEnd" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="secondReviewResult">2nd Review Result</label>
+                                <select id="secondReviewResult" name="secondReviewResult" class="form-control">
+                                    <option value="">Select Result</option>
+                                    <option value="Over">Over</option>
+                                    <option value="Under">Under</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional dates can be added as needed -->
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 初始化日期选择器
+            $('input[type="text"]').filter(function() {
+                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
+                       $(this).attr('id') && $(this).attr('id').includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true
+            });
+
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+        });
+    </script>
+}

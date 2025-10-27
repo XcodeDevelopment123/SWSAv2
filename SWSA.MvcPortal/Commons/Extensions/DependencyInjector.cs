@@ -67,18 +67,18 @@ public static class DependencyInjector
         {
             options.Filters.Add<LoginSessionFilter>();
         }).AddNewtonsoftJson(options =>
-           {
-               options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-               options.SerializerSettings.Converters.Add(new DisplayEnumConverter());
-           });
+        {
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.Converters.Add(new DisplayEnumConverter());
+        });
 
         services.AddSession(options =>
-          {
-              options.IdleTimeout = TimeSpan.FromMinutes(60);
-              options.Cookie.HttpOnly = true; //Avoid XSS
-              options.Cookie.IsEssential = true;
-              options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Only Https working
-          });
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(60);
+            options.Cookie.HttpOnly = true; //Avoid XSS
+            options.Cookie.IsEssential = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Only Https working
+        });
 
         services.AddMemoryCache();
         services.AddSingleton(new MemoryCacheEntryOptions
@@ -164,7 +164,7 @@ public static class DependencyInjector
         services.AddScoped<ISystemAuditLogService, SystemAuditLogService>();
         services.AddScoped<ISystemNotificationLogService, SystemNotificationLogService>();
         services.AddScoped<IUserService, UserService>();
-   
+
         //#Service DI end
 
         //Factory
@@ -198,7 +198,7 @@ public static class DependencyInjector
         //  {
         //      client.BaseAddress = new Uri("baseUrl");
         //  });
-        services.AddHttpClient<WappySender>("WappyClient",(serviceProvider, client) =>
+        services.AddHttpClient<WappySender>("WappyClient", (serviceProvider, client) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<WappySettings>>();
             var token = options.Value.ApiToken;

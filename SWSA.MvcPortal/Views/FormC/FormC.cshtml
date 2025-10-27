@@ -1,0 +1,331 @@
+﻿@{
+    ViewData["Title"] = "FormC";
+}
+
+<h1>FormC</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <!-- 第一行：主标题 -->
+                        <tr>
+                            <th colspan="3">TX Tax Scheduling</th>
+                            <th colspan="3">Tax WIP</th>
+                            <th colspan="3">Tax work process(Date Done)</th>
+
+                            <!-- 修改这里：合并为一个单元格，跨2行 -->
+                            <th rowspan="2">Tax payable RM</th>
+
+                            <th colspan="2">Review by MC</th>
+                            <th colspan="2">Date to Client</th>
+
+                            <th rowspan="2">Tax payment date</th>
+                            <th rowspan="2">Form C submitted Date</th>
+
+                            <th colspan="2">Billing</th>
+                            <th colspan="2">Binding Date</th>
+                            <th rowspan="2">Job Completed</th>
+                        </tr>
+
+                        <!-- 第二行：细分标题 -->
+                        <tr>
+                            <th rowspan="1">Tax Due Date</th>
+                            <th rowspan="1">Est Quarter to do</th>
+                            <th rowspan="1">Date mgmt acc available</th>
+
+                            <th rowspan="1">a. Start Date</th>
+                            <th rowspan="1">b. End Date</th>
+                            <th rowspan="1">No of days</th>
+
+                            <th rowspan="1">P&L Analysis</th>
+                            <th rowspan="1">CA & Tax compu</th>
+                            <th rowspan="1">Draft Form C</th>
+
+                            <!-- 这里不再需要单独的单元格，因为已经在上面的行中合并 -->
+
+                            <th rowspan="1">Tax comp/CA</th>
+                            <th rowspan="1">Form C</th>
+
+                            <th rowspan="1">Sent</th>
+                            <th rowspan="1">Received</th>
+
+                            <!-- 这里不再需要单独的单元格 -->
+
+                            <th rowspan="1">Inv Date</th>
+                            <th rowspan="1">Fees</th>
+
+                            <th rowspan="1">Printing</th>
+                            <th rowspan="1">Despatch</th>
+
+                            <!-- 这里不再需要单独的单元格 -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 示例数据行 -->
+                        <tr>
+                            <td>2023-04-30</td>
+                            <td>Q2</td>
+                            <td>2023-03-15</td>
+                            <td>2023-03-20</td>
+                            <td>2023-04-10</td>
+                            <td>21</td>
+                            <td>2023-04-05</td>
+                            <td>2023-04-08</td>
+                            <td>2023-04-12</td>
+                            <td>15,000</td>
+                            <td>2023-04-15</td>
+                            <td>2023-04-18</td>
+                            <td>2023-04-20</td>
+                            <td>2023-04-22</td>
+                            <td>2023-04-25</td>
+                            <td>2023-04-28</td>
+                            <td>2023-05-02</td>
+                            <td>5,000</td>
+                            <td>2023-05-05</td>
+                            <td>2023-05-08</td>
+                            <td>Yes</td>
+                        </tr>
+                        <!-- 可以添加更多数据行，所有数据都会显示 -->
+                        <tr>
+                            <td>2023-07-31</td>
+                            <td>Q3</td>
+                            <td>2023-06-15</td>
+                            <td>2023-06-20</td>
+                            <td>2023-07-10</td>
+                            <td>20</td>
+                            <td>2023-07-05</td>
+                            <td>2023-07-08</td>
+                            <td>2023-07-12</td>
+                            <td>18,000</td>
+                            <td>2023-07-15</td>
+                            <td>2023-07-18</td>
+                            <td>2023-07-20</td>
+                            <td>2023-07-22</td>
+                            <td>2023-07-25</td>
+                            <td>2023-07-28</td>
+                            <td>2023-08-02</td>
+                            <td>6,000</td>
+                            <td>2023-08-05</td>
+                            <td>2023-08-08</td>
+                            <td>Yes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Form C Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="taxDueDate">Tax Due Date</label>
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="estQuarterToDo">Est Quarter to do</label>
+                                <input type="text" id="estQuarterToDo" name="estQuarterToDo" class="form-control" placeholder="Enter quarter" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateMgmtAccAvailable">Date mgmt acc available</label>
+                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">a. Start Date</label>
+                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="endDate">b. End Date</label>
+                                <input type="text" id="endDate" name="endDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="noOfDays">No of days</label>
+                                <input type="text" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="plAnalysis">P&L Analysis</label>
+                                <input type="text" id="plAnalysis" name="plAnalysis" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="caTaxCompu">CA & Tax compu</label>
+                                <input type="text" id="caTaxCompu" name="caTaxCompu" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="draftFormC">Draft Form C</label>
+                                <input type="text" id="draftFormC" name="draftFormC" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="taxPayableRM">Tax payable RM</label>
+                                <input type="text" id="taxPayableRM" name="taxPayableRM" class="form-control" placeholder="Enter amount" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="taxCompCA">Tax comp/CA</label>
+                                <input type="text" id="taxCompCA" name="taxCompCA" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formCReview">Form C</label>
+                                <input type="text" id="formCReview" name="formCReview" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sentToClient">Sent</label>
+                                <input type="text" id="sentToClient" name="sentToClient" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="receivedFromClient">Received</label>
+                                <input type="text" id="receivedFromClient" name="receivedFromClient" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="taxPaymentDate">Tax payment date</label>
+                                <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCSubmittedDate">Form C submitted Date</label>
+                                <input type="text" id="formCSubmittedDate" name="formCSubmittedDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="invDate">Inv Date</label>
+                                <input type="text" id="invDate" name="invDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fees">Fees</label>
+                                <input type="text" id="fees" name="fees" class="form-control" placeholder="Enter fees" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="printingDate">Printing</label>
+                                <input type="text" id="printingDate" name="printingDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="despatchDate">Despatch</label>
+                                <input type="text" id="despatchDate" name="despatchDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="jobCompleted">Job Completed</label>
+                                <input type="text" id="jobCompleted" name="jobCompleted" class="form-control" placeholder="Enter status" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+        });
+    </script>
+}

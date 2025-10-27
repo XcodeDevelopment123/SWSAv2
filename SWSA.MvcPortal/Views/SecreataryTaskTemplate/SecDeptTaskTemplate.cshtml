@@ -1,0 +1,340 @@
+﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Entities.Templates
+@model List<SecStrikeOffTemplate>
+
+@{
+    ViewData["Title"] = "Sdn Bhd Annual Return";
+}
+
+<h3>Secretary Task Template</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th colspan="4"></th>
+                            <th colspan="4">Sdn Bhd Annual Return</th>
+                            <th colspan="4">LLP Annual Declaration</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="3">Sec file no</th>
+                            <th colspan="3">Co Information</th>
+                            <th colspan="2">Actual Submission Dates</th>
+                            <th colspan="2">Sign and Return</th>
+                            <th colspan="1">Actual Submission Dates</th>
+                            <th colspan="2">AD Sign and Return</th>
+                            <th rowspan="3">Remarks</th>
+                        </tr>
+                        <tr>
+                            <!-- Co Information -->
+                            <th rowspan="2">Co Name</th>
+                            <th rowspan="2">Co Type</th>
+                            <th rowspan="2">Year End</th>
+
+                            <!-- Actual Submission Dates -->
+                            <th rowspan="3">AR Due Date<br>(anniversary mth)</th>
+                            <th rowspan="3">Date AR Submitted</th>
+
+                            <!-- AD Sign and Return -->
+                            <th rowspan="2">Date send to Client</th>
+                            <th rowspan="2">Date Returned</th>
+
+                            <!-- LLP Annual Declaration -->
+                            <th rowspan="2">Date of Annual Declaration<br>(AD) Submitted</th>
+                            <th rowspan="2">Date send to Client</th>
+                            <th rowspan="2">Date Returned</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>S001</td>
+                            <td>GLOBAL TECH SOLUTIONS SDN BHD</td>
+                            <td>Sdn Bhd</td>
+                            <td>Sep</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>21/10/2025</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分保持不变 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="secFileNo">Sec file no</label>
+                                <input type="text" id="secFileNo" name="secFileNo" class="form-control" placeholder="Enter file number" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="coType">Co Type</label>
+                                <select id="coType" name="coType" class="form-control">
+                                    <option value="Sdn Bhd">Sdn Bhd</option>
+                                    <option value="Bhd">Bhd</option>
+                                    <option value="LLP">LLP</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="coName">Co Name</label>
+                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year End</label>
+                                <select id="yearEnd" name="yearEnd" class="form-control">
+                                    <option value="">Select month</option>
+                                    <option value="Jan">Jan</option>
+                                    <option value="Feb">Feb</option>
+                                    <option value="Mar">Mar</option>
+                                    <option value="Apr">Apr</option>
+                                    <option value="May">May</option>
+                                    <option value="Jun">Jun</option>
+                                    <option value="Jul">Jul</option>
+                                    <option value="Aug">Aug</option>
+                                    <option value="Sep">Sep</option>
+                                    <option value="Oct">Oct</option>
+                                    <option value="Nov">Nov</option>
+                                    <option value="Dec">Dec</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="arDueDate">AR Due Date (anniversary mth)</label>
+                                <div class="input-group">
+                                    <input type="text" id="arDueDate" name="arDueDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>Actual Submission Dates</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateARSubmitted">Date AR Submitted</label>
+                                <div class="input-group">
+                                    <input type="text" id="dateARSubmitted" name="dateARSubmitted" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateARReturned">Date AR Returned</label>
+                                <div class="input-group">
+                                    <input type="text" id="dateARReturned" name="dateARReturned" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateSendToClient">Date send to Client</label>
+                                <div class="input-group">
+                                    <input type="text" id="dateSendToClient" name="dateSendToClient" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>AD Sign and Return</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="adSubmittedDate">Date of Annual Declaration (AD) Submitted</label>
+                                <div class="input-group">
+                                    <input type="text" id="adSubmittedDate" name="adSubmittedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="adSendToClient">Date send to Client</label>
+                                <div class="input-group">
+                                    <input type="text" id="adSendToClient" name="adSendToClient" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="adReturnedDate">Date Returned</label>
+                                <div class="input-group">
+                                    <input type="text" id="adReturnedDate" name="adReturnedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>LLP Annual Declaration</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="llpSubmittedDate">Date of Annual Declaration (AD) Submitted</label>
+                                <div class="input-group">
+                                    <input type="text" id="llpSubmittedDate" name="llpSubmittedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="llpSendToClient">Date send to Client</label>
+                                <div class="input-group">
+                                    <input type="text" id="llpSendToClient" name="llpSendToClient" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="llpReturnedDate">Date Returned</label>
+                                <div class="input-group">
+                                    <input type="text" id="llpReturnedDate" name="llpReturnedDate" class="form-control" placeholder="Select date" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea id="remarks" name="remarks" class="form-control" rows="3" placeholder="Enter remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
+
+    <script src="~/js/secertary/strike-off-template.js" asp-append-version="true"></script>
+}

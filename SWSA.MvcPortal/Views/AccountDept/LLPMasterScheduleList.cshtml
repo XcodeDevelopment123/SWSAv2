@@ -1,0 +1,340 @@
+﻿@{
+    ViewData["Title"] = "LLPMasterScheduleList";
+}
+
+<h1>LLP Master Scheduling List</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <!-- 第一行：主标题 -->
+                        <tr>
+                            <th colspan="3">Admin</th>
+                            <th colspan="8">Co Information</th>
+                            <th colspan="11">Scheduling</th>
+                        </tr>
+
+                        <!-- 第二行：细分标题 -->
+                        <tr>
+                            <th rowspan="3">Grouping</th>
+                            <th rowspan="3">Referral</th>
+                            <th rowspan="3">File No</th>
+
+                            <th rowspan="2">Co Name</th>
+                            <th rowspan="2">Year End</th>
+
+                            <th colspan="2">Registration</th>
+                            <th colspan="2">Tax Reference</th>
+                            <th colspan="2">MISC Code</th>
+
+                            <th colspan="4">Work Allocation Info</th>
+                            <th colspan="1">Audit Dept</th>
+                            <th colspan="1">Sec/Tax Dept</th>
+                            <th colspan="5">Acc Dept</th>
+                        </tr>
+
+                        <!-- 第三行：每个字段的详细标题 -->
+                        <tr>
+                            <th rowspan="2">Incorp Date</th>
+                            <th>Co #</th>
+
+                            <th>E number</th>
+                            <th>TIN number</th>
+
+                            <th>Code</th>
+                            <th>Description</th>
+
+                            <th>Service Type</th>
+                            <th>Co Status</th>
+                            <th>Active Co:Activity/size</th>
+                            <th>YE to do</th>
+
+                            <th>Audit Dept Mth to do</th>
+
+                            <th>Due Date</th>
+
+                            <th>EST Month to do</th>
+                            <th>Date Doc In</th>
+                            <th>Staff</th>
+                            <th>Allocate to Wk Sch</th>
+                            <th>Complted/Backlog</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group A</td>
+                            <td>REF001</td>
+                            <td>F001</td>
+                            <td>TECH SOLUTIONS LLP</td>
+                            <td>Dec</td>
+                            <td>15/01/2023</td>
+                            <td>CO123456</td>
+                            <td>E789012</td>
+                            <td>TIN456789</td>
+                            <td>MISC001</td>
+                            <td>Technology Services</td>
+                            <td>Full Service</td>
+                            <td>Active</td>
+                            <td>Medium</td>
+                            <td>Yes</td>
+                            <td>March</td>
+                            <td>30/04/2025</td>
+                            <td>April</td>
+                            <td>15/03/2025</td>
+                            <td>John Doe</td>
+                            <td>Yes</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>Group B</td>
+                            <td>REF002</td>
+                            <td>F002</td>
+                            <td>GLOBAL TRADING LLP</td>
+                            <td>Jun</td>
+                            <td>20/05/2022</td>
+                            <td>CO654321</td>
+                            <td>E123456</td>
+                            <td>TIN987654</td>
+                            <td>MISC002</td>
+                            <td>Trading Business</td>
+                            <td>Tax Services</td>
+                            <td>Active</td>
+                            <td>Large</td>
+                            <td>Yes</td>
+                            <td>May</td>
+                            <td>30/06/2025</td>
+                            <td>June</td>
+                            <td>20/05/2025</td>
+                            <td>Jane Smith</td>
+                            <td>Yes</td>
+                            <td>In Progress</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New LLP Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="grouping">Grouping</label>
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="referral">Referral</label>
+                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Enter referral" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fileNo">File No</label>
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="coName">Co Name</label>
+                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="incorpDate">Incorp Date</label>
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="coNumber">Co #</label>
+                                <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Enter company number" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="eNumber">E number</label>
+                                <input type="text" id="eNumber" name="eNumber" class="form-control" placeholder="Enter E number" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tinNumber">TIN number</label>
+                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Enter TIN number" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="miscCode">MISC Code</label>
+                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Enter MISC code" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="miscDescription">MISC Description</label>
+                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Enter description" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="serviceType">Service Type</label>
+                                <input type="text" id="serviceType" name="serviceType" class="form-control" placeholder="Enter service type" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="coStatus">Co Status</label>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activitySize">Active Co:Activity/size</label>
+                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Enter activity/size" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yeToDo">YE to do</label>
+                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditDeptMth">Audit Dept Mth to do</label>
+                                <input type="text" id="auditDeptMth" name="auditDeptMth" class="form-control" placeholder="Enter month" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dueDate">Due Date</label>
+                                <input type="text" id="dueDate" name="dueDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="estMonthToDo">EST Month to do</label>
+                                <input type="text" id="estMonthToDo" name="estMonthToDo" class="form-control" placeholder="Enter month" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dateDocIn">Date Doc In</label>
+                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="staff">Staff</label>
+                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="allocateToWkSch">Allocate to Wk Sch</label>
+                                <input type="text" id="allocateToWkSch" name="allocateToWkSch" class="form-control" placeholder="Enter allocation" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="completedBacklog">Completed/Backlog</label>
+                                <input type="text" id="completedBacklog" name="completedBacklog" class="form-control" placeholder="Enter status" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+        });
+    </script>
+}

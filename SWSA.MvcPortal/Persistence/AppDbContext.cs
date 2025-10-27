@@ -29,20 +29,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     internal DbSet<ScheduledJob> ScheduledJobs { get; set; }
     internal DbSet<MsicCode> MsicCodes { get; set; }
 
-
     #region Template
     internal DbSet<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; }
     internal DbSet<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; }
     internal DbSet<TaxStrikeOffTemplate> TaxStrikeOffTemplates { get; set; }
     internal DbSet<AuditTemplate> AuditTemplates { get; set; }
     internal DbSet<AEXTemplate> AEXTemplates { get; set; }
-
     #endregion
 
     #region BackLogs
     internal DbSet<AuditBacklogSchedule> AuditBacklogSchedules { get; set; }
     internal DbSet<AEXBacklog> AEXBcklogs { get; set; }
-
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -57,7 +54,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
               stored: true);
 
             entity.HasMany(c => c.SystemAuditLogs).WithOne(c => c.PerformedByUser).HasForeignKey(c => c.PerformedByUserId).OnDelete(DeleteBehavior.SetNull);
-
         });
 
         modelBuilder.Entity<BaseClient>().UseTptMappingStrategy();
@@ -84,6 +80,33 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(c => c.JobKey);
 
             entity.HasIndex(c => new { c.JobGroup, c.JobKey }).IsUnique();
+        });
+
+        // 添加 decimal 精度配置
+        modelBuilder.Entity<AEXTemplate>(entity =>
+        {
+            entity.Property(e => e.AuditFee).HasPrecision(18, 2);
+            entity.Property(e => e.Profit).HasPrecision(18, 2);
+            entity.Property(e => e.Revenue).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<AuditTemplate>(entity =>
+        {
+            entity.Property(e => e.AuditFee).HasPrecision(18, 2);
+            entity.Property(e => e.Profit).HasPrecision(18, 2);
+            entity.Property(e => e.Revenue).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<SecStrikeOffTemplate>(entity =>
+        {
+            entity.Property(e => e.PenaltiesAmount).HasPrecision(18, 2);
+            entity.Property(e => e.RevisedPenaltiesAmount).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<TaxStrikeOffTemplate>(entity =>
+        {
+            entity.Property(e => e.IRBPenaltiesAmount).HasPrecision(18, 2);
+            entity.Property(e => e.InvoiceAmount).HasPrecision(18, 2);
         });
 
         base.OnModelCreating(modelBuilder);

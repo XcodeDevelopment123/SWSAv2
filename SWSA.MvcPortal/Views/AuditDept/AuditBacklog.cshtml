@@ -1,0 +1,213 @@
+﻿@{
+    ViewData["Title"] = "AuditBacklog";
+}
+
+<h1>Audit Backlog</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <!-- 第一行：主标题 -->
+                        <tr>
+                            <th colspan="1">Group</th>
+                            <th colspan="1">Company Name</th>
+                            <th colspan="1">Quarter to Do Audit</th>
+                            <th colspan="1">Activity</th>
+                            <th colspan="1">Year End</th>
+                            <th colspan="1">Year to do</th>
+                            <th colspan="1">Move to Active/AEX Sch</th>
+                            <th colspan="1">Date Doc in</th>
+                            <th colspan="1">Acctng wk?</th>
+                            <th colspan="1">Reason why backlog</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Group A</td>
+                            <td>TECH SOLUTIONS SDN BHD</td>
+                            <td>Q4</td>
+                            <td>Technology</td>
+                            <td>Dec 2024</td>
+                            <td>2024</td>
+                            <td>Yes</td>
+                            <td>15/03/2025</td>
+                            <td>Yes</td>
+                            <td>Pending client documents</td>
+                        </tr>
+                        <tr>
+                            <td>Group B</td>
+                            <td>GLOBAL TRADING SDN BHD</td>
+                            <td>Q1</td>
+                            <td>Trading</td>
+                            <td>Mar 2024</td>
+                            <td>2024</td>
+                            <td>No</td>
+                            <td>20/05/2025</td>
+                            <td>No</td>
+                            <td>Staff allocation issue</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Audit Backlog Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="group">Group</label>
+                                <input type="text" id="group" name="group" class="form-control" placeholder="Enter group" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quarterToDoAudit">Quarter to Do Audit</label>
+                                <select id="quarterToDoAudit" name="quarterToDoAudit" class="form-control">
+                                    <option value="">Select Quarter</option>
+                                    <option value="Q1">Q1</option>
+                                    <option value="Q2">Q2</option>
+                                    <option value="Q3">Q3</option>
+                                    <option value="Q4">Q4</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="activity">Activity</label>
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do</label>
+                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year to do" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="moveToActive">Move to Active/AEX Sch</label>
+                                <select id="moveToActive" name="moveToActive" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateDocIn">Date Doc in</label>
+                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="acctngWk">Acctng wk?</label>
+                                <select id="acctngWk" name="acctngWk" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reasonBacklog">Reason why backlog</label>
+                                <input type="text" id="reasonBacklog" name="reasonBacklog" class="form-control" placeholder="Enter reason" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+
+            // 初始化日期选择器
+            $('input[type="text"]').filter(function() {
+                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
+                       $(this).attr('id') && $(this).attr('id').includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true
+            });
+        });
+    </script>
+}

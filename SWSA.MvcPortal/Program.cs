@@ -1,66 +1,86 @@
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Converters;
-
+using System.Text;
+using AspNetCoreRateLimit;
+using Serilog;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Middlewares;
-using SWSA.MvcPortal.Commons.Quartz.Services.Interfaces;
+using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.Seeders;
-using Serilog;
-using AspNetCoreRateLimit;
-
 
 try
 {
+    // 设置控制台编码支持中文
+    Console.OutputEncoding = Encoding.UTF8;
+    Console.InputEncoding = Encoding.UTF8;
+
     var builder = WebApplication.CreateBuilder(args);
-    // 必须最先配置 Configuration，决定使用哪个 appsettings 文件
+
+    // 配置 Configuration
     builder.Configuration
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables();
 
-    // 在配置好 Configuration 和 Environment 后，立刻初始化 Serilog
+    // 初始化 Serilog
     builder.Host.AddHostService();
 
+    // 注册服务
     builder.Services.AddAppSetup(builder.Configuration, builder.Environment);
     builder.Services.ConfigureSwsaDb(builder.Configuration, builder.Environment);
     builder.Services.AddSeedData();
     builder.Services.ConfigureHttpClientService(builder.Configuration);
     builder.Services.ConfigureAppService(builder.Configuration);
-    // Add services to the container.
     builder.Services.AddControllersWithViews();
-
     builder.Services.AddQuartzJobs(builder.Configuration);
+
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    // 配置 HTTP 请求管道
     if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
     }
+
     app.UseMiddleware<ExceptionMiddleware>();
     app.UseIpRateLimiting();
+
+    // 应用启动事件
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        Console.WriteLine("🚀 应用程序已成功启动");
+        Console.WriteLine($"环境: {app.Environment.EnvironmentName}");
+    });
+
+    // 数据库初始化和数据播种
     using (var scope = app.Services.CreateScope())
     {
-        var seederManager = scope.ServiceProvider.GetRequiredService<SeederManager>();
-        await seederManager.SeedAll();
+        try
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var jobScheduler = scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
-        //    await jobScheduler.ClearAllJobs();
-
-        await jobScheduler.ScheduleBackgroundJob();
-        Console.WriteLine("Background job scheduled at system startup.");
+            if (await dbContext.Database.CanConnectAsync())
+            {
+                var seederManager = scope.ServiceProvider.GetRequiredService<SeederManager>();
+                await seederManager.SeedAll();
+                Console.WriteLine("数据初始化完成");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"数据库初始化错误: {ex.Message}");
+            Log.Error(ex, "数据库初始化过程中发生错误");
+        }
     }
 
+    // 配置中间件
     app.UseHttpsRedirection();
     app.UseStaticFiles();
-
     app.UseRouting();
     app.UseSession();
     app.UseRequestLogging();
-
     app.UseAuthorization();
 
     app.MapControllerRoute(
@@ -71,6 +91,6 @@ try
 }
 catch (Exception ex)
 {
-    Log.Error(ex, "Error");
-    Log.Fatal(ex, "Application failed to start");
+    Log.Fatal(ex, "应用程序启动失败");
+    Console.WriteLine($"启动错误: {ex.Message}");
 }
