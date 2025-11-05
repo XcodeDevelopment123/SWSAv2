@@ -24,5 +24,10 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             return View();
         }
 
+        public IActionResult TX5TEMPLATE()
+        {
+            return View();
+        }
+
     }
 }

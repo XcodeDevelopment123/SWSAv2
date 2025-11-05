@@ -141,6 +141,7 @@
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.categoryInfo = adminInfo;
+        alert(`${urls.new_client}/company`);
 
         $.ajax({
             url: `${urls.new_client}/company`,

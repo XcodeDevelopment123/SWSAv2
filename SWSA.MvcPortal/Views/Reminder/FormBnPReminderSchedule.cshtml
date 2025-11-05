@@ -1,0 +1,332 @@
+﻿@{
+    ViewData["Title"] = "FormBnPReminderSchedule";
+}
+
+<h1>Form B&P Reminder Schedule</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th rowspan="3">Grouping</th>
+                            <th rowspan="3">Company Name</th>
+
+                            <th colspan="6">Planing & Allocation</th>
+
+                            <th colspan="6"></th>
+
+                            <th colspan="2">Inward Doc</th>
+                        </tr>
+
+                        <tr>
+                            <th colspan="4">Acc Wk Type</th>
+
+                            <th rowspan="2">PIC</th>
+
+                            <th colspan="1"></th>
+
+                            <th colspan="2">Mth 1 Email</th>
+                            <th colspan="2">Mth 2 Reminder PIC</th>
+                            <th colspan="2">Mth 3 Text PIC</th>
+
+                            <th rowspan="2">Date Received</th>
+                            <th rowspan="2">Note</th>
+                        </tr>
+
+                        <tr>
+                            <th>Single entry</th>
+                            <th>Full set</th>
+                            <th>Review</th>
+                            <th>Tax Only</th>
+
+                            <th>Targeted to start Acc wk</th>
+
+                            <th>Targeted Date</th>
+                            <th>Date sent</th>
+                            <th>Targeted call/text</th>
+                            <th>Date Remind</th>
+                            <th>Targeted Final Text</th>
+                            <th>Date text</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>TECH SOLUTIONS B&P</td>
+                            <td>Yes</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>John Doe</td>
+                            <td>01/05/2025</td>
+                            <td>01/06/2025</td>
+                            <td>05/06/2025</td>
+                            <td>01/07/2025</td>
+                            <td>03/07/2025</td>
+                            <td>01/06/2025</td>
+                            <td>05/06/2025</td>
+                            <td>15/06/2025</td>
+                            <td>All documents received</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>GLOBAL TRADING B&P</td>
+                            <td>No</td>
+                            <td>Yes</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>Jane Smith</td>
+                            <td>01/08/2024</td>
+                            <td>01/09/2024</td>
+                            <td>03/09/2024</td>
+                            <td>01/10/2024</td>
+                            <td>02/10/2024</td>
+                            <td>01/09/2024</td>
+                            <td>04/09/2024</td>
+                            <td>10/09/2024</td>
+                            <td>Pending bank statement</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Form B&P Reminder</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <!-- Basic Information -->
+                    <div class="form-info-label col-12">
+                        <label>Basic Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="number">No</label>
+                                <input type="text" id="number" name="number" class="form-control" placeholder="Enter number" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Planning & Allocation -->
+                    <div class="form-info-label col-12">
+                        <label>Planning & Allocation</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="singleEntry">Single entry</label>
+                                <select id="singleEntry" name="singleEntry" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="fullSet">Full set</label>
+                                <select id="fullSet" name="fullSet" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="review">Review</label>
+                                <select id="review" name="review" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="taxOnly">Tax Only</label>
+                                <select id="taxOnly" name="taxOnly" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pic">PIC</label>
+                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="targetedStartAcc">Targeted to start Acc wk</label>
+                                <input type="text" id="targetedStartAcc" name="targetedStartAcc" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Month 1 Email -->
+                    <div class="form-info-label col-12">
+                        <label>Month 1 Email</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth1TargetedDate">Targeted Date</label>
+                                <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth1DateSent">Date sent</label>
+                                <input type="text" id="mth1DateSent" name="mth1DateSent" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Month 2 Reminder PIC -->
+                    <div class="form-info-label col-12">
+                        <label>Month 2 Reminder PIC</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth2TargetedCall">Targeted call/text</label>
+                                <input type="text" id="mth2TargetedCall" name="mth2TargetedCall" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth2DateRemind">Date Remind</label>
+                                <input type="text" id="mth2DateRemind" name="mth2DateRemind" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Month 1 Text PIC -->
+                    <div class="form-info-label col-12">
+                        <label>Month 1 Text PIC</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth1TargetedFinal">Targeted Final Text</label>
+                                <input type="text" id="mth1TargetedFinal" name="mth1TargetedFinal" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mth1DateText">Date text</label>
+                                <input type="text" id="mth1DateText" name="mth1DateText" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inward Document -->
+                    <div class="form-info-label col-12">
+                        <label>Inward Document</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inwardDateReceived">Date Received</label>
+                                <input type="text" id="inwardDateReceived" name="inwardDateReceived" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="inwardNote">Note</label>
+                                <input type="text" id="inwardNote" name="inwardNote" class="form-control" placeholder="Enter note" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 初始化日期选择器
+            $('input[type="text"]').filter(function() {
+                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
+                       $(this).attr('id') && $(this).attr('id').includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true
+            });
+
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+
+            // 初始化DataTable
+            $('#taskDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries"
+                }
+            });
+        });
+    </script>
+}

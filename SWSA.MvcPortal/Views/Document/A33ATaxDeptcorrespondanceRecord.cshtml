@@ -1,0 +1,257 @@
+﻿@{
+    ViewData["Title"] = "A33ATaxDeptcorrespondanceRecord";
+}
+
+<h1>A33A Tax Dept Correspondance Record</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Item No#</th>
+                            <th colspan="2">Correspondence Received</th>
+                            <th rowspan="2">Client</th>
+
+                            <th rowspan="2">Year of Assessments</th>
+                            <th rowspan="2">Details</th>
+
+                            <th colspan="2">Action taken</th>
+
+                            <th rowspan="2">PIC</th>
+                            <th rowspan="2">Remark</th>
+
+                            <th rowspan="2">Done on</th>
+                        </tr>
+
+                        <tr>
+                            <th>Date received</th>
+                            <th>Type of Incoming</th>
+
+                            <th>Date</th>
+                            <th>Brief descritions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>15/01/2025</td>
+                            <td>Tax Assessment</td>
+                            <td>TECH SOLUTIONS SDN BHD</td>
+                            <td>2024</td>
+                            <td>Additional tax assessment notice</td>
+                            <td>20/01/2025</td>
+                            <td>Reviewed and prepared appeal letter</td>
+                            <td>John Doe</td>
+                            <td>Pending client confirmation</td>
+                            <td>25/01/2025</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>20/02/2024</td>
+                            <td>Audit Query</td>
+                            <td>GLOBAL TRADING SDN BHD</td>
+                            <td>2023</td>
+                            <td>IRB audit query on expenses</td>
+                            <td>25/02/2024</td>
+                            <td>Compiled supporting documents</td>
+                            <td>Jane Smith</td>
+                            <td>Submitted to IRB</td>
+                            <td>28/02/2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Correspondence Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <!-- Correspondence Received -->
+                    <div class="form-info-label col-12">
+                        <label>Correspondence Received</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="irbDateReceived">IRB Date received</label>
+                                <input type="text" id="irbDateReceived" name="irbDateReceived" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="typeOfIncoming">Type of Incoming</label>
+                                <select id="typeOfIncoming" name="typeOfIncoming" class="form-control">
+                                    <option value="">Select Type</option>
+                                    <option value="Tax Assessment">Tax Assessment</option>
+                                    <option value="Audit Query">Audit Query</option>
+                                    <option value="Notice">Notice</option>
+                                    <option value="Letter">Letter</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client Information -->
+                    <div class="form-info-label col-12">
+                        <label>Client Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="client">Client</label>
+                                <input type="text" id="client" name="client" class="form-control" placeholder="Enter client name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearOfAssessments">Year of Assessments</label>
+                                <input type="text" id="yearOfAssessments" name="yearOfAssessments" class="form-control" placeholder="Enter year" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="form-info-label col-12">
+                        <label>Details</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="details">Details</label>
+                                <textarea id="details" name="details" class="form-control" placeholder="Enter details" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Taken -->
+                    <div class="form-info-label col-12">
+                        <label>Action Taken</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="actionDate">Date</label>
+                                <input type="text" id="actionDate" name="actionDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="briefDescriptions">Brief descriptions</label>
+                                <input type="text" id="briefDescriptions" name="briefDescriptions" class="form-control" placeholder="Enter brief description" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PIC and Remark -->
+                    <div class="form-info-label col-12">
+                        <label>PIC and Remark</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pic">PIC</label>
+                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="remark">Remark</label>
+                                <input type="text" id="remark" name="remark" class="form-control" placeholder="Enter remark" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completion -->
+                    <div class="form-info-label col-12">
+                        <label>Completion</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="doneOn">Done on</label>
+                                <input type="text" id="doneOn" name="doneOn" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 初始化日期选择器
+            $('input[type="text"]').filter(function() {
+                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
+                       $(this).attr('id') && $(this).attr('id').includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true
+            });
+
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+
+            // 初始化DataTable
+            $('#taskDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries"
+                }
+            });
+        });
+    </script>
+}

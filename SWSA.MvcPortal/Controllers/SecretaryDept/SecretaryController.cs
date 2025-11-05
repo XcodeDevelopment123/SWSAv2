@@ -19,6 +19,36 @@ public class SecretaryController(
         var data = await _tasks.Include(c => c.Client).ToListAsync();
         return View(data);
     }
+
+    [Route("mastersec")]
+    public async Task<IActionResult> SdnBhdMasterSecSchedule()
+    {
+        return View();
+    }
+
+    [Route("ARSubmisionReport")]
+    public async Task<IActionResult> ARSubmisionReport()
+    {
+        return View();
+    }
+    [Route("AASR")]
+    public async Task<IActionResult> AuditedAccSubmissionReport()
+    {
+        return View();
+    }
+
+    [Route("LLPSR")]
+    public async Task<IActionResult> LLPSubmissionReport()
+    {
+        return View();
+    }
+
+    [Route("StrikeOffSchedule")]
+    public async Task<IActionResult> StrikeOffSchedule()
+    {
+        return View();
+    }
+
     #endregion
 
     #region API/Ajax

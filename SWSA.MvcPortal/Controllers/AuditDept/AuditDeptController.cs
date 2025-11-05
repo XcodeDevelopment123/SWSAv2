@@ -31,6 +31,31 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             return View();
         }
 
+        public IActionResult AT21AuditMasterSchedule()
+        {
+            return View();
+        }
+
+        public IActionResult AT31AuditMasterLogBook()
+        {
+            return View();
+        }
+
+        public IActionResult AT32ACAWIP()
+        {
+            return View();
+        }
+
+        public IActionResult AT33AAAFSA()
+        {
+            return View();
+        }
+        public IActionResult AT34AADSP()
+        {
+            return View();
+        }
+
+
         public IActionResult AT32Audit()
         {
             return View();
@@ -40,6 +65,19 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             return View();
         }
         public IActionResult AT34Audit()
+        {
+            return View();
+        }
+
+        public IActionResult AEX41S()
+        {
+            return View();
+        }
+        public IActionResult AEX51LB()
+        {
+            return View();
+        }
+        public IActionResult AEX52WIP()
         {
             return View();
         }

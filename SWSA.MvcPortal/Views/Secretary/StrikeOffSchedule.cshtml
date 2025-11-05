@@ -1,0 +1,383 @@
+﻿@{
+    ViewData["Title"] = "StrikeOffSchedule";
+}
+
+<h1>Strike Off Schedule</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- /.card -->
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks me-2"></i>
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th rowspan="3">Ref</th>
+                            <th rowspan="3">Company Name</th>
+                            <th rowspan="3">Company No</th>
+                            <th rowspan="3">Incorp Date</th>
+                            <th rowspan="3">Year End</th>
+
+                            <th colspan="13">Sec Dept</th>
+                            <th colspan="2">Tax Dept</th>
+
+                            <th rowspan="3">Job Completed/Backlog</th>
+                        </tr>
+
+                        <tr>
+                            <th rowspan="2">Start Date</th>
+                            <th rowspan="2">Completed Date</th>
+
+                            <th colspan="2">Mgmt acc</th>
+                            <th colspan="4">SSM Penalties</th>
+
+                            <th rowspan="2">S/Off Doc send to client</th>
+                            <th rowspan="2">SSM Submission Date</th>
+                            <th rowspan="2">SSM Strike off date</th>
+
+                            <th colspan="2">SSM Status</th>
+
+                            <th rowspan="2">Date Pass to Tax Dept</th>
+                            <th rowspan="2">Form C Submission date</th>
+                        </tr>
+
+                        <tr>
+                            <th>Done by</th>
+                            <th>Completed date</th>
+                            <th>Penalties RM</th>
+                            <th>Revised Penalties</th>
+                            <th>Appeal date</th>
+                            <th>Payment date</th>
+                            <th>Remark</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>REF-001</td>
+                            <td>TECH SOLUTIONS SDN BHD</td>
+                            <td>1234567-X</td>
+                            <td>15/01/2020</td>
+                            <td>31/12/2022</td>
+                            <td>01/03/2024</td>
+                            <td>30/06/2024</td>
+                            <td>John Doe</td>
+                            <td>15/04/2024</td>
+                            <td>1,200.00</td>
+                            <td>800.00</td>
+                            <td>20/04/2024</td>
+                            <td>25/04/2024</td>
+                            <td>10/05/2024</td>
+                            <td>15/05/2024</td>
+                            <td>30/06/2024</td>
+                            <td>Approved</td>
+                            <td>Pending</td>
+                            <td>01/07/2024</td>
+                            <td>15/07/2024</td>
+                            <td>Completed</td>
+                        </tr>
+                        <tr>
+                            <td>REF-002</td>
+                            <td>GLOBAL TRADING SDN BHD</td>
+                            <td>7654321-Y</td>
+                            <td>20/03/2019</td>
+                            <td>31/03/2021</td>
+                            <td>01/02/2024</td>
+                            <td>31/05/2024</td>
+                            <td>Jane Smith</td>
+                            <td>28/03/2024</td>
+                            <td>2,500.00</td>
+                            <td>1,500.00</td>
+                            <td>05/04/2024</td>
+                            <td>15/04/2024</td>
+                            <td>20/04/2024</td>
+                            <td>25/04/2024</td>
+                            <td>31/05/2024</td>
+                            <td>In Progress</td>
+                            <td>Appeal Submitted</td>
+                            <td>01/06/2024</td>
+                            <td>Pending</td>
+                            <td>In Progress</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<!-- 模态框部分 -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Strike Off Record</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="editIndex" value="">
+
+                    <!-- Basic Information -->
+                    <div class="form-info-label col-12">
+                        <label>Basic Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="ref">Ref</label>
+                                <input type="text" id="ref" name="ref" class="form-control" placeholder="Enter reference" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="companyNo">Company No</label>
+                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Enter company number" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="incorpDate">Incorp Date</label>
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sec Dept -->
+                    <div class="form-info-label col-12">
+                        <label>Sec Dept</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="completedDate">Completed Date</label>
+                                <input type="text" id="completedDate" name="completedDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mgmt acc -->
+                    <div class="form-info-label col-12">
+                        <label>Management Account</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mgmtAccDoneBy">Done by</label>
+                                <input type="text" id="mgmtAccDoneBy" name="mgmtAccDoneBy" class="form-control" placeholder="Enter name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mgmtAccCompletedDate">Completed date</label>
+                                <input type="text" id="mgmtAccCompletedDate" name="mgmtAccCompletedDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SSM Penalties -->
+                    <div class="form-info-label col-12">
+                        <label>SSM Penalties</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="penaltiesRM">Penalties RM</label>
+                                <input type="text" id="penaltiesRM" name="penaltiesRM" class="form-control" placeholder="Enter amount" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="revisedPenalties">Revised Penalties</label>
+                                <input type="text" id="revisedPenalties" name="revisedPenalties" class="form-control" placeholder="Enter amount" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="appealDate">Appeal date</label>
+                                <input type="text" id="appealDate" name="appealDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="irb">IRB</label>
+                                <input type="text" id="irb" name="irb" class="form-control" placeholder="Enter IRB" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="paymentDate">Payment date</label>
+                                <input type="text" id="paymentDate" name="paymentDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Sec Dept Info -->
+                    <div class="form-info-label col-12">
+                        <label>Additional Sec Dept Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="soffDocSendToClient">S/Off Doc send to client</label>
+                                <input type="text" id="soffDocSendToClient" name="soffDocSendToClient" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ssmSubmissionDate">SSM Submission Date</label>
+                                <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ssmStrikeOffDate">SSM Strike off date</label>
+                                <input type="text" id="ssmStrikeOffDate" name="ssmStrikeOffDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SSM Status -->
+                    <div class="form-info-label col-12">
+                        <label>SSM Status</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmStatus">Remark</label>
+                                <input type="text" id="ssmStatus" name="ssmStatus" class="form-control" placeholder="Enter remark" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmAction">Action</label>
+                                <input type="text" id="ssmAction" name="ssmAction" class="form-control" placeholder="Enter action" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax Dept -->
+                    <div class="form-info-label col-12">
+                        <label>Tax Dept</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datePassToTaxDept">Date Pass to Tax Dept</label>
+                                <input type="text" id="datePassToTaxDept" name="datePassToTaxDept" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCSubmissionDate">Form C Submission date</label>
+                                <input type="text" id="formCSubmissionDate" name="formCSubmissionDate" class="form-control" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completion Status -->
+                    <div class="form-info-label col-12">
+                        <label>Completion Status</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="jobStatus">Job Completed/Backlog</label>
+                                <select id="jobStatus" name="jobStatus" class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Backlog">Backlog</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            // 初始化日期选择器
+            $('input[type="text"]').filter(function() {
+                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
+                       $(this).attr('id') && $(this).attr('id').includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true
+            });
+
+            // 保存按钮点击事件
+            $('#saveBtn').click(function() {
+                // 这里添加保存逻辑
+                console.log('Save button clicked');
+                $('#taskModal').modal('hide');
+            });
+
+            // 初始化DataTable
+            $('#taskDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries"
+                }
+            });
+        });
+    </script>
+}

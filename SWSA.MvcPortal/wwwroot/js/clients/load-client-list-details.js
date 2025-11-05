@@ -19,6 +19,7 @@
             url: `${urls.client}/${id}`,
             method: "GET",
             success: function (res) {
+                console.log(res);
                 if (res) {
                     updateClientDetails(res);
                 }

@@ -34,6 +34,44 @@ public class DocumentController(
         var documents = await service.GetDocumentRecordsByDepartment(DepartmentType.Account);
         return View(documents);
     }
+
+    [Route("doct-audA31A")]
+    public async Task<IActionResult> A31ADocControl()
+    {
+        return View();
+    }
+
+    [Route("doct-audA31B")]
+    public async Task<IActionResult> A31BDocControl()
+    {
+        return View();
+    }
+
+    [Route("doct-accA32A")]
+    public async Task<IActionResult> A32AcorrespondanceRecord()
+    {
+        return View();
+    }
+    
+    [Route("doct-accA32B")]
+    public async Task<IActionResult> A32BForm()
+    {
+        return View();
+    }
+
+    [Route("doct-taxA33A")]
+    public async Task<IActionResult> A33ATaxDeptcorrespondanceRecord()
+    {
+        return View();
+    }
+
+    [Route("doct-taxA33B")]
+    public async Task<IActionResult> A33BSdnBhdTaxAudit()
+    {
+        return View();
+    }
     #endregion
- 
+
+
+
 }

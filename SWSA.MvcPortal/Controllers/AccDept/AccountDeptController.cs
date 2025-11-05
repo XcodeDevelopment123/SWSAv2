@@ -41,7 +41,15 @@ namespace SWSA.MvcPortal.Controllers.AccDept
         {
             return View();
         }
-        public IActionResult FormBnPBacklog()
+        public IActionResult BP32()
+        {
+            return View();
+        }
+        public IActionResult BP33()
+        {
+            return View();
+        }
+        public IActionResult BP34()
         {
             return View();
         }
