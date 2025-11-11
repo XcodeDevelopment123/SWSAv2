@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SWSA.MvcPortal.Data.Models;
+
+public partial class Aexbcklog
+{
+    public int Id { get; set; }
+
+    public int ClientId { get; set; }
+
+    public int QuarterToDoAudit { get; set; }
+
+    public int YearToDo { get; set; }
+
+    public string? ReasonForBacklog { get; set; }
+
+    public virtual BaseCompany Client { get; set; } = null!;
+}
