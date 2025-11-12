@@ -6,16 +6,18 @@
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Tax Department Work Schedule
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -28,20 +30,18 @@
                             <th colspan="2">Current YA Est Data</th>
                             <th colspan="2">Audit WIP Info</th>
                             <th colspan="2">Doc Avail To Work</th>
+                            <th rowspan="3">Actions</th>
                         </tr>
 
                         <tr>
                             <th rowspan="2">No</th>
                             <th rowspan="2">Company Name</th>
-
                             <th colspan="2">Activity</th>
                             <th colspan="2">PIC</th>
-
                             <th rowspan="2">Year Ended</th>
                             <th rowspan="2">Tax Due Dates</th>
                             <th rowspan="2">Est Month To Do</th>
                             <th rowspan="2">Transfer to WIP TX3</th>
-
                             <th rowspan="2">Revenue</th>
                             <th rowspan="2">Net Profit</th>
                             <th rowspan="2">Start Date</th>
@@ -53,48 +53,12 @@
                         <tr>
                             <th>Activity</th>
                             <th>AEX/OT</th>
-
                             <th>RAKC</th>
                             <th>BTM</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>Technology</td>
-                            <td>AEX</td>
-                            <td>John Doe</td>
-                            <td>Jane Smith</td>
-                            <td>31 Dec 2024</td>
-                            <td>30/04/2025</td>
-                            <td>March</td>
-                            <td>Yes</td>
-                            <td>1,500,000</td>
-                            <td>250,000</td>
-                            <td>01/02/2025</td>
-                            <td>75%</td>
-                            <td>15/01/2025</td>
-                            <td>20/01/2025</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>Trading</td>
-                            <td>OT</td>
-                            <td>Mike Johnson</td>
-                            <td>Sarah Wilson</td>
-                            <td>31 Mar 2024</td>
-                            <td>30/07/2025</td>
-                            <td>May</td>
-                            <td>No</td>
-                            <td>2,000,000</td>
-                            <td>300,000</td>
-                            <td>15/03/2025</td>
-                            <td>60%</td>
-                            <td>01/03/2025</td>
-                            <td>10/03/2025</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -117,7 +81,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -126,14 +90,17 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <select id="companyName" name="companyName" class="form-control" required>
+                                    <option value="">Select Company from Audit Department</option>
+                                </select>
+                                <small class="form-text text-muted">Select company from AT31 Audit Master Log Book</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnded">Year Ended</label>
-                                <input type="text" id="yearEnded" name="yearEnded" class="form-control" placeholder="Enter year ended" />
+                                <input type="text" id="yearEnded" name="yearEnded" class="form-control" placeholder="Enter year ended (e.g., 31 Dec 2024)" />
                             </div>
                         </div>
                     </div>
@@ -188,7 +155,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -227,7 +194,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="startDate">Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -239,14 +206,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="revenue">Revenue</label>
-                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
+                                <label for="revenue">Revenue (RM)</label>
+                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="netProfit">Net Profit</label>
-                                <input type="number" id="netProfit" name="netProfit" class="form-control" placeholder="Enter net profit" />
+                                <label for="netProfit">Net Profit (RM)</label>
+                                <input type="number" id="netProfit" name="netProfit" class="form-control" placeholder="Enter net profit" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -272,13 +239,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="docPassFromAuditDept">Doc Pass fr Audit Dept</label>
-                                <input type="text" id="docPassFromAuditDept" name="docPassFromAuditDept" class="form-control" placeholder="Select date" />
+                                <input type="text" id="docPassFromAuditDept" name="docPassFromAuditDept" class="form-control datepicker" placeholder="Select date" readonly />
+                                <small class="form-text text-muted">Auto-filled from Audit Department</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateMgmtAccAvailable">Date mgmt acc available</label>
-                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -299,22 +267,342 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+            let at31Companies = [];
+
+            // 初始化 DataTable
+            initializeDataTable();
+
             // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            initializeDatePickers();
+
+            // 加载 AT31 公司数据
+            loadAT31Companies();
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveTX2Record();
+            });
+
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/tx2/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            if (response.success) {
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        }
+                    },
+                    "columns": [
+                        {
+                            "data": null,
+                            "render": function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        { "data": "companyName" },
+                        { "data": "activity" },
+                        { "data": "aexOT" },
+                        { "data": "rakc" },
+                        { "data": "btm" },
+                        { "data": "yearEnd" },
+                        { "data": "taxDueDate" },
+                        { "data": "estMthTodo" },
+                        {
+                            "data": "transferToWIPTX3",
+                            "render": function(data, type, row) {
+                                return data || 'No';
+                            }
+                        },
+                        {
+                            "data": "revenue",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        {
+                            "data": "netProfit",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        { "data": "startDate" },
+                        {
+                            "data": "totalPercent",
+                            "render": function(data, type, row) {
+                                return data ? data + '%' : '-';
+                            }
+                        },
+                        { "data": "docPassFrAuditDept" },
+                        { "data": "dateMgmtAccAvailable" },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No records available",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "(filtered from _MAX_ total entries)",
+                        "lengthMenu": "Show _MENU_ entries",
+                        "loadingRecords": "Loading...",
+                        "processing": "Processing...",
+                        "search": "Search:",
+                        "zeroRecords": "No matching records found"
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 加载 AT31 公司数据
+            function loadAT31Companies() {
+                $.get('/api/at31/get-companies', function(response) {
+                    if (response.success) {
+                        at31Companies = response.data;
+                        populateCompanyDropdown();
+                        showAlert('Successfully loaded companies from Audit Department', 'success');
+                    } else {
+                        console.error('Error loading AT31 companies:', response.message);
+                        showAlert('Warning: Could not load companies from Audit Department', 'warning');
+                    }
+                }).fail(function() {
+                    showAlert('Warning: Could not connect to Audit Department data', 'warning');
+                });
+            }
+
+            // 填充公司下拉菜单
+            function populateCompanyDropdown() {
+                const companySelect = $('#companyName');
+                companySelect.empty();
+                companySelect.append('<option value="">Select Company from Audit Department</option>');
+
+                at31Companies.forEach(company => {
+                    const displayText = company.DocInwardsDate ?
+                        `${company.CompanyName} (Doc Date: ${company.DocInwardsDate})` :
+                        company.CompanyName;
+
+                    companySelect.append(`<option value="${company.CompanyName}" data-doc-date="${company.DocInwardsDate || ''}">${displayText}</option>`);
+                });
+            }
+
+            // 公司选择变化时自动填充 Doc Pass Date
+            $(document).on('change', '#companyName', function() {
+                const selectedOption = $(this).find('option:selected');
+                const docDate = selectedOption.data('doc-date');
+                if (docDate) {
+                    $('#docPassFromAuditDept').val(docDate);
+                } else {
+                    $('#docPassFromAuditDept').val('');
+                }
+            });
+
+            // 保存 TX2 记录
+            function saveTX2Record() {
+                // 基本验证
+                if (!$('#companyName').val()) {
+                    showAlert('Please select a company name', 'warning');
+                    return;
+                }
+
+                const formData = {
+                    companyName: $('#companyName').val(),
+                    activity: $('#activity').val(),
+                    aexOT: $('#aexOt').val(),
+                    rakc: $('#rakc').val(),
+                    btm: $('#btm').val(),
+                    yearEnd: $('#yearEnded').val(),
+                    taxDueDate: $('#taxDueDate').val(),
+                    estMthTodo: $('#estMonthToDo').val(),
+                    transferToWIPTX3: $('#transferToWip').val(),
+                    revenue: $('#revenue').val(),
+                    netProfit: $('#netProfit').val(),
+                    startDate: $('#startDate').val(),
+                    totalPercent: $('#totalPercentage').val(),
+                    docPassFrAuditDept: $('#docPassFromAuditDept').val(),
+                    dateMgmtAccAvailable: $('#dateMgmtAccAvailable').val()
+                };
+
+                const url = currentEditId ? '/api/tx2/update' : '/api/tx2/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                // 显示加载状态
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload();
+                            resetForm();
+                            showAlert('Record saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error saving record: ' + error, 'danger');
+                    },
+                    complete: function() {
+                        // 恢复保存按钮状态
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                $.get(`/api/tx2/get/${id}`, function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+
+                        // 填充表单
+                        $('#companyName').val(record.companyName);
+                        $('#activity').val(record.activity);
+                        $('#aexOt').val(record.aexOT);
+                        $('#rakc').val(record.rakc);
+                        $('#btm').val(record.btm);
+                        $('#yearEnded').val(record.yearEnd);
+                        $('#taxDueDate').val(record.taxDueDate);
+                        $('#estMonthToDo').val(record.estMthTodo);
+                        $('#transferToWip').val(record.transferToWIPTX3);
+                        $('#revenue').val(record.revenue);
+                        $('#netProfit').val(record.netProfit);
+                        $('#startDate').val(record.startDate);
+                        $('#totalPercentage').val(record.totalPercent);
+                        $('#docPassFromAuditDept').val(record.docPassFrAuditDept);
+                        $('#dateMgmtAccAvailable').val(record.dateMgmtAccAvailable);
+
+                        $('#modalTitle').text('Edit Tax Dept Work Schedule Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    $.ajax({
+                        url: `/api/tx2/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload();
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New Tax Dept Work Schedule Record');
+                $('.datepicker').datepicker('update', '');
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+            // 刷新数据按钮
+            $('#refreshBtn').click(function() {
+                dataTable.ajax.reload();
+                showAlert('Data refreshed successfully!', 'info');
             });
         });
     </script>

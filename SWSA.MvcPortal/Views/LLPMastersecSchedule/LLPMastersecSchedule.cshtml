@@ -6,9 +6,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="fas fa-tasks me-2"></i>
@@ -20,63 +18,34 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <!-- Alert container for messages -->
+                <div id="alertContainer"></div>
+
+                <!-- 简化表格结构 -->
+                <table id="taskDatatable" class="table table-bordered table-striped">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="3">Admin</th>
-                            <th colspan="3">Co Information</th>
-                            <th colspan="9">Scheduling</th>
-                        </tr>
-
-                        <!-- 第二行：细分标题 -->
-                        <tr>
-                            <th rowspan="3">Grouping</th>
-                            <th rowspan="3">Referral</th>
-                            <th rowspan="3">Sec File No</th>
-                            <th rowspan="2">Co Name</th>
-                            <th rowspan="2">Year End</th>
-
-                            <th colspan="5">Work Allocation Info</th>
-                            <th colspan="2">SSM Due Dates</th>
-                            <th colspan="1"></th>
-                            <th colspan="1">SSM Due Dates</th>
-                            <th colspan="1"></th>
-                        </tr>
-
-                        <!-- 第三行：每个字段的详细标题 -->
-                        <tr>
-                            <th rowspan="2">Incorp Date</th>
+                            <th>Grouping</th>
+                            <th>Referral</th>
+                            <th>Sec File No</th>
+                            <th>Co Name</th>
+                            <th>Year End</th>
+                            <th>Incorp Date</th>
                             <th>Co Status</th>
-                            <th>Active Co: Activity/size</th>
+                            <th>Activity/size</th>
                             <th>YE to do</th>
-                            <th>Acc Mth to do</th>
-                            <th>SSM Extension Date</th>
-                            <th>Annual Declaration Due Date</th>
+                            <th>Acc Mth</th>
+                            <th>Extension Date</th>
+                            <th>AD Due Date</th>
                             <th>Acc Ready?</th>
-                            <th>Annual Declaration Submitted Date</th>
-                            <th>Job Completed/Backlog</th>
+                            <th>AD Submit Date</th>
+                            <th>Job Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Group A</td>
-                            <td>REF001</td>
-                            <td>LLP001</td>
-                            <td>TECH SOLUTIONS LLP</td>
-                            <td>Dec</td>
-                            <td>15/01/2023</td>
-                            <td>Active</td>
-                            <td>Medium</td>
-                            <td>Yes</td>
-                            <td>January</td>
-                            <td>30/04/2025</td>
-                            <td>31/03/2025</td>
-                            <td>Yes</td>
-                            <td>15/03/2025</td>
-                            <td>Completed</td>
-                        </tr>
+                        <!-- Data will be loaded from database -->
                     </tbody>
                 </table>
             </div>
@@ -99,7 +68,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="0">
 
                     <div class="row">
                         <div class="col-md-4">
@@ -127,8 +96,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coName">Co Name</label>
-                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Co Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
                             </div>
                         </div>
 
@@ -162,21 +131,14 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <div class="input-group">
-                                    <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <input type="date" id="incorpDate" name="incorpDate" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
+                                <label for="companyStatus">Co Status</label>
+                                <select id="companyStatus" name="companyStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Dormant">Dormant</option>
@@ -187,8 +149,8 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="activitySize">Active Co: Activity/size</label>
-                                <select id="activitySize" name="activitySize" class="form-control">
+                                <label for="activeCoActivitySize">Active Co: Activity/size</label>
+                                <select id="activeCoActivitySize" name="activeCoActivitySize" class="form-control">
                                     <option value="">Select Size</option>
                                     <option value="Small">Small</option>
                                     <option value="Medium">Medium</option>
@@ -201,8 +163,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <select id="yeToDo" name="yeToDo" class="form-control">
+                                <label for="yEtodo">YE to do</label>
+                                <select id="yEtodo" name="yEtodo" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
@@ -212,8 +174,8 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="accMthToDo">Acc Mth to do</label>
-                                <select id="accMthToDo" name="accMthToDo" class="form-control">
+                                <label for="acCmthTodo">Acc Mth to do</label>
+                                <select id="acCmthTodo" name="acCmthTodo" class="form-control">
                                     <option value="">Select month</option>
                                     <option value="January">January</option>
                                     <option value="February">February</option>
@@ -239,29 +201,15 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ssmExtensionDate">SSM Extension Date</label>
-                                <div class="input-group">
-                                    <input type="text" id="ssmExtensionDate" name="ssmExtensionDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <label for="ssMextensionDate">SSM Extension Date</label>
+                                <input type="date" id="ssMextensionDate" name="ssMextensionDate" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="annualDeclarationDueDate">Annual Declaration Due Date</label>
-                                <div class="input-group">
-                                    <input type="text" id="annualDeclarationDueDate" name="annualDeclarationDueDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <label for="aDdueDate">Annual Declaration Due Date</label>
+                                <input type="date" id="aDdueDate" name="aDdueDate" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -285,22 +233,15 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="annualDeclarationSubmittedDate">Annual Declaration Submitted Date</label>
-                                <div class="input-group">
-                                    <input type="text" id="annualDeclarationSubmittedDate" name="annualDeclarationSubmittedDate" class="form-control" placeholder="Select date" />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                    </div>
-                                </div>
+                                <label for="aDsubmitDate">Annual Declaration Submitted Date</label>
+                                <input type="date" id="aDsubmitDate" name="aDsubmitDate" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="jobStatus">Job Completed/Backlog</label>
-                                <select id="jobStatus" name="jobStatus" class="form-control">
+                                <label for="jobCompleted">Job Completed/Backlog</label>
+                                <select id="jobCompleted" name="jobCompleted" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Completed">Completed</option>
                                     <option value="In Progress">In Progress</option>
@@ -328,34 +269,430 @@
     <partial name="_ValidationScriptsPartial" />
     <partial name="_DatatablesScriptsPartial" />
 
+    <style>
+        .form-info-label {
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            margin: 15px 0 10px 0;
+            border-left: 4px solid #007bff;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .table th {
+            background-color: #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .table td {
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .card-body {
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        #taskDatatable {
+            width: 100%;
+            min-width: 1400px;
+        }
+
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+    </style>
+
     <script>
         $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            let table;
+            let isEditMode = false;
 
-            // 保存按钮点击事件
+            // Show alert message
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+                setTimeout(() => {
+                    const alertElement = document.querySelector('#alertContainer .alert');
+                    if (alertElement) {
+                        bootstrap.Alert.getOrCreateInstance(alertElement).close();
+                    }
+                }, 5000);
+            }
+
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString) return '-';
+                try {
+                    if (dateString.includes('/')) {
+                        return dateString;
+                    }
+                    if (dateString.includes('T')) {
+                        const date = new Date(dateString);
+                        return date.toLocaleDateString('en-GB');
+                    }
+                    return dateString;
+                } catch (e) {
+                    console.warn('Date formatting error:', e);
+                    return dateString;
+                }
+            }
+
+            // Initialize DataTable
+            function initializeDataTable() {
+                // 先销毁已存在的DataTable实例
+                if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                    $('#taskDatatable').DataTable().destroy();
+                    $('#taskDatatable tbody').empty();
+                }
+
+                table = $('#taskDatatable').DataTable({
+                    "processing": true,
+                    "serverSide": false,
+                    "ajax": {
+                        "url": "/LLPMastersecSchedule/GetAll",
+                        "type": "GET",
+                        "dataSrc": function (json) {
+                            console.log('API Response:', json);
+                            if (json.success) {
+                                console.log('Data loaded successfully, records:', json.data.length);
+                                return json.data;
+                            } else {
+                                console.error('API Error:', json.message);
+                                showAlert('Error loading data: ' + json.message, 'danger');
+                                return [];
+                            }
+                        },
+                        "error": function (xhr, error, thrown) {
+                            console.error('AJAX Error:', xhr.responseText);
+                            showAlert('Failed to load data. Please check if the API endpoint is available.', 'danger');
+                        }
+                    },
+                    "columns": [
+                        {
+                            "data": "grouping",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "referral",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "secFileNo",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "companyName",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "yearEnd",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "incorpDate",
+                            "render": function(data) {
+                                return formatDate(data);
+                            },
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "companyStatus",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "activeCoActivitySize",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "yEtodo",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "accmthTodo",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "ssMextensionDate",
+                            "render": function(data) {
+                                return formatDate(data);
+                            },
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "aDdueDate",
+                            "render": function(data) {
+                                return formatDate(data);
+                            },
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "accReady",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "aDsubmitDate",
+                            "render": function(data) {
+                                return formatDate(data);
+                            },
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "jobCompleted",
+                            "defaultContent": "-",
+                            "className": "text-center"
+                        },
+                        {
+                            "data": "id",
+                            "orderable": false,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        }
+                    ],
+                    "paging": true,
+                    "lengthChange": true,
+                    "pageLength": 10,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": false,
+                    "scrollX": false,
+                    "language": {
+                        "emptyTable": "No data available in table",
+                        "loadingRecords": "Loading...",
+                        "processing": "Processing...",
+                        "zeroRecords": "No matching records found",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "(filtered from _MAX_ total entries)",
+                        "search": "Search:",
+                        "paginate": {
+                            "first": "First",
+                            "last": "Last",
+                            "next": "Next",
+                            "previous": "Previous"
+                        },
+                        "lengthMenu": "Show _MENU_ entries"
+                    },
+                    "initComplete": function(settings, json) {
+                        console.log('DataTable initialized successfully');
+                    }
+                });
+            }
+
+            // Reset form
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                $('#recordId').val('0');
+                isEditMode = false;
+                $('#modalTitle').text('Add New Record');
+            }
+
+            // Get form data
+            function getFormData() {
+                return {
+                    Id: $('#recordId').val() ? parseInt($('#recordId').val()) : 0,
+                    Grouping: $('#grouping').val(),
+                    Referral: $('#referral').val(),
+                    SecFileNo: $('#secFileNo').val(),
+                    CompanyName: $('#companyName').val(),
+                    YearEnd: $('#yearEnd').val(),
+                    IncorpDate: $('#incorpDate').val(),
+                    CompanyStatus: $('#companyStatus').val(),
+                    ActiveCoActivitySize: $('#activeCoActivitySize').val(),
+                    YEtodo: $('#yEtodo').val(),
+                    ACCmthTodo: $('#acCmthTodo').val(),
+                    SSMextensionDate: $('#ssMextensionDate').val(),
+                    ADdueDate: $('#aDdueDate').val(),
+                    AccReady: $('#accReady').val(),
+                    ADsubmitDate: $('#aDsubmitDate').val(),
+                    JobCompleted: $('#jobCompleted').val()
+                };
+            }
+
+            // Validate form
+            function validateForm() {
+                let isValid = true;
+                const requiredFields = ['grouping', 'referral', 'secFileNo', 'companyName'];
+
+                requiredFields.forEach(field => {
+                    const value = $(`#${field}`).val().trim();
+                    if (!value) {
+                        $(`#${field}`).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(`#${field}`).removeClass('is-invalid');
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Populate form with data
+            function populateForm(data) {
+                $('#recordId').val(data.id);
+                $('#grouping').val(data.grouping || '');
+                $('#referral').val(data.referral || '');
+                $('#secFileNo').val(data.secFileNo || '');
+                $('#companyName').val(data.companyName || '');
+                $('#yearEnd').val(data.yearEnd || '');
+                $('#incorpDate').val(data.incorpDate ? data.incorpDate.split('T')[0] : '');
+                $('#companyStatus').val(data.companyStatus || '');
+                $('#activeCoActivitySize').val(data.activeCoActivitySize || '');
+                $('#yEtodo').val(data.yEtodo || '');
+                $('#acCmthTodo').val(data.accmthTodo || '');
+                $('#ssMextensionDate').val(data.ssMextensionDate ? data.ssMextensionDate.split('T')[0] : '');
+                $('#aDdueDate').val(data.aDdueDate ? data.aDdueDate.split('T')[0] : '');
+                $('#accReady').val(data.accReady || '');
+                $('#aDsubmitDate').val(data.aDsubmitDate ? data.aDsubmitDate.split('T')[0] : '');
+                $('#jobCompleted').val(data.jobCompleted || '');
+            }
+
+            // Save button click event
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                // 可以添加表单验证和数据保存逻辑
-                $('#taskModal').modal('hide');
+                if (!validateForm()) {
+                    showAlert('Please fill in all required fields', 'warning');
+                    return;
+                }
+
+                const formData = getFormData();
+                const isEdit = formData.Id && formData.Id !== 0;
+                const url = isEdit ? '/LLPMastersecSchedule/Update' : '/LLPMastersecSchedule/Create';
+
+                console.log('Saving data:', formData);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        console.log('Save response:', response);
+                        if (response.success) {
+                            showAlert(response.message, 'success');
+                            $('#taskModal').modal('hide');
+                            // 重新加载数据
+                            table.ajax.reload(null, false);
+                        } else {
+                            showAlert('Error: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Save error:', xhr.responseText);
+                        showAlert('Error: ' + (xhr.responseJSON?.message || error), 'danger');
+                    }
+                });
             });
 
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({a
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true
+            // Edit button click event
+            $('#taskDatatable').on('click', '.edit-btn', function () {
+                const id = $(this).data('id');
+                isEditMode = true;
+                $('#modalTitle').text('Edit Record');
+
+                $.ajax({
+                    url: '/LLPMastersecSchedule/GetById?id=' + id,
+                    type: 'GET',
+                    success: function (response) {
+                        console.log('Edit response:', response);
+                        if (response.success) {
+                            populateForm(response.data);
+                            $('#taskModal').modal('show');
+                        } else {
+                            showAlert('Error: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Edit error:', xhr.responseText);
+                        showAlert('Error: ' + error, 'danger');
+                    }
+                });
             });
+
+            // Delete button click event
+            $('#taskDatatable').on('click', '.delete-btn', function () {
+                const id = $(this).data('id');
+
+                if (confirm('Are you sure you want to delete this record?')) {
+                    $.ajax({
+                        url: '/LLPMastersecSchedule/Delete?id=' + id,
+                        type: 'POST',
+                        success: function (response) {
+                            console.log('Delete response:', response);
+                            if (response.success) {
+                                showAlert(response.message, 'success');
+                                table.ajax.reload(null, false);
+                            } else {
+                                showAlert('Error: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Delete error:', xhr.responseText);
+                            showAlert('Error: ' + error, 'danger');
+                        }
+                    });
+                }
+            });
+
+            // Modal events
+            $('#taskModal').on('show.bs.modal', function () {
+                if (!isEditMode) {
+                    resetForm();
+                }
+            });
+
+            $('#taskModal').on('hidden.bs.modal', function () {
+                resetForm();
+            });
+
+            // Remove validation on input
+            $('input, select').on('input change', function() {
+                $(this).removeClass('is-invalid');
+            });
+
+            // Initialize the DataTable
+            initializeDataTable();
         });
     </script>
 }

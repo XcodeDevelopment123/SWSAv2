@@ -6,16 +6,18 @@
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Form C Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -28,19 +30,15 @@
                             <th colspan="3">TX Tax Scheduling</th>
                             <th colspan="3">Tax WIP</th>
                             <th colspan="3">Tax work process(Date Done)</th>
-
-                            <!-- 修改这里：合并为一个单元格，跨2行 -->
                             <th rowspan="2">Tax payable RM</th>
-
                             <th colspan="2">Review by MC</th>
                             <th colspan="2">Date to Client</th>
-
                             <th rowspan="2">Tax payment date</th>
                             <th rowspan="2">Form C submitted Date</th>
-
                             <th colspan="2">Billing</th>
                             <th colspan="2">Binding Date</th>
                             <th rowspan="2">Job Completed</th>
+                            <th rowspan="2">Actions</th>
                         </tr>
 
                         <!-- 第二行：细分标题 -->
@@ -48,83 +46,24 @@
                             <th rowspan="1">Tax Due Date</th>
                             <th rowspan="1">Est Quarter to do</th>
                             <th rowspan="1">Date mgmt acc available</th>
-
                             <th rowspan="1">a. Start Date</th>
                             <th rowspan="1">b. End Date</th>
                             <th rowspan="1">No of days</th>
-
                             <th rowspan="1">P&L Analysis</th>
                             <th rowspan="1">CA & Tax compu</th>
                             <th rowspan="1">Draft Form C</th>
-
-                            <!-- 这里不再需要单独的单元格，因为已经在上面的行中合并 -->
-
                             <th rowspan="1">Tax comp/CA</th>
                             <th rowspan="1">Form C</th>
-
                             <th rowspan="1">Sent</th>
                             <th rowspan="1">Received</th>
-
-                            <!-- 这里不再需要单独的单元格 -->
-
                             <th rowspan="1">Inv Date</th>
                             <th rowspan="1">Fees</th>
-
                             <th rowspan="1">Printing</th>
                             <th rowspan="1">Despatch</th>
-
-                            <!-- 这里不再需要单独的单元格 -->
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 示例数据行 -->
-                        <tr>
-                            <td>2023-04-30</td>
-                            <td>Q2</td>
-                            <td>2023-03-15</td>
-                            <td>2023-03-20</td>
-                            <td>2023-04-10</td>
-                            <td>21</td>
-                            <td>2023-04-05</td>
-                            <td>2023-04-08</td>
-                            <td>2023-04-12</td>
-                            <td>15,000</td>
-                            <td>2023-04-15</td>
-                            <td>2023-04-18</td>
-                            <td>2023-04-20</td>
-                            <td>2023-04-22</td>
-                            <td>2023-04-25</td>
-                            <td>2023-04-28</td>
-                            <td>2023-05-02</td>
-                            <td>5,000</td>
-                            <td>2023-05-05</td>
-                            <td>2023-05-08</td>
-                            <td>Yes</td>
-                        </tr>
-                        <!-- 可以添加更多数据行，所有数据都会显示 -->
-                        <tr>
-                            <td>2023-07-31</td>
-                            <td>Q3</td>
-                            <td>2023-06-15</td>
-                            <td>2023-06-20</td>
-                            <td>2023-07-10</td>
-                            <td>20</td>
-                            <td>2023-07-05</td>
-                            <td>2023-07-08</td>
-                            <td>2023-07-12</td>
-                            <td>18,000</td>
-                            <td>2023-07-15</td>
-                            <td>2023-07-18</td>
-                            <td>2023-07-20</td>
-                            <td>2023-07-22</td>
-                            <td>2023-07-25</td>
-                            <td>2023-07-28</td>
-                            <td>2023-08-02</td>
-                            <td>6,000</td>
-                            <td>2023-08-05</td>
-                            <td>2023-08-08</td>
-                            <td>Yes</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -147,25 +86,25 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="estQuarterToDo">Est Quarter to do</label>
-                                <input type="text" id="estQuarterToDo" name="estQuarterToDo" class="form-control" placeholder="Enter quarter" />
+                                <label for="estQuarterTodo">Est Quarter to do</label>
+                                <input type="text" id="estQuarterTodo" name="estQuarterTodo" class="form-control" placeholder="Enter quarter" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateMgmtAccAvailable">Date mgmt acc available</label>
-                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -174,13 +113,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="startDate">a. Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="endDate">b. End Date</label>
-                                <input type="text" id="endDate" name="endDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="endDate" name="endDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -194,20 +133,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="plAnalysis">P&L Analysis</label>
-                                <input type="text" id="plAnalysis" name="plAnalysis" class="form-control" placeholder="Select date" />
+                                <label for="pnLAnalysis">P&L Analysis</label>
+                                <input type="text" id="pnLAnalysis" name="pnLAnalysis" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="caTaxCompu">CA & Tax compu</label>
-                                <input type="text" id="caTaxCompu" name="caTaxCompu" class="form-control" placeholder="Select date" />
+                                <label for="cAnTaxCompu">CA & Tax compu</label>
+                                <input type="text" id="cAnTaxCompu" name="cAnTaxCompu" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="draftFormC">Draft Form C</label>
-                                <input type="text" id="draftFormC" name="draftFormC" class="form-control" placeholder="Select date" />
+                                <input type="text" id="draftFormC" name="draftFormC" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -222,13 +161,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="taxCompCA">Tax comp/CA</label>
-                                <input type="text" id="taxCompCA" name="taxCompCA" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxCompCA" name="taxCompCA" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="formCReview">Form C</label>
-                                <input type="text" id="formCReview" name="formCReview" class="form-control" placeholder="Select date" />
+                                <label for="formC">Form C</label>
+                                <input type="text" id="formC" name="formC" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -236,14 +175,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="sentToClient">Sent</label>
-                                <input type="text" id="sentToClient" name="sentToClient" class="form-control" placeholder="Select date" />
+                                <label for="sent">Sent</label>
+                                <input type="text" id="sent" name="sent" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="receivedFromClient">Received</label>
-                                <input type="text" id="receivedFromClient" name="receivedFromClient" class="form-control" placeholder="Select date" />
+                                <label for="received">Received</label>
+                                <input type="text" id="received" name="received" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -252,13 +191,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxPaymentDate">Tax payment date</label>
-                                <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formCSubmittedDate">Form C submitted Date</label>
-                                <input type="text" id="formCSubmittedDate" name="formCSubmittedDate" class="form-control" placeholder="Select date" />
+                                <label for="formCsubmitedDate">Form C submitted Date</label>
+                                <input type="text" id="formCsubmitedDate" name="formCsubmitedDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -267,7 +206,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="invDate">Inv Date</label>
-                                <input type="text" id="invDate" name="invDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="invDate" name="invDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -281,14 +220,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="printingDate">Printing</label>
-                                <input type="text" id="printingDate" name="printingDate" class="form-control" placeholder="Select date" />
+                                <label for="printing">Printing</label>
+                                <input type="text" id="printing" name="printing" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="despatchDate">Despatch</label>
-                                <input type="text" id="despatchDate" name="despatchDate" class="form-control" placeholder="Select date" />
+                                <label for="despatch">Despatch</label>
+                                <input type="text" id="despatch" name="despatch" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -297,7 +236,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="jobCompleted">Job Completed</label>
-                                <input type="text" id="jobCompleted" name="jobCompleted" class="form-control" placeholder="Enter status" />
+                                <select id="jobCompleted" name="jobCompleted" class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    <option value="In Progress">In Progress</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -318,13 +262,263 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+
+            // 初始化 DataTable
+            initializeDataTable();
+
+            // 初始化日期选择器
+            initializeDatePickers();
+
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveFormCRecord();
+            });
+
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/formc/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            if (response.success) {
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        }
+                    },
+                    "columns": [
+                        { "data": "taxDueDate" },
+                        { "data": "estQuarterTodo" },
+                        { "data": "dateMgmtAccAvailable" },
+                        { "data": "startDate" },
+                        { "data": "endDate" },
+                        { "data": "noOfDays" },
+                        { "data": "pnLAnalysis" },
+                        { "data": "cAnTaxCompu" },
+                        { "data": "draftFormC" },
+                        { "data": "taxPayableRM" },
+                        { "data": "taxCompCA" },
+                        { "data": "formC" },
+                        { "data": "sent" },
+                        { "data": "received" },
+                        { "data": "taxPaymentDate" },
+                        { "data": "formCsubmitedDate" },
+                        { "data": "invDate" },
+                        { "data": "fees" },
+                        { "data": "printing" },
+                        { "data": "despatch" },
+                        {
+                            "data": "jobCompleted",
+                            "render": function(data, type, row) {
+                                return data || 'No';
+                            }
+                        },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ]
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 保存表单记录
+            function saveFormCRecord() {
+                const formData = {
+                    taxDueDate: $('#taxDueDate').val(),
+                    estQuarterTodo: $('#estQuarterTodo').val(),
+                    dateMgmtAccAvailable: $('#dateMgmtAccAvailable').val(),
+                    startDate: $('#startDate').val(),
+                    endDate: $('#endDate').val(),
+                    noOfDays: $('#noOfDays').val(),
+                    pnLAnalysis: $('#pnLAnalysis').val(),
+                    cAnTaxCompu: $('#cAnTaxCompu').val(),
+                    draftFormC: $('#draftFormC').val(),
+                    taxPayableRM: $('#taxPayableRM').val(),
+                    taxCompCA: $('#taxCompCA').val(),
+                    formC: $('#formC').val(),
+                    sent: $('#sent').val(),
+                    received: $('#received').val(),
+                    taxPaymentDate: $('#taxPaymentDate').val(),
+                    formCsubmitedDate: $('#formCsubmitedDate').val(),
+                    invDate: $('#invDate').val(),
+                    fees: $('#fees').val(),
+                    printing: $('#printing').val(),
+                    despatch: $('#despatch').val(),
+                    jobCompleted: $('#jobCompleted').val()
+                };
+
+                const url = currentEditId ? '/api/formc/update' : '/api/formc/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload();
+                            resetForm();
+                            showAlert('Record saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error saving record: ' + error, 'danger');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                $.get(`/api/formc/get/${id}`, function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+
+                        // 填充表单
+                        $('#taxDueDate').val(record.taxDueDate);
+                        $('#estQuarterTodo').val(record.estQuarterTodo);
+                        $('#dateMgmtAccAvailable').val(record.dateMgmtAccAvailable);
+                        $('#startDate').val(record.startDate);
+                        $('#endDate').val(record.endDate);
+                        $('#noOfDays').val(record.noOfDays);
+                        $('#pnLAnalysis').val(record.pnLAnalysis);
+                        $('#cAnTaxCompu').val(record.cAnTaxCompu);
+                        $('#draftFormC').val(record.draftFormC);
+                        $('#taxPayableRM').val(record.taxPayableRM);
+                        $('#taxCompCA').val(record.taxCompCA);
+                        $('#formC').val(record.formC);
+                        $('#sent').val(record.sent);
+                        $('#received').val(record.received);
+                        $('#taxPaymentDate').val(record.taxPaymentDate);
+                        $('#formCsubmitedDate').val(record.formCsubmitedDate);
+                        $('#invDate').val(record.invDate);
+                        $('#fees').val(record.fees);
+                        $('#printing').val(record.printing);
+                        $('#despatch').val(record.despatch);
+                        $('#jobCompleted').val(record.jobCompleted);
+
+                        $('#modalTitle').text('Edit Form C Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record?')) {
+                    $.ajax({
+                        url: `/api/formc/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload();
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New Form C Record');
+                $('.datepicker').datepicker('update', '');
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
             });
         });
     </script>

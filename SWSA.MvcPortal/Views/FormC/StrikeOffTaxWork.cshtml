@@ -6,16 +6,18 @@
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Strike Off Tax Work
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -27,22 +29,19 @@
                             <th rowspan="3">No</th>
                             <th rowspan="3">Company Name</th>
                             <th rowspan="3">Year End</th>
-
                             <th colspan="3">Sec Dept</th>
-
                             <th colspan="11">Tax Dept</th>
+                            <th rowspan="3">Actions</th>
                         </tr>
 
                         <tr>
                             <th rowspan="2">SSM Submission Date</th>
                             <th rowspan="2">Date S/Off</th>
                             <th rowspan="2">Date received fr Sec Dept</th>
-
                             <th colspan="3">Penalties</th>
                             <th colspan="2"></th>
                             <th colspan="2">IRB Submission Date</th>
                             <th colspan="2">Billing</th>
-
                             <th rowspan="2">Clients copy sent</th>
                             <th rowspan="2">Job completed date</th>
                         </tr>
@@ -51,56 +50,16 @@
                             <th>IRB Penalties</th>
                             <th>Appeal Date</th>
                             <th>Payment Date</th>
-
-                            <th>notes/Remark..</th>
+                            <th>notes/Remark</th>
                             <th>Acc wk done?</th>
-
-                            <th>Form C submmited date</th>
-                            <th>Form E submmited date</th>
-
+                            <th>Form C submitted date</th>
+                            <th>Form E submitted date</th>
                             <th>Invoice Date</th>
                             <th>Amount RM</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>31 Dec 2023</td>
-                            <td>15/01/2024</td>
-                            <td>30/03/2024</td>
-                            <td>05/04/2024</td>
-                            <td>2,500</td>
-                            <td>20/04/2024</td>
-                            <td>25/04/2024</td>
-                            <td>Pending client documents</td>
-                            <td>Yes</td>
-                            <td>15/05/2024</td>
-                            <td>20/05/2024</td>
-                            <td>25/05/2024</td>
-                            <td>3,000</td>
-                            <td>30/05/2024</td>
-                            <td>05/06/2024</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>31 Mar 2023</td>
-                            <td>20/02/2024</td>
-                            <td>15/04/2024</td>
-                            <td>20/04/2024</td>
-                            <td>1,800</td>
-                            <td>10/05/2024</td>
-                            <td>15/05/2024</td>
-                            <td>Appeal in process</td>
-                            <td>No</td>
-                            <td>30/05/2024</td>
-                            <td>05/06/2024</td>
-                            <td>10/06/2024</td>
-                            <td>2,500</td>
-                            <td>15/06/2024</td>
-                            <td>20/06/2024</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -123,7 +82,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -132,14 +91,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end (e.g., 31 Dec 2023)" />
                             </div>
                         </div>
                     </div>
@@ -152,19 +111,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ssmSubmissionDate">SSM Submission Date</label>
-                                <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateSOff">Date S/Off</label>
-                                <input type="text" id="dateSOff" name="dateSOff" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateSOff" name="dateSOff" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="dateReceivedFromSecDept">Date received fr Sec Dept</label>
-                                <input type="text" id="dateReceivedFromSecDept" name="dateReceivedFromSecDept" class="form-control" placeholder="Select date" />
+                                <label for="dateReceiveFrSecDept">Date received fr Sec Dept</label>
+                                <input type="text" id="dateReceiveFrSecDept" name="dateReceiveFrSecDept" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -176,20 +135,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="irbPenalties">IRB Penalties</label>
-                                <input type="number" id="irbPenalties" name="irbPenalties" class="form-control" placeholder="Enter amount" />
+                                <label for="irbPenalties">IRB Penalties (RM)</label>
+                                <input type="number" id="irbPenalties" name="irbPenalties" class="form-control" placeholder="Enter amount" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="appealDate">Appeal Date</label>
-                                <input type="text" id="appealDate" name="appealDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="appealDate" name="appealDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="paymentDate">Payment Date</label>
-                                <input type="text" id="paymentDate" name="paymentDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="paymentDate" name="paymentDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -201,8 +160,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="notesRemark">Notes/Remark</label>
-                                <input type="text" id="notesRemark" name="notesRemark" class="form-control" placeholder="Enter notes" />
+                                <label for="noteRemark">Notes/Remark</label>
+                                <input type="text" id="noteRemark" name="noteRemark" class="form-control" placeholder="Enter notes" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -224,14 +183,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formCSubmittedDate">Form C submitted date</label>
-                                <input type="text" id="formCSubmittedDate" name="formCSubmittedDate" class="form-control" placeholder="Select date" />
+                                <label for="formCsubmitDate">Form C submitted date</label>
+                                <input type="text" id="formCsubmitDate" name="formCsubmitDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formESubmittedDate">Form E submitted date</label>
-                                <input type="text" id="formESubmittedDate" name="formESubmittedDate" class="form-control" placeholder="Select date" />
+                                <label for="formEsubmitDate">Form E submitted date</label>
+                                <input type="text" id="formEsubmitDate" name="formEsubmitDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -244,13 +203,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="invoiceDate">Invoice Date</label>
-                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amountRM">Amount RM</label>
-                                <input type="number" id="amountRM" name="amountRM" class="form-control" placeholder="Enter amount" />
+                                <input type="number" id="amountRM" name="amountRM" class="form-control" placeholder="Enter amount" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -262,14 +221,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="clientsCopySent">Clients copy sent</label>
-                                <input type="text" id="clientsCopySent" name="clientsCopySent" class="form-control" placeholder="Select date" />
+                                <label for="clientCopySent">Clients copy sent</label>
+                                <input type="text" id="clientCopySent" name="clientCopySent" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="jobCompletedDate">Job completed date</label>
-                                <input type="text" id="jobCompletedDate" name="jobCompletedDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="jobCompletedDate" name="jobCompletedDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -290,22 +249,294 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+
+            // 初始化 DataTable
+            initializeDataTable();
+
             // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            initializeDatePickers();
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveTX4Record();
+            });
+
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/tx4/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            if (response.success) {
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        }
+                    },
+                    "columns": [
+                        {
+                            "data": null,
+                            "render": function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        { "data": "companyName" },
+                        { "data": "yearEnd" },
+                        { "data": "ssmSubmissionDate" },
+                        { "data": "dateSOff" },
+                        { "data": "dateReceiveFrSecDept" },
+                        {
+                            "data": "irbPenalties",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        { "data": "appealDate" },
+                        { "data": "paymentDate" },
+                        { "data": "noteRemark" },
+                        {
+                            "data": "accWkDone",
+                            "render": function(data, type, row) {
+                                return data || 'No';
+                            }
+                        },
+                        { "data": "formCsubmitDate" },
+                        { "data": "formEsubmitDate" },
+                        { "data": "invoiceDate" },
+                        {
+                            "data": "amountRM",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        { "data": "clientCopySent" },
+                        { "data": "jobCompletedDate" },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No records available",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "(filtered from _MAX_ total entries)",
+                        "lengthMenu": "Show _MENU_ entries",
+                        "loadingRecords": "Loading...",
+                        "processing": "Processing...",
+                        "search": "Search:",
+                        "zeroRecords": "No matching records found"
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 保存 TX4 记录
+            function saveTX4Record() {
+                // 基本验证
+                if (!$('#companyName').val()) {
+                    showAlert('Please enter company name', 'warning');
+                    return;
+                }
+
+                const formData = {
+                    companyName: $('#companyName').val(),
+                    yearEnd: $('#yearEnd').val(),
+                    ssmSubmissionDate: $('#ssmSubmissionDate').val(),
+                    dateSOff: $('#dateSOff').val(),
+                    dateReceiveFrSecDept: $('#dateReceiveFrSecDept').val(),
+                    irbPenalties: $('#irbPenalties').val(),
+                    appealDate: $('#appealDate').val(),
+                    paymentDate: $('#paymentDate').val(),
+                    noteRemark: $('#noteRemark').val(),
+                    accWkDone: $('#accWkDone').val(),
+                    formCsubmitDate: $('#formCsubmitDate').val(),
+                    formEsubmitDate: $('#formEsubmitDate').val(),
+                    invoiceDate: $('#invoiceDate').val(),
+                    amountRM: $('#amountRM').val(),
+                    clientCopySent: $('#clientCopySent').val(),
+                    jobCompletedDate: $('#jobCompletedDate').val()
+                };
+
+                const url = currentEditId ? '/api/tx4/update' : '/api/tx4/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                // 显示加载状态
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload();
+                            resetForm();
+                            showAlert('Record saved successfully! Data has been synced to Strike Off Schedule.', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error saving record: ' + error, 'danger');
+                    },
+                    complete: function() {
+                        // 恢复保存按钮状态
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                $.get(`/api/tx4/get/${id}`, function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+
+                        // 填充表单
+                        $('#companyName').val(record.companyName);
+                        $('#yearEnd').val(record.yearEnd);
+                        $('#ssmSubmissionDate').val(record.ssmSubmissionDate);
+                        $('#dateSOff').val(record.dateSOff);
+                        $('#dateReceiveFrSecDept').val(record.dateReceiveFrSecDept);
+                        $('#irbPenalties').val(record.irbPenalties);
+                        $('#appealDate').val(record.appealDate);
+                        $('#paymentDate').val(record.paymentDate);
+                        $('#noteRemark').val(record.noteRemark);
+                        $('#accWkDone').val(record.accWkDone);
+                        $('#formCsubmitDate').val(record.formCsubmitDate);
+                        $('#formEsubmitDate').val(record.formEsubmitDate);
+                        $('#invoiceDate').val(record.invoiceDate);
+                        $('#amountRM').val(record.amountRM);
+                        $('#clientCopySent').val(record.clientCopySent);
+                        $('#jobCompletedDate').val(record.jobCompletedDate);
+
+                        $('#modalTitle').text('Edit Strike Off Tax Work Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    $.ajax({
+                        url: `/api/tx4/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload();
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New Strike Off Tax Work Record');
+                $('.datepicker').datepicker('update', '');
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+            // 刷新数据按钮
+            $('#refreshBtn').click(function() {
+                dataTable.ajax.reload();
+                showAlert('Data refreshed successfully!', 'info');
             });
         });
     </script>

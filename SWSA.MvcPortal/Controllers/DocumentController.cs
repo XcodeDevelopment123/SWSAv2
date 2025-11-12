@@ -638,4 +638,537 @@ public class DocumentController(
     }
     #endregion
 
+    #region A32B API Methods
+    [HttpGet("get-a32b-records")]
+    public async Task<IActionResult> GetA32BRecords()
+    {
+        try
+        {
+            Console.WriteLine("=== Starting GetA32BRecords with Dapper ===");
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                Console.WriteLine("✅ Database connection successful");
+
+                var sql = @"SELECT 
+                        Id,
+                        CaseNo,
+                        DateReceived,
+                        Client,
+                        OfficerInCharge,
+                        TelExtension,
+                        YearAssessment,
+                        DateIRBemailLetter,
+                        DetailsCorrepondence,
+                        PIC,
+                        Date,
+                        Note
+                    FROM [Quartz].[dbo].[A32B] 
+                    ORDER BY Id DESC";
+
+                var records = await connection.QueryAsync<A32BModel>(sql);
+
+                Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
+                return Json(new { success = true, data = records });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error in GetA32BRecords: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+            return Json(new
+            {
+                success = false,
+                message = ex.Message,
+                detailed = ex.StackTrace
+            });
+        }
+    }
+
+    [HttpGet("get-a32b-record/{id}")]
+    public async Task<IActionResult> GetA32BRecord(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT 
+                        Id,
+                        CaseNo,
+                        DateReceived,
+                        Client,
+                        OfficerInCharge,
+                        TelExtension,
+                        YearAssessment,
+                        DateIRBemailLetter,
+                        DetailsCorrepondence,
+                        PIC,
+                        Date,
+                        Note
+                    FROM [Quartz].[dbo].[A32B] 
+                    WHERE Id = @Id";
+
+                var record = await connection.QueryFirstOrDefaultAsync<A32BModel>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("create-a32b")]
+    public async Task<IActionResult> CreateA32B([FromBody] A32BModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [Quartz].[dbo].[A32B] 
+                    ([CaseNo], [DateReceived], [Client], [OfficerInCharge], 
+                     [TelExtension], [YearAssessment], [DateIRBemailLetter], [DetailsCorrepondence], 
+                     [PIC], [Date], [Note])
+                    VALUES 
+                    (@CaseNo, @DateReceived, @Client, @OfficerInCharge, 
+                     @TelExtension, @YearAssessment, @DateIRBemailLetter, @DetailsCorrepondence, 
+                     @PIC, @Date, @Note);
+                    SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                return Json(new { success = true, id = id, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPut("update-a32b")]
+    public async Task<IActionResult> UpdateA32B([FromBody] A32BModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Quartz].[dbo].[A32B] SET 
+                    [CaseNo] = @CaseNo, 
+                    [DateReceived] = @DateReceived, 
+                    [Client] = @Client, 
+                    [OfficerInCharge] = @OfficerInCharge, 
+                    [TelExtension] = @TelExtension, 
+                    [YearAssessment] = @YearAssessment, 
+                    [DateIRBemailLetter] = @DateIRBemailLetter, 
+                    [DetailsCorrepondence] = @DetailsCorrepondence, 
+                    [PIC] = @PIC, 
+                    [Date] = @Date, 
+                    [Note] = @Note
+                    WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpDelete("delete-a32b/{id}")]
+    public async Task<IActionResult> DeleteA32B(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = "DELETE FROM [Quartz].[dbo].[A32B] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    #endregion
+
+    #region A33A API Methods
+    [HttpGet("get-a33a-records")]
+    public async Task<IActionResult> GetA33ARecords()
+    {
+        try
+        {
+            Console.WriteLine("=== Starting GetA33ARecords with Dapper ===");
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                Console.WriteLine("✅ Database connection successful");
+
+                var sql = @"SELECT 
+                    Id,
+                    CaseNo,
+                    DateReceived,
+                    TypeIncoming,
+                    Client,
+                    YearAssessment,
+                    Details,
+                    Date,
+                    BriefDescritions,
+                    PIC,
+                    Remark,
+                    DoneOn
+                FROM [Quartz].[dbo].[A33A] 
+                ORDER BY Id DESC";
+
+                var records = await connection.QueryAsync<A33AModel>(sql);
+
+                Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
+                return Json(new { success = true, data = records });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error in GetA33ARecords: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+            return Json(new
+            {
+                success = false,
+                message = ex.Message,
+                detailed = ex.StackTrace
+            });
+        }
+    }
+
+    [HttpGet("get-a33a-record/{id}")]
+    public async Task<IActionResult> GetA33ARecord(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT 
+                    Id,
+                    CaseNo,
+                    DateReceived,
+                    TypeIncoming,
+                    Client,
+                    YearAssessment,
+                    Details,
+                    Date,
+                    BriefDescritions,
+                    PIC,
+                    Remark,
+                    DoneOn
+                FROM [Quartz].[dbo].[A33A] 
+                WHERE Id = @Id";
+
+                var record = await connection.QueryFirstOrDefaultAsync<A33AModel>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("create-a33a")]
+    public async Task<IActionResult> CreateA33A([FromBody] A33AModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [Quartz].[dbo].[A33A] 
+                    ([CaseNo], [DateReceived], [TypeIncoming], [Client], 
+                     [YearAssessment], [Details], [Date], [BriefDescritions], 
+                     [PIC], [Remark], [DoneOn])
+                    VALUES 
+                    (@CaseNo, @DateReceived, @TypeIncoming, @Client, 
+                     @YearAssessment, @Details, @Date, @BriefDescritions, 
+                     @PIC, @Remark, @DoneOn);
+                    SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                return Json(new { success = true, id = id, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPut("update-a33a")]
+    public async Task<IActionResult> UpdateA33A([FromBody] A33AModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Quartz].[dbo].[A33A] SET 
+                    [CaseNo] = @CaseNo, 
+                    [DateReceived] = @DateReceived, 
+                    [TypeIncoming] = @TypeIncoming, 
+                    [Client] = @Client, 
+                    [YearAssessment] = @YearAssessment, 
+                    [Details] = @Details, 
+                    [Date] = @Date, 
+                    [BriefDescritions] = @BriefDescritions, 
+                    [PIC] = @PIC, 
+                    [Remark] = @Remark, 
+                    [DoneOn] = @DoneOn
+                    WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpDelete("delete-a33a/{id}")]
+    public async Task<IActionResult> DeleteA33A(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = "DELETE FROM [Quartz].[dbo].[A33A] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    #endregion
+
+    #region A33B API Methods
+    [HttpGet("get-a33b-records")]
+    public async Task<IActionResult> GetA33BRecords()
+    {
+        try
+        {
+            Console.WriteLine("=== Starting GetA33BRecords with Dapper ===");
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                Console.WriteLine("✅ Database connection successful");
+
+                var sql = @"SELECT 
+                    Id,
+                    CaseNo,
+                    DateReceived,
+                    Client,
+                    OfficerInchrage,
+                    TelExtension,
+                    YearAssessment,
+                    DateIRBemailLetter,
+                    DetailsCorrepondence,
+                    PIC,
+                    Date,
+                    Note
+                FROM [Quartz].[dbo].[A33B] 
+                ORDER BY Id DESC";
+
+                var records = await connection.QueryAsync<A33BModel>(sql);
+
+                Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
+                return Json(new { success = true, data = records });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error in GetA33BRecords: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+            return Json(new
+            {
+                success = false,
+                message = ex.Message,
+                detailed = ex.StackTrace
+            });
+        }
+    }
+
+    [HttpGet("get-a33b-record/{id}")]
+    public async Task<IActionResult> GetA33BRecord(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT 
+                    Id,
+                    CaseNo,
+                    DateReceived,
+                    Client,
+                    OfficerInchrage,
+                    TelExtension,
+                    YearAssessment,
+                    DateIRBemailLetter,
+                    DetailsCorrepondence,
+                    PIC,
+                    Date,
+                    Note
+                FROM [Quartz].[dbo].[A33B] 
+                WHERE Id = @Id";
+
+                var record = await connection.QueryFirstOrDefaultAsync<A33BModel>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("create-a33b")]
+    public async Task<IActionResult> CreateA33B([FromBody] A33BModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [Quartz].[dbo].[A33B] 
+                    ([CaseNo], [DateReceived], [Client], [OfficerInchrage], 
+                     [TelExtension], [YearAssessment], [DateIRBemailLetter], 
+                     [DetailsCorrepondence], [PIC], [Date], [Note])
+                    VALUES 
+                    (@CaseNo, @DateReceived, @Client, @OfficerInchrage, 
+                     @TelExtension, @YearAssessment, @DateIRBemailLetter, 
+                     @DetailsCorrepondence, @PIC, @Date, @Note);
+                    SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                return Json(new { success = true, id = id, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPut("update-a33b")]
+    public async Task<IActionResult> UpdateA33B([FromBody] A33BModel model)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Quartz].[dbo].[A33B] SET 
+                    [CaseNo] = @CaseNo, 
+                    [DateReceived] = @DateReceived, 
+                    [Client] = @Client, 
+                    [OfficerInchrage] = @OfficerInchrage, 
+                    [TelExtension] = @TelExtension, 
+                    [YearAssessment] = @YearAssessment, 
+                    [DateIRBemailLetter] = @DateIRBemailLetter, 
+                    [DetailsCorrepondence] = @DetailsCorrepondence, 
+                    [PIC] = @PIC, 
+                    [Date] = @Date, 
+                    [Note] = @Note
+                    WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpDelete("delete-a33b/{id}")]
+    public async Task<IActionResult> DeleteA33B(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = "DELETE FROM [Quartz].[dbo].[A33B] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    #endregion
 }

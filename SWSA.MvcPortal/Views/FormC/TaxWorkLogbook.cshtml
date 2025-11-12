@@ -6,16 +6,18 @@
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Tax Work Logbook
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -26,112 +28,46 @@
                         <tr>
                             <th rowspan="2">No</th>
                             <th rowspan="2">Company Name</th>
-
                             <th colspan="2">Activity</th>
                             <th colspan="2">PIC</th>
-
                             <th rowspan="2">Year Ended</th>
                             <th rowspan="2">Tax Due Dates</th>
-
                             <th colspan="4">Tax WIP</th>
                             <th colspan="4">Tax Work Process</th>
                             <th colspan="2">Review by MC</th>
                             <th colspan="2">Draft to Client</th>
-
                             <th rowspan="2">Tax Payment Date</th>
                             <th rowspan="2">Form C Submitted Date</th>
-
                             <th colspan="2">Billing</th>
                             <th colspan="2">Binding</th>
+                            <th rowspan="2">Actions</th>
                         </tr>
 
                         <tr>
-                            <th>Activity</th>
+                            <th>Active</th>
                             <th>AEX/OT</th>
-
                             <th>RAKC</th>
                             <th>BTM</th>
-
                             <th>a. Start Date</th>
                             <th>b. End Date</th>
                             <th>c. No of days</th>
                             <th>d. Completed</th>
-
                             <th>P & L Analyis</th>
                             <th>CA & Tax Compu</th>
                             <th>Draft Form C</th>
                             <th>Tax Payable</th>
-
                             <th>Tax comp/CA</th>
                             <th>Form C</th>
-
                             <th>Sent</th>
                             <th>Received</th>
-
                             <th>Inv Date</th>
                             <th>Fees</th>
-
                             <th>Printing</th>
                             <th>Despatch</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>Technology</td>
-                            <td>AEX</td>
-                            <td>John Doe</td>
-                            <td>Jane Smith</td>
-                            <td>31 Mar 2024</td>
-                            <td>30/07/2025</td>
-                            <td>01/02/2025</td>
-                            <td>15/03/2025</td>
-                            <td>43</td>
-                            <td>Yes</td>
-                            <td>05/02/2025</td>
-                            <td>10/02/2025</td>
-                            <td>15/02/2025</td>
-                            <td>15,000</td>
-                            <td>20/02/2025</td>
-                            <td>25/02/2025</td>
-                            <td>01/03/2025</td>
-                            <td>05/03/2025</td>
-                            <td>30/04/2025</td>
-                            <td>15/04/2025</td>
-                            <td>20/04/2025</td>
-                            <td>5,000</td>
-                            <td>25/04/2025</td>
-                            <td>30/04/2025</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>Trading</td>
-                            <td>OT</td>
-                            <td>Mike Johnson</td>
-                            <td>Sarah Wilson</td>
-                            <td>31 Mar 2024</td>
-                            <td>30/07/2025</td>
-                            <td>15/03/2025</td>
-                            <td>30/04/2025</td>
-                            <td>46</td>
-                            <td>No</td>
-                            <td>20/03/2025</td>
-                            <td>25/03/2025</td>
-                            <td>30/03/2025</td>
-                            <td>18,000</td>
-                            <td>05/04/2025</td>
-                            <td>10/04/2025</td>
-                            <td>15/04/2025</td>
-                            <td>20/04/2025</td>
-                            <td>31/07/2025</td>
-                            <td>20/07/2025</td>
-                            <td>25/07/2025</td>
-                            <td>6,000</td>
-                            <td>30/07/2025</td>
-                            <td>05/08/2025</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -154,7 +90,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -163,14 +99,18 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <label for="active">Active</label>
+                                <select id="active" name="active" class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -184,6 +124,12 @@
                                     <option value="AEX">AEX</option>
                                     <option value="OT">OT</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year Ended</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year ended (e.g., 31 Mar 2024)" />
                             </div>
                         </div>
                     </div>
@@ -207,6 +153,16 @@
                         </div>
                     </div>
 
+                    <!-- Tax Due Date -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="taxDueDate">Tax Due Date</label>
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Tax WIP -->
                     <div class="form-info-label col-12">
                         <label>Tax WIP</label>
@@ -215,13 +171,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="startDate">a. Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="endDate">b. End Date</label>
-                                <input type="text" id="endDate" name="endDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="endDate" name="endDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -230,7 +186,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="noOfDays">c. No of days</label>
-                                <input type="number" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                                <input type="number" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" min="0" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -252,14 +208,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="plAnalysis">P & L Analysis</label>
-                                <input type="text" id="plAnalysis" name="plAnalysis" class="form-control" placeholder="Select date" />
+                                <label for="pnLAnalysis">P & L Analysis</label>
+                                <input type="text" id="pnLAnalysis" name="pnLAnalysis" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="caTaxCompu">CA & Tax Compu</label>
-                                <input type="text" id="caTaxCompu" name="caTaxCompu" class="form-control" placeholder="Select date" />
+                                <input type="text" id="caTaxCompu" name="caTaxCompu" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -267,14 +223,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="draftFormC">Draft Form C</label>
-                                <input type="text" id="draftFormC" name="draftFormC" class="form-control" placeholder="Select date" />
+                                <label for="draftForm">Draft Form C</label>
+                                <input type="text" id="draftForm" name="draftForm" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="taxPayable">Tax Payable</label>
-                                <input type="number" id="taxPayable" name="taxPayable" class="form-control" placeholder="Enter amount" />
+                                <label for="taxPayable">Tax Payable (RM)</label>
+                                <input type="number" id="taxPayable" name="taxPayable" class="form-control" placeholder="Enter amount" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -287,13 +243,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxCompCA">Tax comp/CA</label>
-                                <input type="text" id="taxCompCA" name="taxCompCA" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxCompCA" name="taxCompCA" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formCReview">Form C</label>
-                                <input type="text" id="formCReview" name="formCReview" class="form-control" placeholder="Select date" />
+                                <label for="formC">Form C</label>
+                                <input type="text" id="formC" name="formC" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -306,13 +262,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="sent">Sent</label>
-                                <input type="text" id="sent" name="sent" class="form-control" placeholder="Select date" />
+                                <input type="text" id="sent" name="sent" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="received">Received</label>
-                                <input type="text" id="received" name="received" class="form-control" placeholder="Select date" />
+                                <input type="text" id="received" name="received" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -325,13 +281,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxPaymentDate">Tax Payment Date</label>
-                                <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formCSubmittedDate">Form C Submitted Date</label>
-                                <input type="text" id="formCSubmittedDate" name="formCSubmittedDate" class="form-control" placeholder="Select date" />
+                                <label for="formCSubmited">Form C Submitted Date</label>
+                                <input type="text" id="formCSubmited" name="formCSubmited" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -344,13 +300,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="invDate">Inv Date</label>
-                                <input type="text" id="invDate" name="invDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="invDate" name="invDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="fees">Fees</label>
-                                <input type="number" id="fees" name="fees" class="form-control" placeholder="Enter fees" />
+                                <label for="fees">Fees (RM)</label>
+                                <input type="number" id="fees" name="fees" class="form-control" placeholder="Enter fees" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -363,13 +319,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="printing">Printing</label>
-                                <input type="text" id="printing" name="printing" class="form-control" placeholder="Select date" />
+                                <input type="text" id="printing" name="printing" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="despatch">Despatch</label>
-                                <input type="text" id="despatch" name="despatch" class="form-control" placeholder="Select date" />
+                                <input type="text" id="despatch" name="despatch" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -390,22 +346,437 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+
+            // 初始化 DataTable
+            initializeDataTable();
+
             // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            initializeDatePickers();
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveTX3Record();
+            });
+
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/tx3/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            if (response.success) {
+                                console.log('API Response:', response.data); // 调试信息
+                                if (response.data.length > 0) {
+                                    console.log('First record structure:', response.data[0]);
+                                }
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        }
+                    },
+                    "columns": [
+                        {
+                            "data": null,
+                            "render": function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        { "data": "companyName" },
+                        {
+                            "data": "active",
+                            "render": function(data, type, row) {
+                                return data || 'No';
+                            }
+                        },
+                        {
+                            "data": null,
+                            "render": function(data, type, row) {
+                                // 处理 AEX/OT 字段，兼容不同的大小写
+                                return row.aexOT || row.AEXOT || row.aexot || '-';
+                            }
+                        },
+                        {
+                            "data": "rakc",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "btm",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "yearEnd",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "taxDueDate",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "startDate",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "endDate",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "noOfDays",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "completed",
+                            "render": function(data, type, row) {
+                                return data || 'No';
+                            }
+                        },
+                        {
+                            "data": "pnLAnalysis",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "caTaxCompu",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "draftForm",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "taxPayable",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        {
+                            "data": "taxCompCA",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "formC",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "sent",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "received",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "taxPaymentDate",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "formCSubmited",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "invDate",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "fees",
+                            "render": function(data, type, row) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        {
+                            "data": "printing",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "despatch",
+                            "render": function(data, type, row) {
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No records available",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "(filtered from _MAX_ total entries)",
+                        "lengthMenu": "Show _MENU_ entries",
+                        "loadingRecords": "Loading...",
+                        "processing": "Processing...",
+                        "search": "Search:",
+                        "zeroRecords": "No matching records found"
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 保存 TX3 记录
+            function saveTX3Record() {
+                // 基本验证
+                if (!$('#companyName').val()) {
+                    showAlert('Please enter company name', 'warning');
+                    return;
+                }
+
+                const formData = {
+                    companyName: $('#companyName').val(),
+                    active: $('#active').val(),
+                    aexOT: $('#aexOt').val(),
+                    rakc: $('#rakc').val(),
+                    btm: $('#btm').val(),
+                    yearEnd: $('#yearEnd').val(),
+                    taxDueDate: $('#taxDueDate').val(),
+                    startDate: $('#startDate').val(),
+                    endDate: $('#endDate').val(),
+                    noOfDays: $('#noOfDays').val(),
+                    completed: $('#completed').val(),
+                    pnLAnalysis: $('#pnLAnalysis').val(),
+                    caTaxCompu: $('#caTaxCompu').val(),
+                    draftForm: $('#draftForm').val(),
+                    taxPayable: $('#taxPayable').val(),
+                    taxCompCA: $('#taxCompCA').val(),
+                    formC: $('#formC').val(),
+                    sent: $('#sent').val(),
+                    received: $('#received').val(),
+                    taxPaymentDate: $('#taxPaymentDate').val(),
+                    formCSubmited: $('#formCSubmited').val(),
+                    invDate: $('#invDate').val(),
+                    fees: $('#fees').val(),
+                    printing: $('#printing').val(),
+                    despatch: $('#despatch').val()
+                };
+
+                console.log('Form data to save:', formData); // 调试信息
+
+                const url = currentEditId ? '/api/tx3/update' : '/api/tx3/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                // 显示加载状态
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        console.log('Save response:', response); // 调试信息
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload();
+                            resetForm();
+                            showAlert('Record saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Save error:', error); // 调试信息
+                        showAlert('Error saving record: ' + error, 'danger');
+                    },
+                    complete: function() {
+                        // 恢复保存按钮状态
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                $.get(`/api/tx3/get/${id}`, function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+
+                        console.log('Editing record:', record); // 调试信息
+
+                        // 填充表单
+                        $('#companyName').val(record.companyName);
+                        $('#active').val(record.active);
+                        $('#aexOt').val(record.aexOT || record.AEXOT); // 兼容大小写
+                        $('#rakc').val(record.rakc);
+                        $('#btm').val(record.btm);
+                        $('#yearEnd').val(record.yearEnd);
+                        $('#taxDueDate').val(record.taxDueDate);
+                        $('#startDate').val(record.startDate);
+                        $('#endDate').val(record.endDate);
+                        $('#noOfDays').val(record.noOfDays);
+                        $('#completed').val(record.completed);
+                        $('#pnLAnalysis').val(record.pnLAnalysis);
+                        $('#caTaxCompu').val(record.caTaxCompu);
+                        $('#draftForm').val(record.draftForm);
+                        $('#taxPayable').val(record.taxPayable);
+                        $('#taxCompCA').val(record.taxCompCA);
+                        $('#formC').val(record.formC);
+                        $('#sent').val(record.sent);
+                        $('#received').val(record.received);
+                        $('#taxPaymentDate').val(record.taxPaymentDate);
+                        $('#formCSubmited').val(record.formCSubmited);
+                        $('#invDate').val(record.invDate);
+                        $('#fees').val(record.fees);
+                        $('#printing').val(record.printing);
+                        $('#despatch').val(record.despatch);
+
+                        $('#modalTitle').text('Edit Tax Work Logbook Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    $.ajax({
+                        url: `/api/tx3/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload();
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New Tax Work Logbook Record');
+                $('.datepicker').datepicker('update', '');
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+            // 添加刷新按钮功能（可选）
+            $(document).on('click', '#refreshBtn', function() {
+                dataTable.ajax.reload();
+                showAlert('Data refreshed successfully!', 'info');
             });
         });
     </script>
