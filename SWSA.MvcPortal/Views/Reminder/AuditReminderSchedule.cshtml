@@ -236,6 +236,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="bankTargetedSend">Targeted send date</label>
+                                 <small class="text-muted d-block"> 
+                                • YE Jun–Sep → Send in Oct      
+                                <br>
+                                 • YE Oct–Jan → Send in Feb
+                                 <br>
+                                 • YE Feb–May → Send in Jun
+                                </small>
                                 <input type="text" id="bankTargetedSend" name="bankTargetedSend" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -248,6 +255,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="bankTargetedReminder">Targeted Reminder</label>
+                                <small class="text-muted">(auto = Targeted send date + 2 months)</small>
                                 <input type="text" id="bankTargetedReminder" name="bankTargetedReminder" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -275,6 +283,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth1TargetedDate">Targeted date</label>
+                                <small class="text-muted">(auto = Year end + 1 months)</small>
                                 <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -294,6 +303,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth4TargetedCall">Targeted call/text</label>
+                                <small class="text-muted">(auto = Year end + 4 months)</small>
                                 <input type="text" id="mth4TargetedCall" name="mth4TargetedCall" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -313,6 +323,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth6TargetedFinal">Targeted Final Text</label>
+                                 <small class="text-muted">(auto = Year end + 6 months)</small>
                                 <input type="text" id="mth6TargetedFinal" name="mth6TargetedFinal" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
