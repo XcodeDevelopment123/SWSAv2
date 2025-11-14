@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<SWSA.MvcPortal.Models.Reminder.B36>
+@{
     ViewData["Title"] = "FormBEindividualTaxReminderSchedule";
 }
 
@@ -31,6 +32,8 @@
                             <th colspan="6"></th>
 
                             <th colspan="2">Inward Doc</th>
+
+                            <th colspan="2">Actions</th>
                         </tr>
 
                         <tr>
@@ -43,6 +46,9 @@
 
                             <th rowspan="2">Date Received</th>
                             <th rowspan="2">Note</th>
+
+                            <th rowspan="2">Edit</th>
+                            <th rowspan="2">Delete</th>
                         </tr>
 
                         <tr>
@@ -55,34 +61,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Group A</td>
-                            <td>AHMAD BIN ABDULLAH</td>
-                            <td>John Doe</td>
-                            <td>01/03/2025</td>
-                            <td>01/04/2025</td>
-                            <td>05/04/2025</td>
-                            <td>01/05/2025</td>
-                            <td>03/05/2025</td>
-                            <td>01/06/2025</td>
-                            <td>05/06/2025</td>
-                            <td>15/06/2025</td>
-                            <td>All documents received</td>
-                        </tr>
-                        <tr>
-                            <td>Group B</td>
-                            <td>SITI BINTI MOHAMED</td>
-                            <td>Jane Smith</td>
-                            <td>01/02/2024</td>
-                            <td>01/03/2024</td>
-                            <td>03/03/2024</td>
-                            <td>01/04/2024</td>
-                            <td>02/04/2024</td>
-                            <td>01/05/2024</td>
-                            <td>04/05/2024</td>
-                            <td>10/05/2024</td>
-                            <td>Pending EA form</td>
-                        </tr>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var record in Model)
+                            {
+                                <tr data-id="@record.Id">
+                                    <td>@record.Grouping</td>
+                                    <td>@record.IndividualTaxPayer</td>
+
+                                    <td>@record.PIC</td>
+                                    <td>@record.T_startWk</td>
+
+                                    <td>@record.T_Date</td>
+                                    <td>@record.DateSent</td>
+
+                                    <td>@record.T_startWk</td>
+                                    <td>@record.DateRemind</td>
+
+                                    <td>@record.T_FinalText</td>
+                                    <td>@record.DateText</td>
+
+                                    <td>@record.DateReceived</td>
+                                    <td>@record.Note</td>
+
+                                    <td>
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
@@ -140,7 +154,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="targetStartWk">Target to start wk</label>
-                                <input type="text" id="targetStartWk" name="targetStartWk" class="form-control" placeholder="Select date" />
+                                <input type="text" id="targetStartWk" name="targetStartWk" class="form-control" placeholder="Fixed: March" readonly />
                             </div>
                         </div>
                     </div>
@@ -153,7 +167,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth1TargetedDate">Targeted Date</label>
-                                <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Fixed: Jan" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -172,7 +186,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth2TargetedCall">Targeted call/text</label>
-                                <input type="text" id="mth2TargetedCall" name="mth2TargetedCall" class="form-control" placeholder="Select date" />
+                                <input type="text" id="mth2TargetedCall" name="mth2TargetedCall" class="form-control" placeholder="Fixed: Feb" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -191,7 +205,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth3TargetedFinal">Targeted Final Text</label>
-                                <input type="text" id="mth3TargetedFinal" name="mth3TargetedFinal" class="form-control" placeholder="Select date" />
+                                <input type="text" id="mth3TargetedFinal" name="mth3TargetedFinal" class="form-control" placeholder="Fixed: March" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -237,35 +251,365 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
-        $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
+        let dataTable;
+        let dataTableInitialized = false;
+
+        // ---------- Modal alert + inline field errors ----------
+        function showModalAlert(msg, type) {
+            const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+
+            // scroll modal body to top so the alert is visible
+            const $body = $('#taskModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
+        }
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+        function clearFieldErrors() {
+            $('#taskForm .is-invalid').removeClass('is-invalid');
+            $('#taskForm .invalid-feedback').remove();
+        }
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) {
+                $f.after('<div class="invalid-feedback"></div>');
+            }
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- Page-level alert (outside modal) ----------
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                                    ${message}
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                  </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        // ---------- Helpers ----------
+        function formatDateForDisplay(s) {
+            if (!s) return '';
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+            return s;
+        }
+
+
+        // ------------ 固定 4 个 Targeted 月份（核心逻辑） -------------
+        function setFixedTargetMonths() {
+            // 这 4 个位置是固定月份，不跟公司 / year end 变化
+            $('#targetStartWk').val('March'); // Targeted to start Acc wk
+            $('#mth1TargetedDate').val('Jan');   // Mth 1 Email Targeted Date
+            $('#mth2TargetedCall').val('Feb');   // Mth 2 Reminder Targeted call/text
+            $('#mth3TargetedFinal').val('March'); // Mth 3 Text Targeted Final Text
+        }
+
+        function clearForm() {
+            $('#taskForm')[0].reset();
+            $('#editIndex').val('');
+            $('#modalTitle').text('Add New Account Document Reminder');
+            hideModalAlert();
+            clearFieldErrors();
+
+            setFixedTargetMonths();
+        }
+
+        // ---------- Init ----------
+        $(document).ready(function () {
+            setFixedTargetMonths();
+
+            // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
+            ['#mth1DateSent', '#mth2DateReminder', '#mth3DateText', '#inwardDateReceived']
+                .forEach(function (id) {
+                    $(id).datepicker({
+                        format: 'dd/mm/yyyy',
+                        autoclose: true,
+                        todayHighlight: true
+                    });
+                });
+
+
+            // Datepickers (exclude read-only #circulationAfsDue)
+            $('input[type="text"]').filter(function () {
+                const id = $(this).attr('id') || '';
+                return (id.includes('Date') || id.includes('date') || id.includes('yearEnd')) && id !== 'circulationAfsDue';
             }).datepicker({
                 format: 'dd/mm/yyyy',
-                autoclose: true
+                autoclose: true,
+                todayHighlight: true
             });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
 
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
+            // DataTable - 对应 B35 的列
+            dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
+                order: [[1, 'asc']], // Company Name 排序
                 language: {
                     search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columns: [
+                    { data: 0 },  // Grouping
+                    { data: 1 },  // Company Name
+                    { data: 2 },  // Year End
+                    { data: 3 },  // PIC
+                    { data: 4 },  // Target to start wk (T_startWk)
+                    { data: 5 },  // Mth 1 Targeted Date (T_Date)
+                    { data: 6 },  // Mth 1 Date Sent
+                    { data: 7 },  // Mth 2 Targeted call/text (T_call)
+                    { data: 8 },  // Mth 2 Date reminder
+                    { data: 9 },  // Mth 3 Targeted Final Text (T_finalText)
+                    { data: 10 }, // Mth 3 Date Text
+                    { data: 11 }, // Date Received
+                    { data: 12, orderable: false, searchable: false }, // Edit
+                    { data: 13, orderable: false, searchable: false }  // Delete
+                ]
+            });
+            dataTableInitialized = true;
+
+            // Bindings
+            $('#saveBtn').click(saveRecord);
+            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
+            $('#taskModal').on('show.bs.modal', function () {
+                if (!$('#editIndex').val()) {  // 没有 Id = 新增
+                    setFixedTargetMonths();
                 }
             });
+
+            $('#taskModal').on('hidden.bs.modal', clearForm);
+
+            // First load
+            loadRecordsFromDatabase();
         });
+
+        // ---------- Load & Render ----------
+        function loadRecordsFromDatabase() {
+            $.ajax({
+                url: '/get-b36-records',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        populateTable(res.data || []);
+                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
+                        console.log('sample keys:', Object.keys((res.data || [])[0] || {}));
+
+                    } else {
+                        showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        function populateTable(records) {
+            if (!dataTableInitialized) return;
+            dataTable.clear();
+
+            if (records && records.length) {
+                records.forEach(function (r) {
+                    dataTable.row.add([
+                        r.grouping || r.Grouping || '',                         // 0 Grouping
+                        r.individualTaxPayer || '',                   // 1 Company Name
+                        r.pic || r.PIC || '',                                   // 3 PIC
+                        r.t_startWk || r.T_startWk || '',                       // 4 Target to start wk
+                        formatDateForDisplay(r.t_Date || r.T_Date),             // 5 Mth1 Targeted Date
+                        formatDateForDisplay(r.dateSent || r.DateSent),         // 6 Mth1 Date Sent
+                        r.t_Call|| '',                             // 7 Mth2 Targeted call/text
+                        formatDateForDisplay(r.dateRemind || r.DateRemind),     // 8 Mth2 Date reminder
+                        r.t_FinalText || '',                   // 9 Mth3 Targeted Final Text
+                        formatDateForDisplay(r.dateText || r.DateText),         // 10 Mth3 Date Text
+                        formatDateForDisplay(r.dateReceived || r.DateReceived), // 11 Date Received
+                        r.note || r.Note || '',                                 // 12 Note
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${r.id || r.Id}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                         </button>`,
+                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${r.id || r.Id}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                         </button>`
+                    ]);
+                });
+            }
+
+            dataTable.draw();
+        }
+
+        function saveRecord() {
+            hideModalAlert();
+            clearFieldErrors();
+
+            const formData = {
+                Id: ($('#editIndex').val() || '0').trim(),
+
+                Grouping: ($('#grouping').val() || '').trim(),
+                IndividualTaxPayer: ($('#individualTaxPayer').val() || '').trim(),
+                PIC: ($('#pic').val() || '').trim(),
+                T_startWk: ($('#targetStartWk').val() || '').trim(),
+
+                T_Date: ($('#mth1TargetedDate').val() || '').trim(),
+                DateSent: ($('#mth1DateSent').val() || '').trim(),
+
+                T_Call: ($('#mth2TargetedCall').val() || '').trim(),
+                DateRemind: ($('#mth2DateReminder').val() || '').trim(),
+
+                T_FinalText: ($('#mth3TargetedFinal').val() || '').trim(),
+                DateText: ($('#mth3DateText').val() || '').trim(),
+
+                DateReceived: ($('#inwardDateReceived').val() || '').trim(),
+                Note: ($('#inwardNote').val() || '').trim()
+            };
+
+            // 简单必填验证
+            let hasError = false;
+            if (!formData.Grouping) {
+                setFieldError('#grouping', 'Required');
+                hasError = true;
+            }
+            if (!formData.IndividualTaxPayer) {
+                setFieldError('#individualTaxPayer', 'Required');
+                hasError = true;
+            }
+            if (!formData.PIC) {
+                setFieldError('#pic', 'Required');
+                hasError = true;
+            }
+
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                $('#taskForm .is-invalid').first().focus();
+                return;
+            }
+
+            const isUpdate = Number(formData.Id) > 0;
+            const url = isUpdate ? '/update-b36' : '/create-b36';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
+                        $('#taskModal').modal('hide');
+                        showAlert('Record saved successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error saving record: ' + msg, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+
+
+        // ------------ Edit -------------
+        function editRecord(id) {
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+            hideModalAlert();
+            clearFieldErrors();
+
+            $.ajax({
+                url: '/get-b36-record/' + id,
+                type: 'GET',
+                success: function (res) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Form BE Individual Tax Reminder');
+                    if (res && res.success) {
+                        const d = res.data || {};
+
+                        $('#editIndex').val(d.id || d.Id || 0);
+
+                        $('#grouping').val(d.grouping || d.Grouping || '');
+                        $('#individualTaxPayer').val(d.individualTaxPayer || d.IndividualTaxPayer || '');
+                        $('#pic').val(d.pic || d.PIC || '');
+                        $('#targetStartWk').val(d.t_startWk || d.T_startWk || '');
+
+                        $('#mth1TargetedDate').val(d.t_Date || d.T_Date || '');
+                        $('#mth1DateSent').val(d.dateSent || d.DateSent || '');
+
+                        $('#mth2TargetedCall').val(d.t_Call || d.T_Call || d.t_call || '');
+                        $('#mth2DateReminder').val(d.dateRemind || d.DateRemind || '');
+
+                        $('#mth3TargetedFinal').val(d.t_FinalText || d.T_FinalText || d.t_finalText || '');
+                        $('#mth3DateText').val(d.dateText || d.DateText || '');
+
+                        $('#inwardDateReceived').val(d.dateReceived || d.DateReceived || '');
+                        $('#inwardNote').val(d.note || d.Note || '');
+
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Form BE Individual Tax Reminder');
+                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Delete ----------
+        function deleteRecord(id) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+            $.ajax({
+                url: '/delete-b36/' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Record deleted successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
     </script>
 }
