@@ -65,7 +65,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
 
 
 
-        #region API/Ajax
+        #region API  S16
         [HttpGet("api/s16/get-all")]
         public async Task<IActionResult> GetAllS16Records()
         {
@@ -212,6 +212,159 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
         }
         #endregion
 
+        #region API S13A
+        [HttpGet("api/s13a/get-all")]
+        public async Task<IActionResult> GetAllS13ARecords()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[S13A] ORDER BY Id DESC";
+                var records = await connection.QueryAsync<S13A>(sql);
+
+                return Json(new { success = true, data = records });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/s13a/get/{id}")]
+        public async Task<IActionResult> GetS13AById(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[S13A] WHERE Id = @Id";
+                var record = await connection.QueryFirstOrDefaultAsync<S13A>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("api/s13a/create")]
+        public async Task<IActionResult> CreateS13A([FromBody] S13A model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"INSERT INTO [Quartz].[dbo].[S13A]
+            ([Grouping], [Referral], [SecFileNo], [CompanyName], [CompanyType], 
+             [YearEnd], [CompanyStatus], [ActiveCoActivitySize], [YEtoDo], 
+             [ACCmthTodo], [AuditMthTodo], [YrMthDueDate], [Circulation], 
+             [ARdueDate], [AFSSubmitDate], [ARSubmitDate], [JobCompleted])
+            VALUES
+            (@Grouping, @Referral, @SecFileNo, @CompanyName, @CompanyType, 
+             @YearEnd, @CompanyStatus, @ActiveCoActivitySize, @YEtoDo, 
+             @ACCmthTodo, @AuditMthTodo, @YrMthDueDate, @Circulation, 
+             @ARdueDate, @AFSSubmitDate, @ARSubmitDate, @JobCompleted);
+
+            SELECT CAST(SCOPE_IDENTITY() AS int);";
+
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                return Json(new { success = true, id = id, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("api/s13a/update")]
+        public async Task<IActionResult> UpdateS13A([FromBody] S13A model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"UPDATE [Quartz].[dbo].[S13A] SET
+            [Grouping] = @Grouping,
+            [Referral] = @Referral,
+            [SecFileNo] = @SecFileNo,
+            [CompanyName] = @CompanyName,
+            [CompanyType] = @CompanyType,
+            [YearEnd] = @YearEnd,
+            [CompanyStatus] = @CompanyStatus,
+            [ActiveCoActivitySize] = @ActiveCoActivitySize,
+            [YEtoDo] = @YEtoDo,
+            [ACCmthTodo] = @ACCmthTodo,
+            [AuditMthTodo] = @AuditMthTodo,
+            [YrMthDueDate] = @YrMthDueDate,
+            [Circulation] = @Circulation,
+            [ARdueDate] = @ARdueDate,
+            [AFSSubmitDate] = @AFSSubmitDate,
+            [ARSubmitDate] = @ARSubmitDate,
+            [JobCompleted] = @JobCompleted
+            WHERE Id = @Id";
+
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpDelete("api/s13a/delete/{id}")]
+        public async Task<IActionResult> DeleteS13A(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "DELETE FROM [Quartz].[dbo].[S13A] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        //// 获取公司列表用于下拉选择
+        //[HttpGet("api/s13a/get-companies")]
+        //public async Task<IActionResult> GetS13ACompanies()
+        //{
+        //    try
+        //    {
+        //        using var connection = new SqlConnection(_connectionString);
+        //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
+        //                           DatePassToTaxDept, FormCSubmitDate 
+        //                    FROM [Quartz].[dbo].[S13A] 
+        //                    ORDER BY CompanyName";
+        //        var records = await connection.QueryAsync<S13A>(sql);
+
+        //        return Json(new { success = true, data = records });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+        #endregion
 
 
 
