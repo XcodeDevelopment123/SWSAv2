@@ -2,9 +2,11 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Converters;
 using System.Text;
 using AspNetCoreRateLimit;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Middlewares;
+using SWSA.MvcPortal.Data;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.Seeders;
 
@@ -15,13 +17,15 @@ try
     Console.InputEncoding = Encoding.UTF8;
 
     var builder = WebApplication.CreateBuilder(args);
-
     // 配置 Configuration
     builder.Configuration
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables();
+
+    builder.Services.AddDbContext<QuartzContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SwsaConntection")));
 
     // 初始化 Serilog
     builder.Host.AddHostService();
@@ -34,6 +38,8 @@ try
     builder.Services.ConfigureAppService(builder.Configuration);
     builder.Services.AddControllersWithViews();
     builder.Services.AddQuartzJobs(builder.Configuration);
+    builder.Services.AddControllers(); // 添加 API Controller 支持
+    builder.Services.AddSession();
 
     var app = builder.Build();
 
@@ -82,6 +88,9 @@ try
     app.UseSession();
     app.UseRequestLogging();
     app.UseAuthorization();
+
+    // 🔥 添加这一行 - 这是 API Controller 能够工作的关键！
+    app.MapControllers();
 
     app.MapControllerRoute(
         name: "default",

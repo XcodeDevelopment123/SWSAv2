@@ -6,16 +6,18 @@
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>LLP Master Schedule Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -28,13 +30,14 @@
                             <th colspan="3">Admin</th>
                             <th colspan="8">Co Information</th>
                             <th colspan="11">Scheduling</th>
+                            <th rowspan="3">Actions</th>
                         </tr>
 
                         <!-- 第二行：细分标题 -->
                         <tr>
-                            <th rowspan="3">Grouping</th>
-                            <th rowspan="3">Referral</th>
-                            <th rowspan="3">File No</th>
+                            <th rowspan="2">Grouping</th>
+                            <th rowspan="2">Referral</th>
+                            <th rowspan="2">File No</th>
 
                             <th rowspan="2">Co Name</th>
                             <th rowspan="2">Year End</th>
@@ -51,7 +54,7 @@
 
                         <!-- 第三行：每个字段的详细标题 -->
                         <tr>
-                            <th rowspan="2">Incorp Date</th>
+                            <th>Incorp Date</th>
                             <th>Co #</th>
 
                             <th>E number</th>
@@ -73,58 +76,11 @@
                             <th>Date Doc In</th>
                             <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
-                            <th>Complted/Backlog</th>
+                            <th>Completed/Backlog</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Group A</td>
-                            <td>REF001</td>
-                            <td>F001</td>
-                            <td>TECH SOLUTIONS LLP</td>
-                            <td>Dec</td>
-                            <td>15/01/2023</td>
-                            <td>CO123456</td>
-                            <td>E789012</td>
-                            <td>TIN456789</td>
-                            <td>MISC001</td>
-                            <td>Technology Services</td>
-                            <td>Full Service</td>
-                            <td>Active</td>
-                            <td>Medium</td>
-                            <td>Yes</td>
-                            <td>March</td>
-                            <td>30/04/2025</td>
-                            <td>April</td>
-                            <td>15/03/2025</td>
-                            <td>John Doe</td>
-                            <td>Yes</td>
-                            <td>Completed</td>
-                        </tr>
-                        <tr>
-                            <td>Group B</td>
-                            <td>REF002</td>
-                            <td>F002</td>
-                            <td>GLOBAL TRADING LLP</td>
-                            <td>Jun</td>
-                            <td>20/05/2022</td>
-                            <td>CO654321</td>
-                            <td>E123456</td>
-                            <td>TIN987654</td>
-                            <td>MISC002</td>
-                            <td>Trading Business</td>
-                            <td>Tax Services</td>
-                            <td>Active</td>
-                            <td>Large</td>
-                            <td>Yes</td>
-                            <td>May</td>
-                            <td>30/06/2025</td>
-                            <td>June</td>
-                            <td>20/05/2025</td>
-                            <td>Jane Smith</td>
-                            <td>Yes</td>
-                            <td>In Progress</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -147,7 +103,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <div class="row">
                         <div class="col-md-4">
@@ -173,8 +129,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coName">Co Name</label>
-                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Co Name</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -189,28 +145,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coNumber">Co #</label>
-                                <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Enter company number" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="eNumber">E number</label>
-                                <input type="text" id="eNumber" name="eNumber" class="form-control" placeholder="Enter E number" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="tinNumber">TIN number</label>
-                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Enter TIN number" />
+                                <label for="co">Co #</label>
+                                <input type="text" id="co" name="co" class="form-control" placeholder="Enter company number" />
                             </div>
                         </div>
                     </div>
@@ -218,14 +159,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="miscCode">MISC Code</label>
-                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Enter MISC code" />
+                                <label for="enumber">E number</label>
+                                <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Enter E number" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="miscDescription">MISC Description</label>
-                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Enter description" />
+                                <label for="tINnumber">TIN number</label>
+                                <input type="text" id="tINnumber" name="tINnumber" class="form-control" placeholder="Enter TIN number" />
                             </div>
                         </div>
                     </div>
@@ -233,8 +174,23 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="serviceType">Service Type</label>
-                                <input type="text" id="serviceType" name="serviceType" class="form-control" placeholder="Enter service type" />
+                                <label for="code">MISC Code</label>
+                                <input type="text" id="code" name="code" class="form-control" placeholder="Enter MISC code" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="description">MISC Description</label>
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Enter description" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="servicesType">Service Type</label>
+                                <input type="text" id="servicesType" name="servicesType" class="form-control" placeholder="Enter service type" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -248,14 +204,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="activitySize">Active Co:Activity/size</label>
-                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Enter activity/size" />
+                                <label for="activeCoActivitySize">Active Co:Activity/size</label>
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity/size" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
+                                <label for="yEtodo">YE to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
                             </div>
                         </div>
                     </div>
@@ -269,8 +225,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="dueDate">Due Date</label>
-                                <input type="text" id="dueDate" name="dueDate" class="form-control" placeholder="Select date" />
+                                <label for="aDdueDate">Due Date</label>
+                                <input type="text" id="aDdueDate" name="aDdueDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -278,20 +234,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="estMonthToDo">EST Month to do</label>
-                                <input type="text" id="estMonthToDo" name="estMonthToDo" class="form-control" placeholder="Enter month" />
+                                <label for="extensionDate">Extension Date</label>
+                                <input type="text" id="extensionDate" name="extensionDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc In</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <label for="mthToDo">EST Month to do</label>
+                                <input type="text" id="mthToDo" name="mthToDo" class="form-control" placeholder="Enter month" />
                             </div>
                         </div>
                     </div>
@@ -299,14 +255,32 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="allocateToWkSch">Allocate to Wk Sch</label>
-                                <input type="text" id="allocateToWkSch" name="allocateToWkSch" class="form-control" placeholder="Enter allocation" />
+                                <label for="staff">Staff</label>
+                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="completedBacklog">Completed/Backlog</label>
-                                <input type="text" id="completedBacklog" name="completedBacklog" class="form-control" placeholder="Enter status" />
+                                <label for="allocateToWkSch">Allocate to Wk Sch</label>
+                                <select id="allocateToWkSch" name="allocateToWkSch" class="form-control">
+                                    <option value="">Select Option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="completed">Completed/Backlog</label>
+                                <select id="completed" name="completed" class="form-control">
+                                    <option value="">Select Status</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Backlog">Backlog</option>
+                                    <option value="In Progress">In Progress</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -327,13 +301,320 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+
+            // 初始化 DataTable
+            initializeDataTable();
+
+            // 初始化日期选择器
+            initializeDatePickers();
+
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveBP22Record();
+            });
+
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/bp22/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            if (response.success) {
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        }
+                    },
+                    "columns": [
+                        { "data": "grouping" },
+                        { "data": "refferal" },
+                        { "data": "fileNo" },
+                        { "data": "companyName" },
+                        { "data": "yearEnd" },
+                        {
+                            "data": "incorpDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        { "data": "co" },
+                        { "data": "enumber" },
+                        { "data": "tINnumber" },
+                        { "data": "code" },
+                        { "data": "description" },
+                        { "data": "servicesType" },
+                        { "data": "activeCoActivitySize" },
+                        { "data": "yEtodo" },
+                        { "data": "auditDeptMth" },
+                        {
+                            "data": "aDdueDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "extensionDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "dateDocIn",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        { "data": "mthToDo" },
+                        { "data": "staff" },
+                        { "data": "allocateToWkSch" },
+                        { "data": "completed" },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "createdRow": function(row, data, dataIndex) {
+                        // 根据状态添加行样式
+                        if (data.completed === 'Completed') {
+                            $(row).addClass('table-success');
+                        } else if (data.completed === 'Backlog') {
+                            $(row).addClass('table-warning');
+                        } else if (data.completed === 'In Progress') {
+                            $(row).addClass('table-info');
+                        }
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 格式化日期
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+            }
+
+            // 保存 BP22 记录
+            function saveBP22Record() {
+                const formData = {
+                    grouping: $('#grouping').val(),
+                    refferal: $('#referral').val(),
+                    fileNo: $('#fileNo').val(),
+                    companyName: $('#companyName').val(),
+                    yearEnd: $('#yearEnd').val(),
+                    incorpDate: $('#incorpDate').val(),
+                    co: $('#co').val(),
+                    enumber: $('#enumber').val(),
+                    tINnumber: $('#tINnumber').val(),
+                    code: $('#code').val(),
+                    description: $('#description').val(),
+                    servicesType: $('#servicesType').val(),
+                    activeCoActivitySize: $('#activeCoActivitySize').val(),
+                    yEtodo: $('#yEtodo').val(),
+                    auditDeptMth: $('#auditDeptMth').val(),
+                    aDdueDate: $('#aDdueDate').val(),
+                    extensionDate: $('#extensionDate').val(),
+                    dateDocIn: $('#dateDocIn').val(),
+                    mthToDo: $('#mthToDo').val(),
+                    staff: $('#staff').val(),
+                    allocateToWkSch: $('#allocateToWkSch').val(),
+                    completed: $('#completed').val()
+                };
+
+                const url = currentEditId ? '/api/bp22/update' : '/api/bp22/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                // 显示加载状态
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload(null, false); // 保持当前分页位置
+                            resetForm();
+                            showAlert('Record saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                        showAlert('Error saving record: ' + error, 'danger');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                $.get(`/api/bp22/get/${id}`, function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+
+                        // 填充表单
+                        $('#grouping').val(record.grouping);
+                        $('#referral').val(record.refferal);
+                        $('#fileNo').val(record.fileNo);
+                        $('#companyName').val(record.companyName);
+                        $('#yearEnd').val(record.yearEnd);
+                        $('#incorpDate').val(record.incorpDate ? record.incorpDate.split('T')[0] : '');
+                        $('#co').val(record.co);
+                        $('#enumber').val(record.enumber);
+                        $('#tINnumber').val(record.tINnumber);
+                        $('#code').val(record.code);
+                        $('#description').val(record.description);
+                        $('#servicesType').val(record.servicesType);
+                        $('#activeCoActivitySize').val(record.activeCoActivitySize);
+                        $('#yEtodo').val(record.yEtodo);
+                        $('#auditDeptMth').val(record.auditDeptMth);
+                        $('#aDdueDate').val(record.aDdueDate ? record.aDdueDate.split('T')[0] : '');
+                        $('#extensionDate').val(record.extensionDate ? record.extensionDate.split('T')[0] : '');
+                        $('#dateDocIn').val(record.dateDocIn ? record.dateDocIn.split('T')[0] : '');
+                        $('#mthToDo').val(record.mthToDo);
+                        $('#staff').val(record.staff);
+                        $('#allocateToWkSch').val(record.allocateToWkSch);
+                        $('#completed').val(record.completed);
+
+                        $('#modalTitle').text('Edit LLP Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                }).fail(function(xhr, status, error) {
+                    showAlert('Error loading record: ' + error, 'danger');
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    $.ajax({
+                        url: `/api/bp22/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload(null, false); // 保持当前分页位置
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New LLP Record');
+                $('.datepicker').datepicker('update', '');
+                $('#recordId').val('');
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+            // 添加新的记录按钮点击事件
+            $('#addNewBtn').click(function() {
+                resetForm();
+                $('#modalTitle').text('Add New LLP Record');
+            });
+
+            // 表单提交事件
+            $('#taskForm').on('submit', function(e) {
+                e.preventDefault();
+                saveBP22Record();
             });
         });
     </script>

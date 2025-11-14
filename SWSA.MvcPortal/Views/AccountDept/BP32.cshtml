@@ -2,20 +2,22 @@
     ViewData["Title"] = "BP32";
 }
 
-<h1>BP 3.2 Acc master log</h1>
+<h1>BP32 - Tax Compliance Management</h1>
 
 <div class="row">
     <div class="col-md-12">
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-file-invoice-dollar me-2"></i>BP32 Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
@@ -23,136 +25,60 @@
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
+                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="1">Admin</th>
-                            <th colspan="2">Company Information</th>
-                            <th colspan="8">Scheduling</th>
-                            <th colspan="6">Actual work progress</th>
-                            <th colspan="2">Person In Charge(PIC)</th>
-                            <th colspan="3">Accounting</th>
-                            <th colspan="4">TAX</th>
-                            <th colspan="2">Sign & Tax payment</th>
-                            <th colspan="3">Complete E-Filling</th>
-                            <th colspan="2">Billing</th>
-                            <th rowspan="3">Doc Despatch Date</th>
+                            <th colspan="3">Basic Information</th>
+                            <th colspan="6">Company Details</th>
+                            <th colspan="8">Scheduling & Timeline</th>
+                            <th colspan="10">Tax Process Steps</th>
+                            <th colspan="6">E-Filing & Billing</th>
+                            <th rowspan="2">Actions</th>
                         </tr>
 
+                        <!-- 第二行：细分标题 -->
                         <tr>
-                            <th rowspan="2">File no</th>
-                            <th rowspan="2">Company Name</th>
-                            <th rowspan="2">Year End</th>
+                            <th>File No</th>
+                            <th>Company Name</th>
+                            <th>Year End</th>
 
-                            <th colspan="4">Work allocation Info</th>
-                            <th colspan="4">Acc Dept</th>
-
-                            <th rowspan="2">Start Date</th>
-                            <th rowspan="2">End Date</th>
-                            <th rowspan="2">Time Taken</th>
-                            <th rowspan="2">Date Pass to Audit</th>
-                            <th rowspan="2">Date Tax Submited</th>
-                            <th rowspan="2">Completed/Backlog</th>
-                            <th rowspan="2">Single Entry</th>
-                            <th rowspan="2">Tax Computation</th>
-                            <th rowspan="2">Sorting & Filing</th>
-                            <th rowspan="2">Key in to Excel</th>
-                            <th rowspan="2">Review Working/Accounts</th>
-                            <th rowspan="2">(Linking) Draft Financial Statement & AC</th>
-                            <th rowspan="2">Draft Tax</th>
-                            <th rowspan="2">Review Tax</th>
-                            <th rowspan="2">Final Tax</th>
-                            <th rowspan="2">Tax Com Final & Sign by Client</th>
-                            <th rowspan="2">Amount of Tax Pay/Refund</th>
-                            <th rowspan="2">E-File Draft</th>
-                            <th rowspan="2">E-File Final</th>
-                            <th rowspan="2">E-File Via SPC</th>
-                            <th rowspan="2">Invoices No</th>
-                            <th rowspan="2">Amount RM</th>
-                        </tr>
-
-                        <tr>
-                            <th>Job/Service</th>
+                            <th>Job Services</th>
                             <th>Co Status</th>
-                            <th>Active Co:Activity/size</th>
+                            <th>Active Co Activity Size</th>
                             <th>YE to do</th>
                             <th>Month to do</th>
                             <th>Doc Received Date</th>
-                            <th>Tax/AR due Date</th>
+
+                            <th>Tax AR Due Date</th>
                             <th>Staff</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Time Taken</th>
+                            <th>Date Pass to Audit</th>
+                            <th>Date Tax Submitted</th>
+                            <th>Completed/Backlog</th>
+
+                            <th>Single Entry</th>
+                            <th>Tax Computation</th>
+                            <th>Sorting Filing</th>
+                            <th>Keyin To Excel</th>
+                            <th>Review Working Acc</th>
+                            <th>Draft Financial Statement</th>
+                            <th>Draft Tax Completed</th>
+                            <th>Review Tax</th>
+                            <th>Final Tax</th>
+                            <th>Tax Com Final Sign By Client</th>
+
+                            <th>Amount Tax Pay</th>
+                            <th>E-File Draft</th>
+                            <th>E-File Final</th>
+                            <th>E-File via SPC</th>
+                            <th>Invoice No</th>
+                            <th>Amount RM</th>
+                            <th>Doc Despatch Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>BP-001</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>31/12/2024</td>
-                            <td>Full Accounting</td>
-                            <td>Active</td>
-                            <td>Medium</td>
-                            <td>2024</td>
-                            <td>June 2025</td>
-                            <td>15/01/2025</td>
-                            <td>30/04/2025</td>
-                            <td>Team A</td>
-                            <td>20/01/2025</td>
-                            <td>25/01/2025</td>
-                            <td>5 days</td>
-                            <td>26/01/2025</td>
-                            <td>28/04/2025</td>
-                            <td>Completed</td>
-                            <td>John Doe</td>
-                            <td>Jane Smith</td>
-                            <td>Mike Lee</td>
-                            <td>22/01/2025</td>
-                            <td>23/01/2025</td>
-                            <td>24/01/2025</td>
-                            <td>25/01/2025</td>
-                            <td>26/01/2025</td>
-                            <td>27/01/2025</td>
-                            <td>28/01/2025</td>
-                            <td>15,000.00</td>
-                            <td>29/01/2025</td>
-                            <td>30/01/2025</td>
-                            <td>3,500.00</td>
-                            <td>INV-2025-001</td>
-                            <td>3,500.00</td>
-                            <td>31/01/2025</td>
-                        </tr>
-                        <tr>
-                            <td>BP-002</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>31/03/2024</td>
-                            <td>Tax Computation</td>
-                            <td>Active</td>
-                            <td>Small</td>
-                            <td>2024</td>
-                            <td>April 2024</td>
-                            <td>01/04/2024</td>
-                            <td>30/04/2024</td>
-                            <td>Team B</td>
-                            <td>05/04/2024</td>
-                            <td>10/04/2024</td>
-                            <td>5 days</td>
-                            <td>11/04/2024</td>
-                            <td>25/04/2024</td>
-                            <td>Completed</td>
-                            <td>Sarah Tan</td>
-                            <td>David Wong</td>
-                            <td>Lisa Chen</td>
-                            <td>06/04/2024</td>
-                            <td>07/04/2024</td>
-                            <td>08/04/2024</td>
-                            <td>09/04/2024</td>
-                            <td>10/04/2024</td>
-                            <td>11/04/2024</td>
-                            <td>12/04/2024</td>
-                            <td>8,500.00</td>
-                            <td>13/04/2024</td>
-                            <td>14/04/2024</td>
-                            <td>2,800.00</td>
-                            <td>INV-2024-002</td>
-                            <td>2,800.00</td>
-                            <td>15/04/2024</td>
-                        </tr>
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -169,159 +95,146 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Accounting Master Log Record</span>
+                    <span id="modalTitle">Add New BP32 Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
-                    <!-- Admin & Company Information -->
-                    <div class="form-info-label col-12">
-                        <label>Admin & Company Information</label>
+                    <!-- Basic Information -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="fileNo">File no</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <label for="fileNo">File No *</label>
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" required />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <label for="yearEnd">Year End *</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="e.g., 2023-12-31" required />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Work Allocation Info -->
-                    <div class="form-info-label col-12">
-                        <label>Work Allocation Info</label>
+                    <!-- Company Details -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2"><i class="fas fa-building me-2"></i>Company Details</h6>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="jobService">Job/Service</label>
-                                <select id="jobService" name="jobService" class="form-control">
-                                    <option value="">Select Service</option>
-                                    <option value="Full Accounting">Full Accounting</option>
-                                    <option value="Tax Computation">Tax Computation</option>
-                                    <option value="Bookkeeping">Bookkeeping</option>
-                                    <option value="Financial Statement">Financial Statement</option>
-                                </select>
+                                <label for="jobServices">Job Services</label>
+                                <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
-                                </select>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="activitySize">Active Co:Activity/size</label>
-                                <select id="activitySize" name="activitySize" class="form-control">
-                                    <option value="">Select Size</option>
-                                    <option value="Small">Small</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Large">Large</option>
-                                </select>
+                                <label for="activeCoActivitySize">Active Co Activity Size</label>
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity size" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year" />
+                                <label for="yEtodo">YE to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="mthTodo">Month to do</label>
+                                <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="docReceivedDate">Doc Received Date</label>
+                                <input type="text" id="docReceivedDate" name="docReceivedDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Acc Dept -->
-                    <div class="form-info-label col-12">
-                        <label>Acc Dept</label>
+                    <!-- Scheduling & Timeline -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2"><i class="fas fa-calendar-alt me-2"></i>Scheduling & Timeline</h6>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="monthToDo">Month to do</label>
-                                <input type="text" id="monthToDo" name="monthToDo" class="form-control" placeholder="Enter month" />
+                                <label for="taxARdueDate">Tax AR Due Date</label>
+                                <input type="text" id="taxARdueDate" name="taxARdueDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="docReceivedDate">Doc Received Date</label>
-                                <input type="text" id="docReceivedDate" name="docReceivedDate" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="taxARDueDate">Tax/AR due Date</label>
-                                <input type="text" id="taxARDueDate" name="taxARDueDate" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
                                 <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Actual work progress -->
-                    <div class="form-info-label col-12">
-                        <label>Actual work progress</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="startDate">Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="endDate">End Date</label>
-                                <input type="text" id="endDate" name="endDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="endDate" name="endDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="timeTaken">Time Taken</label>
-                                <input type="text" id="timeTaken" name="timeTaken" class="form-control" placeholder="e.g., 5 days" />
+                                <label for="timeTaken">Time Taken (days)</label>
+                                <input type="number" id="timeTaken" name="timeTaken" class="form-control" placeholder="Enter days" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="datePassToAudit">Date Pass to Audit</label>
-                                <input type="text" id="datePassToAudit" name="datePassToAudit" class="form-control" placeholder="Select date" />
+                                <input type="text" id="datePassToAudit" name="datePassToAudit" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="dateTaxSubmitted">Date Tax Submitted</label>
-                                <input type="text" id="dateTaxSubmitted" name="dateTaxSubmitted" class="form-control" placeholder="Select date" />
+                                <label for="dateTaxSubmited">Date Tax Submitted</label>
+                                <input type="text" id="dateTaxSubmited" name="dateTaxSubmited" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="completedBacklog">Completed/Backlog</label>
                                 <select id="completedBacklog" name="completedBacklog" class="form-control">
-                                    <option value="">Select</option>
+                                    <option value="">Select Status</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Backlog">Backlog</option>
                                     <option value="In Progress">In Progress</option>
@@ -330,147 +243,132 @@
                         </div>
                     </div>
 
-                    <!-- Person In Charge(PIC) -->
-                    <div class="form-info-label col-12">
-                        <label>Person In Charge(PIC)</label>
+                    <!-- Tax Process Steps -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2"><i class="fas fa-cogs me-2"></i>Tax Process Steps</h6>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="singleEntry">Single Entry</label>
-                                <input type="text" id="singleEntry" name="singleEntry" class="form-control" placeholder="Enter PIC name" />
+                            <div class="form-check">
+                                <input type="checkbox" id="singleEntry" name="singleEntry" class="form-check-input" />
+                                <label class="form-check-label" for="singleEntry">Single Entry</label>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="taxComputation">Tax Computation</label>
-                                <input type="text" id="taxComputation" name="taxComputation" class="form-control" placeholder="Enter PIC name" />
+                            <div class="form-check">
+                                <input type="checkbox" id="taxComputation" name="taxComputation" class="form-check-input" />
+                                <label class="form-check-label" for="taxComputation">Tax Computation</label>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="sortingFiling">Sorting & Filing</label>
-                                <input type="text" id="sortingFiling" name="sortingFiling" class="form-control" placeholder="Enter PIC name" />
+                            <div class="form-check">
+                                <input type="checkbox" id="sortingFiling" name="sortingFiling" class="form-check-input" />
+                                <label class="form-check-label" for="sortingFiling">Sorting Filing</label>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Accounting -->
-                    <div class="form-info-label col-12">
-                        <label>Accounting</label>
-                    </div>
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="keyInToExcel">Key in to Excel</label>
-                                <input type="text" id="keyInToExcel" name="keyInToExcel" class="form-control" placeholder="Select date" />
+                            <div class="form-check">
+                                <input type="checkbox" id="keyinToExcel" name="keyinToExcel" class="form-check-input" />
+                                <label class="form-check-label" for="keyinToExcel">Keyin To Excel</label>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="reviewWorkingAccounts">Review Working/Accounts</label>
-                                <input type="text" id="reviewWorkingAccounts" name="reviewWorkingAccounts" class="form-control" placeholder="Select date" />
+                            <div class="form-check">
+                                <input type="checkbox" id="reviewWorkingAcc" name="reviewWorkingAcc" class="form-check-input" />
+                                <label class="form-check-label" for="reviewWorkingAcc">Review Working Acc</label>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="draftFinancialStatement">Draft Financial Statement & AC</label>
-                                <input type="text" id="draftFinancialStatement" name="draftFinancialStatement" class="form-control" placeholder="Select date" />
+                            <div class="form-check">
+                                <input type="checkbox" id="draftFinancialStatement" name="draftFinancialStatement" class="form-check-input" />
+                                <label class="form-check-label" for="draftFinancialStatement">Draft Financial Statement</label>
                             </div>
                         </div>
                     </div>
-
-                    <!-- TAX -->
-                    <div class="form-info-label col-12">
-                        <label>TAX</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="draftTax">Draft Tax</label>
-                                <input type="text" id="draftTax" name="draftTax" class="form-control" placeholder="Select date" />
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" id="draftTaxCompleted" name="draftTaxCompleted" class="form-check-input" />
+                                <label class="form-check-label" for="draftTaxCompleted">Draft Tax Completed</label>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="reviewTax">Review Tax</label>
-                                <input type="text" id="reviewTax" name="reviewTax" class="form-control" placeholder="Select date" />
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" id="reviewTax" name="reviewTax" class="form-check-input" />
+                                <label class="form-check-label" for="reviewTax">Review Tax</label>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="finalTax">Final Tax</label>
-                                <input type="text" id="finalTax" name="finalTax" class="form-control" placeholder="Select date" />
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" id="finalTax" name="finalTax" class="form-check-input" />
+                                <label class="form-check-label" for="finalTax">Final Tax</label>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Sign & Tax payment -->
-                    <div class="form-info-label col-12">
-                        <label>Sign & Tax payment</label>
-                    </div>
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="taxComFinalSign">Tax Com Final & Sign by Client</label>
-                                <input type="text" id="taxComFinalSign" name="taxComFinalSign" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="amountTaxPayRefund">Amount of Tax Pay/Refund</label>
-                                <input type="text" id="amountTaxPayRefund" name="amountTaxPayRefund" class="form-control" placeholder="Enter amount" />
+                            <div class="form-check">
+                                <input type="checkbox" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-check-input" />
+                                <label class="form-check-label" for="taxComFinalSignByClient">Tax Com Final Sign By Client</label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Complete E-Filling -->
-                    <div class="form-info-label col-12">
-                        <label>Complete E-Filling</label>
+                    <!-- E-Filing & Billing -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2"><i class="fas fa-file-export me-2"></i>E-Filing & Billing</h6>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="eFileDraft">E-File Draft</label>
-                                <input type="text" id="eFileDraft" name="eFileDraft" class="form-control" placeholder="Select date" />
+                                <label for="amountTaxPay">Amount Tax Pay (RM)</label>
+                                <input type="number" step="0.01" id="amountTaxPay" name="amountTaxPay" class="form-control" placeholder="0.00" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" />
+                                <label class="form-check-label" for="eFileDraft">E-File Draft</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" />
+                                <label class="form-check-label" for="eFileFinal">E-File Final</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" />
+                                <label class="form-check-label" for="eFileviaSPC">E-File via SPC</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="eFileFinal">E-File Final</label>
-                                <input type="text" id="eFileFinal" name="eFileFinal" class="form-control" placeholder="Select date" />
+                                <label for="invoiceNo">Invoice No</label>
+                                <input type="text" id="invoiceNo" name="invoiceNo" class="form-control" placeholder="Enter invoice number" />
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Billing -->
-                    <div class="form-info-label col-12">
-                        <label>Billing</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="invoicesNo">Invoices No</label>
-                                <input type="text" id="invoicesNo" name="invoicesNo" class="form-control" placeholder="Enter invoice number" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="amountRM">Amount RM</label>
-                                <input type="text" id="amountRM" name="amountRM" class="form-control" placeholder="Enter amount" />
+                                <input type="number" step="0.01" id="amountRM" name="amountRM" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Doc Despatch Date -->
-                    <div class="form-info-label col-12">
-                        <label>Doc Despatch Date</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="docDespatchDate">Doc Despatch Date</label>
-                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -491,34 +389,534 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- Include DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Include Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            let dataTable;
+            let currentEditId = null;
+
+            // 初始化 DataTable
+            initializeDataTable();
+
             // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            initializeDatePickers();
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveBP32Record();
             });
 
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
-                responsive: true,
-                ordering: true,
-                autoWidth: false,
-                pageLength: 10,
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+            // 初始化 DataTable
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "ajax": {
+                        "url": "/api/bp32/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            console.log("API Response:", response);
+                            if (response.success) {
+                                return response.data;
+                            } else {
+                                console.error('Error loading data:', response.message);
+                                showAlert('Error loading data: ' + response.message, 'danger');
+                                return [];
+                            }
+                        },
+                        "error": function(xhr, status, error) {
+                            console.error('AJAX Error:', error);
+                            showAlert('Error loading data: ' + error, 'danger');
+                        }
+                    },
+                    "columns": [
+                        { "data": "fileNo" },
+                        { "data": "companyName" },
+                        { "data": "yearEnd" },
+                        { "data": "jobServices" },
+                        { "data": "coStatus" },
+                        { "data": "activeCoActivitySize" },
+                        { "data": "yEtodo" },
+                        { "data": "mthTodo" },
+                        {
+                            "data": "docReceivedDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "taxARdueDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        { "data": "staff" },
+                        {
+                            "data": "startDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "endDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "timeTaken",
+                            "render": function(data) {
+                                return data ? data + ' days' : '';
+                            }
+                        },
+                        {
+                            "data": "datePassToAudit",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "dateTaxSubmited",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        { "data": "completedBacklog" },
+                        {
+                            "data": "singleEntry",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "taxComputation",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "sortingFiling",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "keyinToExcel",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "reviewWorkingAcc",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "draftFinancialStatement",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "draftTaxCompleted",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "reviewTax",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "finalTax",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "taxComFinalSignByClient",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "amountTaxPay",
+                            "render": function(data) {
+                                return data ? 'RM ' + parseFloat(data).toFixed(2) : '';
+                            }
+                        },
+                        {
+                            "data": "eFileDraft",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "eFileFinal",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        {
+                            "data": "eFileviaSPC",
+                            "render": function(data) {
+                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                            }
+                        },
+                        { "data": "invoiceNo" },
+                        {
+                            "data": "amountRM",
+                            "render": function(data) {
+                                return data ? 'RM ' + parseFloat(data).toFixed(2) : '';
+                            }
+                        },
+                        {
+                            "data": "docDespatchDate",
+                            "render": function(data) {
+                                return data ? formatDate(data) : '';
+                            }
+                        },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "createdRow": function(row, data, dataIndex) {
+                        // 根据状态添加行样式
+                        if (data.completedBacklog === 'Completed') {
+                            $(row).addClass('table-success');
+                        } else if (data.completedBacklog === 'Backlog') {
+                            $(row).addClass('table-warning');
+                        } else if (data.completedBacklog === 'In Progress') {
+                            $(row).addClass('table-info');
+                        }
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            // 格式化日期显示
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                try {
+                    let date;
+                    if (dateString.includes('/')) {
+                        // 处理 DD/MM/YYYY 格式
+                        const parts = dateString.split('/');
+                        date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    } else if (dateString.includes('-')) {
+                        // 处理 YYYY-MM-DD 格式
+                        date = new Date(dateString);
+                    } else {
+                        // 直接解析
+                        date = new Date(dateString);
+                    }
+
+                    if (isNaN(date.getTime())) {
+                        return dateString;
+                    }
+                    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+                } catch (e) {
+                    console.error('Date formatting error:', e);
+                    return dateString;
                 }
+            }
+
+            // 格式化日期为输入框格式 (YYYY-MM-DD)
+            function formatDateForInput(dateString) {
+                if (!dateString) return '';
+                try {
+                    let date;
+                    if (dateString.includes('/')) {
+                        // 处理 DD/MM/YYYY 格式
+                        const parts = dateString.split('/');
+                        date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    } else if (dateString.includes('-')) {
+                        // 处理 YYYY-MM-DD 格式
+                        date = new Date(dateString);
+                    } else {
+                        // 直接解析
+                        date = new Date(dateString);
+                    }
+
+                    if (isNaN(date.getTime())) {
+                        return dateString;
+                    }
+                    return date.toISOString().split('T')[0];
+                } catch (e) {
+                    console.error('Date formatting error:', e);
+                    return dateString;
+                }
+            }
+
+            // 保存 BP32 记录
+            function saveBP32Record() {
+                // 基本验证
+                if (!$('#fileNo').val() || !$('#companyName').val() || !$('#yearEnd').val()) {
+                    showAlert('Please fill in all required fields (File No, Company Name, Year End)', 'warning');
+                    return;
+                }
+
+                const formData = {
+                    fileNo: $('#fileNo').val(),
+                    companyName: $('#companyName').val(),
+                    yearEnd: $('#yearEnd').val(),
+                    jobServices: $('#jobServices').val(),
+                    coStatus: $('#coStatus').val(),
+                    activeCoActivitySize: $('#activeCoActivitySize').val(),
+                    yEtodo: $('#yEtodo').val(),
+                    mthTodo: $('#mthTodo').val(),
+                    docReceivedDate: $('#docReceivedDate').val(),
+                    taxARdueDate: $('#taxARdueDate').val(),
+                    staff: $('#staff').val(),
+                    startDate: $('#startDate').val(),
+                    endDate: $('#endDate').val(),
+                    timeTaken: $('#timeTaken').val(),
+                    datePassToAudit: $('#datePassToAudit').val(),
+                    dateTaxSubmited: $('#dateTaxSubmited').val(),
+                    completedBacklog: $('#completedBacklog').val(),
+
+                    // 布尔字段转换为字符串 '1'/'0'
+                    singleEntry: $('#singleEntry').is(':checked') ? "1" : "0",
+                    taxComputation: $('#taxComputation').is(':checked') ? "1" : "0",
+                    sortingFiling: $('#sortingFiling').is(':checked') ? "1" : "0",
+                    keyinToExcel: $('#keyinToExcel').is(':checked') ? "1" : "0",
+                    reviewWorkingAcc: $('#reviewWorkingAcc').is(':checked') ? "1" : "0",
+                    draftFinancialStatement: $('#draftFinancialStatement').is(':checked') ? "1" : "0",
+                    draftTaxCompleted: $('#draftTaxCompleted').is(':checked') ? "1" : "0",
+                    reviewTax: $('#reviewTax').is(':checked') ? "1" : "0",
+                    finalTax: $('#finalTax').is(':checked') ? "1" : "0",
+                    taxComFinalSignByClient: $('#taxComFinalSignByClient').is(':checked') ? "1" : "0",
+
+                    amountTaxPay: $('#amountTaxPay').val(),
+
+                    eFileDraft: $('#eFileDraft').is(':checked') ? "1" : "0",
+                    eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
+                    eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
+
+                    invoiceNo: $('#invoiceNo').val(),
+                    amountRM: $('#amountRM').val(),
+                    docDespatchDate: $('#docDespatchDate').val()
+                };
+
+                const url = currentEditId ? '/api/bp32/update' : '/api/bp32/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                if (currentEditId) {
+                    formData.id = currentEditId;
+                }
+
+                console.log('Sending data:', formData);
+
+                // 显示加载状态
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload(null, false); // 保持当前分页位置
+                            resetForm();
+                            showAlert('Record saved successfully!', 'success');
+                        } else {
+                            showAlert('Error saving record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                        console.error('Save error:', xhr.responseText);
+                        showAlert('Error saving record: ' + (xhr.responseJSON?.message || error), 'danger');
+                    }
+                });
+            }
+
+            // 编辑记录
+            $(document).on('click', '.edit-btn', function() {
+                const id = $(this).data('id');
+                editRecord(id);
+            });
+
+            // 删除记录
+            $(document).on('click', '.delete-btn', function() {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
+
+            // 编辑记录
+            function editRecord(id) {
+                console.log('Editing record ID:', id);
+
+                $.ajax({
+                    url: `/api/bp32/get/${id}`,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            const record = response.data;
+                            currentEditId = record.id;
+
+                            console.log('Record data:', record);
+
+                            // 填充表单
+                            $('#fileNo').val(record.fileNo || '');
+                            $('#companyName').val(record.companyName || '');
+                            $('#yearEnd').val(record.yearEnd || '');
+                            $('#jobServices').val(record.jobServices || '');
+                            $('#coStatus').val(record.coStatus || '');
+                            $('#activeCoActivitySize').val(record.activeCoActivitySize || '');
+                            $('#yEtodo').val(record.yEtodo || '');
+                            $('#mthTodo').val(record.mthTodo || '');
+                            $('#docReceivedDate').val(record.docReceivedDate ? formatDateForInput(record.docReceivedDate) : '');
+                            $('#taxARdueDate').val(record.taxARdueDate ? formatDateForInput(record.taxARdueDate) : '');
+                            $('#staff').val(record.staff || '');
+                            $('#startDate').val(record.startDate ? formatDateForInput(record.startDate) : '');
+                            $('#endDate').val(record.endDate ? formatDateForInput(record.endDate) : '');
+                            $('#timeTaken').val(record.timeTaken || '');
+                            $('#datePassToAudit').val(record.datePassToAudit ? formatDateForInput(record.datePassToAudit) : '');
+                            $('#dateTaxSubmited').val(record.dateTaxSubmited ? formatDateForInput(record.dateTaxSubmited) : '');
+                            $('#completedBacklog').val(record.completedBacklog || '');
+
+                            // 布尔字段
+                            $('#singleEntry').prop('checked', record.singleEntry === "1");
+                            $('#taxComputation').prop('checked', record.taxComputation === "1");
+                            $('#sortingFiling').prop('checked', record.sortingFiling === "1");
+                            $('#keyinToExcel').prop('checked', record.keyinToExcel === "1");
+                            $('#reviewWorkingAcc').prop('checked', record.reviewWorkingAcc === "1");
+                            $('#draftFinancialStatement').prop('checked', record.draftFinancialStatement === "1");
+                            $('#draftTaxCompleted').prop('checked', record.draftTaxCompleted === "1");
+                            $('#reviewTax').prop('checked', record.reviewTax === "1");
+                            $('#finalTax').prop('checked', record.finalTax === "1");
+                            $('#taxComFinalSignByClient').prop('checked', record.taxComFinalSignByClient === "1");
+
+                            $('#amountTaxPay').val(record.amountTaxPay || '');
+                            $('#eFileDraft').prop('checked', record.eFileDraft === "1");
+                            $('#eFileFinal').prop('checked', record.eFileFinal === "1");
+                            $('#eFileviaSPC').prop('checked', record.eFileviaSPC === "1");
+                            $('#invoiceNo').val(record.invoiceNo || '');
+                            $('#amountRM').val(record.amountRM || '');
+                            $('#docDespatchDate').val(record.docDespatchDate ? formatDateForInput(record.docDespatchDate) : '');
+
+                            $('#modalTitle').text('Edit BP32 Record');
+                            $('#taskModal').modal('show');
+                        } else {
+                            showAlert('Error loading record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Edit error:', error);
+                        showAlert('Error loading record: ' + error, 'danger');
+                    }
+                });
+            }
+
+            // 删除记录
+            function deleteRecord(id) {
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    $.ajax({
+                        url: `/api/bp32/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                dataTable.ajax.reload(null, false); // 保持当前分页位置
+                                showAlert('Record deleted successfully!', 'success');
+                            } else {
+                                showAlert('Error deleting record: ' + response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Delete error:', error);
+                            showAlert('Error deleting record: ' + error, 'danger');
+                        }
+                    });
+                }
+            }
+
+            // 重置表单
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#modalTitle').text('Add New BP32 Record');
+                $('.datepicker').datepicker('update', '');
+                $('#recordId').val('');
+
+                // 重置所有复选框
+                $('input[type="checkbox"]').prop('checked', false);
+            }
+
+            // 显示提示信息
+            function showAlert(message, type) {
+                const alertClass = `alert alert-${type} alert-dismissible fade show`;
+                const alertHtml = `
+                    <div class="${alertClass}" role="alert">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('#alertContainer').html(alertHtml);
+
+                // 自动隐藏
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // 模态框关闭时重置表单
+            $('#taskModal').on('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+            // 添加新的记录按钮点击事件
+            $('#addNewBtn').click(function() {
+                resetForm();
+                $('#modalTitle').text('Add New BP32 Record');
+            });
+
+            // 表单提交事件
+            $('#taskForm').on('submit', function(e) {
+                e.preventDefault();
+                saveBP32Record();
             });
         });
     </script>
