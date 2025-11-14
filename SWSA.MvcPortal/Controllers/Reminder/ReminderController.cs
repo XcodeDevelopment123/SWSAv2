@@ -6,6 +6,7 @@ using B2 = SWSA.MvcPortal.Models.Reminder.B2;
 using B31 = SWSA.MvcPortal.Models.Reminder.B31;
 using B32 = SWSA.MvcPortal.Models.Reminder.B32;
 using B34 = SWSA.MvcPortal.Models.Reminder.B34;
+using B35 = SWSA.MvcPortal.Models.Reminder.B35;
 
 
 namespace SWSA.MvcPortal.Controllers.Reminder
@@ -153,9 +154,32 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             }
         }
 
-        public IActionResult FormEReminderSchedule()
+        public async Task <IActionResult> FormEReminderSchedule()
         {
-            return View();
+            try
+            {
+                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    Console.WriteLine("✅ Database connection successful");
+
+                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] ORDER BY Id DESC";
+                    var records = await connection.QueryAsync<B35>(sql);
+
+                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
+                    return View(records);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in B35AcorrespondanceRecord: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                // 返回空列表而不是抛出异常
+                return View(new List<B34>());
+            }
         }
         public IActionResult FormBEindividualTaxReminderSchedule()
         {
@@ -1062,6 +1086,179 @@ namespace SWSA.MvcPortal.Controllers.Reminder
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     var sql = "DELETE FROM [Quartz].[dbo].[B34] WHERE Id = @Id";
+                    var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                    if (affectedRows == 0)
+                        return Json(new { success = false, message = "Record not found" });
+
+                    return Json(new { success = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
+
+        #region B35 Api Method
+        [HttpGet("get-b35-records")]
+        public async Task<IActionResult> GetB35Records()
+        {
+            try
+            {
+                Console.WriteLine("=== Starting GetB35Records with Dapper ===");
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    Console.WriteLine("✅ Database connection successful");
+
+                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] ORDER BY Id DESC";
+                    var records = await connection.QueryAsync<B35>(sql);
+
+                    Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
+                    return Json(new { success = true, data = records });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in GetB35Records: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message,
+                    detailed = ex.StackTrace
+                });
+            }
+        }
+
+        [HttpGet("get-b35-record/{id}")]
+        public async Task<IActionResult> GetB35Record(int id)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] WHERE Id = @Id";
+                    var record = await connection.QueryFirstOrDefaultAsync<B35>(sql, new { Id = id });
+
+                    if (record == null)
+                        return Json(new { success = false, message = "Record not found" });
+
+                    return Json(new { success = true, data = record });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("create-b35")]
+        public async Task<IActionResult> CreateB35([FromBody] B35 model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    var sql = @"INSERT INTO [Quartz].[dbo].[B35]
+    ([Grouping],[CompanyName],[YearEnd],[PIC],
+     [T_startWk],[T_Date],[DateSent],[T_call],[DateRemind],
+     [T_finalText],[DateText],[DateReceived],[Note])
+    VALUES(@Grouping,@CompanyName,@YearEnd,@PIC,
+           @T_startWk,@T_Date,@DateSent,@T_call,@DateRemind,
+           @T_finalText,@DateText,@DateReceived,@Note);
+    SELECT CAST(SCOPE_IDENTITY() AS int);";
+
+
+                    var id = await connection.ExecuteScalarAsync<int>(sql, new
+                    {
+                        model.Id,
+                        model.Grouping,
+                        model.CompanyName,
+                        model.YearEnd,
+                        model.PIC,
+                        model.T_startWk,
+                        model.T_Date,
+                        model.DateSent,
+                        model.T_call,
+                        model.DateRemind,
+                        model.T_finalText,
+                        model.DateText,
+                        model.DateReceived,
+                        model.Note
+                    });
+
+                    return Json(new { success = true, id = id, data = model });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("update-b35")]
+        public async Task<IActionResult> UpdateB35([FromBody] B35 model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    var sql = @"UPDATE [Quartz].[dbo].[B35]
+                    SET [Grouping] = @Grouping,[CompanyName] = @CompanyName,
+                    [YearEnd] = @YearEnd,[PIC] = @PIC,[T_startWk] = @T_startWk,
+                    [T_Date] = @T_Date,[DateSent] = @DateSent,[T_call] = @T_call,
+                    [DateRemind] = @DateRemind,[T_finalText] = @T_finalText,[DateReceived] = @DateReceived,[DateText]=@DateText,
+                    [Note] = @Note WHERE [Id] = @Id";
+
+                    var affectedRows = await connection.ExecuteAsync(sql, new
+                    {
+                        model.Id,
+                        model.Grouping,
+                        model.CompanyName,
+                        model.YearEnd,
+                        model.PIC,
+                        model.T_startWk,
+                        model.T_Date,
+                        model.DateSent,
+                        model.T_call,
+                        model.DateRemind,
+                        model.T_finalText,
+                        model.DateText,
+                        model.DateReceived,
+                        model.Note
+                  });
+
+                    if (affectedRows == 0)
+                        return Json(new { success = false, message = "Record not found" });
+
+                    return Json(new { success = true, data = model });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpDelete("delete-b35/{id}")]
+        public async Task<IActionResult> DeleteB35(int id)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    var sql = "DELETE FROM [Quartz].[dbo].[B35] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
