@@ -6,20 +6,17 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Audit Master Schedule
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="openCreateModal()">
                         <i class="fas fa-plus me-2"></i>New Task
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
@@ -33,6 +30,7 @@
                             <th>Co Status</th>
                             <th>Audit Status</th>
                             <th>Move to AEX Sch</th>
+                            <th>Move to Backlog</th>
                             <th>1st 18mths due</th>
                             <th>AFS due date</th>
                             <th>Co Sec?</th>
@@ -42,59 +40,19 @@
                             <th>Acctng wk?</th>
                             <th>Job Completed</th>
                             <th>Remark</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Group A</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>Q4</td>
-                            <td>Manufacturing</td>
-                            <td>31/12/2024</td>
-                            <td>2024</td>
-                            <td>Active</td>
-                            <td>In Progress</td>
-                            <td>No</td>
-                            <td>30/06/2025</td>
-                            <td>31/07/2025</td>
-                            <td>Yes</td>
-                            <td>John Doe</td>
-                            <td>15/01/2025</td>
-                            <td>2,500 / 350</td>
-                            <td>Yes</td>
-                            <td>No</td>
-                            <td>Pending client documents</td>
-                        </tr>
-                        <tr>
-                            <td>Group B</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>Q1</td>
-                            <td>Trading</td>
-                            <td>31/03/2024</td>
-                            <td>2024</td>
-                            <td>Active</td>
-                            <td>Completed</td>
-                            <td>Yes</td>
-                            <td>30/09/2024</td>
-                            <td>31/10/2024</td>
-                            <td>No</td>
-                            <td>Jane Smith</td>
-                            <td>01/04/2024</td>
-                            <td>1,800 / 280</td>
-                            <td>Yes</td>
-                            <td>Yes</td>
-                            <td>Submitted to SSM</td>
-                        </tr>
+                    <tbody id="tableBody">
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
+<!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -107,7 +65,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -122,8 +80,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                     </div>
@@ -135,8 +93,8 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="quarterToAudit">Quarter to Audit</label>
-                                <select id="quarterToAudit" name="quarterToAudit" class="form-control">
+                                <label for="quartertoAudit">Quarter to Audit</label>
+                                <select id="quartertoAudit" name="quartertoAudit" class="form-control">
                                     <option value="">Select Quarter</option>
                                     <option value="Q1">Q1</option>
                                     <option value="Q2">Q2</option>
@@ -154,7 +112,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="date" id="yearEnd" name="yearEnd" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -172,12 +130,13 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
+                                <label for="companyStatus">Co Status</label>
+                                <select id="companyStatus" name="companyStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Dormant">Dormant</option>
                                     <option value="Strike Off">Strike Off</option>
+                                    <option value="In Liquidation">In Liquidation</option>
                                 </select>
                             </div>
                         </div>
@@ -190,6 +149,7 @@
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Pending">Pending</option>
+                                    <option value="On Hold">On Hold</option>
                                 </select>
                             </div>
                         </div>
@@ -202,8 +162,8 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="moveToAEXSch">Move to AEX Sch</label>
-                                <select id="moveToAEXSch" name="moveToAEXSch" class="form-control">
+                                <label for="movetoAEX">Move to AEX Sch</label>
+                                <select id="movetoAEX" name="movetoAEX" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
@@ -212,16 +172,33 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="first18MonthsDue">1st 18mths due</label>
-                                <input type="text" id="first18MonthsDue" name="first18MonthsDue" class="form-control" placeholder="Select date" />
+                                <label for="movetoBacklog">Move to Backlog</label>
+                                <select id="movetoBacklog" name="movetoBacklog" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="afsDueDate">AFS due date</label>
-                                <input type="text" id="afsDueDate" name="afsDueDate" class="form-control" placeholder="Select date" />
+                                <label for="first18mthdue">1st 18mths due</label>
+                                <input type="date" id="first18mthdue" name="first18mthdue" class="form-control" />
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="aFSdueDate">AFS due date</label>
+                                <input type="date" id="aFSdueDate" name="aFSdueDate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff and Financial Information -->
+                    <div class="form-info-label col-12">
+                        <label>Staff and Financial Information</label>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="coSec">Co Sec?</label>
@@ -232,29 +209,22 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Staff and Financial Information -->
-                    <div class="form-info-label col-12">
-                        <label>Staff and Financial Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="auditStaff">Audit Staff</label>
                                 <input type="text" id="auditStaff" name="auditStaff" class="form-control" placeholder="Enter staff name" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc in</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateDocIn" name="dateDocIn" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="estRevNP">EST Rev/NP('000)</label>
-                                <input type="text" id="estRevNP" name="estRevNP" class="form-control" placeholder="e.g., 2,500 / 350" />
+                                <label for="estRev">EST Rev/NP('000)</label>
+                                <input type="text" id="estRev" name="estRev" class="form-control" placeholder="e.g., 2,500 / 350" />
                             </div>
                         </div>
                     </div>
@@ -297,7 +267,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
+                <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveRecord()">
                     <i class="fas fa-save me-2"></i>Save
                 </button>
             </div>
@@ -308,35 +278,409 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
+        let currentEditingId = null;
+        let dataTable = null;
+        let currentData = [];
+
         $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            console.log('Document ready, initializing...');
+            loadData();
+        });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
+        function initializeDataTable() {
+            console.log('Initializing DataTable...');
 
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
-                responsive: true,
-                ordering: true,
-                autoWidth: false,
-                pageLength: 10,
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+            // 如果 DataTable 已经存在，先销毁
+            if (dataTable) {
+                console.log('Destroying existing DataTable...');
+                dataTable.destroy();
+                $('#taskDatatable').empty();
+            }
+
+            // 重新创建表格结构
+            const tableHtml = `
+                <thead>
+                    <tr>
+                        <th>Grouping</th>
+                        <th>Company Name</th>
+                        <th>Quarter to Audit</th>
+                        <th>Activity</th>
+                        <th>Year End</th>
+                        <th>Year to do</th>
+                        <th>Co Status</th>
+                        <th>Audit Status</th>
+                        <th>Move to AEX Sch</th>
+                        <th>Move to Backlog</th>
+                        <th>1st 18mths due</th>
+                        <th>AFS due date</th>
+                        <th>Co Sec?</th>
+                        <th>Audit Staff</th>
+                        <th>Date Doc in</th>
+                        <th>EST Rev/NP('000)</th>
+                        <th>Acctng wk?</th>
+                        <th>Job Completed</th>
+                        <th>Remark</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            `;
+            $('#taskDatatable').html(tableHtml);
+
+            // 重新填充数据
+            populateTableBody(currentData);
+
+            // 初始化 DataTable
+            dataTable = $('#taskDatatable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "scrollX": true,
+                "language": {
+                    "emptyTable": "", // 设置为空，我们自己处理空表显示
+                    "loadingRecords": "Loading...",
+                    "zeroRecords": "No matching records found"
                 }
             });
-        });
+
+            console.log('DataTable initialized successfully');
+        }
+
+        function populateTableBody(data) {
+            console.log('Populating table body with data:', data);
+
+            const tbody = $('#tableBody');
+            tbody.empty();
+
+            if (data && data.length > 0) {
+                console.log(`Adding ${data.length} records to table`);
+
+                data.forEach(function(item, index) {
+                    console.log(`Adding record ${index + 1}:`, item);
+
+                    const row = `
+                        <tr>
+                            <td>${escapeHtml(item.grouping || '')}</td>
+                            <td>${escapeHtml(item.companyName || '')}</td>
+                            <td>${escapeHtml(item.quartertoAudit || '')}</td>
+                            <td>${escapeHtml(item.activity || '')}</td>
+                            <td>${formatDate(item.yearEnd)}</td>
+                            <td>${escapeHtml(item.yearToDo || '')}</td>
+                            <td>${escapeHtml(item.companyStatus || '')}</td>
+                            <td>${escapeHtml(item.auditStatus || '')}</td>
+                            <td>${escapeHtml(item.movetoAEX || '')}</td>
+                            <td>${escapeHtml(item.movetoBacklog || '')}</td>
+                            <td>${formatDate(item.first18mthdue)}</td>
+                            <td>${formatDate(item.aFSdueDate)}</td>
+                            <td>${escapeHtml(item.coSec || '')}</td>
+                            <td>${escapeHtml(item.auditStaff || '')}</td>
+                            <td>${formatDate(item.dateDocIn)}</td>
+                            <td>${escapeHtml(item.estRev || '')}</td>
+                            <td>${escapeHtml(item.acctngWk || '')}</td>
+                            <td>${escapeHtml(item.jobCompleted || '')}</td>
+                            <td>${escapeHtml(item.remark || '')}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+
+                console.log('Successfully added all records to table');
+            } else {
+                console.log('No data available, showing empty message');
+                tbody.append('<tr><td colspan="20" class="text-center">No audit master schedule records found</td></tr>');
+            }
+        }
+
+        function loadData() {
+            console.log('Loading data from API...');
+
+            // 显示加载状态
+            const tbody = $('#tableBody');
+            tbody.html('<tr><td colspan="20" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> Loading data...</td></tr>');
+
+            $.ajax({
+                url: '/api/auditdept/at21/get-all',
+                type: 'GET',
+                success: function(response) {
+                    console.log('API Response received:', response);
+
+                    if (response.success) {
+                        console.log('Data loaded successfully:', response.data);
+                        currentData = response.data || [];
+                        console.log(`Loaded ${currentData.length} records`);
+
+                        // 重新初始化表格
+                        initializeDataTable();
+
+                        if (currentData.length > 0) {
+                            showAlert('Data loaded successfully!', 'success');
+                        }
+                    } else {
+                        console.error('API returned error:', response);
+                        showAlert('Error loading data: ' + response.message, 'danger');
+                        currentData = [];
+                        initializeDataTable();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    console.log('XHR status:', xhr.status);
+                    console.log('XHR response:', xhr.responseText);
+                    showAlert('Error loading data: ' + error, 'danger');
+                    currentData = [];
+                    initializeDataTable();
+                }
+            });
+        }
+
+        function openCreateModal() {
+            console.log('Opening create modal');
+            currentEditingId = null;
+            $('#modalTitle').text('Add New Audit Master Schedule Record');
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#taskModal').modal('show');
+        }
+
+        function editRecord(id) {
+            console.log('Editing record with ID:', id);
+
+            $.ajax({
+                url: '/api/auditdept/at21/get/' + id,
+                type: 'GET',
+                success: function(response) {
+                    console.log('Edit API response:', response);
+
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditingId = record.id;
+
+                        console.log('Loading record data:', record);
+
+                        $('#modalTitle').text('Edit Audit Master Schedule Record');
+                        $('#recordId').val(record.id);
+
+                        // 填充表单字段
+                        $('#grouping').val(record.grouping || '');
+                        $('#companyName').val(record.companyName || '');
+                        $('#quartertoAudit').val(record.quartertoAudit || '');
+                        $('#activity').val(record.activity || '');
+                        $('#yearEnd').val(formatDateForInput(record.yearEnd));
+                        $('#yearToDo').val(record.yearToDo || '');
+                        $('#companyStatus').val(record.companyStatus || '');
+                        $('#auditStatus').val(record.auditStatus || '');
+                        $('#movetoAEX').val(record.movetoAEX || '');
+                        $('#movetoBacklog').val(record.movetoBacklog || '');
+                        $('#first18mthdue').val(formatDateForInput(record.first18mthdue));
+                        $('#aFSdueDate').val(formatDateForInput(record.aFSdueDate));
+                        $('#coSec').val(record.coSec || '');
+                        $('#auditStaff').val(record.auditStaff || '');
+                        $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
+                        $('#estRev').val(record.estRev || '');
+                        $('#acctngWk').val(record.acctngWk || '');
+                        $('#jobCompleted').val(record.jobCompleted || '');
+                        $('#remark').val(record.remark || '');
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        console.error('Error loading record:', response.message);
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading record:', error);
+                    showAlert('Error loading record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function saveRecord() {
+            console.log('Saving record...');
+
+            const formData = {
+                grouping: $('#grouping').val(),
+                companyName: $('#companyName').val(),
+                quartertoAudit: $('#quartertoAudit').val(),
+                activity: $('#activity').val(),
+                yearEnd: $('#yearEnd').val() || null,
+                yearToDo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditStatus: $('#auditStatus').val(),
+                movetoAEX: $('#movetoAEX').val(),
+                movetoBacklog: $('#movetoBacklog').val(),
+                first18mthdue: $('#first18mthdue').val() || null,
+                aFSdueDate: $('#aFSdueDate').val() || null,
+                coSec: $('#coSec').val(),
+                auditStaff: $('#auditStaff').val(),
+                dateDocIn: $('#dateDocIn').val() || null,
+                estRev: $('#estRev').val(),
+                acctngWk: $('#acctngWk').val(),
+                jobCompleted: $('#jobCompleted').val(),
+                remark: $('#remark').val()
+            };
+
+            // Add ID for update
+            if (currentEditingId) {
+                formData.id = currentEditingId;
+            }
+
+            console.log('Form data to save:', formData);
+
+            // Basic validation
+            if (!formData.companyName) {
+                showAlert('Company Name is required', 'warning');
+                return;
+            }
+
+            const url = currentEditingId ? '/api/auditdept/at21/update' : '/api/auditdept/at21/create';
+            const method = currentEditingId ? 'PUT' : 'POST';
+
+            console.log(`Making ${method} request to: ${url}`);
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    console.log('Save response:', response);
+
+                    if (response.success) {
+                        const message = `Record ${currentEditingId ? 'updated' : 'created'} successfully!`;
+                        console.log(message);
+                        showAlert(message, 'success');
+                        $('#taskModal').modal('hide');
+
+                        // 重新加载数据
+                        console.log('Reloading data after save...');
+                        loadData();
+                    } else {
+                        console.error('Save failed:', response.message);
+                        showAlert('Error saving record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Save error:', error);
+                    console.log('XHR status:', xhr.status);
+                    console.log('XHR response:', xhr.responseText);
+                    showAlert('Error saving record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function deleteRecord(id) {
+            console.log('Deleting record with ID:', id);
+
+            if (confirm('Are you sure you want to delete this record?')) {
+                $.ajax({
+                    url: '/api/auditdept/at21/delete/' + id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        console.log('Delete response:', response);
+
+                        if (response.success) {
+                            console.log('Record deleted successfully');
+                            showAlert('Record deleted successfully!', 'success');
+                            loadData();
+                        } else {
+                            console.error('Delete failed:', response.message);
+                            showAlert('Error deleting record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete error:', error);
+                        showAlert('Error deleting record: ' + error, 'danger');
+                    }
+                });
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+            } catch (e) {
+                console.warn('Date formatting error:', e);
+                return '';
+            }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+            } catch (e) {
+                console.warn('Date input formatting error:', e);
+                return '';
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(message, type) {
+            console.log(`Showing alert: ${type} - ${message}`);
+
+            const alertClass = `alert alert-${type} alert-dismissible fade show`;
+            const alertHtml = `
+                <div class="${alertClass}" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+
+            // Remove existing alerts
+            $('.alert').remove();
+
+            // Prepend alert to card body
+            $('.card-body').prepend(alertHtml);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+
+        // 添加调试函数
+        function debugTable() {
+            console.log('=== DEBUG TABLE INFO ===');
+            console.log('DataTable instance:', dataTable);
+            console.log('Current data:', currentData);
+            console.log('Table body children:', $('#tableBody').children().length);
+            console.log('Table HTML:', $('#taskDatatable').html());
+        }
+
+        // 在控制台中可以调用 debugTable() 来调试
+        window.debugTable = debugTable;
     </script>
 }

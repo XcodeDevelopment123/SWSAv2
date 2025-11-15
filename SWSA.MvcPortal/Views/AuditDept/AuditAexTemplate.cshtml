@@ -6,208 +6,72 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
-                </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
-                    </button>
-                </div>
+                <h3 class="card-title">Audit AEX Template Records</h3>
+                <button type="button" class="btn btn-primary btn-sm" onclick="clearForm()" data-bs-toggle="modal" data-bs-target="#taskModal">
+                    <i class="fas fa-plus me-2"></i>New Record
+                </button>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="11"></th>
-                            <th colspan="17">AT3.2 Audit Work done WIP</th>
-                            <th colspan="14"></th>
-                        </tr>
-
-                        <tr>
-                            <th colspan="11"></th>
-                            <th colspan="4">Audit WIP (days)</th>
-                            <th colspan="6">Audit Work WIP %</th>
-                            <th colspan="7">Review</th>
-                            <th colspan="4">AT3.3 Audit Reports from KK</th>
-                            <th colspan="4">AT3.4 Directors' signing pages</th>
-                            <th colspan="2">4. Tax Dept</th>
-                            <th colspan="2">5. Sec Dept</th>
-                            <th colspan="2">6. Post Audit Work</th>
-                        </tr>
-
-                        <tr>
-                            <th rowspan="3">No</th>
-                            <th rowspan="3">Company Name</th>
-                            <th rowspan="3">Activity</th>
-                            <th rowspan="3">YE to do</th>
-                            <th rowspan="3">Quarter to do</th>
-                            <th rowspan="3">PIC</th>
-                            <th rowspan="3">Status</th>
-
-                            <th colspan="2">Est current yr result '000</th>
-                            <th colspan="2">Billing</th>
-
-                            <th rowspan="3">a. Start Date</th>
-                            <th rowspan="3">b. As at</th>
-                            <th rowspan="3">c. No of Days</th>
-                            <th rowspan="3">Result Over/Under</th>
-
-                            <th colspan="2">A. Prog tracker %</th>
-                            <th colspan="2">B. Task %</th>
-                            <th colspan="2">A+B+C</th>
-
-                            <th colspan="3">Kuching 1st Review</th>
-                            <th colspan="4">2nd Review KK</th>
-
-                            <th rowspan="3">Date Sent to KK</th>
-                            <th rowspan="3">Date received AR</th>
-                            <th rowspan="3">Date of Report</th>
-                            <th rowspan="3">Date of Directors</th>
-
-                            <th rowspan="3">Date Sent</th>
-                            <th rowspan="3">Follow up dates</th>
-                            <th rowspan="3">Date received</th>
-                            <th rowspan="3">Comm of Oaths date</th>
-
-                            <th rowspan="3">Tax Due Date</th>
-                            <th rowspan="3">Pass to Tax Dept</th>
-
-                            <th rowspan="3">SSM Due Date</th>
-                            <th rowspan="3">Date pass to Sec Dept(MBRS)</th>
-
-                            <th rowspan="3">Date Binded</th>
-                            <th rowspan="3">Despatch Date to Client</th>
-                        </tr>
-
-                        <tr>
+                            <th>ID</th>
+                            <th>Company Name</th>
+                            <th>Activity</th>
+                            <th>YE to do</th>
+                            <th>Quarter to do</th>
+                            <th>PIC</th>
+                            <th>Status</th>
                             <th>Revenue</th>
                             <th>Profit/(loss)</th>
-
                             <th>Audit Fee</th>
                             <th>Date billed</th>
-
-                            <th>a. Acc setup(J)</th>
-                            <th>b. Ac summary(J)</th>
-
-                            <th>c. Audit Planning(PIC)</th>
-                            <th>d. Audit Execution</th>
-
-                            <th>e. Audit Completion(PIC)</th>
+                            <th>Start Date</th>
+                            <th>As at</th>
+                            <th>No of Days</th>
+                            <th>Result Over/Under</th>
+                            <th>Acc setup(J)</th>
+                            <th>Ac summary(J)</th>
+                            <th>Audit Planning(PIC)</th>
+                            <th>Audit Execution</th>
+                            <th>Audit Completion(PIC)</th>
                             <th>Total %</th>
-
                             <th>Date Sent</th>
                             <th>End Date</th>
-                            <th>A. Result Over/Under</th>
-
+                            <th>Result Over/Under</th>
                             <th>Date Sent</th>
                             <th>End Date</th>
-                            <th>B. Result Over/Under</th>
+                            <th>Result Over/Under</th>
                             <th>Final</th>
+                            <th>Date Sent to KK</th>
+                            <th>Date received AR</th>
+                            <th>Date of Report</th>
+                            <th>Date of Directors</th>
+                            <th>Date Sent</th>
+                            <th>Follow up dates</th>
+                            <th>Date received</th>
+                            <th>Comm of Oaths date</th>
+                            <th>Tax Due Date</th>
+                            <th>Pass to Tax Dept</th>
+                            <th>SSM Due Date</th>
+                            <th>Date pass to Sec Dept</th>
+                            <th>Date Binded</th>
+                            <th>Despatch Date to Client</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>Technology</td>
-                            <td>Dec 2024</td>
-                            <td>Q4</td>
-                            <td>John Doe</td>
-                            <td>In Progress</td>
-                            <td>1,500</td>
-                            <td>250</td>
-                            <td>5,000</td>
-                            <td>15/03/2025</td>
-                            <td>01/02/2025</td>
-                            <td>15/03/2025</td>
-                            <td>30</td>
-                            <td>Over</td>
-                            <td>80%</td>
-                            <td>90%</td>
-                            <td>70%</td>
-                            <td>85%</td>
-                            <td>75%</td>
-                            <td>85%</td>
-                            <td>10/03/2025</td>
-                            <td>15/03/2025</td>
-                            <td>Over</td>
-                            <td>20/03/2025</td>
-                            <td>25/03/2025</td>
-                            <td>Under</td>
-                            <td>Final</td>
-                            <td>30/03/2025</td>
-                            <td>05/04/2025</td>
-                            <td>10/04/2025</td>
-                            <td>15/04/2025</td>
-                            <td>20/04/2025</td>
-                            <td>25/04/2025</td>
-                            <td>28/04/2025</td>
-                            <td>30/04/2025</td>
-                            <td>30/04/2025</td>
-                            <td>10/05/2025</td>
-                            <td>15/05/2025</td>
-                            <td>20/05/2025</td>
-                            <td>25/05/2025</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>Trading</td>
-                            <td>Mar 2024</td>
-                            <td>Q1</td>
-                            <td>Jane Smith</td>
-                            <td>Completed</td>
-                            <td>2,000</td>
-                            <td>300</td>
-                            <td>6,000</td>
-                            <td>20/02/2025</td>
-                            <td>15/01/2025</td>
-                            <td>20/02/2025</td>
-                            <td>25</td>
-                            <td>Under</td>
-                            <td>95%</td>
-                            <td>85%</td>
-                            <td>90%</td>
-                            <td>80%</td>
-                            <td>95%</td>
-                            <td>90%</td>
-                            <td>05/02/2025</td>
-                            <td>10/02/2025</td>
-                            <td>Under</td>
-                            <td>15/02/2025</td>
-                            <td>20/02/2025</td>
-                            <td>Over</td>
-                            <td>Final</td>
-                            <td>25/02/2025</td>
-                            <td>02/03/2025</td>
-                            <td>08/03/2025</td>
-                            <td>12/03/2025</td>
-                            <td>15/03/2025</td>
-                            <td>18/03/2025</td>
-                            <td>20/03/2025</td>
-                            <td>22/03/2025</td>
-                            <td>25/03/2025</td>
-                            <td>28/03/2025</td>
-                            <td>30/03/2025</td>
-                            <td>05/04/2025</td>
-                        </tr>
+                        <!-- Data will be populated by DataTable -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
+<!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -216,11 +80,11 @@
                     <i class="fas fa-edit me-2"></i>
                     <span id="modalTitle">Add New Audit AEX Template Record</span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -229,8 +93,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -244,14 +108,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year end" />
+                                <label for="yEtodo">YE to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter year end" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="quarterToDo">Quarter to do</label>
-                                <select id="quarterToDo" name="quarterToDo" class="form-control">
+                                <label for="quarterTodo">Quarter to do</label>
+                                <select id="quarterTodo" name="quarterTodo" class="form-control">
                                     <option value="">Select Quarter</option>
                                     <option value="Q1">Q1</option>
                                     <option value="Q2">Q2</option>
@@ -277,6 +141,7 @@
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Pending">Pending</option>
+                                    <option value="Not Started">Not Started</option>
                                 </select>
                             </div>
                         </div>
@@ -290,13 +155,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="revenue">Revenue ('000)</label>
-                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
+                                <input type="text" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="profitLoss">Profit/(Loss) ('000)</label>
-                                <input type="number" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" />
+                                <input type="text" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" />
                             </div>
                         </div>
                     </div>
@@ -305,13 +170,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="auditFee">Audit Fee</label>
-                                <input type="number" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" />
+                                <input type="text" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateBilled">Date Billed</label>
-                                <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="DD/MM/YYYY" />
                             </div>
                         </div>
                     </div>
@@ -323,20 +188,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="startDate">a. Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <label for="startDate">Start Date</label>
+                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="DD/MM/YYYY" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="asAtDate">b. As at</label>
-                                <input type="text" id="asAtDate" name="asAtDate" class="form-control" placeholder="Select date" />
+                                <label for="asAt">As at</label>
+                                <input type="text" id="asAt" name="asAt" class="form-control" placeholder="DD/MM/YYYY" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="noOfDays">c. No of Days</label>
-                                <input type="number" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                                <label for="noOfDays">No of Days</label>
+                                <input type="text" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
                             </div>
                         </div>
                     </div>
@@ -349,6 +214,7 @@
                                     <option value="">Select Result</option>
                                     <option value="Over">Over</option>
                                     <option value="Under">Under</option>
+                                    <option value="Equal">Equal</option>
                                 </select>
                             </div>
                         </div>
@@ -359,106 +225,231 @@
                         <label>Audit Work WIP %</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="accSetup">a. Acc setup(J) %</label>
-                                <input type="number" id="accSetup" name="accSetup" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                                <label for="accSetup">Acc setup(J) %</label>
+                                <input type="text" id="accSetup" name="accSetup" class="form-control percentage" placeholder="0-100" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="acSummary">b. Ac summary(J) %</label>
-                                <input type="number" id="acSummary" name="acSummary" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                                <label for="accSummary">Ac summary(J) %</label>
+                                <input type="text" id="accSummary" name="accSummary" class="form-control percentage" placeholder="0-100" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="auditPlanning">c. Audit Planning(PIC) %</label>
-                                <input type="number" id="auditPlanning" name="auditPlanning" class="form-control" placeholder="Enter percentage" min="0" max="100" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="auditExecution">d. Audit Execution %</label>
-                                <input type="number" id="auditExecution" name="auditExecution" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                                <label for="auditPlanning">Audit Planning(PIC) %</label>
+                                <input type="text" id="auditPlanning" name="auditPlanning" class="form-control percentage" placeholder="0-100" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="auditCompletion">e. Audit Completion(PIC) %</label>
-                                <input type="number" id="auditCompletion" name="auditCompletion" class="form-control" placeholder="Enter percentage" min="0" max="100" />
+                                <label for="auditExecution">Audit Execution %</label>
+                                <input type="text" id="auditExecution" name="auditExecution" class="form-control percentage" placeholder="0-100" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="totalPercentage">Total %</label>
-                                <input type="number" id="totalPercentage" name="totalPercentage" class="form-control" placeholder="Enter total percentage" min="0" max="100" readonly />
+                                <label for="auditCompletion">Audit Completion(PIC) %</label>
+                                <input type="text" id="auditCompletion" name="auditCompletion" class="form-control percentage" placeholder="0-100" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="totalPercent">Total %</label>
+                                <input type="text" id="totalPercent" name="totalPercent" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Review Section -->
+                    <!-- Review - Kuching 1st Review -->
                     <div class="form-info-label col-12">
-                        <label>Review</label>
+                        <label>Review - Kuching 1st Review</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewSent">1st Review Date Sent</label>
-                                <input type="text" id="firstReviewSent" name="firstReviewSent" class="form-control" placeholder="Select date" />
+                                <label for="dateSentKuching">Date Sent *</label>
+                                <input type="text" id="dateSentKuching" name="dateSentKuching" class="form-control" placeholder="DD/MM/YYYY" required />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewEnd">1st Review End Date</label>
-                                <input type="text" id="firstReviewEnd" name="firstReviewEnd" class="form-control" placeholder="Select date" />
+                                <label for="endDateKuching">End Date *</label>
+                                <input type="text" id="endDateKuching" name="endDateKuching" class="form-control" placeholder="DD/MM/YYYY" required />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewResult">1st Review Result</label>
-                                <select id="firstReviewResult" name="firstReviewResult" class="form-control">
+                                <label for="resultOverUnderKuching">Result Over/Under *</label>
+                                <select id="resultOverUnderKuching" name="resultOverUnderKuching" class="form-control" required>
                                     <option value="">Select Result</option>
                                     <option value="Over">Over</option>
                                     <option value="Under">Under</option>
+                                    <option value="Equal">Equal</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Review - 2nd Review KK -->
+                    <div class="form-info-label col-12">
+                        <label>Review - 2nd Review KK</label>
+                    </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="secondReviewSent">2nd Review Date Sent</label>
-                                <input type="text" id="secondReviewSent" name="secondReviewSent" class="form-control" placeholder="Select date" />
+                                <label for="dateSentKK">Date Sent *</label>
+                                <input type="text" id="dateSentKK" name="dateSentKK" class="form-control" placeholder="DD/MM/YYYY" required />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="secondReviewEnd">2nd Review End Date</label>
-                                <input type="text" id="secondReviewEnd" name="secondReviewEnd" class="form-control" placeholder="Select date" />
+                                <label for="endDateKK">End Date *</label>
+                                <input type="text" id="endDateKK" name="endDateKK" class="form-control" placeholder="DD/MM/YYYY" required />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="secondReviewResult">2nd Review Result</label>
-                                <select id="secondReviewResult" name="secondReviewResult" class="form-control">
+                                <label for="resultOverUnderKK">Result Over/Under *</label>
+                                <select id="resultOverUnderKK" name="resultOverUnderKK" class="form-control" required>
                                     <option value="">Select Result</option>
                                     <option value="Over">Over</option>
                                     <option value="Under">Under</option>
+                                    <option value="Equal">Equal</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="final">Final *</label>
+                                <input type="text" id="final" name="final" class="form-control" placeholder="Enter final status" required />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Additional dates can be added as needed -->
+                    <!-- AT3.3 Audit Reports from KK -->
+                    <div class="form-info-label col-12">
+                        <label>AT3.3 Audit Reports from KK</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateSentToKK">Date Sent to KK *</label>
+                                <input type="text" id="dateSentToKK" name="dateSentToKK" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateReceivedAR">Date received AR *</label>
+                                <input type="text" id="dateReceivedAR" name="dateReceivedAR" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateReport">Date of Report *</label>
+                                <input type="text" id="dateReport" name="dateReport" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateOfDirectorRept">Date of Directors *</label>
+                                <input type="text" id="dateOfDirectorRept" name="dateOfDirectorRept" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- AT3.4 Directors' signing pages -->
+                    <div class="form-info-label col-12">
+                        <label>AT3.4 Directors' signing pages</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateSentSigning">Date Sent *</label>
+                                <input type="text" id="dateSentSigning" name="dateSentSigning" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="flwUpDate">Follow up dates *</label>
+                                <input type="text" id="flwUpDate" name="flwUpDate" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dateReceived">Date received *</label>
+                                <input type="text" id="dateReceived" name="dateReceived" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="commOfOathsDate">Comm of Oaths date *</label>
+                                <input type="text" id="commOfOathsDate" name="commOfOathsDate" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tax Dept -->
+                    <div class="form-info-label col-12">
+                        <label>4. Tax Dept</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="taxDueDate">Tax Due Date *</label>
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="passToTax">Pass to Tax Dept *</label>
+                                <input type="text" id="passToTax" name="passToTax" class="form-control" placeholder="Enter status" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sec Dept -->
+                    <div class="form-info-label col-12">
+                        <label>5. Sec Dept</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmDueDate">SSM Due Date *</label>
+                                <input type="text" id="ssmDueDate" name="ssmDueDate" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datePassToSecDept">Date pass to Sec Dept *</label>
+                                <input type="text" id="datePassToSecDept" name="datePassToSecDept" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post Audit Work -->
+                    <div class="form-info-label col-12">
+                        <label>6. Post Audit Work</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateBinded">Date Binded *</label>
+                                <input type="text" id="dateBinded" name="dateBinded" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="despatchDateToClient">Despatch Date to Client *</label>
+                                <input type="text" id="despatchDateToClient" name="despatchDateToClient" class="form-control" placeholder="DD/MM/YYYY" required />
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -472,27 +463,302 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
+        let dataTable;
+        let currentEditId = null;
+
         $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            initializeDataTable();
+
+            // 计算总百分比
+            calculateTotalPercentage();
+
+            // 绑定百分比输入事件
+            $('.percentage').on('input', calculateTotalPercentage);
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
+                saveRecord();
             });
         });
+
+        function initializeDataTable() {
+            dataTable = $('#taskDatatable').DataTable({
+                processing: true,
+                serverSide: false,
+                ajax: {
+                    url: '/api/auditdept/aex12/get-all',
+                    type: 'GET',
+                    dataType: 'json',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'companyName', defaultContent: '' },
+                    { data: 'activity', defaultContent: '' },
+                    { data: 'yEtodo', defaultContent: '' },
+                    { data: 'quarterTodo', defaultContent: '' },
+                    { data: 'pic', defaultContent: '' },
+                    { data: 'status', defaultContent: '' },
+                    { data: 'revenue', defaultContent: '' },
+                    { data: 'profitLoss', defaultContent: '' },
+                    { data: 'auditFee', defaultContent: '' },
+                    { data: 'dateBilled', defaultContent: '' },
+                    { data: 'startDate', defaultContent: '' },
+                    { data: 'asAt', defaultContent: '' },
+                    { data: 'noOfDays', defaultContent: '' },
+                    { data: 'resultOverUnder', defaultContent: '' },
+                    { data: 'accSetup', defaultContent: '' },
+                    { data: 'accSummary', defaultContent: '' },
+                    { data: 'auditPlanning', defaultContent: '' },
+                    { data: 'auditExecution', defaultContent: '' },
+                    { data: 'auditCompletion', defaultContent: '' },
+                    { data: 'totalPercent', defaultContent: '' },
+                    { data: 'dateSentKuching', defaultContent: '' },
+                    { data: 'endDateKuching', defaultContent: '' },
+                    { data: 'resultOverUnderKuching', defaultContent: '' },
+                    { data: 'dateSentKK', defaultContent: '' },
+                    { data: 'endDateKK', defaultContent: '' },
+                    { data: 'resultOverUnderKK', defaultContent: '' },
+                    { data: 'final', defaultContent: '' },
+                    { data: 'dateSentToKK', defaultContent: '' },
+                    { data: 'dateReceivedAR', defaultContent: '' },
+                    { data: 'dateReport', defaultContent: '' },
+                    { data: 'dateOfDirectorRept', defaultContent: '' },
+                    { data: 'dateSentSigning', defaultContent: '' },
+                    { data: 'flwUpDate', defaultContent: '' },
+                    { data: 'dateReceived', defaultContent: '' },
+                    { data: 'commOfOathsDate', defaultContent: '' },
+                    { data: 'taxDueDate', defaultContent: '' },
+                    { data: 'passToTax', defaultContent: '' },
+                    { data: 'ssmDueDate', defaultContent: '' },
+                    { data: 'datePassToSecDept', defaultContent: '' },
+                    { data: 'dateBinded', defaultContent: '' },
+                    { data: 'despatchDateToClient', defaultContent: '' },
+                    {
+                        data: 'id',
+                        render: function(data, type, row) {
+                            return `
+                                <button class="btn btn-sm btn-warning" onclick="editRecord(${data})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${data})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            `;
+                        }
+                    }
+                ],
+                scrollX: true,
+                scrollY: '400px',
+                scrollCollapse: true
+            });
+        }
+
+        function calculateTotalPercentage() {
+            const accSetup = parseFloat($('#accSetup').val()) || 0;
+            const accSummary = parseFloat($('#accSummary').val()) || 0;
+            const auditPlanning = parseFloat($('#auditPlanning').val()) || 0;
+            const auditExecution = parseFloat($('#auditExecution').val()) || 0;
+            const auditCompletion = parseFloat($('#auditCompletion').val()) || 0;
+
+            const total = accSetup + accSummary + auditPlanning + auditExecution + auditCompletion;
+            $('#totalPercent').val(total > 100 ? '100' : total.toString());
+        }
+
+        function clearForm() {
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            currentEditId = null;
+            $('#modalTitle').text('Add New Audit AEX Template Record');
+        }
+
+        function editRecord(id) {
+            console.log('Editing record:', id);
+
+            $.ajax({
+                url: `/api/auditdept/aex12/get/${id}`,
+                type: 'GET',
+                success: function(response) {
+                    console.log('Edit response:', response);
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditId = record.id;
+                        $('#recordId').val(record.id);
+
+                        // 填充表单
+                        $('#companyName').val(record.companyName || '');
+                        $('#activity').val(record.activity || '');
+                        $('#yEtodo').val(record.yEtodo || '');
+                        $('#quarterTodo').val(record.quarterTodo || '');
+                        $('#pic').val(record.pic || '');
+                        $('#status').val(record.status || '');
+                        $('#revenue').val(record.revenue || '');
+                        $('#profitLoss').val(record.profitLoss || '');
+                        $('#auditFee').val(record.auditFee || '');
+                        $('#dateBilled').val(record.dateBilled || '');
+                        $('#startDate').val(record.startDate || '');
+                        $('#asAt').val(record.asAt || '');
+                        $('#noOfDays').val(record.noOfDays || '');
+                        $('#resultOverUnder').val(record.resultOverUnder || '');
+                        $('#accSetup').val(record.accSetup || '');
+                        $('#accSummary').val(record.accSummary || '');
+                        $('#auditPlanning').val(record.auditPlanning || '');
+                        $('#auditExecution').val(record.auditExecution || '');
+                        $('#auditCompletion').val(record.auditCompletion || '');
+                        $('#totalPercent').val(record.totalPercent || '');
+
+                        $('#modalTitle').text('Edit Audit AEX Template Record - ' + record.companyName);
+                        $('#taskModal').modal('show');
+                    } else {
+                        alert('Error loading record: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Edit AJAX error:', xhr, status, error);
+                    let errorMessage = 'Error loading record: ' + error;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = 'Server Error: ' + xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
+        }
+
+        function saveRecord() {
+            // 基本验证
+            if (!$('#companyName').val().trim()) {
+                alert('Company Name is required');
+                $('#companyName').focus();
+                return;
+            }
+
+            // 构建表单数据，正确处理 null 和空值
+            const formData = {
+                id: currentEditId || 0,
+                companyName: $('#companyName').val().trim() || null,
+                activity: $('#activity').val().trim() || null,
+                yEtodo: $('#yEtodo').val().trim() || null,
+                quarterTodo: $('#quarterTodo').val() || null,
+                pic: $('#pic').val().trim() || null,
+                status: $('#status').val() || null,
+                revenue: $('#revenue').val().trim() || null,
+                profitLoss: $('#profitLoss').val().trim() || null,
+                auditFee: $('#auditFee').val().trim() || null,
+                dateBilled: $('#dateBilled').val().trim() || null,
+                startDate: $('#startDate').val().trim() || null,
+                asAt: $('#asAt').val().trim() || null,
+                noOfDays: $('#noOfDays').val().trim() || null,
+                resultOverUnder: $('#resultOverUnder').val() || null,
+                accSetup: $('#accSetup').val().trim() || null,
+                accSummary: $('#accSummary').val().trim() || null,
+                auditPlanning: $('#auditPlanning').val().trim() || null,
+                auditExecution: $('#auditExecution').val().trim() || null,
+                auditCompletion: $('#auditCompletion').val().trim() || null,
+                totalPercent: $('#totalPercent').val().trim() || null,
+
+                // 新增的必需字段
+                dateSentKuching: $('#dateSentKuching').val().trim() || null,
+                endDateKuching: $('#endDateKuching').val().trim() || null,
+                resultOverUnderKuching: $('#resultOverUnderKuching').val() || null,
+                dateSentKK: $('#dateSentKK').val().trim() || null,
+                endDateKK: $('#endDateKK').val().trim() || null,
+                resultOverUnderKK: $('#resultOverUnderKK').val() || null,
+                final: $('#final').val().trim() || null,
+                dateSentToKK: $('#dateSentToKK').val().trim() || null,
+                dateReceivedAR: $('#dateReceivedAR').val().trim() || null,
+                dateReport: $('#dateReport').val().trim() || null,
+                dateOfDirectorRept: $('#dateOfDirectorRept').val().trim() || null,
+                dateSentSigning: $('#dateSentSigning').val().trim() || null,
+                flwUpDate: $('#flwUpDate').val().trim() || null,
+                dateReceived: $('#dateReceived').val().trim() || null,
+                commOfOathsDate: $('#commOfOathsDate').val().trim() || null,
+                taxDueDate: $('#taxDueDate').val().trim() || null,
+                passToTax: $('#passToTax').val().trim() || null,
+                ssmDueDate: $('#ssmDueDate').val().trim() || null,
+                datePassToSecDept: $('#datePassToSecDept').val().trim() || null,
+                dateBinded: $('#dateBinded').val().trim() || null,
+                despatchDateToClient: $('#despatchDateToClient').val().trim() || null
+            };
+
+            console.log('Saving data:', formData);
+
+            const url = currentEditId ? '/api/auditdept/aex12/update' : '/api/auditdept/aex12/create';
+            const method = currentEditId ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    console.log('Save response:', response);
+                    if (response.success) {
+                        $('#taskModal').modal('hide');
+                        dataTable.ajax.reload();
+                        alert(response.message || 'Record saved successfully');
+                    } else {
+                        let errorMessage = 'Error saving record: ';
+                        if (response.errors && response.errors.length > 0) {
+                            errorMessage += response.errors.join(', ');
+                        } else {
+                            errorMessage += response.message || 'Unknown error';
+                        }
+                        alert(errorMessage);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Save AJAX error:', xhr, status, error);
+                    let errorMessage = 'Error saving record: ' + error;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = 'Server Error: ' + xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                }
+            });
+        }
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                console.log('Deleting record:', id);
+
+                $.ajax({
+                    url: `/api/auditdept/aex12/delete/${id}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        console.log('Delete response:', response);
+                        if (response.success) {
+                            dataTable.ajax.reload();
+                            alert(response.message || 'Record deleted successfully');
+                        } else {
+                            alert('Error: ' + (response.message || 'Unknown error'));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete AJAX error:', xhr, status, error);
+                        let errorMessage = 'Error deleting record: ' + error;
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = 'Server Error: ' + xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            }
+        }
     </script>
+
+    <style>
+        .form-info-label {
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            margin: 15px 0 10px 0;
+            border-left: 4px solid #007bff;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    </style>
 }

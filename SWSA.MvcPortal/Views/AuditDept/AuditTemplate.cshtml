@@ -8,13 +8,12 @@
     <div class="col-md-12">
         <!-- /.card -->
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>Audit Template Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="openCreateModal()">
                         <i class="fas fa-plus me-2"></i>New Task
                     </button>
                 </div>
@@ -115,99 +114,8 @@
                             <th>B. Result Over/Under</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>Technology</td>
-                            <td>Main DB</td>
-                            <td>Dec 2024</td>
-                            <td>Q4</td>
-                            <td>John Doe</td>
-                            <td>In Progress</td>
-                            <td>1,500</td>
-                            <td>250</td>
-                            <td>5,000</td>
-                            <td>15/03/2025</td>
-                            <td>01/02/2025</td>
-                            <td>15/03/2025</td>
-                            <td>30</td>
-                            <td>45</td>
-                            <td>Over</td>
-                            <td>80%</td>
-                            <td>90%</td>
-                            <td>70%</td>
-                            <td>85%</td>
-                            <td>75%</td>
-                            <td>85%</td>
-                            <td>10/03/2025</td>
-                            <td>15/03/2025</td>
-                            <td>Over</td>
-                            <td>20/03/2025</td>
-                            <td>25/03/2025</td>
-                            <td>Under</td>
-                            <td>10</td>
-                            <td>30/03/2025</td>
-                            <td>05/04/2025</td>
-                            <td>10/04/2025</td>
-                            <td>15/04/2025</td>
-                            <td>20/04/2025</td>
-                            <td>25/04/2025</td>
-                            <td>28/04/2025</td>
-                            <td>30/04/2025</td>
-                            <td>30/04/2025</td>
-                            <td>10/05/2025</td>
-                            <td>15/05/2025</td>
-                            <td>20/05/2025</td>
-                            <td>25/05/2025</td>
-                            <td>25/05/2025</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>Trading</td>
-                            <td>Secondary DB</td>
-                            <td>Mar 2024</td>
-                            <td>Q1</td>
-                            <td>Jane Smith</td>
-                            <td>Completed</td>
-                            <td>2,000</td>
-                            <td>300</td>
-                            <td>6,000</td>
-                            <td>20/02/2025</td>
-                            <td>15/01/2025</td>
-                            <td>20/02/2025</td>
-                            <td>25</td>
-                            <td>35</td>
-                            <td>Under</td>
-                            <td>95%</td>
-                            <td>85%</td>
-                            <td>90%</td>
-                            <td>80%</td>
-                            <td>95%</td>
-                            <td>90%</td>
-                            <td>05/02/2025</td>
-                            <td>10/02/2025</td>
-                            <td>Under</td>
-                            <td>15/02/2025</td>
-                            <td>20/02/2025</td>
-                            <td>Over</td>
-                            <td>8</td>
-                            <td>25/02/2025</td>
-                            <td>02/03/2025</td>
-                            <td>08/03/2025</td>
-                            <td>12/03/2025</td>
-                            <td>15/03/2025</td>
-                            <td>18/03/2025</td>
-                            <td>20/03/2025</td>
-                            <td>22/03/2025</td>
-                            <td>25/03/2025</td>
-                            <td>28/03/2025</td>
-                            <td>30/03/2025</td>
-                            <td>25/05/2025</td>
-                            <td>25/05/2025</td>
-                            <td>05/04/2025</td>
-                        </tr>
+                    <tbody id="tableBody">
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -230,7 +138,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -239,8 +147,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -254,14 +162,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="whichDatabase">Which Database?</label>
-                                <input type="text" id="whichDatabase" name="whichDatabase" class="form-control" placeholder="Enter database" />
+                                <label for="whichDB">Which Database?</label>
+                                <input type="text" id="whichDB" name="whichDB" class="form-control" placeholder="Enter database" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year end" />
+                                <label for="yEtodo">YE to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter year end" />
                             </div>
                         </div>
                     </div>
@@ -269,8 +177,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="quarterToDo">Quarter to do</label>
-                                <input type="text" id="quarterToDo" name="quarterToDo" class="form-control" placeholder="Enter quarter" />
+                                <label for="quarterTodo">Quarter to do</label>
+                                <input type="text" id="quarterTodo" name="quarterTodo" class="form-control" placeholder="Enter quarter" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -298,13 +206,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="revenue">Revenue ('000)</label>
-                                <input type="text" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
+                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="profitLoss">Profit/(Loss) ('000)</label>
-                                <input type="text" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" />
+                                <input type="number" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -313,13 +221,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="auditFee">Audit Fee</label>
-                                <input type="text" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" />
+                                <input type="number" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateBilled">Date Billed</label>
-                                <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateBilled" name="dateBilled" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -332,19 +240,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="startDate">a. Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="startDate" name="startDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="asAtDate">b. As at</label>
-                                <input type="text" id="asAtDate" name="asAtDate" class="form-control" placeholder="Select date" />
+                                <label for="asAt">b. As at</label>
+                                <input type="date" id="asAt" name="asAt" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="noOfDays">c. No of Days</label>
-                                <input type="text" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                                <input type="number" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
                             </div>
                         </div>
                     </div>
@@ -352,8 +260,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="totalFieldWorkDays">Total Field Work Days</label>
-                                <input type="text" id="totalFieldWorkDays" name="totalFieldWorkDays" class="form-control" placeholder="Enter days" />
+                                <label for="totalFieldWkDays">Total Field Work Days</label>
+                                <input type="number" id="totalFieldWkDays" name="totalFieldWkDays" class="form-control" placeholder="Enter days" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -372,13 +280,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="accSetup">a. Acc setup(J) %</label>
-                                <input type="text" id="accSetup" name="accSetup" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="accSetup" name="accSetup" class="form-control" placeholder="Enter percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="acSummary">b. Ac summary(J) %</label>
-                                <input type="text" id="acSummary" name="acSummary" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="acSummary" name="acSummary" class="form-control" placeholder="Enter percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                     </div>
@@ -387,13 +295,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="auditPlanning">c. Audit Planning(PIC) %</label>
-                                <input type="text" id="auditPlanning" name="auditPlanning" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="auditPlanning" name="auditPlanning" class="form-control" placeholder="Enter percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="auditExecution">d. Audit Execution %</label>
-                                <input type="text" id="auditExecution" name="auditExecution" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="auditExecution" name="auditExecution" class="form-control" placeholder="Enter percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                     </div>
@@ -402,13 +310,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="auditCompletion">e. Audit Completion(PIC) %</label>
-                                <input type="text" id="auditCompletion" name="auditCompletion" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="auditCompletion" name="auditCompletion" class="form-control" placeholder="Enter percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="totalPercentage">Total %</label>
-                                <input type="text" id="totalPercentage" name="totalPercentage" class="form-control" placeholder="Enter total percentage" />
+                                <label for="totalPercent">Total %</label>
+                                <input type="number" id="totalPercent" name="totalPercent" class="form-control" placeholder="Enter total percentage" step="0.01" min="0" max="100" />
                             </div>
                         </div>
                     </div>
@@ -420,20 +328,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewSent">1st Review Date Sent</label>
-                                <input type="text" id="firstReviewSent" name="firstReviewSent" class="form-control" placeholder="Select date" />
+                                <label for="dateSent">Date Sent</label>
+                                <input type="date" id="dateSent" name="dateSent" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewEnd">1st Review End Date</label>
-                                <input type="text" id="firstReviewEnd" name="firstReviewEnd" class="form-control" placeholder="Select date" />
+                                <label for="endDate">End Date</label>
+                                <input type="date" id="endDate" name="endDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="firstReviewResult">1st Review Result</label>
-                                <input type="text" id="firstReviewResult" name="firstReviewResult" class="form-control" placeholder="Enter result" />
+                                <label for="resultOverUnderKuching">Result Over/Under Kuching</label>
+                                <input type="text" id="resultOverUnderKuching" name="resultOverUnderKuching" class="form-control" placeholder="Enter result" />
                             </div>
                         </div>
                     </div>
@@ -441,20 +349,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="secondReviewSent">2nd Review Date Sent</label>
-                                <input type="text" id="secondReviewSent" name="secondReviewSent" class="form-control" placeholder="Select date" />
+                                <label for="dateSentKK">Date Sent KK</label>
+                                <input type="date" id="dateSentKK" name="dateSentKK" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="secondReviewEnd">2nd Review End Date</label>
-                                <input type="text" id="secondReviewEnd" name="secondReviewEnd" class="form-control" placeholder="Select date" />
+                                <label for="endDateKK">End Date KK</label>
+                                <input type="date" id="endDateKK" name="endDateKK" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="secondReviewResult">2nd Review Result</label>
-                                <input type="text" id="secondReviewResult" name="secondReviewResult" class="form-control" placeholder="Enter result" />
+                                <label for="resultOverUnderKK">Result Over/Under KK</label>
+                                <input type="text" id="resultOverUnderKK" name="resultOverUnderKK" class="form-control" placeholder="Enter result" />
                             </div>
                         </div>
                     </div>
@@ -462,21 +370,127 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="totalReviewDays">Total # Review Days</label>
-                                <input type="text" id="totalReviewDays" name="totalReviewDays" class="form-control" placeholder="Enter days" />
+                                <label for="totalReviewDaysKK">Total # Review Days KK</label>
+                                <input type="number" id="totalReviewDaysKK" name="totalReviewDaysKK" class="form-control" placeholder="Enter days" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Additional dates section can be added here as needed -->
+                    <!-- Additional Sections -->
+                    <div class="form-info-label col-12">
+                        <label>Additional Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateSentToKK">Date Sent to KK</label>
+                                <input type="date" id="dateSentToKK" name="dateSentToKK" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateReceivedAR">Date Received AR</label>
+                                <input type="date" id="dateReceivedAR" name="dateReceivedAR" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateOfReport">Date of Report</label>
+                                <input type="date" id="dateOfReport" name="dateOfReport" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateOfDirectorsRept">Date of Directors Report</label>
+                                <input type="date" id="dateOfDirectorsRept" name="dateOfDirectorsRept" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateSentSigning">Date Sent Signing</label>
+                                <input type="date" id="dateSentSigning" name="dateSentSigning" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="flwUpDate">Follow up Date</label>
+                                <input type="date" id="flwUpDate" name="flwUpDate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateReceivedSigning">Date Received Signing</label>
+                                <input type="date" id="dateReceivedSigning" name="dateReceivedSigning" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="commOfOathsDate">Comm of Oaths Date</label>
+                                <input type="date" id="commOfOathsDate" name="commOfOathsDate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="taxDueDate">Tax Due Date</label>
+                                <input type="date" id="taxDueDate" name="taxDueDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="passToTaxDept">Pass to Tax Dept</label>
+                                <input type="date" id="passToTaxDept" name="passToTaxDept" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ssmDueDate">SSM Due Date</label>
+                                <input type="date" id="ssmDueDate" name="ssmDueDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="datePassToSecDept">Date Pass to Sec Dept</label>
+                                <input type="date" id="datePassToSecDept" name="datePassToSecDept" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateBinded">Date Binded</label>
+                                <input type="date" id="dateBinded" name="dateBinded" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="despatchDateToClient">Despatch Date to Client</label>
+                                <input type="date" id="despatchDateToClient" name="despatchDateToClient" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
+                <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveRecord()">
                     <i class="fas fa-save me-2"></i>Save
                 </button>
             </div>
@@ -487,23 +501,445 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <script>
-        $(document).ready(function() {
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+    <script>
+        let currentEditingId = null;
+        let dataTable = null;
+
+        $(document).ready(function() {
+            initializeDataTable();
+            loadData();
         });
+
+        function initializeDataTable() {
+            dataTable = $('#taskDatatable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "scrollX": true,
+                "language": {
+                    "emptyTable": "No audit template records found",
+                    "loadingRecords": "Loading...",
+                    "zeroRecords": "No matching records found"
+                }
+            });
+        }
+
+        function loadData() {
+            // 显示加载状态
+            if (dataTable) {
+                dataTable.clear().draw();
+            }
+
+            $.ajax({
+                url: '/api/auditdept/at11/get-all',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        populateTable(response.data);
+                    } else {
+                        console.error('API response error:', response);
+                        showAlert('Error loading data: ' + response.message, 'danger');
+                        if (dataTable) {
+                            dataTable.clear().draw();
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', error);
+                    showAlert('Error loading data: ' + error, 'danger');
+                    if (dataTable) {
+                        dataTable.clear().draw();
+                    }
+                }
+            });
+        }
+
+        function populateTable(data) {
+            console.log('Populating table with data:', data);
+
+            if (data && data.length > 0) {
+                const formattedData = data.map(function(item, index) {
+                    return {
+                        id: item.id,
+                        index: index + 1,
+                        companyName: escapeHtml(item.companyName || ''),
+                        activity: escapeHtml(item.activity || ''),
+                        whichDB: escapeHtml(item.whichDB || ''),
+                        yEtodo: escapeHtml(item.yEtodo || ''),
+                        quarterTodo: escapeHtml(item.quarterTodo || ''),
+                        pic: escapeHtml(item.pic || ''),
+                        status: escapeHtml(item.status || ''),
+                        revenue: formatNumber(item.revenue),
+                        profitLoss: formatNumber(item.profitLoss),
+                        auditFee: formatNumber(item.auditFee),
+                        dateBilled: formatDate(item.dateBilled),
+                        startDate: formatDate(item.startDate),
+                        asAt: formatDate(item.asAt),
+                        noOfDays: item.noOfDays || '',
+                        totalFieldWkDays: item.totalFieldWkDays || '',
+                        resultOverUnder: escapeHtml(item.resultOverUnder || ''),
+                        accSetup: formatPercentage(item.accSetup),
+                        acSummary: formatPercentage(item.acSummary),
+                        auditPlanning: formatPercentage(item.auditPlanning),
+                        auditExecution: formatPercentage(item.auditExecution),
+                        auditCompletion: formatPercentage(item.auditCompletion),
+                        totalPercent: formatPercentage(item.totalPercent),
+                        dateSent: formatDate(item.dateSent),
+                        endDate: formatDate(item.endDate),
+                        resultOverUnderKuching: escapeHtml(item.resultOverUnderKuching || ''),
+                        dateSentKK: formatDate(item.dateSentKK),
+                        endDateKK: formatDate(item.endDateKK),
+                        resultOverUnderKK: escapeHtml(item.resultOverUnderKK || ''),
+                        totalReviewDaysKK: item.totalReviewDaysKK || '',
+                        dateSentToKK: formatDate(item.dateSentToKK),
+                        dateReceivedAR: formatDate(item.dateReceivedAR),
+                        dateOfReport: formatDate(item.dateOfReport),
+                        dateOfDirectorsRept: formatDate(item.dateOfDirectorsRept),
+                        dateSentSigning: formatDate(item.dateSentSigning),
+                        flwUpDate: formatDate(item.flwUpDate),
+                        dateReceivedSigning: formatDate(item.dateReceivedSigning),
+                        commOfOathsDate: formatDate(item.commOfOathsDate),
+                        taxDueDate: formatDate(item.taxDueDate),
+                        passToTaxDept: formatDate(item.passToTaxDept),
+                        ssmDueDate: formatDate(item.ssmDueDate),
+                        datePassToSecDept: formatDate(item.datePassToSecDept),
+                        dateBinded: formatDate(item.dateBinded),
+                        despatchDateToClient: formatDate(item.despatchDateToClient)
+                    };
+                });
+
+                // 清空现有数据并重新绘制
+                const tbody = $('#tableBody');
+                tbody.empty();
+
+                formattedData.forEach(function(item) {
+                    const row = `
+                        <tr>
+                            <td>${item.index}</td>
+                            <td>${item.companyName}</td>
+                            <td>${item.activity}</td>
+                            <td>${item.whichDB}</td>
+                            <td>${item.yEtodo}</td>
+                            <td>${item.quarterTodo}</td>
+                            <td>${item.pic}</td>
+                            <td>${item.status}</td>
+                            <td>${item.revenue}</td>
+                            <td>${item.profitLoss}</td>
+                            <td>${item.auditFee}</td>
+                            <td>${item.dateBilled}</td>
+                            <td>${item.startDate}</td>
+                            <td>${item.asAt}</td>
+                            <td>${item.noOfDays}</td>
+                            <td>${item.totalFieldWkDays}</td>
+                            <td>${item.resultOverUnder}</td>
+                            <td>${item.accSetup}</td>
+                            <td>${item.acSummary}</td>
+                            <td>${item.auditPlanning}</td>
+                            <td>${item.auditExecution}</td>
+                            <td>${item.auditCompletion}</td>
+                            <td>${item.totalPercent}</td>
+                            <td>${item.dateSent}</td>
+                            <td>${item.endDate}</td>
+                            <td>${item.resultOverUnderKuching}</td>
+                            <td>${item.dateSentKK}</td>
+                            <td>${item.endDateKK}</td>
+                            <td>${item.resultOverUnderKK}</td>
+                            <td>${item.totalReviewDaysKK}</td>
+                            <td>${item.dateSentToKK}</td>
+                            <td>${item.dateReceivedAR}</td>
+                            <td>${item.dateOfReport}</td>
+                            <td>${item.dateOfDirectorsRept}</td>
+                            <td>${item.dateSentSigning}</td>
+                            <td>${item.flwUpDate}</td>
+                            <td>${item.dateReceivedSigning}</td>
+                            <td>${item.commOfOathsDate}</td>
+                            <td>${item.taxDueDate}</td>
+                            <td>${item.passToTaxDept}</td>
+                            <td>${item.ssmDueDate}</td>
+                            <td>${item.datePassToSecDept}</td>
+                            <td>${item.dateBinded}</td>
+                            <td>${item.despatchDateToClient}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+
+                if (dataTable) {
+                    dataTable.destroy();
+                }
+                initializeDataTable();
+            } else {
+                const tbody = $('#tableBody');
+                tbody.empty();
+                tbody.append('<tr><td colspan="48" class="text-center">No audit template records found</td></tr>');
+
+                if (dataTable) {
+                    dataTable.destroy();
+                }
+                initializeDataTable();
+            }
+        }
+
+        function openCreateModal() {
+            currentEditingId = null;
+            $('#modalTitle').text('Add New Audit Template Record');
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#taskModal').modal('show');
+        }
+
+        function editRecord(id) {
+            $.ajax({
+                url: '/api/auditdept/at11/get/' + id,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditingId = record.id;
+
+                        $('#modalTitle').text('Edit Audit Template Record');
+                        $('#recordId').val(record.id);
+
+                        // 填充表单字段
+                        $('#companyName').val(record.companyName || '');
+                        $('#activity').val(record.activity || '');
+                        $('#whichDB').val(record.whichDB || '');
+                        $('#yEtodo').val(record.yEtodo || '');
+                        $('#quarterTodo').val(record.quarterTodo || '');
+                        $('#pic').val(record.pic || '');
+                        $('#status').val(record.status || '');
+                        $('#revenue').val(record.revenue || '');
+                        $('#profitLoss').val(record.profitLoss || '');
+                        $('#auditFee').val(record.auditFee || '');
+                        $('#dateBilled').val(formatDateForInput(record.dateBilled));
+                        $('#startDate').val(formatDateForInput(record.startDate));
+                        $('#asAt').val(formatDateForInput(record.asAt));
+                        $('#noOfDays').val(record.noOfDays || '');
+                        $('#totalFieldWkDays').val(record.totalFieldWkDays || '');
+                        $('#resultOverUnder').val(record.resultOverUnder || '');
+                        $('#accSetup').val(record.accSetup || '');
+                        $('#acSummary').val(record.acSummary || '');
+                        $('#auditPlanning').val(record.auditPlanning || '');
+                        $('#auditExecution').val(record.auditExecution || '');
+                        $('#auditCompletion').val(record.auditCompletion || '');
+                        $('#totalPercent').val(record.totalPercent || '');
+                        $('#dateSent').val(formatDateForInput(record.dateSent));
+                        $('#endDate').val(formatDateForInput(record.endDate));
+                        $('#resultOverUnderKuching').val(record.resultOverUnderKuching || '');
+                        $('#dateSentKK').val(formatDateForInput(record.dateSentKK));
+                        $('#endDateKK').val(formatDateForInput(record.endDateKK));
+                        $('#resultOverUnderKK').val(record.resultOverUnderKK || '');
+                        $('#totalReviewDaysKK').val(record.totalReviewDaysKK || '');
+                        $('#dateSentToKK').val(formatDateForInput(record.dateSentToKK));
+                        $('#dateReceivedAR').val(formatDateForInput(record.dateReceivedAR));
+                        $('#dateOfReport').val(formatDateForInput(record.dateOfReport));
+                        $('#dateOfDirectorsRept').val(formatDateForInput(record.dateOfDirectorsRept));
+                        $('#dateSentSigning').val(formatDateForInput(record.dateSentSigning));
+                        $('#flwUpDate').val(formatDateForInput(record.flwUpDate));
+                        $('#dateReceivedSigning').val(formatDateForInput(record.dateReceivedSigning));
+                        $('#commOfOathsDate').val(formatDateForInput(record.commOfOathsDate));
+                        $('#taxDueDate').val(formatDateForInput(record.taxDueDate));
+                        $('#passToTaxDept').val(formatDateForInput(record.passToTaxDept));
+                        $('#ssmDueDate').val(formatDateForInput(record.ssmDueDate));
+                        $('#datePassToSecDept').val(formatDateForInput(record.datePassToSecDept));
+                        $('#dateBinded').val(formatDateForInput(record.dateBinded));
+                        $('#despatchDateToClient').val(formatDateForInput(record.despatchDateToClient));
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error loading record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function saveRecord() {
+            const formData = {
+                companyName: $('#companyName').val(),
+                activity: $('#activity').val(),
+                whichDB: $('#whichDB').val(),
+                yEtodo: $('#yEtodo').val(),
+                quarterTodo: $('#quarterTodo').val(),
+                pic: $('#pic').val(),
+                status: $('#status').val(),
+                revenue: $('#revenue').val() || null,
+                profitLoss: $('#profitLoss').val() || null,
+                auditFee: $('#auditFee').val() || null,
+                dateBilled: $('#dateBilled').val() || null,
+                startDate: $('#startDate').val() || null,
+                asAt: $('#asAt').val() || null,
+                noOfDays: $('#noOfDays').val() || null,
+                totalFieldWkDays: $('#totalFieldWkDays').val() || null,
+                resultOverUnder: $('#resultOverUnder').val(),
+                accSetup: $('#accSetup').val() || null,
+                acSummary: $('#acSummary').val() || null,
+                auditPlanning: $('#auditPlanning').val() || null,
+                auditExecution: $('#auditExecution').val() || null,
+                auditCompletion: $('#auditCompletion').val() || null,
+                totalPercent: $('#totalPercent').val() || null,
+                dateSent: $('#dateSent').val() || null,
+                endDate: $('#endDate').val() || null,
+                resultOverUnderKuching: $('#resultOverUnderKuching').val(),
+                dateSentKK: $('#dateSentKK').val() || null,
+                endDateKK: $('#endDateKK').val() || null,
+                resultOverUnderKK: $('#resultOverUnderKK').val(),
+                totalReviewDaysKK: $('#totalReviewDaysKK').val() || null,
+                dateSentToKK: $('#dateSentToKK').val() || null,
+                dateReceivedAR: $('#dateReceivedAR').val() || null,
+                dateOfReport: $('#dateOfReport').val() || null,
+                dateOfDirectorsRept: $('#dateOfDirectorsRept').val() || null,
+                dateSentSigning: $('#dateSentSigning').val() || null,
+                flwUpDate: $('#flwUpDate').val() || null,
+                dateReceivedSigning: $('#dateReceivedSigning').val() || null,
+                commOfOathsDate: $('#commOfOathsDate').val() || null,
+                taxDueDate: $('#taxDueDate').val() || null,
+                passToTaxDept: $('#passToTaxDept').val() || null,
+                ssmDueDate: $('#ssmDueDate').val() || null,
+                datePassToSecDept: $('#datePassToSecDept').val() || null,
+                dateBinded: $('#dateBinded').val() || null,
+                despatchDateToClient: $('#despatchDateToClient').val() || null
+            };
+
+            // Add ID for update
+            if (currentEditingId) {
+                formData.id = currentEditingId;
+            }
+
+            // Basic validation
+            if (!formData.companyName) {
+                showAlert('Company Name is required', 'warning');
+                return;
+            }
+
+            const url = currentEditingId ? '/api/auditdept/at11/update' : '/api/auditdept/at11/create';
+            const method = currentEditingId ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        showAlert(`Record ${currentEditingId ? 'updated' : 'created'} successfully!`, 'success');
+                        $('#taskModal').modal('hide');
+                        loadData();
+                    } else {
+                        showAlert('Error saving record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error saving record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $.ajax({
+                    url: '/api/auditdept/at11/delete/' + id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            showAlert('Record deleted successfully!', 'success');
+                            loadData();
+                        } else {
+                            showAlert('Error deleting record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error deleting record: ' + error, 'danger');
+                    }
+                });
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function formatNumber(value) {
+            if (value === null || value === undefined || value === '') return '';
+            const num = parseFloat(value);
+            return isNaN(num) ? '' : num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function formatPercentage(value) {
+            if (value === null || value === undefined || value === '') return '';
+            const num = parseFloat(value);
+            return isNaN(num) ? '' : num.toFixed(1) + '%';
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(message, type) {
+            const alertClass = `alert alert-${type} alert-dismissible fade show`;
+            const alertHtml = `
+                <div class="${alertClass}" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+
+            // Remove existing alerts
+            $('.alert').remove();
+
+            // Prepend alert to card body
+            $('.card-body').prepend(alertHtml);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
     </script>
 }
