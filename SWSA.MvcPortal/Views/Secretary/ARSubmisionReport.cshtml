@@ -36,6 +36,7 @@
 
                             <th rowspan="2">Job Completed/Backlog</th>
                             <th rowspan="2">Remarks</th>
+                            <th colspan="2">Actions</th>
                         </tr>
 
                         <tr>
@@ -48,41 +49,13 @@
 
                             <th>Date send to Client</th>
                             <th>Date Returned</th>
+
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>FILE-001</td>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>1234567-X</td>
-                            <td>15/01/2023</td>
-                            <td>Active</td>
-                            <td>15/01/2024</td>
-                            <td>30/01/2024</td>
-                            <td>15/01/2024</td>
-                            <td>25/01/2024</td>
-                            <td>28/01/2024</td>
-                            <td>20/01/2024</td>
-                            <td>23/01/2024</td>
-                            <td>Completed</td>
-                            <td>Submitted on time</td>
-                        </tr>
-                        <tr>
-                            <td>FILE-002</td>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>7654321-Y</td>
-                            <td>20/03/2023</td>
-                            <td>Active</td>
-                            <td>20/03/2024</td>
-                            <td>05/04/2024</td>
-                            <td>20/03/2024</td>
-                            <td>02/04/2024</td>
-                            <td>04/04/2024</td>
-                            <td>25/03/2024</td>
-                            <td>30/03/2024</td>
-                            <td>Completed</td>
-                            <td>Awaiting client confirmation</td>
-                        </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -144,9 +117,12 @@
                                 <select id="coStatus" name="coStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
-                                    <option value="In Liquidation">In Liquidation</option>
+                                    <option value="AEX">AEX</option>
+                                   @*   <option value="">Select Status</option>
+                                     <option value="Active">Active</option>
+                                     <option value="Dormant">Dormant</option>
+                                     <option value="Strike Off">Strike Off</option>
+                                     <option value="In Liquidation">In Liquidation</option> *@
                                 </select>
                             </div>
                         </div>
@@ -256,35 +232,373 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
+        let dataTable;
+        let dataTableInitialized = false;
+
+        // ---------- Modal alert + inline field errors ----------
+        function showModalAlert(msg, type) {
+            const map = {
+                success: 'alert-success',
+                error: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info'
+            };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+
+            const $body = $('#taskModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
+            });
+        }
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+        function clearFieldErrors() {
+            $('#taskForm .is-invalid').removeClass('is-invalid');
+            $('#taskForm .invalid-feedback').remove();
+        }
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) {
+                $f.after('<div class="invalid-feedback"></div>');
+            }
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- Page-level alert ----------
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                    ${message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                  </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        // ---------- Helpers ----------
+        function formatDateForDisplay(s) {
+            if (!s) return '';
+            // 现在先直接原样显示，有需要再做真正格式转换
+            return s;
+        }
+
+        function getVal(obj, name) {
+            if (!obj) return '';
+
+            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
+
+            const camel = name.charAt(0).toLowerCase() + name.slice(1);
+            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
+
+            const targetLower = name.toLowerCase();
+            for (const key in obj) {
+                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+                if (key.toLowerCase() === targetLower) return obj[key];
+            }
+            return '';
+        }
+
+        function clearForm() {
+            $('#taskForm')[0].reset();
+            $('#editIndex').val('');
+            $('#modalTitle').text('Add New Annual Return Record');
+            hideModalAlert();
+            clearFieldErrors();
+        }
+
+        // ---------- Init ----------
+        $(document).ready(function () {
+
+            // 所有和 date 相关的 text input 套 datepicker
+            $('input[type="text"]').filter(function () {
+                const id = $(this).attr('id') || '';
+                return id.includes('Date') || id.includes('date');
             }).datepicker({
                 format: 'dd/mm/yyyy',
-                autoclose: true
+                autoclose: true,
+                todayHighlight: true
             });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
-
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
+            // DataTable：对应 S14A 所有列
+            dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
+                order: [[1, 'asc']], // 以 Company Name 排序
                 language: {
                     search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columns: [
+                    { data: 0 },  // File No
+                    { data: 1 },  // Company Name
+                    { data: 2 },  // Company No
+                    { data: 3 },  // Incorp Date
+                    { data: 4 },  // Co Status
+                    { data: 5 },  // AnniversaryDate
+                    { data: 6 },  // ARdueDate
+                    { data: 7 },  // ReminderDate
+                    { data: 8 },  // DateOfAR
+                    { data: 9 },  // ARsubmitDate
+                    { data: 10 }, // DateSendtoClient
+                    { data: 11 }, // DateReturned
+                    { data: 12 }, // JobCompleted
+                    { data: 13 }, // Remarks
+                    { data: 14, orderable: false, searchable: false }, // Edit
+                    { data: 15, orderable: false, searchable: false }  // Delete
+                ]
+            });
+            dataTableInitialized = true;
+
+            // 绑定按钮
+            $('#saveBtn').click(saveRecord);
+            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
+
+            $('#taskModal').on('hidden.bs.modal', clearForm);
+
+            $('[data-bs-target="#taskModal"]').on('click', function () {
+                clearForm();
+            });
+
+            // 首次载入
+            loadRecordsFromDatabase();
+        });
+
+        // ---------- Load & Render ----------
+        function loadRecordsFromDatabase() {
+            $.ajax({
+                url: 'api/s14a/get-all',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        populateTable(res.data || []);
+                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
+                        console.log('S14A sample keys:', Object.keys((res.data || [])[0] || {}));
+                    } else {
+                        showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
-        });
+        }
+
+        function populateTable(records) {
+            if (!dataTableInitialized) return;
+            dataTable.clear();
+
+            if (records && records.length) {
+                records.forEach(function (r) {
+                    const id = getVal(r, 'Id');
+
+                    dataTable.row.add([
+                        getVal(r, 'FileNo'),                               // 0
+                        getVal(r, 'CompanyName'),                          // 1
+                        getVal(r, 'CompanyNo'),                            // 2
+                        formatDateForDisplay(getVal(r, 'IncorpDate')),     // 3
+                        getVal(r, 'CompanyStatus'),                        // 4
+                        formatDateForDisplay(getVal(r, 'AnniversaryDate')),// 5
+                        formatDateForDisplay(getVal(r, 'ARdueDate')),      // 6
+                        formatDateForDisplay(getVal(r, 'ReminderDate')),   // 7
+                        formatDateForDisplay(getVal(r, 'DateOfAR')),       // 8
+                        formatDateForDisplay(getVal(r, 'ARsubmitDate')),   // 9
+                        formatDateForDisplay(getVal(r, 'DateSendToClient')),// 10
+                        formatDateForDisplay(getVal(r, 'DateReturned')),   // 11
+                        getVal(r, 'JobCompleted'),                         // 12
+                        getVal(r, 'Remarks'),                              // 13
+
+                        // Edit
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                 </button>`,
+
+                        // Delete
+                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                 </button>`
+                    ]);
+                });
+            }
+
+            dataTable.draw();
+        }
+
+        // ---------- Save (Create / Update) ----------
+        function saveRecord() {
+            hideModalAlert();
+            clearFieldErrors();
+
+            const formData = {
+                Id: ($('#editIndex').val() || '0').trim(),
+
+                FileNo: ($('#fileNo').val() || '').trim(),
+                CompanyName: ($('#companyName').val() || '').trim(),
+                CompanyNo: ($('#companyNo').val() || '').trim(),
+                IncorpDate: ($('#incorpDate').val() || '').trim(),
+                CompanyStatus: ($('#coStatus').val() || '').trim(),
+
+                AnniversaryDate: ($('#anniversaryDate').val() || '').trim(),
+                ARdueDate: ($('#arDueDate').val() || '').trim(),
+                ReminderDate: ($('#reminderDate').val() || '').trim(),
+
+                DateOfAR: ($('#dateOfAnnualReturn').val() || '').trim(),
+                ARsubmitDate: ($('#arSubmittedDate').val() || '').trim(),
+
+                DateSendToClient: ($('#dateSendToClient').val() || '').trim(),
+                DateReturned: ($('#dateReturned').val() || '').trim(),
+
+                JobCompleted: ($('#jobStatus').val() || '').trim(),
+                Remarks: ($('#remarks').val() || '').trim()
+            };
+
+            // 简单必填
+            let hasError = false;
+            if (!formData.FileNo) { setFieldError('#fileNo', 'Required'); hasError = true; }
+            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
+            if (!formData.CompanyNo) { setFieldError('#companyNo', 'Required'); hasError = true; }
+            if (!formData.IncorpDate) { setFieldError('#incorpDate', 'Required'); hasError = true; }
+            if (!formData.CompanyStatus) { setFieldError('#coStatus', 'Please select a Status'); hasError = true; }
+            if (!formData.AnniversaryDate) { setFieldError('#anniversaryDate', 'Required'); hasError = true; }
+            if (!formData.ARdueDate) { setFieldError('#arDueDate', 'Required'); hasError = true; }
+            if (!formData.ReminderDate) { setFieldError('#reminderDate', 'Required'); hasError = true; }
+
+
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                $('#taskForm .is-invalid').first().focus();
+                return;
+            }
+
+            const isUpdate = Number(formData.Id) > 0;
+            const url = isUpdate ? 'api/s14a/update' : 'api/s14a/create';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
+                        $('#taskModal').modal('hide');
+                        showAlert('Record saved successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error saving record: ' + msg, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Edit ----------
+        function editRecord(id) {
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+            hideModalAlert();
+            clearFieldErrors();
+
+            $.ajax({
+                url: 'api/s14a/get/' + id,
+                type: 'GET',
+                success: function (res) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Annual Return Record');
+                    if (res && res.success) {
+                        const d = res.data || {};
+
+                        $('#editIndex').val(getVal(d, 'Id'));
+
+                        $('#fileNo').val(getVal(d, 'FileNo'));
+                        $('#companyName').val(getVal(d, 'CompanyName'));
+                        $('#companyNo').val(getVal(d, 'CompanyNo'));
+                        $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
+                        $('#coStatus').val(getVal(d, 'CompanyStatus'));
+
+                        $('#anniversaryDate').val(formatDateForDisplay(getVal(d, 'AnniversaryDate')));
+                        $('#arDueDate').val(formatDateForDisplay(getVal(d, 'ARdueDate')));
+                        $('#reminderDate').val(formatDateForDisplay(getVal(d, 'ReminderDate')));
+
+                        $('#dateOfAnnualReturn').val(formatDateForDisplay(getVal(d, 'DateOfAR')));
+                        $('#arSubmittedDate').val(formatDateForDisplay(getVal(d, 'ARsubmitDate')));
+
+                        $('#dateSendToClient').val(formatDateForDisplay(getVal(d, 'DateSendToClient')));
+                        $('#dateReturned').val(formatDateForDisplay(getVal(d, 'DateReturned')));
+
+                        $('#jobStatus').val(getVal(d, 'JobCompleted'));
+                        $('#remarks').val(getVal(d, 'Remarks'));
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Annual Return Record');
+                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Delete ----------
+        function deleteRecord(id) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+
+            $.ajax({
+                url: 'api/s14a/delete/' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Record deleted successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
     </script>
 }

@@ -35,6 +35,8 @@
                             <th colspan="2">Annual Declaration Client Monitoring</th>
 
                             <th rowspan="2">Job Completed/Backlog</th>
+                            <th colspan="2">Actions</th>
+
                         </tr>
 
                         <tr>
@@ -47,39 +49,12 @@
                             <th>AD Submitted date</th>
                             <th>Date send to Client</th>
                             <th>Date Returned</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>SEC-LLP-001</td>
-                            <td>TECH SOLUTIONS LLP</td>
-                            <td>31/12/2024</td>
-                            <td>15/01/2023</td>
-                            <td>LLP0012345</td>
-                            <td>Active</td>
-                            <td>Medium</td>
-                            <td>30/06/2025</td>
-                            <td>31/07/2025</td>
-                            <td>28/07/2025</td>
-                            <td>20/07/2025</td>
-                            <td>23/07/2025</td>
-                            <td>Completed</td>
-                        </tr>
-                        <tr>
-                            <td>SEC-LLP-002</td>
-                            <td>GLOBAL TRADING LLP</td>
-                            <td>31/03/2024</td>
-                            <td>20/03/2023</td>
-                            <td>LLP0056789</td>
-                            <td>Active</td>
-                            <td>Small</td>
-                            <td>30/09/2024</td>
-                            <td>31/10/2024</td>
-                            <td>28/10/2024</td>
-                            <td>25/10/2024</td>
-                            <td>28/10/2024</td>
-                            <td>Completed</td>
-                        </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -170,9 +145,12 @@
                                 <label for="activitySize">Active Co:Activity size</label>
                                 <select id="activitySize" name="activitySize" class="form-control">
                                     <option value="">Select Size</option>
-                                    <option value="Small">Small</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Large">Large</option>
+                                    <option value="D">D</option>
+                                    <option value="SD">SD</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </select>
                             </div>
                         </div>
@@ -263,36 +241,370 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
+        let dataTable;
+        let dataTableInitialized = false;
+
+        // ---------- Modal alert + inline field errors ----------
+        function showModalAlert(msg, type) {
+            const map = {
+                success: 'alert-success',
+                error: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info'
+            };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+
+            const $body = $('#taskModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
+            });
+        }
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+        function clearFieldErrors() {
+            $('#taskForm .is-invalid').removeClass('is-invalid');
+            $('#taskForm .invalid-feedback').remove();
+        }
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) {
+                $f.after('<div class="invalid-feedback"></div>');
+            }
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- Page-level alert ----------
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                        ${message}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                  </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        // ---------- Helpers ----------
+        function formatDateForDisplay(s) {
+            if (!s) return '';
+            return s; // 先原样显示
+        }
+
+        function getVal(obj, name) {
+            if (!obj) return '';
+
+            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
+
+            const camel = name.charAt(0).toLowerCase() + name.slice(1);
+            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
+
+            const targetLower = name.toLowerCase();
+            for (const key in obj) {
+                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+                if (key.toLowerCase() === targetLower) return obj[key];
+            }
+            return '';
+        }
+
+        function clearForm() {
+            $('#taskForm')[0].reset();
+            $('#editIndex').val('');
+            $('#modalTitle').text('Add New LLP Submission Record');
+            hideModalAlert();
+            clearFieldErrors();
+        }
+
+        // ---------- Init ----------
+        $(document).ready(function () {
+
+            // 所有和 date 相关的 text input 套 datepicker（包含 yearEnd）
+            $('input[type="text"]').filter(function () {
+                const id = $(this).attr('id') || '';
+                return id.includes('Date') || id.includes('date') || id.includes('yearEnd');
             }).datepicker({
                 format: 'dd/mm/yyyy',
-                autoclose: true
+                autoclose: true,
+                todayHighlight: true
             });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
-
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
+            // DataTable：对应 S15 所有列
+            dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
+                order: [[1, 'asc']], // 以 Co Name 排序
                 language: {
                     search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                // 顺序要和 <thead> 一致
+                columns: [
+                    { data: 0 },  // Sec File No
+                    { data: 1 },  // Co Name
+                    { data: 2 },  // Year End
+                    { data: 3 },  // Incorp Date
+                    { data: 4 },  // Co 
+                    { data: 5 },  // Co Status
+                    { data: 6 },  // Active Co:Activity size
+                    { data: 7 },  // SSM Extension date for acc
+                    { data: 8 },  // Annual Declaration (AD) Due date
+                    { data: 9 },  // AD Submitted date
+                    { data: 10 }, // Date send to Client
+                    { data: 11 }, // Date Returned
+                    { data: 12 }, // Job Completed/Backlog
+                    { data: 13, orderable: false, searchable: false }, // Edit
+                    { data: 14, orderable: false, searchable: false }  // Delete
+                ]
+            });
+            dataTableInitialized = true;
+
+            // 绑定按钮
+            $('#saveBtn').click(saveRecord);
+            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
+
+            $('#taskModal').on('hidden.bs.modal', clearForm);
+
+            $('[data-bs-target="#taskModal"]').on('click', function () {
+                clearForm();
+            });
+
+            // 首次载入
+            loadRecordsFromDatabase();
+        });
+
+        // ---------- Load & Render ----------
+        function loadRecordsFromDatabase() {
+            $.ajax({
+                url: 'api/s15/get-all',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        populateTable(res.data || []);
+                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
+                        console.log('S15 sample keys:', Object.keys((res.data || [])[0] || {}));
+                    } else {
+                        showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
-        });
+        }
+
+        function populateTable(records) {
+            if (!dataTableInitialized) return;
+            dataTable.clear();
+
+            if (records && records.length) {
+                records.forEach(function (r) {
+                    const id = getVal(r, 'Id');
+
+                    dataTable.row.add([
+                        getVal(r, 'SecFileNo'),                                   // 0 Sec File No
+                        getVal(r, 'CompanyName'),                                // 1 Co Name
+                        formatDateForDisplay(getVal(r, 'YearEnd')),              // 2 Year End
+                        formatDateForDisplay(getVal(r, 'IncorpDate')),           // 3 Incorp Date
+                        getVal(r, 'Co'),                                         // 4 Co #
+                        getVal(r, 'CompanyStatus'),                              // 5 Co Status
+                        getVal(r, 'ActiveCoActivitySize'),                       // 6 Active Co:Activity size
+                        formatDateForDisplay(getVal(r, 'SSMextensionDateforAcc')),// 7 SSM Extension date for acc
+                        formatDateForDisplay(getVal(r, 'ADdueDate')),            // 8 AD Due date
+                        formatDateForDisplay(getVal(r, 'ADsubmitDate')),         // 9 AD Submitted date
+                        formatDateForDisplay(getVal(r, 'DateSendToClient')),     // 10 Date send to Client
+                        formatDateForDisplay(getVal(r, 'DateReturned')),         // 11 Date Returned
+                        getVal(r, 'JobCompleted'),                               // 12 Job Completed/Backlog
+
+                        // Edit
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                 </button>`,
+
+                        // Delete
+                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                 </button>`
+                    ]);
+                });
+            }
+
+            dataTable.draw();
+        }
+
+        // ---------- Save (Create / Update) ----------
+        function saveRecord() {
+            hideModalAlert();
+            clearFieldErrors();
+
+            const formData = {
+                Id: ($('#editIndex').val() || '0').trim(),
+
+                SecFileNo: ($('#secFileNo').val() || '').trim(),
+                CompanyName: ($('#coName').val() || '').trim(),
+                YearEnd: ($('#yearEnd').val() || '').trim(),
+                IncorpDate: ($('#incorpDate').val() || '').trim(),
+                Co: ($('#coNumber').val() || '').trim(),
+
+                CompanyStatus: ($('#coStatus').val() || '').trim(),
+                ActiveCoActivitySize: ($('#activitySize').val() || '').trim(),
+
+                SSMextensionDateforAcc: ($('#ssmExtensionDate').val() || '').trim(),
+                ADdueDate: ($('#adDueDate').val() || '').trim(),
+                ADsubmitDate: ($('#adSubmittedDate').val() || '').trim(),
+
+                DateSendToClient: ($('#dateSendToClient').val() || '').trim(),
+                DateReturned: ($('#dateReturned').val() || '').trim(),
+
+                JobCompleted: ($('#jobStatus').val() || '').trim()
+            };
+
+            // 简单必填验证
+            let hasError = false;
+            if (!formData.SecFileNo) { setFieldError('#secFileNo', 'Required'); hasError = true; }
+            if (!formData.CompanyName) { setFieldError('#coName', 'Required'); hasError = true; }
+            if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
+            if (!formData.IncorpDate) { setFieldError('#incorpDate', 'Required'); hasError = true; }
+            if (!formData.Co) { setFieldError('#coNumber', 'Required'); hasError = true; }
+            if (!formData.CompanyStatus) { setFieldError('#coStatus', 'Please select a Status'); hasError = true; }
+            if (!formData.ActiveCoActivitySize) { setFieldError('#activitySize', 'Please select a Size'); hasError = true; }
+
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                $('#taskForm .is-invalid').first().focus();
+                return;
+            }
+
+            const isUpdate = Number(formData.Id) > 0;
+            const url = isUpdate ? 'api/s15/update' : 'api/s15/create';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
+                        $('#taskModal').modal('hide');
+                        showAlert('Record saved successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error saving record: ' + msg, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Edit ----------
+        function editRecord(id) {
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+            hideModalAlert();
+            clearFieldErrors();
+
+            $.ajax({
+                url: 'api/s15/get/' + id,
+                type: 'GET',
+                success: function (res) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit LLP Submission Record');
+                    if (res && res.success) {
+                        const d = res.data || {};
+
+                        $('#editIndex').val(getVal(d, 'Id'));
+
+                        $('#secFileNo').val(getVal(d, 'SecFileNo'));
+                        $('#coName').val(getVal(d, 'CompanyName'));
+                        $('#yearEnd').val(formatDateForDisplay(getVal(d, 'YearEnd')));
+
+                        $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
+                        $('#coNumber').val(getVal(d, 'Co'));
+
+                        $('#coStatus').val(getVal(d, 'CompanyStatus'));
+                        $('#activitySize').val(getVal(d, 'ActiveCoActivitySize'));
+
+                        $('#ssmExtensionDate').val(formatDateForDisplay(getVal(d, 'SSMextensionDateforAcc')));
+                        $('#adDueDate').val(formatDateForDisplay(getVal(d, 'ADdueDate')));
+                        $('#adSubmittedDate').val(formatDateForDisplay(getVal(d, 'ADsubmitDate')));
+
+                        $('#dateSendToClient').val(formatDateForDisplay(getVal(d, 'DateSendToClient')));
+                        $('#dateReturned').val(formatDateForDisplay(getVal(d, 'DateReturned')));
+
+                        $('#jobStatus').val(getVal(d, 'JobCompleted'));
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit LLP Submission Record');
+                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Delete ----------
+        function deleteRecord(id) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+
+            $.ajax({
+                url: 'api/s15/delete/' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Record deleted successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
     </script>
 }
+
