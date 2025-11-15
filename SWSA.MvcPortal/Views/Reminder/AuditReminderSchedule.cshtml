@@ -203,9 +203,15 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                <select id="pic" name="pic" class="form-control">
+                                    <option value="">-- Select from AT2.1 / AEX4.1 --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from AT2.1 / AEX4.1 (Team)
+                                </small>
                             </div>
                         </div>
+
                     </div>
 
                     <!-- Due Dates -->
@@ -216,9 +222,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ssm18MonthDue">SSM 18 Mth Due</label>
-                                <input type="text" id="ssm18MonthDue" name="ssm18MonthDue" class="form-control" placeholder="Select date" />
+                                <select id="ssm18MonthDue" name="ssm18MonthDue" class="form-control">
+                                    <option value="">-- Select from S13A (YrMthDueDate) --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from S13A · YrMthDueDate
+                                </small>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ssmTaxDue">SSM/Tax</label>
@@ -343,7 +355,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inwardDateReceived">Date Received</label>
-                                <input type="text" id="inwardDateReceived" name="inwardDateReceived" class="form-control" placeholder="Select date" />
+                                <select id="inwardDateReceived" name="inwardDateReceived" class="form-control">
+                                    <option value="">-- Select from A31A (DateReceived) --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from A31A · DateReceived
+                                </small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -353,6 +370,7 @@
                             </div>
                         </div>
                     </div>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -383,6 +401,93 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+
+        // 1) PIC：AT21 / AEX41.Team
+        function loadPicSourceList() {
+            $.ajax({
+                url: "/get-b2-pic-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#pic");
+                    $sel.empty().append(
+                        '<option value="">-- Select from AT2.1 / AEX4.1 --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const pic = o.pic || "-";
+
+                        // value 用 PIC 名字，刚好存去 B2.PIC 即可
+                        $sel.append(`
+                            <option value="${pic}">
+                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 2) SSM 18 Mth Due：S13A.YrMthDueDate
+        function loadSsm18MthSourceList() {
+            $.ajax({
+                url: "/get-b2-ssm18-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#ssm18MonthDue");
+                    $sel.empty().append(
+                        '<option value="">-- Select from S13A (YrMthDueDate) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const d18 = formatDateForDisplay(o.yrMthDueDate);
+
+                        // value 直接用日期字串，存入 B2.SSM18MthDue
+                        $sel.append(`
+                            <option value="${d18}">
+                                ${o.sourceType} - ${company} - YE ${ye} - 18mth ${d18}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 3) Inward Date Received：A31A.DateReceived -> B2.DateReceived2
+        function loadInwardSourceList() {
+            $.ajax({
+                url: "/get-b2-inward-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#inwardDateReceived");
+                    $sel.empty().append(
+                        '<option value="">-- Select from A31A (DateReceived) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const dr = formatDateForDisplay(o.dateReceived);
+
+                        $sel.append(`
+                            <option value="${dr}">
+                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
 
         // ========== Bank Confirmation 计算逻辑 ==========
 function calcBankTargetedSendDate(yeStr) {
@@ -504,6 +609,11 @@ function calcMonthNPlus7th(yeStr, nMonths) {
 
         // ---------- Init ----------
         $(document).ready(function () {
+
+            loadPicSourceList();      
+            loadSsm18MthSourceList();   
+            loadInwardSourceList();
+
             // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
     const yeStr = $(this).val();
