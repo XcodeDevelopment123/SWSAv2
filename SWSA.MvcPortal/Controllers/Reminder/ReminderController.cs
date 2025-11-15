@@ -377,6 +377,52 @@ namespace SWSA.MvcPortal.Controllers.Reminder
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpGet("get-b11-sources")]
+        public async Task<IActionResult> GetB11Sources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+    SELECT 
+        Id              AS SourceId,
+        'AT21'          AS SourceType,
+        CompanyName,
+        YearEnd         AS YearEnd,
+        First18mthdue   AS First18MthDue
+    FROM [Quartz].[dbo].[AT21]
+
+    UNION ALL
+
+    SELECT
+        Id              AS SourceId,
+        'AEX41'         AS SourceType,
+        CompanyName,
+        YearEnd         AS YearEnd,
+        First18mthsDue  AS First18MthDue
+    FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B11SourceOption>(sql);
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B11SourceOption
+        {
+            public string SourceType { get; set; }      // "AT21" or "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }
+            public string First18MthDue { get; set; }
+        }
+
         #endregion
 
         #region B2 Api Method

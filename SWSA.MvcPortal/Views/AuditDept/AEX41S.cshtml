@@ -369,14 +369,7 @@
                         item.remark || ''
                     ]);
                 });
-            } else {
-                // 如果没有数据，添加一个空行提示
-                dataTable.row.add([
-                    '',
-                    'No data available',
-                    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
-                ]);
-            }
+            } 
 
             dataTable.draw();
         }
