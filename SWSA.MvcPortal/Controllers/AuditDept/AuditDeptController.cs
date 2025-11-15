@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
 using SWSA.MvcPortal.Models.AccDeptModel;
 using SWSA.MvcPortal.Models.AuditDeptModel;
+using SWSA.MvcPortal.Models.Clients;
 
 namespace SWSA.MvcPortal.Controllers.AuditDept
 {
@@ -306,107 +309,6 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         }
 
         [AllowAnonymous]
-        [HttpPost("api/auditdept/at21/create")]
-        public async Task<IActionResult> CreateAT21([FromBody] AT21Model model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
-
-                Console.WriteLine("Creating new AT21 record...");
-                using var connection = new SqlConnection(_connectionString);
-
-                // 更详细的日志记录
-                Console.WriteLine($"Model data: {System.Text.Json.JsonSerializer.Serialize(model)}");
-
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT21] 
-            ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
-             [YearToDo], [CompanyStatus], [AuditStatus], [MovetoAEX], [MovetoBacklog],
-             [First18mthdue], [AFSdueDate], [CoSec], [AuditStaff], [DateDocIn],
-             [EstRev], [AcctngWk], [JobCompleted], [Remark])
-            VALUES 
-            (@Grouping, @CompanyName, @QuartertoAudit, @Activity, @YearEnd, 
-             @YearToDo, @CompanyStatus, @AuditStatus, @MovetoAEX, @MovetoBacklog,
-             @First18mthdue, @AFSdueDate, @CoSec, @AuditStaff, @DateDocIn,
-             @EstRev, @AcctngWk, @JobCompleted, @Remark);
-            SELECT CAST(SCOPE_IDENTITY() as int);";
-
-                Console.WriteLine($"Executing SQL: {sql}");
-
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in CreateAT21: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPut("api/auditdept/at21/update")]
-        public async Task<IActionResult> UpdateAT21([FromBody] AT21Model model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
-
-                Console.WriteLine($"Updating AT21 record with ID: {model.Id}");
-                using var connection = new SqlConnection(_connectionString);
-
-                var sql = @"UPDATE [Quartz].[dbo].[AT21] SET 
-            [Grouping] = @Grouping, 
-            [CompanyName] = @CompanyName, 
-            [QuartertoAudit] = @QuartertoAudit, 
-            [Activity] = @Activity, 
-            [YearEnd] = @YearEnd, 
-            [YearToDo] = @YearToDo, 
-            [CompanyStatus] = @CompanyStatus, 
-            [AuditStatus] = @AuditStatus, 
-            [MovetoAEX] = @MovetoAEX, 
-            [MovetoBacklog] = @MovetoBacklog,
-            [First18mthdue] = @First18mthdue, 
-            [AFSdueDate] = @AFSdueDate, 
-            [CoSec] = @CoSec, 
-            [AuditStaff] = @AuditStaff, 
-            [DateDocIn] = @DateDocIn,
-            [EstRev] = @EstRev, 
-            [AcctngWk] = @AcctngWk, 
-            [JobCompleted] = @JobCompleted, 
-            [Remark] = @Remark
-            WHERE Id = @Id";
-
-                Console.WriteLine($"Executing update SQL: {sql}");
-
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                Console.WriteLine($"Affected rows: {affectedRows}");
-
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
-
-                return Json(new { success = true, message = "Record updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in UpdateAT21: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-
-        [AllowAnonymous]
         [HttpDelete("api/auditdept/at21/delete/{id}")]
         public async Task<IActionResult> DeleteAT21(int id)
         {
@@ -435,6 +337,170 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 return Json(new { success = false, message = $"Database error: {ex.Message}" });
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost("api/auditdept/at21/create")]
+        public async Task<IActionResult> CreateAT21([FromBody] AT21Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                Console.WriteLine("Creating new AT21 record...");
+                using var connection = new SqlConnection(_connectionString);
+
+                // 更详细的日志记录
+                Console.WriteLine($"Model data: {System.Text.Json.JsonSerializer.Serialize(model)}");
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[AT21] 
+        ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
+         [YearToDo], [CompanyStatus], [AuditStatus], [MovetoAEX], [MovetoBacklog],
+         [First18mthdue], [AFSdueDate], [CoSec], [AuditStaff], [DateDocIn],
+         [EstRev], [AcctngWk], [JobCompleted], [Remark])
+        VALUES 
+        (@Grouping, @CompanyName, @QuartertoAudit, @Activity, @YearEnd, 
+         @YearToDo, @CompanyStatus, @AuditStatus, @MovetoAEX, @MovetoBacklog,
+         @First18mthdue, @AFSdueDate, @CoSec, @AuditStaff, @DateDocIn,
+         @EstRev, @AcctngWk, @JobCompleted, @Remark);
+        SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                Console.WriteLine($"Executing SQL: {sql}");
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 检查是否有 DateDocIn，如果有则创建 A31A 记录
+                if (!string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAT21(model);
+                }
+
+                return Json(new { success = true, id = id, message = "Record created successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreateAT21: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut("api/auditdept/at21/update")]
+        public async Task<IActionResult> UpdateAT21([FromBody] AT21Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                Console.WriteLine($"Updating AT21 record with ID: {model.Id}");
+                using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查 DateDocIn 是否变化
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AT21] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AT21Model>(oldRecordSql, new { Id = model.Id });
+
+                var sql = @"UPDATE [Quartz].[dbo].[AT21] SET 
+        [Grouping] = @Grouping, 
+        [CompanyName] = @CompanyName, 
+        [QuartertoAudit] = @QuartertoAudit, 
+        [Activity] = @Activity, 
+        [YearEnd] = @YearEnd, 
+        [YearToDo] = @YearToDo, 
+        [CompanyStatus] = @CompanyStatus, 
+        [AuditStatus] = @AuditStatus, 
+        [MovetoAEX] = @MovetoAEX, 
+        [MovetoBacklog] = @MovetoBacklog,
+        [First18mthdue] = @First18mthdue, 
+        [AFSdueDate] = @AFSdueDate, 
+        [CoSec] = @CoSec, 
+        [AuditStaff] = @AuditStaff, 
+        [DateDocIn] = @DateDocIn,
+        [EstRev] = @EstRev, 
+        [AcctngWk] = @AcctngWk, 
+        [JobCompleted] = @JobCompleted, 
+        [Remark] = @Remark
+        WHERE Id = @Id";
+
+                Console.WriteLine($"Executing update SQL: {sql}");
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                Console.WriteLine($"Affected rows: {affectedRows}");
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                // 检查 DateDocIn 是否从空变为有值，如果是则创建 A31A 记录
+                if (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAT21(model);
+                }
+
+                return Json(new { success = true, message = "Record updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in UpdateAT21: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        // 新增方法：从 AT21 创建 A31A 记录
+        private async Task CreateA31AFromAT21(AT21Model at21Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating A31A record from AT21 record (Company: {at21Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+                 [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                 [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+                VALUES 
+                (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+                 @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                 @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2)";
+
+                var a31aModel = new A31AModel
+                {
+                    Client = at21Model.CompanyName,
+                    YearEnded = at21Model.YearEnd?.ToString("yyyy-MM-dd") ?? string.Empty,
+                    DateReceived = at21Model.DateDocIn, // 现在直接使用 string，不需要转换了
+                    NoOfBagBox = null,
+                    ByWhom = null,
+                    UploadLetter = null,
+                    Remark = $"Auto-created from AT21 record (ID: {at21Model.Id})",
+                    DateSendToAD = null,
+                    Date = null,
+                    NoOfBoxBag = null,
+                    ByWhoam2 = null,
+                    UploadLetter2 = null,
+                    Remark2 = null
+                };
+
+                await connection.ExecuteAsync(sql, a31aModel);
+                Console.WriteLine($"A31A record created successfully for company: {at21Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating A31A record from AT21: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AT21 记录创建是主要的，A31A 创建是附加功能
+            }
+        }       
         #endregion
 
         #region AT22 (AuditBacklog) CRUD Methods
@@ -516,6 +582,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 检查是否有 DateDocIn，如果有则创建 A31A 记录
+                if (!string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAT22(model);
+                }
+
                 return Json(new { success = true, id = id, message = "Record created successfully" });
             }
             catch (Exception ex)
@@ -535,6 +608,11 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查 DateDocIn 是否变化
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AT22] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AT22Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AT22] SET 
             [Grouping] = @Grouping, 
             [CompanyName] = @CompanyName, 
@@ -552,12 +630,64 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查 DateDocIn 是否从空变为有值，如果是则创建 A31A 记录
+                if (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAT22(model);
+                }
+
                 return Json(new { success = true, message = "Record updated successfully" });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in UpdateAT22: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // 新增方法：从 AT22 创建 A31A 记录
+        private async Task CreateA31AFromAT22(AT22Model at22Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating A31A record from AT22 record (Company: {at22Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+                 [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                 [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+                VALUES 
+                (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+                 @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                 @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2)";
+
+                var a31aModel = new A31AModel
+                {
+                    Client = at22Model.CompanyName,
+                    YearEnded = at22Model.YearEnd?.ToString("yyyy-MM-dd") ?? string.Empty,
+                    DateReceived = at22Model.DateDocIn, // 将 AT22 的 DateDocIn 存入 A31A 的 DateReceived
+                    NoOfBagBox = null,
+                    ByWhom = null,
+                    UploadLetter = null,
+                    Remark = $"Auto-created from AT22 record (ID: {at22Model.Id})",
+                    DateSendToAD = null,
+                    Date = null,
+                    NoOfBoxBag = null,
+                    ByWhoam2 = null,
+                    UploadLetter2 = null,
+                    Remark2 = null
+                };
+
+                await connection.ExecuteAsync(sql, a31aModel);
+                Console.WriteLine($"A31A record created successfully for company: {at22Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating A31A record from AT22: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AT22 记录创建是主要的，A31A 创建是附加功能
             }
         }
 
@@ -825,6 +955,15 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 检查是否有必要字段，如果有则创建 AT31 记录
+                if (!string.IsNullOrEmpty(model.StartDate) || !string.IsNullOrEmpty(model.EndDate) ||
+                    !string.IsNullOrEmpty(model.NoOfDays) || !string.IsNullOrEmpty(model.TotalPercent) ||
+                    !string.IsNullOrEmpty(model.ReviewDateSent) || !string.IsNullOrEmpty(model.KKdateSent))
+                {
+                    await CreateAT31FromAT32(model);
+                }
+
                 return Json(new { success = true, id = id, message = "Record created successfully" });
             }
             catch (Exception ex)
@@ -844,6 +983,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查字段是否变化
+                var oldRecordSql = @"SELECT StartDate, EndDate, NoOfDays, TotalPercent, ReviewDateSent, KKdateSent 
+                           FROM [Quartz].[dbo].[AT32] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AT32Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AT32] SET 
             [CompanyName] = @CompanyName, [Activity] = @Activity, [YeartoDo] = @YeartoDo,
             [Quartertodo] = @Quartertodo, [PIC] = @PIC, [Status] = @Status, [AuditFee] = @AuditFee,
@@ -859,6 +1004,20 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查相关字段是否从空变为有值，如果是则创建 AT31 记录
+                bool shouldCreateAT31 =
+                    (string.IsNullOrEmpty(oldRecord?.StartDate) && !string.IsNullOrEmpty(model.StartDate)) ||
+                    (string.IsNullOrEmpty(oldRecord?.EndDate) && !string.IsNullOrEmpty(model.EndDate)) ||
+                    (string.IsNullOrEmpty(oldRecord?.NoOfDays) && !string.IsNullOrEmpty(model.NoOfDays)) ||
+                    (string.IsNullOrEmpty(oldRecord?.TotalPercent) && !string.IsNullOrEmpty(model.TotalPercent)) ||
+                    (string.IsNullOrEmpty(oldRecord?.ReviewDateSent) && !string.IsNullOrEmpty(model.ReviewDateSent)) ||
+                    (string.IsNullOrEmpty(oldRecord?.KKdateSent) && !string.IsNullOrEmpty(model.KKdateSent));
+
+                if (shouldCreateAT31)
+                {
+                    await CreateAT31FromAT32(model);
+                }
+
                 return Json(new { success = true, message = "Record updated successfully" });
             }
             catch (Exception ex)
@@ -868,6 +1027,77 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             }
         }
 
+        // 新增方法：从 AT32 创建 AT31 记录
+        private async Task CreateAT31FromAT32(AT32Model at32Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating AT31 record from AT32 record (Company: {at32Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+        ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
+         [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
+         [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
+         [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
+         [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+         [Binded], [DespatchDateToClient])
+        VALUES 
+        (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
+         @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
+         @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
+         @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
+         @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+         @Binded, @DespatchDateToClient)";
+
+                var at31Model = new AT31Model
+                {
+                    // 只设置这些字段，其他字段会自动为 null 或默认值
+                    StartDate = at32Model.StartDate,
+                    EndDate = at32Model.EndDate,
+                    DaysDone = at32Model.NoOfDays,
+                    DonePercent = at32Model.TotalPercent,
+                    DateSent = at32Model.ReviewDateSent,
+                    DateSentToKK = at32Model.KKdateSent,
+                    ReviewResultofDays = at32Model.TotalReviewDays,
+
+                    // 其他字段不需要设置，会保持为 null
+                    CompanyName = null,
+                    Activity = null,
+                    YEtoDo = null,
+                    QuartertoDo = null,
+                    PIC = null,
+                    MthDue = null,
+                    Status = null,
+                    DocInwardsDate = null,
+                    Revenue = null,
+                    Profit = null,
+                    AuditFee = null,
+                    DateBilled = null,
+                    Completed = null,
+                    DateReceiveFromKK = null,
+                    WhoMeetClientDate = null,
+                    DateSenttoClient = null,
+                    DateReceiveBack = null,
+                    TaxDueDate = null,
+                    PasstoDept = null,
+                    SSMdueDate = null,
+                    DatePasstoSecDept = null,
+                    Binded = null,
+                    DespatchDateToClient = null
+                };
+
+                await connection.ExecuteAsync(sql, at31Model);
+                Console.WriteLine($"AT31 record created successfully for company: {at32Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating AT31 record from AT32: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AT32 记录创建是主要的，AT31 创建是附加功能
+            }
+        }
         [AllowAnonymous]
         [HttpDelete("api/auditdept/at32/delete/{id}")]
         public async Task<IActionResult> DeleteAT32(int id)
@@ -910,7 +1140,27 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var records = await connection.QueryAsync<AT33Model>(sql);
                 Console.WriteLine($"Query executed successfully. Found {records?.Count() ?? 0} records");
 
-                return Json(new { success = true, data = records });
+                // 调试：检查第一个记录的 MBRSgenerated 值
+                if (records != null && records.Any())
+                {
+                    var firstRecord = records.First();
+                    Console.WriteLine($"First record MBRSgenerated value: '{firstRecord.MBRSgenerated}'");
+                    Console.WriteLine($"First record MBRSgenerated is null: {firstRecord.MBRSgenerated == null}");
+                    Console.WriteLine($"First record MBRSgenerated is empty: {string.IsNullOrEmpty(firstRecord.MBRSgenerated)}");
+                }
+
+                // 使用 Newtonsoft.Json 的正确方式
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = null // 保持属性名原样
+                    }
+                };
+
+                return new JsonResult(new { success = true, data = records }, jsonSettings);
             }
             catch (Exception ex)
             {
@@ -918,15 +1168,9 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine($"Message: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-
                 return Json(new { success = false, message = $"Database error: {ex.Message}" });
             }
         }
-
         [AllowAnonymous]
         [HttpGet("api/auditdept/at33/get/{id}")]
         public async Task<IActionResult> GetAT33ById(int id)
@@ -973,6 +1217,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 检查是否有 DateReceivedAFS，如果有则创建 AT31 记录
+                if (!string.IsNullOrEmpty(model.DateReceivedAFS))
+                {
+                    await CreateAT31FromAT33(model);
+                }
+
                 return Json(new { success = true, id = id, message = "Record created successfully" });
             }
             catch (Exception ex)
@@ -999,6 +1250,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine($"Updating AT33 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
 
+                // 先获取旧的记录来检查 DateReceivedAFS 是否变化
+                var oldRecordSql = "SELECT DateReceivedAFS FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AT33Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AT33] SET 
         [CompanyName] = @CompanyName, 
         [YEtodo] = @YEtodo, 
@@ -1021,6 +1276,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查 DateReceivedAFS 是否从空变为有值，如果是则创建 AT31 记录
+                if (string.IsNullOrEmpty(oldRecord?.DateReceivedAFS) && !string.IsNullOrEmpty(model.DateReceivedAFS))
+                {
+                    await CreateAT31FromAT33(model);
+                }
+
                 return Json(new { success = true, message = "Record updated successfully" });
             }
             catch (Exception ex)
@@ -1032,6 +1293,78 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                 }
                 return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        // 新增方法：从 AT33 创建 AT31 记录
+        private async Task CreateAT31FromAT33(AT33Model at33Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating AT31 record from AT33 record (Company: {at33Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
+                 [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
+                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
+                 [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
+                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+                 [Binded], [DespatchDateToClient])
+                VALUES 
+                (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
+                 @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
+                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
+                 @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
+                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+                 @Binded, @DespatchDateToClient)";
+
+                var at31Model = new AT31Model
+                {
+                    // 将 AT33 的 DateReceivedAFS 存入 AT31 的 DateReceiveFromKK
+                    DateReceiveFromKK = at33Model.DateReceivedAFS,
+
+                    // 其他字段保持为 null
+                    CompanyName = null,
+                    Activity = null,
+                    YEtoDo = null,
+                    QuartertoDo = null,
+                    PIC = null,
+                    MthDue = null,
+                    Status = null,
+                    DocInwardsDate = null,
+                    Revenue = null,
+                    Profit = null,
+                    AuditFee = null,
+                    DateBilled = null,
+                    StartDate = null,
+                    EndDate = null,
+                    DaysDone = null,
+                    DonePercent = null,
+                    Completed = null,
+                    DateSent = null,
+                    DateSentToKK = null,
+                    ReviewResultofDays = null,
+                    WhoMeetClientDate = null,
+                    DateSenttoClient = null,
+                    DateReceiveBack = null,
+                    TaxDueDate = null,
+                    PasstoDept = null,
+                    SSMdueDate = null,
+                    DatePasstoSecDept = null,
+                    Binded = null,
+                    DespatchDateToClient = null
+                };
+
+                await connection.ExecuteAsync(sql, at31Model);
+                Console.WriteLine($"AT31 record created successfully for company: {at33Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating AT31 record from AT33: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AT33 记录创建是主要的，AT31 创建是附加功能
             }
         }
 
@@ -1146,6 +1479,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 检查是否有 DateSent 或 DateReceived，如果有则创建或更新 AT31 记录
+                if (!string.IsNullOrEmpty(model.DateSent) || !string.IsNullOrEmpty(model.DateReceived))
+                {
+                    await CreateOrUpdateAT31FromAT34(model);
+                }
+
                 return Json(new { success = true, id = id, message = "Record created successfully" });
             }
             catch (Exception ex)
@@ -1172,6 +1512,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine($"Updating AT34 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
 
+                // 先获取旧的记录来检查 DateSent 和 DateReceived 是否变化
+                var oldRecordSql = "SELECT DateSent, DateReceived FROM [Quartz].[dbo].[AT34] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AT34Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AT34] SET 
         [CompanyName] = @CompanyName, 
         [YEtodo] = @YEtodo, 
@@ -1191,6 +1535,18 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查 DateSent 或 DateReceived 是否从空变为有值，如果是则创建或更新 AT31 记录
+                bool shouldUpdateAT31 =
+                    (string.IsNullOrEmpty(oldRecord?.DateSent) && !string.IsNullOrEmpty(model.DateSent)) ||
+                    (string.IsNullOrEmpty(oldRecord?.DateReceived) && !string.IsNullOrEmpty(model.DateReceived)) ||
+                    (!string.IsNullOrEmpty(oldRecord?.DateSent) && !string.IsNullOrEmpty(model.DateSent) && oldRecord.DateSent != model.DateSent) ||
+                    (!string.IsNullOrEmpty(oldRecord?.DateReceived) && !string.IsNullOrEmpty(model.DateReceived) && oldRecord.DateReceived != model.DateReceived);
+
+                if (shouldUpdateAT31)
+                {
+                    await CreateOrUpdateAT31FromAT34(model);
+                }
+
                 return Json(new { success = true, message = "Record updated successfully" });
             }
             catch (Exception ex)
@@ -1202,6 +1558,67 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                 }
                 return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        // 新增方法：从 AT34 创建或更新 AT31 记录
+        private async Task CreateOrUpdateAT31FromAT34(AT34Model at34Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating or updating AT31 record from AT34 record (Company: {at34Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                // 首先检查是否已存在相同公司名的 AT31 记录
+                var checkSql = "SELECT Id FROM [Quartz].[dbo].[AT31] WHERE CompanyName = @CompanyName";
+                var existingId = await connection.ExecuteScalarAsync<int?>(checkSql, new { CompanyName = at34Model.CompanyName });
+
+                if (existingId.HasValue)
+                {
+                    // 更新已存在的记录
+                    var updateSql = @"UPDATE [Quartz].[dbo].[AT31] SET 
+                            [DateSenttoClient] = @DateSenttoClient,
+                            [DateReceiveBack] = @DateReceiveBack,
+                            [Binded] = @Binded
+                            WHERE CompanyName = @CompanyName";
+
+                    var at31UpdateModel = new
+                    {
+                        DateSenttoClient = at34Model.DateSent,
+                        DateReceiveBack = at34Model.DateReceived,
+                        Binded = !string.IsNullOrEmpty(at34Model.CommofOathsDate) ? "Yes" : null, // 如果有 CommofOathsDate 则认为已绑定
+                        CompanyName = at34Model.CompanyName
+                    };
+
+                    await connection.ExecuteAsync(updateSql, at31UpdateModel);
+                    Console.WriteLine($"AT31 record updated successfully for company: {at34Model.CompanyName}");
+                }
+                else
+                {
+                    // 创建新记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                            ([CompanyName], [DateSenttoClient], [DateReceiveBack], [Binded])
+                            VALUES 
+                            (@CompanyName, @DateSenttoClient, @DateReceiveBack, @Binded)";
+
+                    var at31InsertModel = new
+                    {
+                        CompanyName = at34Model.CompanyName,
+                        DateSenttoClient = at34Model.DateSent,
+                        DateReceiveBack = at34Model.DateReceived,
+                        Binded = !string.IsNullOrEmpty(at34Model.CommofOathsDate) ? "Yes" : null
+                    };
+
+                    await connection.ExecuteAsync(insertSql, at31InsertModel);
+                    Console.WriteLine($"AT31 record created successfully for company: {at34Model.CompanyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating/updating AT31 record from AT34: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AT34 记录创建是主要的，AT31 创建是附加功能
             }
         }
 
@@ -1252,7 +1669,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = "SELECT * FROM [Quartz].[dbo].[AEX12] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
-                var records = await connection.QueryAsync<AEX12Model>(sql);
+                var records = await connection.QueryAsync<AEX11Model>(sql);
                 Console.WriteLine($"Query executed successfully. Found {records?.Count() ?? 0} records");
 
                 return Json(new { success = true, data = records });
@@ -1280,7 +1697,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 using var connection = new SqlConnection(_connectionString);
                 var sql = "SELECT * FROM [Quartz].[dbo].[AEX12] WHERE Id = @Id";
-                var record = await connection.QueryFirstOrDefaultAsync<AEX12Model>(sql, new { Id = id });
+                var record = await connection.QueryFirstOrDefaultAsync<AEX11Model>(sql, new { Id = id });
 
                 if (record == null)
                     return Json(new { success = false, message = "Record not found" });
@@ -1296,7 +1713,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
         [AllowAnonymous]
         [HttpPost("api/auditdept/aex12/create")]
-        public async Task<IActionResult> CreateAEX12([FromBody] AEX12Model model)
+        public async Task<IActionResult> CreateAEX12([FromBody] AEX11Model model)
         {
             try
             {
@@ -1346,7 +1763,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
         [AllowAnonymous]
         [HttpPut("api/auditdept/aex12/update")]
-        public async Task<IActionResult> UpdateAEX12([FromBody] AEX12Model model)
+        public async Task<IActionResult> UpdateAEX12([FromBody] AEX11Model model)
         {
             try
             {

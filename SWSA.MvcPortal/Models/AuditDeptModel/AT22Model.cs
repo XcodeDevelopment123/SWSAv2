@@ -10,7 +10,7 @@
         public DateTime? YearEnd { get; set; }
         public string YearToDo { get; set; }
         public string MoveToActiveAexSch { get; set; }
-        public DateTime? DateDocIn { get; set; }
+        public string DateDocIn { get; set; }
         public string AcctngWk { get; set; }
         public string ReasonWhyBacklog { get; set; }
     }

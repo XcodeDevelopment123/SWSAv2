@@ -500,179 +500,404 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
-    <!-- DataTables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        let currentEditingId = null;
-        let dataTable = null;
+        let dataTable;
+        let dataTableInitialized = false;
 
-        $(document).ready(function() {
-            initializeDataTable();
-            loadData();
-        });
+        // ---------- Modal alert + inline field errors ----------
+        function showModalAlert(msg, type) {
+            if ($('#modalAlert').length === 0) {
+                $('#taskModal .modal-body').prepend('<div id="modalAlert" class="alert d-none"></div>');
+            }
 
-        function initializeDataTable() {
-            dataTable = $('#taskDatatable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "scrollX": true,
-                "language": {
-                    "emptyTable": "No audit template records found",
-                    "loadingRecords": "Loading...",
-                    "zeroRecords": "No matching records found"
-                }
+            const map = {
+                success: 'alert-success',
+                error: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info'
+            };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+
+            const $body = $('#taskModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
             });
         }
 
-        function loadData() {
-            // 显示加载状态
-            if (dataTable) {
-                dataTable.clear().draw();
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+
+        function clearFieldErrors() {
+            $('#taskForm .is-invalid').removeClass('is-invalid');
+            $('#taskForm .invalid-feedback').remove();
+        }
+
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) {
+                $f.after('<div class="invalid-feedback"></div>');
             }
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- Page-level alert ----------
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                        ${message}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                  </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        // ---------- Helpers ----------
+        function formatDateForDisplay(s) {
+            if (!s) return '';
+            try {
+                if (s instanceof Date) {
+                    return s.toLocaleDateString('en-GB');
+                }
+                if (typeof s === 'string') {
+                    const date = new Date(s);
+                    if (!isNaN(date.getTime())) {
+                        return date.toLocaleDateString('en-GB');
+                    }
+                }
+                return s;
+            } catch (e) {
+                return s;
+            }
+        }
+
+        function getVal(obj, name) {
+            if (!obj) return '';
+
+            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
+
+            const camel = name.charAt(0).toLowerCase() + name.slice(1);
+            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
+
+            const targetLower = name.toLowerCase();
+            for (const key in obj) {
+                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+                if (key.toLowerCase() === targetLower) return obj[key];
+            }
+            return '';
+        }
+
+        function clearForm() {
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#modalTitle').text('Add New Audit Template Record');
+            hideModalAlert();
+            clearFieldErrors();
+        }
+
+        function formatCurrency(amount) {
+            if (!amount && amount !== 0) return '';
+            try {
+                return 'RM ' + parseFloat(amount).toLocaleString('en-MY', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            } catch (e) {
+                return amount || '';
+            }
+        }
+
+        function formatPercentage(value) {
+            if (!value && value !== 0) return '';
+            try {
+                return parseFloat(value) + '%';
+            } catch (e) {
+                return value || '';
+            }
+        }
+
+        // ---------- Init ----------
+        $(document).ready(function () {
+            console.log('Document ready, initializing AT11...');
+
+            // 初始化日期选择器
+            try {
+                // 将所有日期输入框转换为日期选择器
+                $('input[type="date"]').each(function() {
+                    const $input = $(this);
+                    const currentVal = $input.val();
+
+                    const $textInput = $('<input type="text" class="form-control datepicker">')
+                        .val(currentVal ? formatDateForDisplay(currentVal) : '')
+                        .attr('placeholder', 'DD/MM/YYYY')
+                        .attr('name', $input.attr('name'))
+                        .attr('id', $input.attr('id'));
+
+                    $input.replaceWith($textInput);
+                });
+
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+                console.log('Datepicker initialized');
+            } catch (e) {
+                console.error('Datepicker init error:', e);
+            }
+
+            // 初始化 DataTable
+            try {
+                dataTable = $('#taskDatatable').DataTable({
+                    responsive: true,
+                    ordering: true,
+                    autoWidth: true,
+                    pageLength: 10,
+                    order: [[1, 'asc']],
+                    language: {
+                        search: "Search:",
+                        lengthMenu: "Show _MENU_ entries",
+                        emptyTable: "No records found",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    },
+                    columnDefs: [
+                        {
+                            targets: '_all',
+                            defaultContent: ''
+                        }
+                    ],
+                    scrollX: true
+                });
+                dataTableInitialized = true;
+                console.log('DataTable initialized successfully');
+            } catch (error) {
+                console.error('DataTable initialization error:', error);
+                $('#taskDatatable').addClass('table table-bordered table-striped');
+                dataTableInitialized = false;
+            }
+
+            // 绑定按钮事件
+            $('#saveBtn').click(saveRecord);
+
+            // 使用事件委托绑定动态按钮
+            $(document).on('click', '.edit-btn', function () {
+                const id = $(this).data('id');
+                console.log('Edit clicked for ID:', id);
+                editRecord(id);
+            });
+
+            $(document).on('click', '.delete-btn', function () {
+                const id = $(this).data('id');
+                console.log('Delete clicked for ID:', id);
+                deleteRecord(id);
+            });
+
+            $('#taskModal').on('hidden.bs.modal', clearForm);
+
+            // 新建按钮点击事件
+            $('[data-bs-target="#taskModal"]').on('click', function () {
+                console.log('New Task button clicked');
+                clearForm();
+            });
+
+            // 首次载入数据
+            console.log('Loading initial data...');
+            loadRecordsFromDatabase();
+        });
+
+        // ---------- Load & Render ----------
+        function loadRecordsFromDatabase() {
+            console.log('Loading AT11 records from database...');
 
             $.ajax({
                 url: '/api/auditdept/at11/get-all',
                 type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        populateTable(response.data);
+                success: function (res) {
+                    console.log('API response:', res);
+                    if (res && res.success) {
+                        populateTable(res.data || []);
+                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
                     } else {
-                        console.error('API response error:', response);
-                        showAlert('Error loading data: ' + response.message, 'danger');
-                        if (dataTable) {
-                            dataTable.clear().draw();
-                        }
+                        const errorMsg = res?.message || 'Unknown error';
+                        console.error('API error:', errorMsg);
+                        showAlert('Failed to load: ' + errorMsg, 'error');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('AJAX error:', error);
-                    showAlert('Error loading data: ' + error, 'danger');
-                    if (dataTable) {
-                        dataTable.clear().draw();
-                    }
+                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
-        function populateTable(data) {
-            console.log('Populating table with data:', data);
+        function populateTable(records) {
+            console.log('Populating table with records:', records);
 
-            if (data && data.length > 0) {
-                const formattedData = data.map(function(item, index) {
-                    return {
-                        id: item.id,
-                        index: index + 1,
-                        companyName: escapeHtml(item.companyName || ''),
-                        activity: escapeHtml(item.activity || ''),
-                        whichDB: escapeHtml(item.whichDB || ''),
-                        yEtodo: escapeHtml(item.yEtodo || ''),
-                        quarterTodo: escapeHtml(item.quarterTodo || ''),
-                        pic: escapeHtml(item.pic || ''),
-                        status: escapeHtml(item.status || ''),
-                        revenue: formatNumber(item.revenue),
-                        profitLoss: formatNumber(item.profitLoss),
-                        auditFee: formatNumber(item.auditFee),
-                        dateBilled: formatDate(item.dateBilled),
-                        startDate: formatDate(item.startDate),
-                        asAt: formatDate(item.asAt),
-                        noOfDays: item.noOfDays || '',
-                        totalFieldWkDays: item.totalFieldWkDays || '',
-                        resultOverUnder: escapeHtml(item.resultOverUnder || ''),
-                        accSetup: formatPercentage(item.accSetup),
-                        acSummary: formatPercentage(item.acSummary),
-                        auditPlanning: formatPercentage(item.auditPlanning),
-                        auditExecution: formatPercentage(item.auditExecution),
-                        auditCompletion: formatPercentage(item.auditCompletion),
-                        totalPercent: formatPercentage(item.totalPercent),
-                        dateSent: formatDate(item.dateSent),
-                        endDate: formatDate(item.endDate),
-                        resultOverUnderKuching: escapeHtml(item.resultOverUnderKuching || ''),
-                        dateSentKK: formatDate(item.dateSentKK),
-                        endDateKK: formatDate(item.endDateKK),
-                        resultOverUnderKK: escapeHtml(item.resultOverUnderKK || ''),
-                        totalReviewDaysKK: item.totalReviewDaysKK || '',
-                        dateSentToKK: formatDate(item.dateSentToKK),
-                        dateReceivedAR: formatDate(item.dateReceivedAR),
-                        dateOfReport: formatDate(item.dateOfReport),
-                        dateOfDirectorsRept: formatDate(item.dateOfDirectorsRept),
-                        dateSentSigning: formatDate(item.dateSentSigning),
-                        flwUpDate: formatDate(item.flwUpDate),
-                        dateReceivedSigning: formatDate(item.dateReceivedSigning),
-                        commOfOathsDate: formatDate(item.commOfOathsDate),
-                        taxDueDate: formatDate(item.taxDueDate),
-                        passToTaxDept: formatDate(item.passToTaxDept),
-                        ssmDueDate: formatDate(item.ssmDueDate),
-                        datePassToSecDept: formatDate(item.datePassToSecDept),
-                        dateBinded: formatDate(item.dateBinded),
-                        despatchDateToClient: formatDate(item.despatchDateToClient)
-                    };
+            if (!dataTableInitialized) {
+                console.log('DataTable not initialized, using manual table population');
+                manualPopulateTable(records);
+                return;
+            }
+
+            // 清除现有数据
+            dataTable.clear();
+
+            if (records && records.length) {
+                records.forEach(function (r, index) {
+                    const id = getVal(r, 'Id');
+                    console.log('Processing record:', r);
+
+                    // 构建数据行 - 根据表格结构
+                    const rowData = [
+                        index + 1, // No
+                        getVal(r, 'CompanyName'),                                // Company Name
+                        getVal(r, 'Activity'),                                   // Activity
+                        getVal(r, 'WhichDB'),                                    // Which Database?
+                        getVal(r, 'YEtodo'),                                     // YE to do
+                        getVal(r, 'QuarterTodo'),                                // Quarter to do
+                        getVal(r, 'PIC'),                                        // PIC
+                        getVal(r, 'Status'),                                     // Status
+                        formatCurrency(getVal(r, 'Revenue')),                    // Revenue
+                        formatCurrency(getVal(r, 'ProfitLoss')),                 // Profit/(loss)
+                        formatCurrency(getVal(r, 'AuditFee')),                   // Audit Fee
+                        formatDateForDisplay(getVal(r, 'DateBilled')),           // Date billed
+                        formatDateForDisplay(getVal(r, 'StartDate')),            // Start Date
+                        formatDateForDisplay(getVal(r, 'AsAt')),                 // As at
+                        getVal(r, 'NoOfDays') || '',                             // No of Days
+                        getVal(r, 'TotalFieldWkDays') || '',                     // Total Field wk days
+                        getVal(r, 'ResultOverUnder'),                            // Result Over/Under
+                        formatPercentage(getVal(r, 'AccSetup')),                 // Acc setup(J)
+                        formatPercentage(getVal(r, 'AcSummary')),                // Ac summary(J)
+                        formatPercentage(getVal(r, 'AuditPlanning')),            // Audit Planning(PIC)
+                        formatPercentage(getVal(r, 'AuditExecution')),           // Audit Execution
+                        formatPercentage(getVal(r, 'AuditCompletion')),          // Audit Completion(PIC)
+                        formatPercentage(getVal(r, 'TotalPercent')),             // Total %
+                        formatDateForDisplay(getVal(r, 'DateSent')),             // Kuching Review Date Sent
+                        formatDateForDisplay(getVal(r, 'EndDate')),              // Kuching Review End Date
+                        getVal(r, 'ResultOverUnderKuching'),                     // Kuching Review Result
+                        formatDateForDisplay(getVal(r, 'DateSentKK')),           // KK Review Date Sent
+                        formatDateForDisplay(getVal(r, 'EndDateKK')),            // KK Review End Date
+                        getVal(r, 'ResultOverUnderKK'),                          // KK Review Result
+                        getVal(r, 'TotalReviewDaysKK') || '',                    // Total # review days
+                        formatDateForDisplay(getVal(r, 'DateSentToKK')),         // Date Sent to KK
+                        formatDateForDisplay(getVal(r, 'DateReceivedAR')),       // Date received AR
+                        formatDateForDisplay(getVal(r, 'DateOfReport')),         // Date of Report
+                        formatDateForDisplay(getVal(r, 'DateOfDirectorsRept')),  // Date of Directors
+                        formatDateForDisplay(getVal(r, 'DateSentSigning')),      // Date Sent
+                        formatDateForDisplay(getVal(r, 'FlwUpDate')),            // Follow up dates
+                        formatDateForDisplay(getVal(r, 'DateReceivedSigning')),  // Date received
+                        formatDateForDisplay(getVal(r, 'CommOfOathsDate')),      // Comm of Oaths date
+                        formatDateForDisplay(getVal(r, 'TaxDueDate')),           // Tax Due Date
+                        formatDateForDisplay(getVal(r, 'PassToTaxDept')),        // Pass to Tax Dept
+                        formatDateForDisplay(getVal(r, 'SSMDueDate')),           // SSM Due Date
+                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),    // Date pass to Sec Dept
+                        formatDateForDisplay(getVal(r, 'DateBinded')),           // Date Binded
+                        formatDateForDisplay(getVal(r, 'DespatchDateToClient')), // Despatch Date to Client
+                        // Edit & Delete buttons
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                         </button>
+                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                         </button>`
+                    ];
+
+                    console.log('Adding row data:', rowData);
+                    dataTable.row.add(rowData);
                 });
+            }
 
-                // 清空现有数据并重新绘制
-                const tbody = $('#tableBody');
-                tbody.empty();
+            dataTable.draw();
+            console.log('Table populated successfully');
+        }
 
-                formattedData.forEach(function(item) {
+        // 降级方案：手动填充表格
+        function manualPopulateTable(records) {
+            const tbody = $('#tableBody');
+            tbody.empty();
+
+            if (records && records.length) {
+                records.forEach(function (r, index) {
+                    const id = getVal(r, 'Id');
                     const row = `
                         <tr>
-                            <td>${item.index}</td>
-                            <td>${item.companyName}</td>
-                            <td>${item.activity}</td>
-                            <td>${item.whichDB}</td>
-                            <td>${item.yEtodo}</td>
-                            <td>${item.quarterTodo}</td>
-                            <td>${item.pic}</td>
-                            <td>${item.status}</td>
-                            <td>${item.revenue}</td>
-                            <td>${item.profitLoss}</td>
-                            <td>${item.auditFee}</td>
-                            <td>${item.dateBilled}</td>
-                            <td>${item.startDate}</td>
-                            <td>${item.asAt}</td>
-                            <td>${item.noOfDays}</td>
-                            <td>${item.totalFieldWkDays}</td>
-                            <td>${item.resultOverUnder}</td>
-                            <td>${item.accSetup}</td>
-                            <td>${item.acSummary}</td>
-                            <td>${item.auditPlanning}</td>
-                            <td>${item.auditExecution}</td>
-                            <td>${item.auditCompletion}</td>
-                            <td>${item.totalPercent}</td>
-                            <td>${item.dateSent}</td>
-                            <td>${item.endDate}</td>
-                            <td>${item.resultOverUnderKuching}</td>
-                            <td>${item.dateSentKK}</td>
-                            <td>${item.endDateKK}</td>
-                            <td>${item.resultOverUnderKK}</td>
-                            <td>${item.totalReviewDaysKK}</td>
-                            <td>${item.dateSentToKK}</td>
-                            <td>${item.dateReceivedAR}</td>
-                            <td>${item.dateOfReport}</td>
-                            <td>${item.dateOfDirectorsRept}</td>
-                            <td>${item.dateSentSigning}</td>
-                            <td>${item.flwUpDate}</td>
-                            <td>${item.dateReceivedSigning}</td>
-                            <td>${item.commOfOathsDate}</td>
-                            <td>${item.taxDueDate}</td>
-                            <td>${item.passToTaxDept}</td>
-                            <td>${item.ssmDueDate}</td>
-                            <td>${item.datePassToSecDept}</td>
-                            <td>${item.dateBinded}</td>
-                            <td>${item.despatchDateToClient}</td>
+                            <td>${index + 1}</td>
+                            <td>${getVal(r, 'CompanyName') || ''}</td>
+                            <td>${getVal(r, 'Activity') || ''}</td>
+                            <td>${getVal(r, 'WhichDB') || ''}</td>
+                            <td>${getVal(r, 'YEtodo') || ''}</td>
+                            <td>${getVal(r, 'QuarterTodo') || ''}</td>
+                            <td>${getVal(r, 'PIC') || ''}</td>
+                            <td>${getVal(r, 'Status') || ''}</td>
+                            <td>${formatCurrency(getVal(r, 'Revenue'))}</td>
+                            <td>${formatCurrency(getVal(r, 'ProfitLoss'))}</td>
+                            <td>${formatCurrency(getVal(r, 'AuditFee'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateBilled'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'StartDate'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'AsAt'))}</td>
+                            <td>${getVal(r, 'NoOfDays') || ''}</td>
+                            <td>${getVal(r, 'TotalFieldWkDays') || ''}</td>
+                            <td>${getVal(r, 'ResultOverUnder') || ''}</td>
+                            <td>${formatPercentage(getVal(r, 'AccSetup'))}</td>
+                            <td>${formatPercentage(getVal(r, 'AcSummary'))}</td>
+                            <td>${formatPercentage(getVal(r, 'AuditPlanning'))}</td>
+                            <td>${formatPercentage(getVal(r, 'AuditExecution'))}</td>
+                            <td>${formatPercentage(getVal(r, 'AuditCompletion'))}</td>
+                            <td>${formatPercentage(getVal(r, 'TotalPercent'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateSent'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'EndDate'))}</td>
+                            <td>${getVal(r, 'ResultOverUnderKuching') || ''}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateSentKK'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'EndDateKK'))}</td>
+                            <td>${getVal(r, 'ResultOverUnderKK') || ''}</td>
+                            <td>${getVal(r, 'TotalReviewDaysKK') || ''}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateSentToKK'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedAR'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateOfReport'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateOfDirectorsRept'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateSentSigning'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'FlwUpDate'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedSigning'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'CommOfOathsDate'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'TaxDueDate'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'PassToTaxDept'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'SSMDueDate'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DatePassToSecDept'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DateBinded'))}</td>
+                            <td>${formatDateForDisplay(getVal(r, 'DespatchDateToClient'))}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit">
+                                <button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete">
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -680,266 +905,229 @@
                     `;
                     tbody.append(row);
                 });
-
-                if (dataTable) {
-                    dataTable.destroy();
-                }
-                initializeDataTable();
             } else {
-                const tbody = $('#tableBody');
-                tbody.empty();
-                tbody.append('<tr><td colspan="48" class="text-center">No audit template records found</td></tr>');
-
-                if (dataTable) {
-                    dataTable.destroy();
-                }
-                initializeDataTable();
+                tbody.html('<tr><td colspan="48" class="text-center">No audit template records found</td></tr>');
             }
         }
 
-        function openCreateModal() {
-            currentEditingId = null;
-            $('#modalTitle').text('Add New Audit Template Record');
-            $('#taskForm')[0].reset();
-            $('#recordId').val('');
-            $('#taskModal').modal('show');
-        }
-
-        function editRecord(id) {
-            $.ajax({
-                url: '/api/auditdept/at11/get/' + id,
-                type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditingId = record.id;
-
-                        $('#modalTitle').text('Edit Audit Template Record');
-                        $('#recordId').val(record.id);
-
-                        // 填充表单字段
-                        $('#companyName').val(record.companyName || '');
-                        $('#activity').val(record.activity || '');
-                        $('#whichDB').val(record.whichDB || '');
-                        $('#yEtodo').val(record.yEtodo || '');
-                        $('#quarterTodo').val(record.quarterTodo || '');
-                        $('#pic').val(record.pic || '');
-                        $('#status').val(record.status || '');
-                        $('#revenue').val(record.revenue || '');
-                        $('#profitLoss').val(record.profitLoss || '');
-                        $('#auditFee').val(record.auditFee || '');
-                        $('#dateBilled').val(formatDateForInput(record.dateBilled));
-                        $('#startDate').val(formatDateForInput(record.startDate));
-                        $('#asAt').val(formatDateForInput(record.asAt));
-                        $('#noOfDays').val(record.noOfDays || '');
-                        $('#totalFieldWkDays').val(record.totalFieldWkDays || '');
-                        $('#resultOverUnder').val(record.resultOverUnder || '');
-                        $('#accSetup').val(record.accSetup || '');
-                        $('#acSummary').val(record.acSummary || '');
-                        $('#auditPlanning').val(record.auditPlanning || '');
-                        $('#auditExecution').val(record.auditExecution || '');
-                        $('#auditCompletion').val(record.auditCompletion || '');
-                        $('#totalPercent').val(record.totalPercent || '');
-                        $('#dateSent').val(formatDateForInput(record.dateSent));
-                        $('#endDate').val(formatDateForInput(record.endDate));
-                        $('#resultOverUnderKuching').val(record.resultOverUnderKuching || '');
-                        $('#dateSentKK').val(formatDateForInput(record.dateSentKK));
-                        $('#endDateKK').val(formatDateForInput(record.endDateKK));
-                        $('#resultOverUnderKK').val(record.resultOverUnderKK || '');
-                        $('#totalReviewDaysKK').val(record.totalReviewDaysKK || '');
-                        $('#dateSentToKK').val(formatDateForInput(record.dateSentToKK));
-                        $('#dateReceivedAR').val(formatDateForInput(record.dateReceivedAR));
-                        $('#dateOfReport').val(formatDateForInput(record.dateOfReport));
-                        $('#dateOfDirectorsRept').val(formatDateForInput(record.dateOfDirectorsRept));
-                        $('#dateSentSigning').val(formatDateForInput(record.dateSentSigning));
-                        $('#flwUpDate').val(formatDateForInput(record.flwUpDate));
-                        $('#dateReceivedSigning').val(formatDateForInput(record.dateReceivedSigning));
-                        $('#commOfOathsDate').val(formatDateForInput(record.commOfOathsDate));
-                        $('#taxDueDate').val(formatDateForInput(record.taxDueDate));
-                        $('#passToTaxDept').val(formatDateForInput(record.passToTaxDept));
-                        $('#ssmDueDate').val(formatDateForInput(record.ssmDueDate));
-                        $('#datePassToSecDept').val(formatDateForInput(record.datePassToSecDept));
-                        $('#dateBinded').val(formatDateForInput(record.dateBinded));
-                        $('#despatchDateToClient').val(formatDateForInput(record.despatchDateToClient));
-
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    showAlert('Error loading record: ' + error, 'danger');
-                }
-            });
-        }
-
+        // ---------- Save (Create / Update) ----------
         function saveRecord() {
+            console.log('Save button clicked');
+            hideModalAlert();
+            clearFieldErrors();
+
             const formData = {
-                companyName: $('#companyName').val(),
-                activity: $('#activity').val(),
-                whichDB: $('#whichDB').val(),
-                yEtodo: $('#yEtodo').val(),
-                quarterTodo: $('#quarterTodo').val(),
-                pic: $('#pic').val(),
-                status: $('#status').val(),
-                revenue: $('#revenue').val() || null,
-                profitLoss: $('#profitLoss').val() || null,
-                auditFee: $('#auditFee').val() || null,
-                dateBilled: $('#dateBilled').val() || null,
-                startDate: $('#startDate').val() || null,
-                asAt: $('#asAt').val() || null,
-                noOfDays: $('#noOfDays').val() || null,
-                totalFieldWkDays: $('#totalFieldWkDays').val() || null,
-                resultOverUnder: $('#resultOverUnder').val(),
-                accSetup: $('#accSetup').val() || null,
-                acSummary: $('#acSummary').val() || null,
-                auditPlanning: $('#auditPlanning').val() || null,
-                auditExecution: $('#auditExecution').val() || null,
-                auditCompletion: $('#auditCompletion').val() || null,
-                totalPercent: $('#totalPercent').val() || null,
-                dateSent: $('#dateSent').val() || null,
-                endDate: $('#endDate').val() || null,
-                resultOverUnderKuching: $('#resultOverUnderKuching').val(),
-                dateSentKK: $('#dateSentKK').val() || null,
-                endDateKK: $('#endDateKK').val() || null,
-                resultOverUnderKK: $('#resultOverUnderKK').val(),
-                totalReviewDaysKK: $('#totalReviewDaysKK').val() || null,
-                dateSentToKK: $('#dateSentToKK').val() || null,
-                dateReceivedAR: $('#dateReceivedAR').val() || null,
-                dateOfReport: $('#dateOfReport').val() || null,
-                dateOfDirectorsRept: $('#dateOfDirectorsRept').val() || null,
-                dateSentSigning: $('#dateSentSigning').val() || null,
-                flwUpDate: $('#flwUpDate').val() || null,
-                dateReceivedSigning: $('#dateReceivedSigning').val() || null,
-                commOfOathsDate: $('#commOfOathsDate').val() || null,
-                taxDueDate: $('#taxDueDate').val() || null,
-                passToTaxDept: $('#passToTaxDept').val() || null,
-                ssmDueDate: $('#ssmDueDate').val() || null,
-                datePassToSecDept: $('#datePassToSecDept').val() || null,
-                dateBinded: $('#dateBinded').val() || null,
-                despatchDateToClient: $('#despatchDateToClient').val() || null
+                Id: ($('#recordId').val() || '0').trim(),
+
+                CompanyName: ($('#companyName').val() || '').trim(),
+                Activity: ($('#activity').val() || '').trim(),
+                WhichDB: ($('#whichDB').val() || '').trim(),
+                YEtodo: ($('#yEtodo').val() || '').trim(),
+                QuarterTodo: ($('#quarterTodo').val() || '').trim(),
+                PIC: ($('#pic').val() || '').trim(),
+                Status: ($('#status').val() || '').trim(),
+                Revenue: ($('#revenue').val() || '').trim(),
+                ProfitLoss: ($('#profitLoss').val() || '').trim(),
+                AuditFee: ($('#auditFee').val() || '').trim(),
+                DateBilled: ($('#dateBilled').val() || '').trim(),
+                StartDate: ($('#startDate').val() || '').trim(),
+                AsAt: ($('#asAt').val() || '').trim(),
+                NoOfDays: ($('#noOfDays').val() || '').trim(),
+                TotalFieldWkDays: ($('#totalFieldWkDays').val() || '').trim(),
+                ResultOverUnder: ($('#resultOverUnder').val() || '').trim(),
+                AccSetup: ($('#accSetup').val() || '').trim(),
+                AcSummary: ($('#acSummary').val() || '').trim(),
+                AuditPlanning: ($('#auditPlanning').val() || '').trim(),
+                AuditExecution: ($('#auditExecution').val() || '').trim(),
+                AuditCompletion: ($('#auditCompletion').val() || '').trim(),
+                TotalPercent: ($('#totalPercent').val() || '').trim(),
+                DateSent: ($('#dateSent').val() || '').trim(),
+                EndDate: ($('#endDate').val() || '').trim(),
+                ResultOverUnderKuching: ($('#resultOverUnderKuching').val() || '').trim(),
+                DateSentKK: ($('#dateSentKK').val() || '').trim(),
+                EndDateKK: ($('#endDateKK').val() || '').trim(),
+                ResultOverUnderKK: ($('#resultOverUnderKK').val() || '').trim(),
+                TotalReviewDaysKK: ($('#totalReviewDaysKK').val() || '').trim(),
+                DateSentToKK: ($('#dateSentToKK').val() || '').trim(),
+                DateReceivedAR: ($('#dateReceivedAR').val() || '').trim(),
+                DateOfReport: ($('#dateOfReport').val() || '').trim(),
+                DateOfDirectorsRept: ($('#dateOfDirectorsRept').val() || '').trim(),
+                DateSentSigning: ($('#dateSentSigning').val() || '').trim(),
+                FlwUpDate: ($('#flwUpDate').val() || '').trim(),
+                DateReceivedSigning: ($('#dateReceivedSigning').val() || '').trim(),
+                CommOfOathsDate: ($('#commOfOathsDate').val() || '').trim(),
+                TaxDueDate: ($('#taxDueDate').val() || '').trim(),
+                PassToTaxDept: ($('#passToTaxDept').val() || '').trim(),
+                SSMDueDate: ($('#ssmDueDate').val() || '').trim(),
+                DatePassToSecDept: ($('#datePassToSecDept').val() || '').trim(),
+                DateBinded: ($('#dateBinded').val() || '').trim(),
+                DespatchDateToClient: ($('#despatchDateToClient').val() || '').trim()
             };
 
-            // Add ID for update
-            if (currentEditingId) {
-                formData.id = currentEditingId;
+            console.log('Form data:', formData);
+
+            // 简单必填验证
+            let hasError = false;
+            if (!formData.CompanyName) {
+                setFieldError('#companyName', 'Company Name is required');
+                hasError = true;
             }
 
-            // Basic validation
-            if (!formData.companyName) {
-                showAlert('Company Name is required', 'warning');
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                $('#taskForm .is-invalid').first().focus();
                 return;
             }
 
-            const url = currentEditingId ? '/api/auditdept/at11/update' : '/api/auditdept/at11/create';
-            const method = currentEditingId ? 'PUT' : 'POST';
+            const isUpdate = Number(formData.Id) > 0;
+            const url = isUpdate ? '/api/auditdept/at11/update' : '/api/auditdept/at11/create';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            console.log('Saving via:', url, method);
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
             $.ajax({
                 url: url,
                 type: method,
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
-                success: function(response) {
-                    if (response.success) {
-                        showAlert(`Record ${currentEditingId ? 'updated' : 'created'} successfully!`, 'success');
+                success: function (res) {
+                    console.log('Save response:', res);
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
                         $('#taskModal').modal('hide');
-                        loadData();
+                        showAlert('Record saved successfully.', 'success');
+                        loadRecordsFromDatabase();
                     } else {
-                        showAlert('Error saving record: ' + response.message, 'danger');
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error saving record: ' + msg, 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    showAlert('Error saving record: ' + error, 'danger');
+                error: function (xhr, status, error) {
+                    console.error('Save error:', error);
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
-        function deleteRecord(id) {
-            if (confirm('Are you sure you want to delete this record?')) {
-                $.ajax({
-                    url: '/api/auditdept/at11/delete/' + id,
-                    type: 'DELETE',
-                    success: function(response) {
-                        if (response.success) {
-                            showAlert('Record deleted successfully!', 'success');
-                            loadData();
-                        } else {
-                            showAlert('Error deleting record: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Error deleting record: ' + error, 'danger');
+        // ---------- Edit ----------
+        function editRecord(id) {
+            console.log('Editing record ID:', id);
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+            hideModalAlert();
+            clearFieldErrors();
+
+            $.ajax({
+                url: '/api/auditdept/at11/get/' + id,
+                type: 'GET',
+                success: function (res) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audit Template Record');
+                    if (res && res.success) {
+                        const d = res.data || {};
+                        console.log('Edit data loaded:', d);
+
+                        $('#recordId').val(getVal(d, 'Id'));
+
+                        // 填充表单字段
+                        $('#companyName').val(getVal(d, 'CompanyName'));
+                        $('#activity').val(getVal(d, 'Activity'));
+                        $('#whichDB').val(getVal(d, 'WhichDB'));
+                        $('#yEtodo').val(getVal(d, 'YEtodo'));
+                        $('#quarterTodo').val(getVal(d, 'QuarterTodo'));
+                        $('#pic').val(getVal(d, 'PIC'));
+                        $('#status').val(getVal(d, 'Status'));
+                        $('#revenue').val(getVal(d, 'Revenue'));
+                        $('#profitLoss').val(getVal(d, 'ProfitLoss'));
+                        $('#auditFee').val(getVal(d, 'AuditFee'));
+                        $('#dateBilled').val(formatDateForInput(getVal(d, 'DateBilled')));
+                        $('#startDate').val(formatDateForInput(getVal(d, 'StartDate')));
+                        $('#asAt').val(formatDateForInput(getVal(d, 'AsAt')));
+                        $('#noOfDays').val(getVal(d, 'NoOfDays'));
+                        $('#totalFieldWkDays').val(getVal(d, 'TotalFieldWkDays'));
+                        $('#resultOverUnder').val(getVal(d, 'ResultOverUnder'));
+                        $('#accSetup').val(getVal(d, 'AccSetup'));
+                        $('#acSummary').val(getVal(d, 'AcSummary'));
+                        $('#auditPlanning').val(getVal(d, 'AuditPlanning'));
+                        $('#auditExecution').val(getVal(d, 'AuditExecution'));
+                        $('#auditCompletion').val(getVal(d, 'AuditCompletion'));
+                        $('#totalPercent').val(getVal(d, 'TotalPercent'));
+                        $('#dateSent').val(formatDateForInput(getVal(d, 'DateSent')));
+                        $('#endDate').val(formatDateForInput(getVal(d, 'EndDate')));
+                        $('#resultOverUnderKuching').val(getVal(d, 'ResultOverUnderKuching'));
+                        $('#dateSentKK').val(formatDateForInput(getVal(d, 'DateSentKK')));
+                        $('#endDateKK').val(formatDateForInput(getVal(d, 'EndDateKK')));
+                        $('#resultOverUnderKK').val(getVal(d, 'ResultOverUnderKK'));
+                        $('#totalReviewDaysKK').val(getVal(d, 'TotalReviewDaysKK'));
+                        $('#dateSentToKK').val(formatDateForInput(getVal(d, 'DateSentToKK')));
+                        $('#dateReceivedAR').val(formatDateForInput(getVal(d, 'DateReceivedAR')));
+                        $('#dateOfReport').val(formatDateForInput(getVal(d, 'DateOfReport')));
+                        $('#dateOfDirectorsRept').val(formatDateForInput(getVal(d, 'DateOfDirectorsRept')));
+                        $('#dateSentSigning').val(formatDateForInput(getVal(d, 'DateSentSigning')));
+                        $('#flwUpDate').val(formatDateForInput(getVal(d, 'FlwUpDate')));
+                        $('#dateReceivedSigning').val(formatDateForInput(getVal(d, 'DateReceivedSigning')));
+                        $('#commOfOathsDate').val(formatDateForInput(getVal(d, 'CommOfOathsDate')));
+                        $('#taxDueDate').val(formatDateForInput(getVal(d, 'TaxDueDate')));
+                        $('#passToTaxDept').val(formatDateForInput(getVal(d, 'PassToTaxDept')));
+                        $('#ssmDueDate').val(formatDateForInput(getVal(d, 'SSMDueDate')));
+                        $('#datePassToSecDept').val(formatDateForInput(getVal(d, 'DatePassToSecDept')));
+                        $('#dateBinded').val(formatDateForInput(getVal(d, 'DateBinded')));
+                        $('#despatchDateToClient').val(formatDateForInput(getVal(d, 'DespatchDateToClient')));
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
                     }
-                });
-            }
+                },
+                error: function (xhr, status, error) {
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audit Template Record');
+                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
         }
 
-        // Utility functions
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
-            } catch (e) {
-                return '';
-            }
+        // ---------- Delete ----------
+        function deleteRecord(id) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+
+            $.ajax({
+                url: '/api/auditdept/at11/delete/' + id,
+                type: 'DELETE',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Record deleted successfully.', 'success');
+                        loadRecordsFromDatabase();
+                    } else {
+                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
         }
 
+        // 日期格式化辅助函数
         function formatDateForInput(dateString) {
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+                if (isNaN(date.getTime())) return '';
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
             } catch (e) {
                 return '';
             }
         }
 
-        function formatNumber(value) {
-            if (value === null || value === undefined || value === '') return '';
-            const num = parseFloat(value);
-            return isNaN(num) ? '' : num.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
-
-        function formatPercentage(value) {
-            if (value === null || value === undefined || value === '') return '';
-            const num = parseFloat(value);
-            return isNaN(num) ? '' : num.toFixed(1) + '%';
-        }
-
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .toString()
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function showAlert(message, type) {
-            const alertClass = `alert alert-${type} alert-dismissible fade show`;
-            const alertHtml = `
-                <div class="${alertClass}" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            // Remove existing alerts
-            $('.alert').remove();
-
-            // Prepend alert to card body
-            $('.card-body').prepend(alertHtml);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 5000);
+        // 打开创建模态框的函数
+        function openCreateModal() {
+            clearForm();
+            $('#taskModal').modal('show');
         }
     </script>
 }

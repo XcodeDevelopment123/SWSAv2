@@ -9,25 +9,25 @@
         public string Quartertodo { get; set; }
         public string PIC { get; set; }
         public string Status { get; set; }
-        public decimal? AuditFee { get; set; }
-        public DateTime? DateBilled { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public int? NoOfDays { get; set; }
-        public int? TotalFieldwkDays { get; set; }
+        public string? AuditFee { get; set; }
+        public string DateBilled { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string? NoOfDays { get; set; }
+        public string? TotalFieldwkDays { get; set; }
         public string FinalResultOverUnder { get; set; }
-        public decimal? AccSetup { get; set; }
-        public decimal? Assummary { get; set; }
-        public decimal? AuditPlanning { get; set; }
-        public decimal? AuditExecution { get; set; }
-        public decimal? AuditCompleion { get; set; }
-        public decimal? TotalPercent { get; set; }
-        public DateTime? ReviewDateSent { get; set; }
-        public DateTime? ReviewEndDate { get; set; }
-        public int? ReviewOfDays { get; set; }
-        public DateTime? KKdateSent { get; set; }
-        public DateTime? KKendDate { get; set; }
-        public int? KKofDate { get; set; }
-        public int? TotalReviewDays { get; set; }
+        public string? AccSetup { get; set; }
+        public string? Assummary { get; set; }
+        public string? AuditPlanning { get; set; }
+        public string? AuditExecution { get; set; }
+        public string? AuditCompleion { get; set; }
+        public string? TotalPercent { get; set; }
+        public string ReviewDateSent { get; set; }
+        public string ReviewEndDate { get; set; }
+        public string? ReviewOfDays { get; set; }
+        public string KKdateSent { get; set; }
+        public string KKendDate { get; set; }
+        public string? KKofDate { get; set; }
+        public string? TotalReviewDays { get; set; }
     }
 }

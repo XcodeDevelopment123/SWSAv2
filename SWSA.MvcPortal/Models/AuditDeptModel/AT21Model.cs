@@ -17,7 +17,7 @@
         public DateTime? AFSdueDate { get; set; }
         public string CoSec { get; set; }
         public string AuditStaff { get; set; }
-        public DateTime? DateDocIn { get; set; }
+        public string DateDocIn { get; set; }
         public string EstRev { get; set; }
         public string AcctngWk { get; set; }
         public string JobCompleted { get; set; }

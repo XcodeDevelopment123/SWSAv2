@@ -10,10 +10,10 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
         public string? PIC { get; set; }
         public string? Active { get; set; }
         public string? AEX { get; set; }
-        public DateTime? DateSent { get; set; }
+        public string? DateSent { get; set; }
         public string? FlwUpDates { get; set; }
-        public DateTime? First18mthDate { get; set; }
-        public DateTime? DateReceived { get; set; }
-        public DateTime? CommofOathsDate { get; set; }
+        public string? First18mthDate { get; set; }
+        public string? DateReceived { get; set; }
+        public string? CommofOathsDate { get; set; }
     }
 }

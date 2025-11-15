@@ -1,600 +1,628 @@
 ﻿@{
-    ViewData["Title"] = "A31ADocControl";
+	ViewData["Title"] = "A31ADocControl";
 }
 
 <h1>A31A Doc Control</h1>
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>Document Control Records
-                </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Record
-                    </button>
-                </div>
-            </div>
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Client</th>
-                            <th rowspan="2">Year End</th>
-                            <th colspan="2">Receipt of Documents</th>
-                            <th colspan="2">Acknowledgement</th>
-                            <th rowspan="2">Remark</th>
-                            <th colspan="6">Document Outward Control</th>
-                            <th rowspan="2">Actions</th>
-                        </tr>
-                        <tr>
-                            <th>Date Received</th>
-                            <th># of bags/box</th>
-                            <th>By Whom</th>
-                            <th>Upload letter</th>
-                            <th>Date send to Audit Dept</th>
-                            <th>Date</th>
-                            <th># of bags/box</th>
-                            <th>By Whom</th>
-                            <th>Upload letter</th>
-                            <th>Remark</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recordsTableBody">
-                        <!-- Records will be loaded dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">
+					<i class="fas fa-tasks me-2"></i>Document Control Records
+				</h3>
+				<div class="card-tools">
+					<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+						<i class="fas fa-plus me-2"></i>New Record
+					</button>
+				</div>
+			</div>
+			<div class="card-body" style="overflow:auto">
+				<table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+					<thead>
+						<tr>
+							<th rowspan="2">Client</th>
+							<th rowspan="2">Year End</th>
+							<th colspan="2">Receipt of Documents</th>
+							<th colspan="2">Acknowledgement</th>
+							<th rowspan="2">Remark</th>
+							<th colspan="6">Document Outward Control</th>
+							<th rowspan="2">Actions</th>
+						</tr>
+						<tr>
+							<th>Date Received</th>
+							<th># of bags/box</th>
+							<th>By Whom</th>
+							<th>Upload letter</th>
+							<th>Date send to Audit Dept</th>
+							<th>Date</th>
+							<th># of bags/box</th>
+							<th>By Whom</th>
+							<th>Upload letter</th>
+							<th>Remark</th>
+						</tr>
+					</thead>
+					<tbody id="recordsTableBody">
+						<!-- Records will be loaded dynamically -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalLabel">
-                    <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New A31A Doc Control Record</span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="taskForm">
-                    <input type="hidden" id="editId" value="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="taskModalLabel">
+					<i class="fas fa-edit me-2"></i>
+					<span id="modalTitle">Add New A31A Doc Control Record</span>
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="taskForm">
+					<input type="hidden" id="editId" value="">
 
-                    <!-- Basic Information -->
-                    <div class="form-info-label col-12">
-                        <label>Basic Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="clientId">Client</label>
-                                <select id="clientId" name="clientId" class="form-control" required>
-                                    <option value="">Select Client</option>
-                                    <!-- Clients will be loaded dynamically -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Year end will auto-fill when client is selected" readonly />
-                            </div>
-                        </div>
-                    </div>
+					<!-- Basic Information -->
+					<div class="form-info-label col-12">
+						<label>Basic Information</label>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="clientId">Client</label>
+								<select id="clientId" name="clientId" class="form-control" required>
+									<option value="">Select Client</option>
+									<!-- Clients will be loaded dynamically -->
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="yearEnd">Year End</label>
+								<input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Year end will auto-fill when client is selected" readonly />
+							</div>
+						</div>
+					</div>
 
-                    <!-- Receipt of Documents -->
-                    <div class="form-info-label col-12">
-                        <label>Receipt of Documents</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateReceived">Date Received</label>
-                                <input type="text" id="dateReceived" name="dateReceived" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="numberOfBagsBox"># of bags/box</label>
-                                <input type="number" id="numberOfBagsBox" name="numberOfBagsBox" class="form-control" placeholder="Enter number" min="0" />
-                            </div>
-                        </div>
-                    </div>
+					<!-- Receipt of Documents -->
+					<div class="form-info-label col-12">
+						<label>Receipt of Documents</label>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="dateReceived">Date Received</label>
+								<input type="text" id="dateReceived" name="dateReceived" class="form-control datepicker" placeholder="Select date" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="numberOfBagsBox"># of bags/box</label>
+								<input type="number" id="numberOfBagsBox" name="numberOfBagsBox" class="form-control" placeholder="Enter number" min="0" />
+							</div>
+						</div>
+					</div>
 
-                    <!-- Acknowledgement -->
-                    <div class="form-info-label col-12">
-                        <label>Acknowledgement</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ackByWhom">By Whom</label>
-                                <input type="text" id="ackByWhom" name="ackByWhom" class="form-control" placeholder="Enter name" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ackUploadLetter">Upload letter</label>
-                                <select id="ackUploadLetter" name="ackUploadLetter" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+					<!-- Acknowledgement -->
+					<div class="form-info-label col-12">
+						<label>Acknowledgement</label>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ackByWhom">By Whom</label>
+								<input type="text" id="ackByWhom" name="ackByWhom" class="form-control" placeholder="Enter name" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ackUploadLetter">Upload letter</label>
+								<select id="ackUploadLetter" name="ackUploadLetter" class="form-control">
+									<option value="">Select</option>
+									<option value="Yes">Yes</option>
+									<option value="No">No</option>
+								</select>
+							</div>
+						</div>
+					</div>
 
-                    <!-- Remark -->
-                    <div class="form-info-label col-12">
-                        <label>Remark</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="remark">Remark</label>
-                                <textarea id="remark" name="remark" class="form-control" placeholder="Enter remarks" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
+					<!-- Remark -->
+					<div class="form-info-label col-12">
+						<label>Remark</label>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="remark">Remark</label>
+								<textarea id="remark" name="remark" class="form-control" placeholder="Enter remarks" rows="3"></textarea>
+							</div>
+						</div>
+					</div>
 
-                    <!-- Document Outward Control -->
-                    <div class="form-info-label col-12">
-                        <label>Document Outward Control</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateSendToAuditDept">Date send to Audit Dept</label>
-                                <input type="text" id="dateSendToAuditDept" name="dateSendToAuditDept" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="outwardDate">Date</label>
-                                <input type="text" id="outwardDate" name="outwardDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
+					<!-- Document Outward Control -->
+					<div class="form-info-label col-12">
+						<label>Document Outward Control</label>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="dateSendToAuditDept">Date send to Audit Dept</label>
+								<input type="text" id="dateSendToAuditDept" name="dateSendToAuditDept" class="form-control datepicker" placeholder="Select date" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="outwardDate">Date</label>
+								<input type="text" id="outwardDate" name="outwardDate" class="form-control datepicker" placeholder="Select date" />
+							</div>
+						</div>
+					</div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="outwardNumberOfBagsBox"># of bags/box</label>
-                                <input type="number" id="outwardNumberOfBagsBox" name="outwardNumberOfBagsBox" class="form-control" placeholder="Enter number" min="0" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="outwardByWhom">By Whom</label>
-                                <input type="text" id="outwardByWhom" name="outwardByWhom" class="form-control" placeholder="Enter name" />
-                            </div>
-                        </div>
-                    </div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="outwardNumberOfBagsBox"># of bags/box</label>
+								<input type="number" id="outwardNumberOfBagsBox" name="outwardNumberOfBagsBox" class="form-control" placeholder="Enter number" min="0" />
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="outwardByWhom">By Whom</label>
+								<input type="text" id="outwardByWhom" name="outwardByWhom" class="form-control" placeholder="Enter name" />
+							</div>
+						</div>
+					</div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="outwardUploadLetter">Upload letter</label>
-                                <select id="outwardUploadLetter" name="outwardUploadLetter" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="outwardRemark">Outward Remark</label>
-                                <textarea id="outwardRemark" name="outwardRemark" class="form-control" placeholder="Enter outward remarks" rows="2"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
-            </div>
-        </div>
-    </div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="outwardUploadLetter">Upload letter</label>
+								<select id="outwardUploadLetter" name="outwardUploadLetter" class="form-control">
+									<option value="">Select</option>
+									<option value="Yes">Yes</option>
+									<option value="No">No</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="outwardRemark">Outward Remark</label>
+								<textarea id="outwardRemark" name="outwardRemark" class="form-control" placeholder="Enter outward remarks" rows="2"></textarea>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>Cancel
+				</button>
+				<button type="button" class="btn btn-primary" id="saveBtn">
+					<i class="fas fa-save me-2"></i>Save
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- Datepicker CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+	<!-- Datepicker CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<!-- DataTables JS -->
+	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+	<!-- Datepicker JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            console.log('Page loaded, starting initialization...');
+	<script>
+		$(document).ready(function() {
+			console.log('Page loaded, starting initialization...');
 
-            // Load records and clients on page load
-            loadA31ARecords();
-            loadClients();
+			// Load records and clients on page load
+			loadA31ARecords();
+			loadClients();
 
-            // Initialize datepicker
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+			// Initialize datepicker
+			$('.datepicker').datepicker({
+				format: 'dd/mm/yyyy',
+				autoclose: true
+			});
 
-            // Client selection change event
-            $('#clientId').change(function() {
-                var selectedClientId = $(this).val();
-                console.log('Client selected:', selectedClientId);
-                if (selectedClientId) {
-                    loadClientDetails(selectedClientId);
-                } else {
-                    $('#yearEnd').val('');
-                }
-            });
+			// Client selection change event
+			$('#clientId').change(function() {
+				var selectedClientId = $(this).val();
+				console.log('Client selected:', selectedClientId);
+				if (selectedClientId) {
+					loadClientDetails(selectedClientId);
+				} else {
+					$('#yearEnd').val('');
+				}
+			});
 
-            // Save button click event
-            $('#saveBtn').click(function() {
-                saveA31ARecord();
-            });
+			// Save button click event
+			$('#saveBtn').click(function() {
+				saveA31ARecord();
+			});
 
-            // Form reset when modal is closed
-            $('#taskModal').on('hidden.bs.modal', function () {
-                $('#taskForm')[0].reset();
-                $('#editId').val('');
-                $('#modalTitle').text('Add New A31A Doc Control Record');
-            });
-        });
+			// Form reset when modal is closed
+			$('#taskModal').on('hidden.bs.modal', function () {
+				$('#taskForm')[0].reset();
+				$('#editId').val('');
+				$('#modalTitle').text('Add New A31A Doc Control Record');
+			});
+		});
 
-        // Load clients from database
-        function loadClients() {
-            console.log('Loading clients...');
+		// Load clients from database
+		function loadClients() {
+			console.log('Loading clients...');
 
-            $.ajax({
-                url: '/documents/get-clients',
-                type: 'GET',
-                success: function(response) {
-                    console.log('Clients API response:', response);
+			$.ajax({
+				url: '/documents/get-clients',
+				type: 'GET',
+				success: function(response) {
+					console.log('Clients API response:', response);
 
-                    if (response.success) {
-                        console.log('Clients data:', response.data);
-                        populateClientDropdown(response.data);
-                    } else {
-                        console.error('Failed to load clients:', response.message);
-                        showError('Failed to load clients list: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading clients:', error);
-                    console.error('XHR response:', xhr.responseText);
-                    showError('Error loading clients list: ' + error);
-                }
-            });
-        }
+					if (response.success) {
+						console.log('Clients data:', response.data);
+						populateClientDropdown(response.data);
+					} else {
+						console.error('Failed to load clients:', response.message);
+						showError('Failed to load clients list: ' + response.message);
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error loading clients:', error);
+					console.error('XHR response:', xhr.responseText);
+					showError('Error loading clients list: ' + error);
+				}
+			});
+		}
 
-        // Load client details including year end
-        function loadClientDetails(clientId) {
-            console.log('Loading client details for ID:', clientId);
+		// Load client details including year end
+		function loadClientDetails(clientId) {
+			console.log('Loading client details for ID:', clientId);
 
-            $.ajax({
-                url: '/documents/get-client-details/' + clientId,
-                type: 'GET',
-                success: function(response) {
-                    console.log('Client details response:', response);
+			$.ajax({
+				url: '/documents/get-client-details/' + clientId,
+				type: 'GET',
+				success: function(response) {
+					console.log('Client details response:', response);
 
-                    if (response.success) {
-                        // Auto-fill year end based on client's YearEndMonth
-                        if (response.data.yearEndMonth) {
-                            var currentYear = new Date().getFullYear();
-                            var yearEnd = '31 ' + getMonthName(response.data.yearEndMonth) + ' ' + currentYear;
-                            $('#yearEnd').val(yearEnd);
-                            console.log('Auto-filled year end:', yearEnd);
-                        }
-                    } else {
-                        console.error('Failed to load client details:', response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading client details:', error);
-                }
-            });
-        }
+					if (response.success) {
+						// Auto-fill year end based on client's YearEndMonth
+						if (response.data.yearEndMonth) {
+							var currentYear = new Date().getFullYear();
+							var yearEnd = '31 ' + getMonthName(response.data.yearEndMonth) + ' ' + currentYear;
+							$('#yearEnd').val(yearEnd);
+							console.log('Auto-filled year end:', yearEnd);
+						}
+					} else {
+						console.error('Failed to load client details:', response.message);
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error loading client details:', error);
+				}
+			});
+		}
 
-        // Helper function to convert month number to month name
-        function getMonthName(monthNumber) {
-            const months = [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ];
-            return months[monthNumber - 1] || 'Dec';
-        }
+		// Helper function to convert month number to month name
+		function getMonthName(monthNumber) {
+			const months = [
+				'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+				'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+			];
+			return months[monthNumber - 1] || 'Dec';
+		}
 
-        // Populate client dropdown
-        function populateClientDropdown(clients) {
-            var dropdown = $('#clientId');
-            dropdown.empty();
-            dropdown.append('<option value="">Select Client</option>');
+		// Populate client dropdown
+		function populateClientDropdown(clients) {
+			var dropdown = $('#clientId');
+			dropdown.empty();
+			dropdown.append('<option value="">Select Client</option>');
 
-            console.log('Populating dropdown with clients:', clients);
+			console.log('Populating dropdown with clients:', clients);
 
-            if (clients && clients.length > 0) {
-                clients.forEach(function(client) {
-                    console.log('Adding client to dropdown:', client.id, client.name);
-                    dropdown.append('<option value="' + client.id + '">' + client.name + '</option>');
-                });
-                console.log('Dropdown populated with ' + clients.length + ' clients');
-            } else {
-                console.warn('No clients available to populate dropdown');
-                dropdown.append('<option value="" disabled>No clients available</option>');
-            }
-        }
+			if (clients && clients.length > 0) {
+				clients.forEach(function(client) {
+					console.log('Adding client to dropdown:', client.id, client.name);
+					dropdown.append('<option value="' + client.id + '">' + client.name + '</option>');
+				});
+				console.log('Dropdown populated with ' + clients.length + ' clients');
+			} else {
+				console.warn('No clients available to populate dropdown');
+				dropdown.append('<option value="" disabled>No clients available</option>');
+			}
+		}
 
-        // Load A31A records from database
-        function loadA31ARecords() {
-            console.log('Loading A31A records...');
+		// Load A31A records from database
+		function loadA31ARecords() {
+			console.log('Loading A31A records...');
 
-            $.ajax({
-                url: '/documents/get-a31a-records',
-                type: 'GET',
-                success: function(response) {
-                    console.log('A31A records response:', response);
+			$.ajax({
+				url: '/documents/get-a31a-records',
+				type: 'GET',
+				success: function(response) {
+					console.log('A31A records response:', response);
 
-                    if (response.success) {
-                        populateTable(response.data);
-                    } else {
-                        console.error('Failed to load records:', response.message);
-                        showError('Failed to load records: ' + response.message);
-                        $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading records:', error);
-                    showError('Error loading records: ' + error);
-                    $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
-                }
-            });
-        }
+					if (response.success) {
+						populateTable(response.data);
+					} else {
+						console.error('Failed to load records:', response.message);
+						showError('Failed to load records: ' + response.message);
+						$('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error loading records:', error);
+					showError('Error loading records: ' + error);
+					$('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+				}
+			});
+		}
 
-        // Populate table with records
-        function populateTable(records) {
-            var tbody = $('#recordsTableBody');
-            tbody.empty();
+		// Populate table with records
+		function populateTable(records) {
+			var tbody = $('#recordsTableBody');
+			tbody.empty();
 
-            console.log('Populating table with records:', records);
+			console.log('Populating table with records:', records);
 
-            if (records.length === 0) {
-                tbody.append('<tr><td colspan="14" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
-                return;
-            }
+			if (records.length === 0) {
+				tbody.append('<tr><td colspan="14" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
+				return;
+			}
 
-            records.forEach(function(record) {
-                var row = '<tr>' +
-                    '<td>' + (record.client || 'N/A') + '</td>' +
-                    '<td>' + (record.yearEnded || 'N/A') + '</td>' +
-                    '<td>' + (record.dateReceived || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfBagBox || 'N/A') + '</td>' +
-                    '<td>' + (record.byWhom || 'N/A') + '</td>' +
-                    '<td>' + (record.uploadLetter || 'N/A') + '</td>' +
-                    '<td>' + (record.remark || 'N/A') + '</td>' +
-                    '<td>' + (record.dateSendToAD || 'N/A') + '</td>' +
-                    '<td>' + (record.date || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfBoxBag || 'N/A') + '</td>' +
-                    '<td>' + (record.byWhoam2 || 'N/A') + '</td>' +
-                    '<td>' + (record.uploadLetter2 || 'N/A') + '</td>' +
-                    '<td>' + (record.remark2 || 'N/A') + '</td>' +
-                    '<td class="text-nowrap">' +
-                    '<button class="btn btn-sm btn-warning me-1" onclick="editRecord(' + record.id + ')" title="Edit">' +
-                    '<i class="fas fa-edit"></i>' +
-                    '</button>' +
-                    '<button class="btn btn-sm btn-danger" onclick="deleteRecord(' + record.id + ')" title="Delete">' +
-                    '<i class="fas fa-trash"></i>' +
-                    '</button>' +
-                    '</td>' +
-                    '</tr>';
+			records.forEach(function(record) {
+				var row = '<tr>' +
+					'<td>' + (record.client || 'N/A') + '</td>' +
+					'<td>' + (record.yearEnded || 'N/A') + '</td>' +
+					'<td>' + (record.dateReceived || 'N/A') + '</td>' +
+					'<td>' + (record.noOfBagBox || 'N/A') + '</td>' +
+					'<td>' + (record.byWhom || 'N/A') + '</td>' +
+					'<td>' + (record.uploadLetter || 'N/A') + '</td>' +
+					'<td>' + (record.remark || 'N/A') + '</td>' +
+					'<td>' + (record.dateSendToAD || 'N/A') + '</td>' +
+					'<td>' + (record.date || 'N/A') + '</td>' +
+					'<td>' + (record.noOfBoxBag || 'N/A') + '</td>' +
+					'<td>' + (record.byWhoam2 || 'N/A') + '</td>' +
+					'<td>' + (record.uploadLetter2 || 'N/A') + '</td>' +
+					'<td>' + (record.remark2 || 'N/A') + '</td>' +
+					'<td class="text-nowrap">' +
+					'<button class="btn btn-sm btn-warning me-1" onclick="editRecord(' + record.id + ')" title="Edit">' +
+					'<i class="fas fa-edit"></i>' +
+					'</button>' +
+					'<button class="btn btn-sm btn-danger" onclick="deleteRecord(' + record.id + ')" title="Delete">' +
+					'<i class="fas fa-trash"></i>' +
+					'</button>' +
+					'</td>' +
+					'</tr>';
 
-                tbody.append(row);
-            });
-        }
+				tbody.append(row);
+			});
+		}
 
-        // Save A31A record
-        function saveA31ARecord() {
-            var selectedClientId = $('#clientId').val();
-            var selectedClientName = $('#clientId option:selected').text();
+		// Save A31A record
+		function saveA31ARecord() {
+			var selectedClientId = $('#clientId').val();
+			var selectedClientName = $('#clientId option:selected').text();
 
-            console.log('Saving record with client:', selectedClientId, selectedClientName);
+			console.log('Saving record with client:', selectedClientId, selectedClientName);
 
-            var formData = {
-                Id: $('#editId').val() ? parseInt($('#editId').val()) : 0,
-                Client: selectedClientName,
-                YearEnded: $('#yearEnd').val(),
-                DateReceived: $('#dateReceived').val(),
-                NoOfBagBox: $('#numberOfBagsBox').val() ? parseInt($('#numberOfBagsBox').val()) : null,
-                ByWhom: $('#ackByWhom').val(),
-                UploadLetter: $('#ackUploadLetter').val(),
-                Remark: $('#remark').val(),
-                DateSendToAD: $('#dateSendToAuditDept').val(),
-                Date: $('#outwardDate').val(),
-                NoOfBoxBag: $('#outwardNumberOfBagsBox').val() ? parseInt($('#outwardNumberOfBagsBox').val()) : null,
-                ByWhoam2: $('#outwardByWhom').val(),
-                UploadLetter2: $('#outwardUploadLetter').val(),
-                Remark2: $('#outwardRemark').val()
-            };
+			var formData = {
+				Id: $('#editId').val() ? parseInt($('#editId').val()) : 0,
+				Client: selectedClientName,
+				YearEnded: $('#yearEnd').val(),
+				DateReceived: $('#dateReceived').val(),
+				NoOfBagBox: $('#numberOfBagsBox').val() ? parseInt($('#numberOfBagsBox').val()) : null,
+				ByWhom: $('#ackByWhom').val(),
+				UploadLetter: $('#ackUploadLetter').val(),
+				Remark: $('#remark').val(),
+				DateSendToAD: $('#dateSendToAuditDept').val(),
+				Date: $('#outwardDate').val(),
+				NoOfBoxBag: $('#outwardNumberOfBagsBox').val() ? parseInt($('#outwardNumberOfBagsBox').val()) : null,
+				ByWhoam2: $('#outwardByWhom').val(),
+				UploadLetter2: $('#outwardUploadLetter').val(),
+				Remark2: $('#outwardRemark').val()
+			};
 
-            console.log('Form data to save:', formData);
+			console.log('Form data to save:', formData);
 
-            // Validate required fields
-            if (!formData.Client || formData.Client === 'Select Client') {
-                alert('Please select a client from the dropdown');
-                return;
-            }
+			// Validate required fields
+			if (!formData.Client || formData.Client === 'Select Client') {
+				alert('Please select a client from the dropdown');
+				return;
+			}
 
-            if (!formData.YearEnded) {
-                alert('Please ensure Year End is filled (it should auto-fill when client is selected)');
-                return;
-            }
+			if (!formData.YearEnded) {
+				alert('Please ensure Year End is filled (it should auto-fill when client is selected)');
+				return;
+			}
 
-            // Show loading
-            $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+			// Show loading
+			$('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
-            var url = formData.Id ? '/documents/update-a31a' : '/documents/create-a31a';
+						// 修复这里：根据是否有 ID 使用不同的 HTTP 方法
+			const isUpdate = formData.Id > 0;
+			const url = isUpdate ? '/documents/update-a31a' : '/documents/create-a31a';
+			const method = isUpdate ? 'PUT' : 'POST';  // 关键修改：更新时用 PUT
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    console.log('Save response:', response);
+			console.log(`Making ${method} request to: ${url}`);
 
-                    if (response.success) {
-                        $('#taskModal').modal('hide');
-                        showSuccess('Record saved successfully!');
+			$.ajax({
+				url: url,
+				type: method,  // 使用正确的方法
+				contentType: 'application/json',
+				data: JSON.stringify(formData),
+				success: function(response) {
+					$('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+					console.log('Save response:', response);
 
-                        if (formData.DateSendToAD && !formData.Id) {
-                            showInfo('A31B record has been automatically created with the date synchronized to "Date Doc fr Acc Dept"');
-                        }
+					if (response.success) {
+						$('#taskModal').modal('hide');
+						showSuccess('Record saved successfully!');
 
-                        loadA31ARecords();
-                    } else {
-                        showError('Save failed: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    console.error('Save error:', error);
-                    console.error('XHR response:', xhr.responseText);
-                    showError('Error during save: ' + error);
-                }
-            });
-        }
+						// 显示自动创建记录的信息
+						let infoMessages = [];
+						if (formData.DateSendToAD && !isUpdate) {
+							infoMessages.push('A31B record has been automatically created with the date synchronized to "Date Doc fr Acc Dept"');
+						}
+						if (formData.Date && !isUpdate) {
+							infoMessages.push('AT31 record has been automatically created with the date synchronized to "Doc Inwards Date"');
+						}
 
-        // Edit record
-        function editRecord(id) {
-            console.log('Editing record:', id);
-            showLoading('Loading record...');
+						if (infoMessages.length > 0) {
+							showInfo(infoMessages.join('\n'));
+						}
 
-            $.ajax({
-                url: '/documents/get-a31a-record/' + id,
-                type: 'GET',
-                success: function(response) {
-                    hideLoading();
-                    console.log('Edit record response:', response);
+						loadA31ARecords();
+					} else {
+						showError('Save failed: ' + response.message);
+					}
+				},
+				error: function(xhr, status, error) {
+					$('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+					console.error('Save error:', error);
+					console.error('XHR status:', xhr.status);
+					console.error('XHR response:', xhr.responseText);
 
-                    if (response.success) {
-                        var record = response.data;
-                        $('#editId').val(record.id);
+					let errorMessage = 'Error during save: ' + error;
+					if (xhr.responseText) {
+						try {
+							const errorResponse = JSON.parse(xhr.responseText);
+							if (errorResponse.message) {
+								errorMessage = errorResponse.message;
+							}
+						} catch (e) {
+							errorMessage = xhr.responseText;
+						}
+					}
 
-                        // Set client value
-                        var clientDropdown = $('#clientId');
-                        var clientExists = false;
+					showError(errorMessage);
+				}
+			});
+		}
 
-                        if (record.client) {
-                            clientDropdown.find('option').each(function() {
-                                if ($(this).text() === record.client) {
-                                    clientExists = true;
-                                    $(this).prop('selected', true);
-                                    // Load client details to populate year end
-                                    loadClientDetails($(this).val());
-                                    return false;
-                                }
-                            });
+		// Edit record
+		function editRecord(id) {
+			console.log('Editing record:', id);
+			showLoading('Loading record...');
 
-                            if (!clientExists) {
-                                // If client doesn't exist in dropdown, just set the year end
-                                $('#yearEnd').val(record.yearEnded);
-                            }
-                        }
+			$.ajax({
+				url: '/documents/get-a31a-record/' + id,
+				type: 'GET',
+				success: function(response) {
+					hideLoading();
+					console.log('Edit record response:', response);
 
-                        $('#dateReceived').val(record.dateReceived);
-                        $('#numberOfBagsBox').val(record.noOfBagBox);
-                        $('#ackByWhom').val(record.byWhom);
-                        $('#ackUploadLetter').val(record.uploadLetter);
-                        $('#remark').val(record.remark);
-                        $('#dateSendToAuditDept').val(record.dateSendToAD);
-                        $('#outwardDate').val(record.date);
-                        $('#outwardNumberOfBagsBox').val(record.noOfBoxBag);
-                        $('#outwardByWhom').val(record.byWhoam2);
-                        $('#outwardUploadLetter').val(record.uploadLetter2);
-                        $('#outwardRemark').val(record.remark2);
+					if (response.success) {
+						var record = response.data;
+						$('#editId').val(record.id);
 
-                        $('#modalTitle').text('Edit A31A Record');
-                        $('#taskModal').modal('show');
-                    } else {
-                        showError('Failed to load record: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    hideLoading();
-                    console.error('Edit record error:', error);
-                    showError('Error loading record: ' + error);
-                }
-            });
-        }
+						// Set client value
+						var clientDropdown = $('#clientId');
+						var clientExists = false;
 
-        // Delete record
-        function deleteRecord(id) {
-            console.log('Deleting record:', id);
-            if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-                showLoading('Deleting record...');
+						if (record.client) {
+							clientDropdown.find('option').each(function() {
+								if ($(this).text() === record.client) {
+									clientExists = true;
+									$(this).prop('selected', true);
+									// Load client details to populate year end
+									loadClientDetails($(this).val());
+									return false;
+								}
+							});
 
-                $.ajax({
-                    url: '/documents/delete-a31a/' + id,
-                    type: 'DELETE',
-                    success: function(response) {
-                        hideLoading();
-                        console.log('Delete response:', response);
+							if (!clientExists) {
+								// If client doesn't exist in dropdown, just set the year end
+								$('#yearEnd').val(record.yearEnded);
+							}
+						}
 
-                        if (response.success) {
-                            showSuccess('Record deleted successfully!');
-                            loadA31ARecords();
-                        } else {
-                            showError('Delete failed: ' + response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        hideLoading();
-                        console.error('Delete error:', error);
-                        showError('Error during delete: ' + error);
-                    }
-                });
-            }
-        }
+						$('#dateReceived').val(record.dateReceived);
+						$('#numberOfBagsBox').val(record.noOfBagBox);
+						$('#ackByWhom').val(record.byWhom);
+						$('#ackUploadLetter').val(record.uploadLetter);
+						$('#remark').val(record.remark);
+						$('#dateSendToAuditDept').val(record.dateSendToAD);
+						$('#outwardDate').val(record.date);
+						$('#outwardNumberOfBagsBox').val(record.noOfBoxBag);
+						$('#outwardByWhom').val(record.byWhoam2);
+						$('#outwardUploadLetter').val(record.uploadLetter2);
+						$('#outwardRemark').val(record.remark2);
 
-        // Utility functions
-        function showLoading(message) {
-            console.log('Loading: ' + message);
-        }
+						$('#modalTitle').text('Edit A31A Record');
+						$('#taskModal').modal('show');
+					} else {
+						showError('Failed to load record: ' + response.message);
+					}
+				},
+				error: function(xhr, status, error) {
+					hideLoading();
+					console.error('Edit record error:', error);
+					showError('Error loading record: ' + error);
+				}
+			});
+		}
 
-        function hideLoading() {
-            console.log('Loading complete');
-        }
+		// Delete record
+		function deleteRecord(id) {
+			console.log('Deleting record:', id);
+			if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+				showLoading('Deleting record...');
 
-        function showSuccess(message) {
-            alert('✅ ' + message);
-        }
+				$.ajax({
+					url: '/documents/delete-a31a/' + id,
+					type: 'DELETE',
+					success: function(response) {
+						hideLoading();
+						console.log('Delete response:', response);
 
-        function showError(message) {
-            alert('❌ ' + message);
-        }
+						if (response.success) {
+							showSuccess('Record deleted successfully!');
+							loadA31ARecords();
+						} else {
+							showError('Delete failed: ' + response.message);
+						}
+					},
+					error: function(xhr, status, error) {
+						hideLoading();
+						console.error('Delete error:', error);
+						showError('Error during delete: ' + error);
+					}
+				});
+			}
+		}
 
-        function showInfo(message) {
-            alert('ℹ️ ' + message);
-        }
-    </script>
+		// Utility functions
+		function showLoading(message) {
+			console.log('Loading: ' + message);
+		}
+
+		function hideLoading() {
+			console.log('Loading complete');
+		}
+
+		function showSuccess(message) {
+			alert('✅ ' + message);
+		}
+
+		function showError(message) {
+			alert('❌ ' + message);
+		}
+
+		function showInfo(message) {
+			alert('ℹ️ ' + message);
+		}
+	</script>
 }

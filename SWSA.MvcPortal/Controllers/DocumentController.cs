@@ -6,6 +6,7 @@ using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Data;
 using SWSA.MvcPortal.Data.Models;
+using SWSA.MvcPortal.Models.AuditDeptModel;
 using SWSA.MvcPortal.Models.Clients;
 using SWSA.MvcPortal.Models.DocumentRecords;
 using SWSA.MvcPortal.Services.Interfaces;
@@ -305,18 +306,24 @@ public class DocumentController(
             using (var connection = new SqlConnection(_connectionString))
             {
                 var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
-                        ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
-                         [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
-                         [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
-                        VALUES 
-                        (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
-                         @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
-                         @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2);
-                        SELECT SCOPE_IDENTITY();";
+                    ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+                     [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                     [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+                    VALUES 
+                    (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+                     @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                     @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2);
+                    SELECT SCOPE_IDENTITY();";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
 
-                // 如果填写了 DateSendToAD，则创建 A31B 记录
+                // 如果填写了 Date 字段，则创建 AT31 记录
+                if (!string.IsNullOrEmpty(model.Date))
+                {
+                    await CreateAT31FromA31A(model);
+                }
+
+                // 如果填写了 DateSendToAD，则创建 A31B 记录（原有的逻辑）
                 if (!string.IsNullOrEmpty(model.DateSendToAD))
                 {
                     await CreateA31BFromA31A(model);
@@ -338,15 +345,26 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
+                // 先获取旧的记录来检查 Date 字段是否变化
+                var oldRecordSql = "SELECT Date FROM [Quartz].[dbo].[A31A] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<A31AModel>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[A31A] SET 
-                        [Client] = @Client, [YearEnded] = @YearEnded, [DateReceived] = @DateReceived, 
-                        [NoOfBagBox] = @NoOfBagBox, [ByWhom] = @ByWhom, [UploadLetter] = @UploadLetter, 
-                        [Remark] = @Remark, [DateSendToAD] = @DateSendToAD, [Date] = @Date, 
-                        [NoOfBoxBag] = @NoOfBoxBag, [ByWhoam2] = @ByWhoam2, [UploadLetter2] = @UploadLetter2, 
-                        [Remark2] = @Remark2 
-                        WHERE Id = @Id";
+                    [Client] = @Client, [YearEnded] = @YearEnded, [DateReceived] = @DateReceived, 
+                    [NoOfBagBox] = @NoOfBagBox, [ByWhom] = @ByWhom, [UploadLetter] = @UploadLetter, 
+                    [Remark] = @Remark, [DateSendToAD] = @DateSendToAD, [Date] = @Date, 
+                    [NoOfBoxBag] = @NoOfBoxBag, [ByWhoam2] = @ByWhoam2, [UploadLetter2] = @UploadLetter2, 
+                    [Remark2] = @Remark2 
+                    WHERE Id = @Id";
 
                 await connection.ExecuteAsync(sql, model);
+
+                // 检查 Date 字段是否从空变为有值，如果是则创建 AT31 记录
+                if (string.IsNullOrEmpty(oldRecord?.Date) && !string.IsNullOrEmpty(model.Date))
+                {
+                    await CreateAT31FromA31A(model);
+                }
+
                 return Json(new { success = true });
             }
         }
@@ -355,6 +373,95 @@ public class DocumentController(
             return Json(new { success = false, message = ex.Message });
         }
     }
+
+    // 新增方法：从 A31A 创建 AT31 记录
+    private async Task CreateAT31FromA31A(A31AModel a31aModel)
+    {
+        try
+        {
+            Console.WriteLine($"Creating AT31 record from A31A record (Client: {a31aModel.Client})");
+
+            using var connection = new SqlConnection(_connectionString);
+
+            var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
+                 [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
+                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
+                 [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
+                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+                 [Binded], [DespatchDateToClient])
+                VALUES 
+                (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
+                 @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
+                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
+                 @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
+                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+                 @Binded, @DespatchDateToClient)";
+
+            var at31Model = new AT31Model
+            {
+                CompanyName = a31aModel.Client,
+                Activity = "Auto-created from A31A",
+                YEtoDo = a31aModel.YearEnded, // 使用 A31A 的 YearEnded
+                QuartertoDo = "",
+                PIC = "",
+                MthDue = "",
+                Status = "Pending",
+                DocInwardsDate = a31aModel.Date, // 将 A31A 的 Date 存入 AT31 的 DocInwardsDate
+                Revenue = null,
+                Profit = null,
+                AuditFee = null,
+                DateBilled = null,
+                StartDate = null,
+                EndDate = null,
+                DaysDone = null,
+                DonePercent = null,
+                Completed = "No",
+                DateSent = null,
+                DateSentToKK = null,
+                ReviewResultofDays = null,
+                DateReceiveFromKK = null,
+                WhoMeetClientDate = null,
+                DateSenttoClient = null,
+                DateReceiveBack = null,
+                TaxDueDate = null,
+                PasstoDept = null,
+                SSMdueDate = null,
+                DatePasstoSecDept = null,
+                Binded = null,
+                DespatchDateToClient = null
+            };
+
+            await connection.ExecuteAsync(sql, at31Model);
+            Console.WriteLine($"AT31 record created successfully for client: {a31aModel.Client}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating AT31 record from A31A: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            // 这里不抛出异常，因为 A31A 记录创建是主要的，AT31 创建是附加功能
+        }
+    }
+
+    [HttpDelete("delete-a31a/{id}")]
+    public async Task<IActionResult> DeleteA31A(int id)
+    {
+        try
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = "DELETE FROM [Quartz].[dbo].[A31A] WHERE Id = @Id";
+                await connection.ExecuteAsync(sql, new { Id = id });
+                return Json(new { success = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+
     #endregion
 
     #region A31B API Methods

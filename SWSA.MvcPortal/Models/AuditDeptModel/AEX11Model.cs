@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Models.AuditDeptModel
 {
-    public class AEX12Model
+    public class AEX11Model
     {
         public int Id { get; set; }
 

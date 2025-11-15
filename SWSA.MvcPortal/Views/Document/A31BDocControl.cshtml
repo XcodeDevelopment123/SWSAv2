@@ -397,6 +397,7 @@
         }
 
         // Save A31B record
+                // Save A31B record
         function saveA31BRecord() {
             var selectedClientId = $('#clientId').val();
             var selectedClientName = $('#clientId option:selected').text();
@@ -438,11 +439,16 @@
             // Show loading
             $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
-            var url = formData.Id ? '/documents/update-a31b' : '/documents/create-a31b';
+            // 修复这里：根据是否有 ID 使用不同的 HTTP 方法
+            const isUpdate = formData.Id > 0;
+            const url = isUpdate ? '/documents/update-a31b' : '/documents/create-a31b';
+            const method = isUpdate ? 'PUT' : 'POST';  // 关键修改：更新时用 PUT
+
+            console.log(`Making ${method} request to: ${url}`);
 
             $.ajax({
                 url: url,
-                type: 'POST',
+                type: method,  // 使用正确的方法
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
@@ -458,8 +464,23 @@
                 },
                 error: function(xhr, status, error) {
                     $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showError('Error during save: ' + error);
-                    console.error('Error details:', xhr.responseText);
+                    console.error('Save error:', error);
+                    console.error('XHR status:', xhr.status);
+                    console.error('XHR response:', xhr.responseText);
+
+                    let errorMessage = 'Error during save: ' + error;
+                    if (xhr.responseText) {
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse.message) {
+                                errorMessage = errorResponse.message;
+                            }
+                        } catch (e) {
+                            errorMessage = xhr.responseText;
+                        }
+                    }
+
+                    showError(errorMessage);
                 }
             });
         }

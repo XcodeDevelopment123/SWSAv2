@@ -161,7 +161,11 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mbrsGenerated" class="form-label">MBRS generated</label>
-                            <input type="date" id="mbrsGenerated" class="form-control" />
+                            <select id="mbrsGenerated" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
                         </div>
                     </div>
 
@@ -227,59 +231,76 @@
                 url: '/api/auditdept/at33/get-all',
                 type: 'GET',
                 success: function(response) {
-                    console.log('Ajax success, response:', response);
+                    console.log('=== API Response Details ===');
+                    console.log('Full response:', response);
+                    console.log('Response success:', response.success);
+                    console.log('Response data:', response.data);
+                    console.log('Data type:', typeof response.data);
+                    console.log('Data length:', response.data ? response.data.length : 0);
+
                     $('#loadingMessage').hide();
 
-                    if (response.success) {
-                        allRecords = response.data || [];
-                        console.log('Records loaded:', allRecords.length);
+                    if (response.success && response.data) {
+                        if (response.data.length > 0) {
+                            console.log('First record structure:', response.data[0]);
+                            console.log('First record keys:', Object.keys(response.data[0]));
+                            console.log('First record MBRSgenerated value:', response.data[0].MBRSgenerated);
+                            console.log('First record MBRSgenerated type:', typeof response.data[0].MBRSgenerated);
+                        }
+                        allRecords = response.data;
+                        console.log('Total records to display:', allRecords.length);
                         populateTable(allRecords);
                         $('#tableContainer').show();
                     } else {
-                        console.error('Response not successful:', response.message);
-                        showAlert('Error loading data: ' + response.message, 'danger');
+                        console.error('Response not successful or no data:', response.message);
+                        showAlert('Error loading data: ' + (response.message || 'No data available'), 'warning');
+                        populateTable([]);
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Ajax error:', {
-                        status: status,
+                        status: xhr.status,
+                        statusText: xhr.statusText,
                         error: error,
                         responseText: xhr.responseText
                     });
                     $('#loadingMessage').hide();
-                    showAlert('Error loading data: ' + error + '. Please check console for details.', 'danger');
+                    showAlert('Error loading data: ' + error, 'danger');
+                    populateTable([]);
                 }
             });
         }
 
         function populateTable(data) {
-            console.log('Populating table with', data.length, 'records');
+            console.log('Populating table with data:', data);
             const tbody = $('#tableBody');
             tbody.empty();
 
             if (data && data.length > 0) {
                 data.forEach((record, index) => {
+                    console.log(`Processing record ${index}:`, record);
+
                     const row = `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${escapeHtml(record.companyName || '')}</td>
-                            <td>${escapeHtml(record.yEtodo || '')}</td>
-                            <td>${escapeHtml(record.pic || '')}</td>
-                            <td>${escapeHtml(record.active || '')}</td>
-                            <td>${escapeHtml(record.aex || '')}</td>
-                            <td>${formatDateForDisplay(record.dateSent)}</td>
-                            <td>${formatDateForDisplay(record.dateReviewed)}</td>
-                            <td>${formatDateForDisplay(record.dateSentToKK)}</td>
-                            <td>${formatDateForDisplay(record.dateReceivedAFS)}</td>
-                            <td>${formatDateForDisplay(record.dateofAFS)}</td>
-                            <td>${formatDateForDisplay(record.dateofDirectorsRept)}</td>
-                            <td>${formatDateForDisplay(record.mbrsgenerated)}</td>
-                            <td>${escapeHtml(record.remark || '')}</td>
+                            <td>${escapeHtml(record.CompanyName || 'N/A')}</td>
+                            <td>${escapeHtml(record.YEtodo || 'N/A')}</td>
+                            <td>${escapeHtml(record.PIC || 'N/A')}</td>
+                            <td>${escapeHtml(record.Active || 'N/A')}</td>
+                            <td>${escapeHtml(record.AEX || 'N/A')}</td>
+                            <td>${formatDateForDisplay(record.DateSent)}</td>
+                            <td>${formatDateForDisplay(record.DateReviewed)}</td>
+                            <td>${formatDateForDisplay(record.DateSentToKK)}</td>
+                            <td>${formatDateForDisplay(record.DateReceivedAFS)}</td>
+                            <td>${formatDateForDisplay(record.DateofAFS)}</td>
+                            <td>${formatDateForDisplay(record.DateofDirectorsRept)}</td>
+                            <td>${escapeHtml(record.MBRSgenerated || 'N/A')}</td>
+                            <td>${escapeHtml(record.Remark || 'N/A')}</td>
                             <td style="white-space: nowrap;">
-                                <button class="btn btn-sm btn-info" onclick="editRecord(${record.id})" title="Edit">
+                                <button class="btn btn-sm btn-info me-1" onclick="editRecord(${record.Id})" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${record.id})" title="Delete">
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${record.Id})" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -287,24 +308,26 @@
                     `;
                     tbody.append(row);
                 });
+                console.log(`Successfully added ${data.length} rows to table`);
             } else {
-                tbody.append('<tr><td colspan="15" class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>No records found. Click "New Record" to add data.</td></tr>');
+                const noDataRow = '<tr><td colspan="15" class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>No records found. Click "New Record" to add data.</td></tr>';
+                tbody.append(noDataRow);
+                console.log('No data available, showing empty message');
             }
-            console.log('Table populated successfully');
         }
-
+        
         function formatDateForDisplay(dateString) {
-            if (!dateString) return '';
+            if (!dateString) return 'N/A';
             try {
                 const date = new Date(dateString);
-                if (isNaN(date.getTime())) return '';
+                if (isNaN(date.getTime())) return 'N/A';
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
                 return `${day}/${month}/${year}`;
             } catch (e) {
                 console.error('Date format error:', e);
-                return '';
+                return 'N/A';
             }
         }
 
@@ -341,18 +364,27 @@
 
             if (editMode && recordId) {
                 loadRecordForEdit(recordId);
+            } else {
+                // 重置表单
+                resetForm();
             }
 
             $('#taskModal').modal('show');
         }
 
         function loadRecordForEdit(id) {
+            console.log('Loading record for edit:', id);
+
             $.ajax({
                 url: `/api/auditdept/at33/get/${id}`,
                 type: 'GET',
                 success: function(response) {
+                    console.log('Edit record response:', response);
+
                     if (response.success) {
                         const record = response.data;
+                        console.log('Record data loaded:', record);
+
                         $('#recordId').val(record.id);
                         $('#companyName').val(record.companyName || '');
                         $('#yeToDo').val(record.yEtodo || '');
@@ -365,13 +397,16 @@
                         $('#dateReceivedAFS').val(formatDateForInput(record.dateReceivedAFS));
                         $('#dateOfAFS').val(formatDateForInput(record.dateofAFS));
                         $('#dateOfDirectorsRept').val(formatDateForInput(record.dateofDirectorsRept));
-                        $('#mbrsGenerated').val(formatDateForInput(record.mbrsgenerated));
+                        $('#mbrsGenerated').val(record.mbrsgenerated || '');
                         $('#remark').val(record.remark || '');
+
+                        console.log('Form populated with MBRS generated:', record.mbrsgenerated);
                     } else {
                         showAlert('Error loading record: ' + response.message, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.error('Error loading record:', error);
                     showAlert('Error loading record: ' + error, 'danger');
                 }
             });
@@ -379,13 +414,16 @@
 
         function saveRecord() {
             // Validate required fields
-            if (!$('#companyName').val().trim()) {
+            const companyName = $('#companyName').val().trim();
+            if (!companyName) {
                 showAlert('Please enter Company Name', 'warning');
+                $('#companyName').focus();
                 return;
             }
 
+            // 收集表单数据
             const formData = {
-                companyName: $('#companyName').val(),
+                companyName: companyName,
                 yEtodo: $('#yeToDo').val() || null,
                 pic: $('#pic').val() || null,
                 active: $('#active').val() || null,
@@ -400,14 +438,18 @@
                 remark: $('#remark').val() || null
             };
 
+            // 如果是编辑模式，添加 ID
             if (isEditMode) {
                 formData.id = parseInt($('#recordId').val());
             }
 
-            console.log('Saving record:', formData);
+            console.log('Saving record data:', formData);
 
             const url = isEditMode ? '/api/auditdept/at33/update' : '/api/auditdept/at33/create';
             const method = isEditMode ? 'PUT' : 'POST';
+
+            // 显示保存中状态
+            $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
             $.ajax({
                 url: url,
@@ -416,16 +458,30 @@
                 data: JSON.stringify(formData),
                 success: function(response) {
                     console.log('Save response:', response);
+                    $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+
                     if (response.success) {
-                        showAlert(response.message, 'success');
+                        showAlert(response.message || 'Record saved successfully!', 'success');
                         $('#taskModal').modal('hide');
-                        loadTableData();
+
+                        // 延迟一下再重新加载数据，确保数据库已更新
+                        setTimeout(() => {
+                            console.log('Reloading table data after save...');
+                            loadTableData();
+                        }, 500);
+
                     } else {
-                        showAlert('Error: ' + (response.message || 'Unknown error'), 'danger');
+                        showAlert('Error: ' + (response.message || 'Unknown error occurred'), 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Save error:', xhr.responseText);
+                    console.error('Save error details:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error
+                    });
+                    $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     showAlert('Error saving record: ' + error, 'danger');
                 }
             });
@@ -437,20 +493,22 @@
         }
 
         function deleteRecord(id) {
-            if (confirm('Are you sure you want to delete this record?')) {
+            if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
                 console.log('Deleting record:', id);
                 $.ajax({
                     url: `/api/auditdept/at33/delete/${id}`,
                     type: 'DELETE',
                     success: function(response) {
+                        console.log('Delete response:', response);
                         if (response.success) {
-                            showAlert(response.message, 'success');
+                            showAlert(response.message || 'Record deleted successfully!', 'success');
                             loadTableData();
                         } else {
                             showAlert('Error: ' + response.message, 'danger');
                         }
                     },
                     error: function(xhr, status, error) {
+                        console.error('Delete error:', error);
                         showAlert('Error deleting record: ' + error, 'danger');
                     }
                 });
@@ -480,10 +538,28 @@
 
             // Auto remove after 5 seconds
             setTimeout(function() {
-                $('#' + alertId).fadeOut('slow', function() {
-                    $(this).remove();
-                });
+                $('#' + alertId).alert('close');
             }, 5000);
         }
+
+        // 添加手动测试函数
+        function testAPI() {
+            console.log('Testing API endpoint...');
+            fetch('/api/auditdept/at33/get-all')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Direct API test result:', data);
+                    if (data.success && data.data) {
+                        console.log('Records found:', data.data.length);
+                        if (data.data.length > 0) {
+                            console.log('Sample record:', data.data[0]);
+                        }
+                    }
+                })
+                .catch(error => console.error('API test error:', error));
+        }
+
+        // 在控制台可以调用 testAPI() 来测试
+        window.testAPI = testAPI;
     </script>
 }
