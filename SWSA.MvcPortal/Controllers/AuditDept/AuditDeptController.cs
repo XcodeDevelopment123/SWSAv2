@@ -1810,32 +1810,15 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         {
             try
             {
-                Console.WriteLine("=== Starting GetAllAEX51Records ===");
                 using var connection = new SqlConnection(_connectionString);
-
-                await connection.OpenAsync();
-                Console.WriteLine("Database connection successful");
-
                 var sql = "SELECT * FROM [Quartz].[dbo].[AEX51] ORDER BY Id DESC";
-                Console.WriteLine($"Executing SQL: {sql}");
-
                 var records = await connection.QueryAsync<AEX51Model>(sql);
-                Console.WriteLine($"Query executed successfully. Found {records?.Count() ?? 0} records");
 
                 return Json(new { success = true, data = records });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"!!! ERROR in GetAllAEX51Records !!!");
-                Console.WriteLine($"Message: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
@@ -1856,7 +1839,6 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GetAEX51ById: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
             }
         }
@@ -1870,9 +1852,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (!ModelState.IsValid)
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
-                Console.WriteLine("Creating new AEX51 record...");
                 using var connection = new SqlConnection(_connectionString);
-
                 var sql = @"INSERT INTO [Quartz].[dbo].[AEX51] 
         ([CompanyName], [Activity], [YEtodo], [Quartertodo], [PIC], [First18mthDue], [Status],
          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate], [EndDate],
@@ -1888,18 +1868,11 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                return Json(new { success = true, id = id, data = model });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in CreateAEX51: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
@@ -1912,9 +1885,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (!ModelState.IsValid)
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
-                Console.WriteLine($"Updating AEX51 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
-
                 var sql = @"UPDATE [Quartz].[dbo].[AEX51] SET 
         [CompanyName] = @CompanyName, 
         [Activity] = @Activity, 
@@ -1949,22 +1920,14 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);
-                Console.WriteLine($"Affected rows: {affectedRows}");
-
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                return Json(new { success = true, data = model });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in UpdateAEX51: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
@@ -1974,33 +1937,164 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         {
             try
             {
-                Console.WriteLine($"Deleting AEX51 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
                 var sql = "DELETE FROM [Quartz].[dbo].[AEX51] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
-                Console.WriteLine($"Affected rows: {affectedRows}");
-
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
-                return Json(new { success = true, message = "Record deleted successfully" });
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in DeleteAEX51: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
         #endregion
 
+        #region AEX52 (AEX52WIP) CRUD Methods
+        [AllowAnonymous]
+        [HttpGet("api/auditdept/aex52/get-all")]
+        public async Task<IActionResult> GetAllAEX52Records()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[AEX52] ORDER BY Id DESC";
+                var records = await connection.QueryAsync<AEX52Model>(sql);
 
+                return Json(new { success = true, data = records });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
+        [AllowAnonymous]
+        [HttpGet("api/auditdept/aex52/get/{id}")]
+        public async Task<IActionResult> GetAEX52ById(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                var record = await connection.QueryFirstOrDefaultAsync<AEX52Model>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("api/auditdept/aex52/create")]
+        public async Task<IActionResult> CreateAEX52([FromBody] AEX52Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"INSERT INTO [Quartz].[dbo].[AEX52] 
+        ([CompanyName], [Activity], [Yeartodo], [Quartertodo], [PIC], [Status],
+         [AuditFee], [DateBilled], [StartDate], [EndDate], [NoofDays], [ResultOverUnder],
+         [AccSetup], [AccSummary], [AuditPlanning], [AuditExecution], [AuditCompletion], [TotalPercent],
+         [ReviewDateSent], [ReviewEndDate], [ReviewResultOverUnder], [KKDateSent], [KKEndDate], [KKResultOverUnder], [Final])
+        VALUES 
+        (@CompanyName, @Activity, @Yeartodo, @Quartertodo, @PIC, @Status,
+         @AuditFee, @DateBilled, @StartDate, @EndDate, @NoofDays, @ResultOverUnder,
+         @AccSetup, @AccSummary, @AuditPlanning, @AuditExecution, @AuditCompletion, @TotalPercent,
+         @ReviewDateSent, @ReviewEndDate, @ReviewResultOverUnder, @KKDateSent, @KKEndDate, @KKResultOverUnder, @Final);
+        SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                return Json(new { success = true, id = id, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut("api/auditdept/aex52/update")]
+        public async Task<IActionResult> UpdateAEX52([FromBody] AEX52Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"UPDATE [Quartz].[dbo].[AEX52] SET 
+        [CompanyName] = @CompanyName, 
+        [Activity] = @Activity, 
+        [Yeartodo] = @Yeartodo, 
+        [Quartertodo] = @Quartertodo, 
+        [PIC] = @PIC, 
+        [Status] = @Status,
+        [AuditFee] = @AuditFee, 
+        [DateBilled] = @DateBilled, 
+        [StartDate] = @StartDate, 
+        [EndDate] = @EndDate, 
+        [NoofDays] = @NoofDays, 
+        [ResultOverUnder] = @ResultOverUnder,
+        [AccSetup] = @AccSetup, 
+        [AccSummary] = @AccSummary, 
+        [AuditPlanning] = @AuditPlanning, 
+        [AuditExecution] = @AuditExecution, 
+        [AuditCompletion] = @AuditCompletion, 
+        [TotalPercent] = @TotalPercent,
+        [ReviewDateSent] = @ReviewDateSent, 
+        [ReviewEndDate] = @ReviewEndDate, 
+        [ReviewResultOverUnder] = @ReviewResultOverUnder, 
+        [KKDateSent] = @KKDateSent, 
+        [KKEndDate] = @KKEndDate, 
+        [KKResultOverUnder] = @KKResultOverUnder, 
+        [Final] = @Final
+        WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("api/auditdept/aex52/delete/{id}")]
+        public async Task<IActionResult> DeleteAEX52(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "DELETE FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
 
     }
 }
