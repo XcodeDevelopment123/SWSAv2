@@ -346,9 +346,9 @@
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
-                "scrollX": true,
+                // "scrollX": true,
                 "language": {
-                    "emptyTable": "", // 设置为空，我们自己处理空表显示
+                    "emptyTable": "No audit master schedule records found",
                     "loadingRecords": "Loading...",
                     "zeroRecords": "No matching records found"
                 }
@@ -376,13 +376,13 @@
                             <td>${escapeHtml(item.quartertoAudit || '')}</td>
                             <td>${escapeHtml(item.activity || '')}</td>
                             <td>${formatDate(item.yearEnd)}</td>
-                            <td>${escapeHtml(item.yearToDo || '')}</td>
+                            <td>${escapeHtml(item.yearTodo || '')}</td>
                             <td>${escapeHtml(item.companyStatus || '')}</td>
                             <td>${escapeHtml(item.auditStatus || '')}</td>
                             <td>${escapeHtml(item.movetoAEX || '')}</td>
                             <td>${escapeHtml(item.movetoBacklog || '')}</td>
                             <td>${formatDate(item.first18mthdue)}</td>
-                            <td>${formatDate(item.aFSdueDate)}</td>
+                            <td>${formatDate(item.afSdueDate)}</td>
                             <td>${escapeHtml(item.coSec || '')}</td>
                             <td>${escapeHtml(item.auditStaff || '')}</td>
                             <td>${formatDate(item.dateDocIn)}</td>
@@ -406,7 +406,6 @@
                 console.log('Successfully added all records to table');
             } else {
                 console.log('No data available, showing empty message');
-                tbody.append('<tr><td colspan="20" class="text-center">No audit master schedule records found</td></tr>');
             }
         }
 
@@ -427,6 +426,7 @@
                         console.log('Data loaded successfully:', response.data);
                         currentData = response.data || [];
                         console.log(`Loaded ${currentData.length} records`);
+
 
                         // 重新初始化表格
                         initializeDataTable();
@@ -485,13 +485,13 @@
                         $('#quartertoAudit').val(record.quartertoAudit || '');
                         $('#activity').val(record.activity || '');
                         $('#yearEnd').val(formatDateForInput(record.yearEnd));
-                        $('#yearToDo').val(record.yearToDo || '');
+                        $('#yearToDo').val(record.yearTodo || '');
                         $('#companyStatus').val(record.companyStatus || '');
                         $('#auditStatus').val(record.auditStatus || '');
                         $('#movetoAEX').val(record.movetoAEX || '');
                         $('#movetoBacklog').val(record.movetoBacklog || '');
                         $('#first18mthdue').val(formatDateForInput(record.first18mthdue));
-                        $('#aFSdueDate').val(formatDateForInput(record.aFSdueDate));
+                        $('#aFSdueDate').val(formatDateForInput(record.afSdueDate));
                         $('#coSec').val(record.coSec || '');
                         $('#auditStaff').val(record.auditStaff || '');
                         $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
@@ -517,25 +517,25 @@
             console.log('Saving record...');
 
             const formData = {
-                grouping: $('#grouping').val(),
-                companyName: $('#companyName').val(),
-                quartertoAudit: $('#quartertoAudit').val(),
-                activity: $('#activity').val(),
-                yearEnd: $('#yearEnd').val() || null,
-                yearToDo: $('#yearToDo').val(),
-                companyStatus: $('#companyStatus').val(),
-                auditStatus: $('#auditStatus').val(),
-                movetoAEX: $('#movetoAEX').val(),
-                movetoBacklog: $('#movetoBacklog').val(),
-                first18mthdue: $('#first18mthdue').val() || null,
-                aFSdueDate: $('#aFSdueDate').val() || null,
-                coSec: $('#coSec').val(),
-                auditStaff: $('#auditStaff').val(),
-                dateDocIn: $('#dateDocIn').val() || null,
-                estRev: $('#estRev').val(),
-                acctngWk: $('#acctngWk').val(),
-                jobCompleted: $('#jobCompleted').val(),
-                remark: $('#remark').val()
+                grouping: $('#grouping').val(),          // Grouping
+                companyName: $('#companyName').val(),    // CompanyName
+                quartertoAudit: $('#quartertoAudit').val(), // QuartertoAudit
+                activity: $('#activity').val(),          // Activity
+                yearEnd: $('#yearEnd').val() || null,    // YearEnd
+                yearToDo: $('#yearToDo').val(),          // YearToDo
+                companyStatus: $('#companyStatus').val(),// CompanyStatus
+                auditStatus: $('#auditStatus').val(),    // AuditStatus
+                movetoAEX: $('#movetoAEX').val(),        // MovetoAEX
+                movetoBacklog: $('#movetoBacklog').val(),// MovetoBacklog
+                first18mthdue: $('#first18mthdue').val() || null, // First18mthdue
+                aFSdueDate: $('#aFSdueDate').val() || null,       // AFSDueDate
+                coSec: $('#coSec').val(),                // CoSec
+                auditStaff: $('#auditStaff').val(),      // AuditStaff
+                dateDocIn: $('#dateDocIn').val() || null,// DateDocIn
+                estRev: $('#estRev').val(),              // EstRev
+                acctngWk: $('#acctngWk').val(),          // AcctngWk
+                jobCompleted: $('#jobCompleted').val(),  // JobCompleted
+                remark: $('#remark').val()               // Remark
             };
 
             // Add ID for update

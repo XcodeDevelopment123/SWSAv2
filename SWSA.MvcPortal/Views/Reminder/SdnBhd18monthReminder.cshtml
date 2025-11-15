@@ -160,8 +160,11 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="first18MonthsDue">1st yr 18mths due date</label>
-                                <input type="text" id="first18MonthsDue" name="first18MonthsDue" class="form-control"
-                                placeholder="Auto calculated" readonly />
+                                <select id="first18MonthsDue" name="first18MonthsDue" class="form-control">
+                                    <option value="">-- Select from AT2.1 / AEX4.1 --</option>
+                                </select>
+                                <small class="text-muted">Pulled from AT2.1 / AEX4.1</small>
+
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -235,6 +238,34 @@
         let dataTable;
         let dataTableInitialized = false;
 
+        function load18MthSourceList() {
+            $.ajax({
+                url: "/get-b11-sources",
+                type: "GET",
+                success: function (res) {
+                    if (!(res && res.success)) return;
+                    console.log(res.data);
+
+
+                    const $sel = $("#first18MonthsDue");
+                    $sel.empty().append(`<option value="">-- Select from AT2.1 / AEX4.1 --</option>`);
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const d18 = formatDateForDisplay(o.first18MthDue);
+
+                        $sel.append(`
+                            <option value="${d18}">
+                                ${o.sourceType} - ${company} - YE ${ye} - 18mth ${d18}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+
         // ---------- Date utils (dd/MM/yyyy) ----------
         function parseDdMMyyyy(s) {
             if (!s) return null;
@@ -303,9 +334,34 @@
         // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
+
+            s = String(s).trim();
+
+            // 已经是 dd/MM/yyyy
             if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+
+            // yyyy-MM-dd 或 yyyy-MM-ddTHH...
+            var isoMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+            if (isoMatch) {
+                var y = parseInt(isoMatch[1], 10);
+                var m = parseInt(isoMatch[2], 10) - 1;
+                var d = parseInt(isoMatch[3], 10);
+                var dt = new Date(y, m, d);
+                if (!isNaN(dt.getTime())) return formatDdMMyyyy(dt);
+            }
+
+            // 例如 "Feb 27 2025", "Feb 27 2025 12:00AM", "Jan  9 2025 12:00AM"
+            var m2 = /^([A-Za-z]{3}\s+\d{1,2}\s+\d{4})/.exec(s);
+            if (m2) {
+                var dt2 = new Date(m2[1]); // "Feb 27 2025"
+                if (!isNaN(dt2.getTime())) return formatDdMMyyyy(dt2);
+            }
+
+            // 实在看不懂，就原样显示
             return s;
         }
+
+
         function clearForm() {
             $('#taskForm')[0].reset();
             $('#editIndex').val('');
@@ -327,14 +383,14 @@
             $('#incorporationDate').on('change', function () {
                 const inc = parseDdMMyyyy($(this).val());
                 if (!inc) {
-                    $('#first18MonthsDue').val('');
+                    // $('#first18MonthsDue').val('');
                     $('#reminderDate').val('');
                     return;
                 }
 
-                // 18个月后的日期
-                const due18 = addMonthsKeepEnd(inc, 18);
-                $('#first18MonthsDue').val(formatDdMMyyyy(due18));
+                // // 18个月后的日期
+                // const due18 = addMonthsKeepEnd(inc, 18);
+                // $('#first18MonthsDue').val(formatDdMMyyyy(due18));
 
                 // 成立日 + 1年 + 30天
                 const oneYearLater = addMonthsKeepEnd(inc, 12);
@@ -411,7 +467,9 @@
             $('#saveBtn').click(saveRecord);
             $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
-            $('#taskModal').on('hidden.bs.modal', clearForm);
+            $('#taskModal').on('show.bs.modal', function () {
+                load18MthSourceList();
+            });
 
             // First load
             loadRecordsFromDatabase();
