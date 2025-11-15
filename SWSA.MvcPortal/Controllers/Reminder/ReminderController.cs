@@ -618,6 +618,125 @@ namespace SWSA.MvcPortal.Controllers.Reminder
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b2-pic-sources")]
+        public async Task<IActionResult> GetB2PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B2PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B2PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
+        }
+
+
+
+        // ========= 2) SSM 18 Mth Due 来源：S13A.YrMthDueDate =========
+        [HttpGet("get-b2-ssm18-sources")]
+        public async Task<IActionResult> GetB2Ssm18Sources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                      AS SourceId,
+    'S13A'                                  AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)      AS YearEnd,      -- dd/MM/yyyy
+    CONVERT(varchar(10), YrMthDueDate, 103) AS YrMthDueDate  -- dd/MM/yyyy
+FROM [Quartz].[dbo].[S13A];";
+
+                var list = await connection.QueryAsync<B2Ssm18SourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B2Ssm18SourceOption
+        {
+            public string SourceType { get; set; }   // "S13A"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string YrMthDueDate { get; set; } // dd/MM/yyyy → 用来塞 SSM18MthDue
+        }
+
+
+        // ========= 3) Inward Date Received 来源：A31A.DateReceived =========
+        [HttpGet("get-b2-inward-sources")]
+        public async Task<IActionResult> GetB2InwardSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                      AS SourceId,
+    'A31A'                                  AS SourceType,
+    Client                                  AS CompanyName,
+    CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
+    CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
+FROM [Quartz].[dbo].[A31A];";
+
+                var list = await connection.QueryAsync<B2InwardSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B2InwardSourceOption
+        {
+            public string SourceType { get; set; }   // "A31A"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string DateReceived { get; set; } // dd/MM/yyyy → 用来塞 DateReceived2
+        }
+
         #endregion
 
         #region B31 Api Method
