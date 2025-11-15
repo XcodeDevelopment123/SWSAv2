@@ -519,7 +519,154 @@ WHERE Id = @Id";
         //}
         #endregion
 
+        #region API S14B
+        [HttpGet("api/s14b/get-all")]
+        public async Task<IActionResult> GetAllS14BRecords()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[S14B] ORDER BY Id DESC";
+                var records = await connection.QueryAsync<S14B>(sql);
 
+                return Json(new { success = true, data = records });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/s14b/get/{id}")]
+        public async Task<IActionResult> GetS14BById(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[S14B] WHERE Id = @Id";
+                var record = await connection.QueryFirstOrDefaultAsync<S14B>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("api/s14b/create")]
+        public async Task<IActionResult> CreateS14B([FromBody] S14B model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"INSERT INTO [Quartz].[dbo].[S14B]
+		([FileNo], [CompanyName], [CompanyNo], [IncorpDate], [YearEnd],
+ 		[CompanyStatus], [YrMthdueDate], [CirculationAFSduedate],
+ 		[MBRSreceivedDate], [OntimeLate], [ReasonForLate], [JobCompleted])
+		VALUES
+		(@FileNo, @CompanyName, @CompanyNo, @IncorpDate, @YearEnd,
+ 		@CompanyStatus, @YrMthdueDate, @CirculationAFSduedate,
+ 		@MBRSreceivedDate, @OntimeLate, @ReasonForLate, @JobCompleted);
+
+		SELECT CAST(SCOPE_IDENTITY() AS int);";
+
+
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                return Json(new { success = true, id = id, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("api/s14b/update")]
+        public async Task<IActionResult> UpdateS14B([FromBody] S14B model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"UPDATE [Quartz].[dbo].[S14B] SET
+ 		[FileNo] = @FileNo,
+ 		[CompanyName] = @CompanyName,
+ 		[CompanyNo] = @CompanyNo,
+ 		[IncorpDate] = @IncorpDate,
+ 		[YearEnd] = @YearEnd,
+		[CompanyStatus] = @CompanyStatus,
+ 		[YrMthdueDate] = @YrMthdueDate,
+ 		[CirculationAFSduedate] = @CirculationAFSduedate,
+ 		[MBRSreceivedDate] = @MBRSreceivedDate,
+ 		[OntimeLate] = @OntimeLate,
+ 		[ReasonForLate] = @ReasonForLate,
+ 		[JobCompleted] = @JobCompleted
+		WHERE Id = @Id;";
+
+
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpDelete("api/s14b/delete/{id}")]
+        public async Task<IActionResult> DeleteS14B(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "DELETE FROM [Quartz].[dbo].[S14B] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        //// 获取公司列表用于下拉选择
+        //[HttpGet("api/s13a/get-companies")]
+        //public async Task<IActionResult> GetS13ACompanies()
+        //{
+        //    try
+        //    {
+        //        using var connection = new SqlConnection(_connectionString);
+        //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
+        //                           DatePassToTaxDept, FormCSubmitDate 
+        //                    FROM [Quartz].[dbo].[S13A] 
+        //                    ORDER BY CompanyName";
+        //        var records = await connection.QueryAsync<S13A>(sql);
+
+        //        return Json(new { success = true, data = records });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+        #endregion
 
     }
 
