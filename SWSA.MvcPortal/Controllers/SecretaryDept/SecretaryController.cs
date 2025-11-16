@@ -5,6 +5,7 @@ using Dapper;
 using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Models.SecDeptModel;
+using System.Globalization;
 
 namespace SWSA.MvcPortal.Controllers.SecretaryDept
 {
@@ -274,7 +275,17 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
 
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                return Json(new { success = true, id = id, data = model });
+                model.Id = id;
+
+                var s14bAction = await UpsertS14BFromS13AAsync(connection, model);
+
+                return Json(new
+                {
+                    success = true,
+                    id = id,
+                    data = model,
+                    s14bAction = s14bAction   // ⚡ 关键：告诉前端是 created / updated
+                });
             }
             catch (Exception ex)
             {
@@ -291,6 +302,8 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+
                 var sql = @"UPDATE [Quartz].[dbo].[S13A] SET
             [Grouping] = @Grouping,
             [Referral] = @Referral,
@@ -316,7 +329,9 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
-                return Json(new { success = true, data = model });
+                var s14bAction = await UpsertS14BFromS13AAsync(connection, model);
+                return Json(new { success = true, data = model, s14bAction });
+
             }
             catch (Exception ex)
             {
@@ -344,26 +359,188 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
             }
         }
 
-        //// 获取公司列表用于下拉选择
-        //[HttpGet("api/s13a/get-companies")]
-        //public async Task<IActionResult> GetS13ACompanies()
-        //{
-        //    try
-        //    {
-        //        using var connection = new SqlConnection(_connectionString);
-        //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
-        //                           DatePassToTaxDept, FormCSubmitDate 
-        //                    FROM [Quartz].[dbo].[S13A] 
-        //                    ORDER BY CompanyName";
-        //        var records = await connection.QueryAsync<S13A>(sql);
+        [HttpGet("get-s13a-source-options")]
+        public async Task<IActionResult> GetS13ASourceOptions()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
 
-        //        return Json(new { success = true, data = records });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
+                var sql = @"
+SELECT 
+    Id                                       AS SourceId,
+    'AT21'                                   AS SourceType,
+    CompanyName,
+    CONVERT(varchar(50), YearEnd, 113)       AS YearEnd,        -- 先随便转成字串
+    CONVERT(varchar(50), First18mthdue, 113) AS First18MthsDue,
+    CONVERT(varchar(50), AFSdueDate, 113)    AS AfsDueDate
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                       AS SourceId,
+    'AEX41'                                  AS SourceType,
+    CompanyName,
+    CONVERT(varchar(50), YearEnd, 113)       AS YearEnd,
+    CONVERT(varchar(50), First18mthsDue, 113)AS First18MthsDue,
+    CONVERT(varchar(50), AuditedAccDueDate, 113) AS AfsDueDate
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = (await connection.QueryAsync<S13ASourceOption>(sql)).ToList();
+
+                // ✅ 在这里统一改成 dd/MM/yyyy
+                foreach (var x in list)
+                {
+                    x.YearEnd = NormalizeToDdMmYyyy(x.YearEnd);
+                    x.First18MthsDue = NormalizeToDdMmYyyy(x.First18MthsDue);
+                    x.AfsDueDate = NormalizeToDdMmYyyy(x.AfsDueDate);
+                }
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        public class S13ASourceOption
+        {
+            public string SourceType { get; set; }      // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+
+            public string YearEnd { get; set; }         // dd/MM/yyyy
+            public string First18MthsDue { get; set; }  // dd/MM/yyyy
+            public string AfsDueDate { get; set; }      // dd/MM/yyyy
+        }
+
+        /// <summary>
+        /// 从一条 S13A 记录，同步/生成 S14B：
+        /// - 以 FileNo + YearEnd 作为「一家公司一个 Year」的 key。
+        /// - 有就 UPDATE，没有就 INSERT。
+        /// </summary>
+        private async Task<string> UpsertS14BFromS13AAsync(SqlConnection connection, S13A s13a)
+        {
+            var incorpFromAr = CalculateIncorpDateFromArDue(s13a.ARdueDate);
+
+            var param = new
+            {
+                FileNo = s13a.SecFileNo ?? string.Empty,
+                CompanyName = s13a.CompanyName ?? string.Empty,
+                CompanyNo = string.Empty,
+                IncorpDate = incorpFromAr,
+                YearEnd = s13a.YearEnd ?? string.Empty,
+                CompanyStatus = s13a.CompanyStatus ?? string.Empty,
+                YrMthdueDate = string.Empty,
+                CirculationAFSduedate = string.Empty,
+                MBRSreceivedDate = string.Empty,
+                OntimeLate = string.Empty,
+                ReasonForLate = string.Empty,
+                JobCompleted = s13a.JobCompleted ?? string.Empty
+            };
+
+            var sql = @"
+DECLARE @Action nvarchar(10);
+
+IF EXISTS (
+    SELECT 1
+    FROM [Quartz].[dbo].[S14B]
+    WHERE FileNo = @FileNo
+      AND YearEnd = @YearEnd
+)
+BEGIN
+    UPDATE [Quartz].[dbo].[S14B]
+    SET CompanyName   = @CompanyName,
+        CompanyNo     = CASE WHEN CompanyNo IS NULL OR CompanyNo = '' THEN @CompanyNo ELSE CompanyNo END,
+        IncorpDate    = CASE WHEN (IncorpDate IS NULL OR IncorpDate = '') AND @IncorpDate <> '' THEN @IncorpDate ELSE IncorpDate END,
+        CompanyStatus = @CompanyStatus,
+        JobCompleted  = @JobCompleted
+    WHERE FileNo = @FileNo
+      AND YearEnd = @YearEnd;
+
+    SET @Action = 'updated';
+END
+ELSE
+BEGIN
+    INSERT INTO [Quartz].[dbo].[S14B]
+        ([FileNo],
+         [CompanyName],
+         [CompanyNo],
+         [IncorpDate],
+         [YearEnd],
+         [CompanyStatus],
+         [YrMthdueDate],
+         [CirculationAFSduedate],
+         [MBRSreceivedDate],
+         [OntimeLate],
+         [ReasonForLate],
+         [JobCompleted])
+    VALUES
+        (@FileNo,
+         @CompanyName,
+         @CompanyNo,
+         @IncorpDate,
+         @YearEnd,
+         @CompanyStatus,
+         @YrMthdueDate,
+         @CirculationAFSduedate,
+         @MBRSreceivedDate,
+         @OntimeLate,
+         @ReasonForLate,
+         @JobCompleted);
+
+    SET @Action = 'created';
+END
+
+SELECT @Action;
+";
+
+            var action = await connection.ExecuteScalarAsync<string>(sql, param);
+            return action ?? "none";
+        }
+
+
+
+        private string NormalizeToDdMmYyyy(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            // 尝试各种格式，让 .NET 自己 parse
+            if (DateTime.TryParse(value, out var dt))
+            {
+                return dt.ToString("dd/MM/yyyy");   // 统一成日/月/年
+            }
+
+            // parse 不到就原样返回，至少不会报错
+            return value;
+        }
+
+        // 根据 ARdueDate(字符串) 计算 IncorpDate = ARdueDate 往前一年
+        private string CalculateIncorpDateFromArDue(string arDueDate)
+        {
+            if (string.IsNullOrWhiteSpace(arDueDate))
+                return string.Empty;
+
+            // 你现在的格式是 dd/MM/yyyy
+            var formats = new[] { "dd/MM/yyyy", "d/M/yyyy" };
+
+            if (DateTime.TryParseExact(arDueDate,
+                                       formats,
+                                       CultureInfo.InvariantCulture,
+                                       DateTimeStyles.None,
+                                       out var dt))
+            {
+                var incorp = dt.AddYears(-1);
+                return incorp.ToString("dd/MM/yyyy");   // 一样保持 dd/MM/yyyy 的 string
+            }
+
+            // 如果 format 奇怪 / 解析不到，就放空，避免出错
+            return string.Empty;
+        }
         #endregion
 
         #region API S14A
