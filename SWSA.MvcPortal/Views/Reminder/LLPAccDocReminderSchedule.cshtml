@@ -195,7 +195,12 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                  <select id="pic" name="pic" class="form-control">
+                                     <option value="">-- Select from AT21 / AEX41 --</option>
+                                  </select>
+                                <small class="text-muted">
+                                    Pulled from AT21 (AuditStaff) / AEX41 (Team)
+                                 </small>
                             </div>
                         </div>
                     </div>
@@ -206,11 +211,27 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="ssm18MonthDue">SSM 18 Mth Due</label>
-                                <input type="text" id="ssm18MonthDue" name="ssm18MonthDue" class="form-control" placeholder="Select date" />
-                            </div>
+                          <div class="form-group">
+                            <label for="ssm18MonthDue">SSM 18 Mth Due</label>
+
+                             <!-- ★ 新增：从 Clients · Sdn Bhd (或 LLP) 选公司，显示名字+创建日 -->
+                             <select id="ssm18SourceB32" class="form-control mb-1">
+                                <option value="">-- Select LLP (Incorp Date) --</option>
+                             </select>
+                             <small class="text-muted">
+                                Pulled from Clients · Sdn Bhd / LLP (Incorporation Date as base date)
+                             </small>
+
+                             <!-- ★ 自动计算：成立日 + 17 个月 -->
+                             <input type="text"
+                              id="ssm18MonthDue"
+                              name="ssm18MonthDue"
+                              class="form-control mt-1"
+                              placeholder="Auto = Incorporation Date + 17 months"
+                              readonly />
+                          </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="ssmTaxDue">SSM/Tax</label>
@@ -295,7 +316,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inwardDateReceived">Date Received</label>
-                                <input type="text" id="inwardDateReceived" name="inwardDateReceived" class="form-control" placeholder="Select date" />
+                                 <select id="inwardDateReceived" name="inwardDateReceived" class="form-control">
+                                   <option value="">-- Select from A31B (DateReceived) --</option>
+                                 </select>
+                                 <small class="text-muted">
+                                    Pulled from A31B · DateReceived
+                                 </small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -335,6 +361,102 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+
+  // 1) PIC：AT21 / AEX41.Team
+        function loadPicSourceListB32() {
+            $.ajax({
+                url: "/get-b32-pic-sources", // ✅ 改这里：b31
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#pic");
+                    $sel.empty().append(
+                        '<option value="">-- Select from AT2.1 / AEX4.1 --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const pic = o.pic || "-";
+
+                        // value 直接存 PIC 名字到 B31.PIC
+                        $sel.append(`
+                            <option value="${pic}">
+                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 2) Inward Date Received：A31A.DateReceived -> B31.DateReceived
+        function loadInwardSourceListB32() {
+            $.ajax({
+                url: "/get-b32-inward-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#inwardDateReceived");
+                    $sel.empty().append(
+                        '<option value="">-- Select from A31B (DateReceived) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const dr = formatDateForDisplay(o.dateReceived);
+
+                        // value 用日期字串，存入 B31.DateReceived
+                        $sel.append(`
+                            <option value="${dr}">
+                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 3) SSM 18 Mth Due：Clients · Sdn Bhd (IncorporationDate)
+        function loadSsm18SourceListB32() {
+            $.ajax({
+                url: "/get-b32-sdnbhd-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#ssm18SourceB32");
+                    $sel.empty().append(
+                        '<option value="">-- Select Sdn Bhd (Incorp Date) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const raw = o.incorporationDate;  // e.g. "2023-01-15T00:00:00"
+                        let incorpDisplay = "";
+
+                        if (raw) {
+                            const dt = new Date(raw);
+                            if (!isNaN(dt)) {
+                                // 用你上面已经写好的 formatDdMMyyyy 工具
+                                incorpDisplay = formatDdMMyyyy(dt);
+                            }
+                        }
+
+                        // value 直接用 dd/MM/yyyy 的创建日字符串
+                        $sel.append(`
+                            <option value="${incorpDisplay}">
+                                ${company}${incorpDisplay ? " - Incorp " + incorpDisplay : ""}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
  // ---------- Date utils (dd/MM/yyyy) ----------
         function parseDdMMyyyy(s) {
             if (!s) return null;
@@ -416,6 +538,36 @@
 
    // ---------- Init ----------
         $(document).ready(function () {
+            loadPicSourceListB32();
+            loadInwardSourceListB32();
+            loadSsm18SourceListB32();
+
+                // ★ 当选择 LLP / Sdn Bhd 时：用成立日 + 17 个月 算 SSM 18 Mth Due
+    $('#ssm18SourceB32').on('change', function () {
+        const incorpStr = ($(this).val() || '').trim();  // dd/MM/yyyy
+
+        if (!incorpStr) {
+            $('#ssm18MonthDue').val('');
+            return;
+        }
+
+        const dt = parseDdMMyyyy(incorpStr);
+        if (!dt) {
+            $('#ssm18MonthDue').val('');
+            return;
+        }
+
+        const due = addMonthsKeepEnd(dt, 17); // 17 个月后 = 18 个月 due
+        $('#ssm18MonthDue').val(formatDdMMyyyy(due));
+
+        // （可选）顺手把 CompanyName 带进去
+        const companyName = $('#ssm18SourceB32 option:selected').data('name') || '';
+        if (companyName) {
+            $('#companyName').val(companyName);
+        }
+    });
+
+
             // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
                 const ye = parseDdMMyyyy($(this).val());
