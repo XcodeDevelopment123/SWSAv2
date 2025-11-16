@@ -206,9 +206,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                <select id="pic" name="pic" class="form-control">
+                                    <option value="">-- Select from AT21 / AEX41 --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from AT21 (AuditStaff) / AEX41 (Team)
+                                </small>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="targetedStartAcc">Targeted to start Acc wk</label>
@@ -282,9 +288,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inwardDateReceived">Date Received</label>
-                                <input type="text" id="inwardDateReceived" name="inwardDateReceived" class="form-control" placeholder="Select date" />
+                                <select id="inwardDateReceived" name="inwardDateReceived" class="form-control">
+                                    <option value="">-- Select from A31B (DateReceived) --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from A31B · DateReceived
+                                </small>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inwardNote">Note</label>
@@ -321,6 +333,64 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+
+        // ========= 1) PIC 来源：AT21 / AEX41 =========
+        function loadPicSourceListB34() {
+            $.ajax({
+                url: "/get-b34-pic-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#pic");
+                    $sel.empty().append(
+                        '<option value="">-- Select from AT21 / AEX41 --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const pic = o.pic || "-";
+
+                        // value = PIC 名字 → 存到 B34.PIC
+                        $sel.append(`
+                            <option value="${pic}">
+                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // ========= 2) Inward Date Received 来源：A31B.DateReceived =========
+        function loadInwardSourceListB34() {
+            $.ajax({
+                url: "/get-b34-inward-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#inwardDateReceived");
+                    $sel.empty().append(
+                        '<option value="">-- Select from A31B (DateReceived) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const dr = formatDateForDisplay(o.dateReceived);
+
+                        // value = 日期字串 → 存到 B34.DateReceived
+                        $sel.append(`
+                            <option value="${dr}">
+                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
 
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
@@ -395,8 +465,12 @@
         $(document).ready(function () {
             setFixedTargetMonths();
 
+            // ★ 载入 PIC & DateReceived 下拉
+            loadPicSourceListB34();
+            loadInwardSourceListB34();
+
             // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
-            ['#mth1DateSent', '#mth2DateRemind', '#mth1DateText', '#inwardDateReceived']
+            ['#mth1DateSent', '#mth2DateRemind', '#mth1DateText']
                 .forEach(function (id) {
                     $(id).datepicker({
                         format: 'dd/mm/yyyy',
