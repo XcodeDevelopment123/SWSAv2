@@ -156,7 +156,12 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                <select id="pic" name="pic" class="form-control">
+                                    <option value="">-- Select from AT21 / AEX41 --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Pulled from AT21 (AuditStaff) / AEX41 (Team)
+                                </small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -272,6 +277,35 @@
         let dataTable;
         let dataTableInitialized = false;
 
+        // ========= 1) PIC 来源：AT21 / AEX41 =========
+        function loadPicSourceListB35() {
+            $.ajax({
+                url: "/get-b35-pic-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#pic");
+                    $sel.empty().append(
+                        '<option value="">-- Select from AT21 / AEX41 --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const pic = o.pic || "-";
+
+                        // value = PIC 名字 → 存到 B34.PIC
+                        $sel.append(`
+                                    <option value="${pic}">
+                                        ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
+                                    </option>
+                                `);
+                    });
+                }
+            });
+        }
+
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
@@ -344,6 +378,9 @@
         // ---------- Init ----------
         $(document).ready(function () {
             setFixedTargetMonths();
+
+            loadPicSourceListB35();
+
 
             // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
             ['#mth1DateSent', '#mth2DateRemind', '#mth1DateText', '#inwardDateReceived']

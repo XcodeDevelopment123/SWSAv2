@@ -205,4 +205,20 @@ public class ClientService(
         _sysAuditService.LogInBackground(log);
         return entity;
     }
+    public async Task<List<SdnBhdOptionDto>> GetAllSdnBhdOptionsAsync()
+    {
+        return await _companies
+            .OfType<SdnBhdClient>()                // ★ 先筛成 SdnBhdClient 子类
+            .Where(c => c.ClientType == ClientType.SdnBhd)
+            .Select(c => new SdnBhdOptionDto
+            {
+                Id = c.Id,
+                Name = c.Name,                     // 或 c.CompanyName，看你实体属性
+                IncorporationDate = c.IncorporationDate
+            })
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+
 }

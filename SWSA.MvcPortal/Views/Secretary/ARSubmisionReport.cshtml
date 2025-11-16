@@ -136,15 +136,23 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="anniversaryDate">Anniversary date (1st Yr Only)</label>
-                                <input type="text" id="anniversaryDate" name="anniversaryDate" class="form-control" placeholder="Select date" />
+                                <small class="text-muted">(auto = month of Incorp Date)</small>
+                                <input type="text" id="anniversaryDate" name="anniversaryDate"
+                                       class="form-control" placeholder="Auto from Incorp Date" readonly />
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="arDueDate">AR due date</label>
-                                <input type="text" id="arDueDate" name="arDueDate" class="form-control" placeholder="Select date" />
+                                <small class="text-muted">
+                                    (auto = same month as Incorp; year = this year or next year)
+                                </small>
+                                <input type="text" id="arDueDate" name="arDueDate"
+                                       class="form-control" placeholder="Auto from Incorp Date & today" readonly />
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="reminderDate">Reminder Date</label>
@@ -161,9 +169,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateOfAnnualReturn">Date of Annual Return</label>
-                                <input type="text" id="dateOfAnnualReturn" name="dateOfAnnualReturn" class="form-control" placeholder="Select date" />
+                                <small class="text-muted">(auto = anniversary day of this/next year)</small>
+                                <input type="text" id="dateOfAnnualReturn" name="dateOfAnnualReturn"
+                                       class="form-control" placeholder="Auto from Incorp Date" readonly />
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="arSubmittedDate">AR Submitted Date</label>
@@ -298,6 +309,83 @@
         }
 
         // ---------- Helpers ----------
+        // ========== Helpers for AR calculation based on Incorp Date ==========
+
+        // 把 dd/mm/yyyy 变成 JS Date
+        function parseDdMmYyyy(str) {
+            if (!str) return null;
+            const parts = str.split('/');
+            if (parts.length !== 3) return null;
+
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // 0-11
+            const year = parseInt(parts[2], 10);
+
+            if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+
+            const d = new Date(year, month, day);
+            if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) {
+                return null;
+            }
+            return d;
+        }
+
+        // 输出 dd/mm/yyyy
+        function formatDdMmYyyy(date) {
+            if (!date) return '';
+            const dd = ('0' + date.getDate()).slice(-2);
+            const mm = ('0' + (date.getMonth() + 1)).slice(-2);
+            const yyyy = date.getFullYear();
+            return dd + '/' + mm + '/' + yyyy;
+        }
+
+        // 英文月份简称
+        const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+
+        // 根据 Incorp Date 自动计算 Anniversary / AR due / DateOfAR
+        function recalcFromIncorp() {
+            const incorpStr = ($('#incorpDate').val() || '').trim();
+            const incorp = parseDdMmYyyy(incorpStr);
+
+            if (!incorp) {
+                // 没有合法成立日就清空自动栏位
+                $('#anniversaryDate').val('');
+                $('#arDueDate').val('');
+                $('#dateOfAnnualReturn').val('');
+                return;
+            }
+
+            const today = new Date();
+            const incorpMonthIndex = incorp.getMonth(); // 0-11
+            const incorpDay = incorp.getDate();
+            const monthName = MONTH_NAMES_SHORT[incorpMonthIndex];
+
+            // 1) Anniversary：只要月份
+            $('#anniversaryDate').val(monthName);
+
+            // 2) 决定今年还是明年的周年年份
+            let targetYear = today.getFullYear();
+            const thisYearAnniv = new Date(targetYear, incorpMonthIndex, incorpDay);
+
+            // 如果今天已经超过今年的 Incorp 日 → 用明年的
+            if (today > thisYearAnniv) {
+                targetYear++;
+            }
+
+            // 3) AR due：显示 月份 + 年份，例如 "Sep-2025"
+            const arDueText = monthName + '-' + targetYear;
+            $('#arDueDate').val(arDueText);
+
+            // 4) Date of Annual Return：用真正的日/月/年（当天的周年日）
+            const arDate = new Date(targetYear, incorpMonthIndex, incorpDay);
+            $('#dateOfAnnualReturn').val(formatDdMmYyyy(arDate));
+
+            // 🔸 你如果想顺便把 AR Submitted Date 先预填同一天（可改可不改）
+            // $('#arSubmittedDate').val(formatDdMmYyyy(arDate));
+        }
+
         function formatDateForDisplay(s) {
             if (!s) return '';
             // 现在先直接原样显示，有需要再做真正格式转换
@@ -331,15 +419,26 @@
         // ---------- Init ----------
         $(document).ready(function () {
 
+            // 当 Incorp Date 选择/修改时，自动重算三个栏位
+            $('#incorpDate')
+                .on('changeDate', function () {
+                    recalcFromIncorp();
+                })
+                .on('change blur', function () {
+                    recalcFromIncorp();
+                });
+
             // 所有和 date 相关的 text input 套 datepicker
             $('input[type="text"]').filter(function () {
                 const id = $(this).attr('id') || '';
-                return id.includes('Date') || id.includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            });
+                return (id.includes('Date') || id.includes('date'));
+            }).not('#anniversaryDate, #arDueDate, #dateOfAnnualReturn')
+                .datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+
 
             // DataTable：对应 S14A 所有列
             dataTable = $('#taskDatatable').DataTable({

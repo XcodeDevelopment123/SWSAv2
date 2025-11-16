@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 using B11 = SWSA.MvcPortal.Models.Reminder.B11;
 using B2 = SWSA.MvcPortal.Models.Reminder.B2;
 using B31 = SWSA.MvcPortal.Models.Reminder.B31;
@@ -13,9 +15,10 @@ using B36 = SWSA.MvcPortal.Models.Reminder.B36;
 namespace SWSA.MvcPortal.Controllers.Reminder
 
 {
-    public class ReminderController(IConfiguration configuration) : Controller
+    public class ReminderController(IConfiguration configuration, IClientService clientService) : Controller
     {
         private readonly string _connectionString = configuration.GetConnectionString("SwsaConntection");
+        private readonly IClientService _clientService = clientService;
 
         public async Task<IActionResult> SdnBhd18monthReminder()
         {
@@ -921,6 +924,108 @@ FROM [Quartz].[dbo].[A31A];";
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b31-pic-sources")]
+        public async Task<IActionResult> GetB31PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B31PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B31PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
+        }
+
+        // ========= 2) Inward Date Received 来源：A31A.DateReceived =========
+        [HttpGet("get-b31-inward-sources")]
+        public async Task<IActionResult> GetB31InwardSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                      AS SourceId,
+    'A31A'                                  AS SourceType,
+    Client                                  AS CompanyName,
+    CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
+    CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
+FROM [Quartz].[dbo].[A31A];";
+
+                var list = await connection.QueryAsync<B31InwardSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B31InwardSourceOption
+        {
+            public string SourceType { get; set; }   // "A31A"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string DateReceived { get; set; } // dd/MM/yyyy → 用来塞 DateReceived2
+        }
+
+        [HttpGet("get-b31-sdnbhd-sources")]
+        public async Task<IActionResult> GetB31SdnBhdSources()
+        {
+            try
+            {
+                var list = await _clientService.GetAllSdnBhdOptionsAsync();
+
+                var result = list.Select(x => new
+                {
+                    ClientId = x.Id,
+                    CompanyName = x.Name,
+                    IncorporationDate = x.IncorporationDate   // DateTime?，前端收到会是字符串
+                }).ToList();
+
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         #endregion
 
         #region B32 Api Method
@@ -1099,6 +1204,108 @@ FROM [Quartz].[dbo].[A31A];";
 
                     return Json(new { success = true });
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b32-pic-sources")]
+        public async Task<IActionResult> GetB32PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B32PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B32PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
+        }
+
+        // ========= 2) Inward Date Received 来源：A31B.DateReceived =========
+        [HttpGet("get-b32-inward-sources")]
+        public async Task<IActionResult> GetB321InwardSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                      AS SourceId,
+    'A31B'                                  AS SourceType,
+    Clients                                  AS CompanyName,
+    CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
+    CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
+FROM [Quartz].[dbo].[A31B];";
+
+                var list = await connection.QueryAsync<B32InwardSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B32InwardSourceOption
+        {
+            public string SourceType { get; set; }   // "A31A"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string DateReceived { get; set; } // dd/MM/yyyy → 用来塞 DateReceived2
+        }
+
+        [HttpGet("get-b32-sdnbhd-sources")]
+        public async Task<IActionResult> GetB32SdnBhdSources()
+        {
+            try
+            {
+                var list = await _clientService.GetAllSdnBhdOptionsAsync();
+
+                var result = list.Select(x => new
+                {
+                    ClientId = x.Id,
+                    CompanyName = x.Name,
+                    IncorporationDate = x.IncorporationDate   // DateTime?，前端收到会是字符串
+                }).ToList();
+
+                return Json(new { success = true, data = result });
             }
             catch (Exception ex)
             {
@@ -1288,6 +1495,86 @@ FROM [Quartz].[dbo].[A31A];";
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b34-pic-sources")]
+        public async Task<IActionResult> GetB34PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B34PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B34PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
+        }
+
+        // ========= 2) Inward Date Received 来源：A31B.DateReceived =========
+        [HttpGet("get-b34-inward-sources")]
+        public async Task<IActionResult> GetB34InwardSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                      AS SourceId,
+    'A31B'                                  AS SourceType,
+    Clients                                  AS CompanyName,
+    CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
+    CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
+FROM [Quartz].[dbo].[A31B];";
+
+                var list = await connection.QueryAsync<B34InwardSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B34InwardSourceOption
+        {
+            public string SourceType { get; set; }   // "A31A"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string DateReceived { get; set; } // dd/MM/yyyy → 用来塞 DateReceived2
+        }
         #endregion
 
         #region B35 Api Method
@@ -1461,6 +1748,51 @@ FROM [Quartz].[dbo].[A31A];";
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b35-pic-sources")]
+        public async Task<IActionResult> GetB35PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B35PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B35PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
+        }
+
         #endregion
 
         #region B36 Api Method
@@ -1634,6 +1966,51 @@ FROM [Quartz].[dbo].[A31A];";
             {
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+
+        // ========= 1) PIC 来源：AT21 / AEX41 · Team / AuditStaff =========
+        [HttpGet("get-b36-pic-sources")]
+        public async Task<IActionResult> GetB36PicSources()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                  AS SourceId,
+    'AT21'                              AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
+FROM [Quartz].[dbo].[AT21]
+
+UNION ALL
+
+SELECT
+    Id                                  AS SourceId,
+    'AEX41'                             AS SourceType,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
+    Team                                AS Pic         -- ★ AEX41 用 Team
+FROM [Quartz].[dbo].[AEX41];";
+
+                var list = await connection.QueryAsync<B36PicSourceOption>(sql);
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class B36PicSourceOption
+        {
+            public string SourceType { get; set; }   // "AT21" / "AEX41"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string YearEnd { get; set; }      // dd/MM/yyyy
+            public string Pic { get; set; }          // AuditStaff / Team
         }
         #endregion
     }

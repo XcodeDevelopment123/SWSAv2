@@ -113,6 +113,25 @@
                         </div>
                     </div>
 
+                    <!-- Source from AT21 / AEX41 -->
+                    <div class="form-info-label col-12">
+                        <label>Source (AT21 / AEX41)</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sourceOption">Link from 2.1 / 4.1</label>
+                                <select id="sourceOption" name="sourceOption" class="form-control">
+                                    <option value="">-- Select from AT21 / AEX41 --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Select a record from AT21 / AEX41 to auto-fill Year End, 18 mths due, AFS due, ACC & Audit month.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <!-- Company Information -->
                     <div class="form-info-label col-12">
                         <label>Company Information</label>
@@ -138,7 +157,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                     </div>
@@ -173,19 +192,19 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="yeToDo">YE to Do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year" />
+                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="accMthToDo">ACC Mth to do</label>
-                                <input type="text" id="accMthToDo" name="accMthToDo" class="form-control" placeholder="Enter month" />
+                                <input type="text" id="accMthToDo" name="accMthToDo" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="auditMthToDo">Audit Mth to do</label>
-                                <input type="text" id="auditMthToDo" name="auditMthToDo" class="form-control" placeholder="Enter month" />
+                                <input type="text" id="auditMthToDo" name="auditMthToDo" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                     </div>
@@ -198,13 +217,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="firstYearDueDate">1st yr 18 mths due date</label>
-                                <input type="text" id="firstYearDueDate" name="firstYearDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="firstYearDueDate" name="firstYearDueDate" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="circulationDueDate">Circulation & AFS due date</label>
-                                <input type="text" id="circulationDueDate" name="circulationDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="circulationDueDate" name="circulationDueDate" class="form-control" placeholder="AutoFill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -275,6 +294,128 @@
         let dataTable;
         let dataTableInitialized = false;
 
+        let s13aSources = [];
+
+        // 输入任何日期字串，先转成 dd/MM/yyyy，再加 N 个月，返回 MM/yyyy
+        function addMonthsToDdMmYyyy(dateStr, monthsToAdd) {
+            if (!dateStr) return '';
+
+            // 先统一转 dd/MM/yyyy
+            const s = formatDateForDisplay(dateStr);
+            const parts = s.split('/');
+            if (parts.length !== 3) return '';
+
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // 0-11
+            const year = parseInt(parts[2], 10);
+            if (isNaN(day) || isNaN(month) || isNaN(year)) return '';
+
+            const d = new Date(year, month, day);
+            d.setMonth(d.getMonth() + monthsToAdd);
+
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const y = d.getFullYear();
+
+            // ACC / Audit 只是月份，用 MM/yyyy
+            return `${m}/${y}`;
+        }
+
+        // ---------- 载入 AT21 + AEX41 的 Source Options ----------
+        function loadS13ASourceOptions() {
+            $.ajax({
+                url: 'get-s13a-source-options',   // 对应 [HttpGet("get-s13a-source-options")]
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        s13aSources = res.data || [];
+                        const $select = $('#sourceOption');
+
+                        $select.empty();
+                        $select.append('<option value="">-- Select from AT21 / AEX41 --</option>');
+
+                        s13aSources.forEach(function (item) {
+                            const sourceType = item.sourceType || item.SourceType || '';
+                            const sourceId = item.sourceId || item.SourceId || 0;
+                            const companyName = item.companyName || item.CompanyName || '';
+                            let yearEndRaw = item.yearEnd || item.YearEnd || '';
+                            let yearEndDisplay = yearEndRaw || '';
+                            const text = `${companyName} (${yearEndDisplay}) [${sourceType}]`;
+                            const value = `${sourceType}|${sourceId}`;
+
+                            $select.append(
+                                `<option value="${value}">${text}</option>`
+                            );
+                        });
+                    } else {
+                        showAlert('Failed to load source options: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load source options: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- 当用户选择了一个 Source ----------
+        function onSourceOptionChanged() {
+            const val = $(this).val();
+            if (!val) {
+                // 如果用户清空选择，不做事
+                return;
+            }
+
+            const parts = val.split('|');
+            if (parts.length !== 2) return;
+
+            const sourceType = parts[0];
+            const sourceId = parseInt(parts[1], 10);
+
+            const src = s13aSources.find(function (x) {
+                const st = x.sourceType || x.SourceType;
+                const sid = x.sourceId || x.SourceId;
+                return st === sourceType && sid === sourceId;
+            });
+
+            if (!src) return;
+
+            const companyName = src.companyName || src.CompanyName || '';
+            const yearEndRaw = src.yearEnd || src.YearEnd || '';
+            const first18Raw = src.first18MthsDue || src.First18MthsDue || '';
+            const afsDueRaw = src.afsDueDate || src.AfsDueDate || '';
+
+            // 统一转 dd/MM/yyyy
+            const yearEndDisplay = (src.yearEnd || src.YearEnd || '').trim();       // 已经是 dd/MM/yyyy
+            const first18Display = (src.first18MthsDue || src.First18MthsDue || '').trim();     // dd/MM/yyyy
+            const afsDueDisplay = (src.afsDueDate || src.AfsDueDate || '').trim();       // dd/MM/yyyy
+
+
+            // 1️⃣ 自动填 Company 信息 + Year End
+            $('#coName').val(companyName);
+            $('#yearEnd').val(yearEndDisplay);
+
+            // 2️⃣ 自动填 YE to Do（直接取年份）
+            let yeYear = '';
+            if (yearEndDisplay && yearEndDisplay.split('/').length === 3) {
+                yeYear = yearEndDisplay.split('/')[2]; // 27/02/2025 -> 2025
+            }
+            $('#yeToDo').val(yeYear);
+
+            // 3️⃣ 自动填 1st yr 18 mths due date
+            $('#firstYearDueDate').val(first18Display);
+
+            // 4️⃣ 自动填 Circulation & AFS due date
+            $('#circulationDueDate').val(afsDueDisplay);
+
+            // 5️⃣ 自动计算 ACC Mth to do (YE + 4 mth)
+            const accMonth = addMonthsToDdMmYyyy(yearEndDisplay, 4);
+            $('#accMthToDo').val(accMonth);
+
+            // 6️⃣ 自动计算 Audit Mth to do (YE + 6 mth)
+            const auditMonth = addMonthsToDdMmYyyy(yearEndDisplay, 6);
+            $('#auditMthToDo').val(auditMonth);
+        }
+
+
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
@@ -321,8 +462,50 @@
         // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
-            if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+            if (typeof s !== 'string') s = String(s);
+            s = s.trim();
+            if (!s) return '';
+
+            // 已经是 dd/MM/yyyy 了
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
+                return s;
+            }
+
+            // /Date(1730006400000)/
+            let m = /\/Date\((\d+)\)\//.exec(s);
+            if (m) {
+                const ticks = parseInt(m[1], 10);
+                if (!isNaN(ticks)) {
+                    const d = new Date(ticks);
+                    return formatDateObjToDdMmYyyy(d);
+                }
+            }
+
+            // ISO: 2025-02-27T00:00:00
+            m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+            if (m) {
+                const y = parseInt(m[1], 10);
+                const mo = parseInt(m[2], 10) - 1;
+                const d = parseInt(m[3], 10);
+                const dt = new Date(y, mo, d);
+                return formatDateObjToDdMmYyyy(dt);
+            }
+
+            // 像 "Feb 27 2025 12:00AM" 这种，丢给 Date 解析
+            const dt2 = new Date(s);
+            if (!isNaN(dt2.getTime())) {
+                return formatDateObjToDdMmYyyy(dt2);
+            }
+
+            // 实在不认识，就原样返回
             return s;
+        }
+
+        function formatDateObjToDdMmYyyy(d) {
+            const dd = String(d.getDate()).padStart(2, '0');
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const yyyy = d.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
         }
 
         function getVal(obj, name) {
@@ -361,6 +544,10 @@
 
         // ---------- Init ----------
         $(document).ready(function () {
+
+            loadS13ASourceOptions();
+
+            $('#sourceOption').on('change', onSourceOptionChanged);
 
             // Datepicker：套在所有需要选日期的栏位
             $('input[type="text"]').filter(function () {
@@ -576,6 +763,12 @@
                     if (res && res.success) {
                         $('#taskModal').modal('hide');
                         showAlert('Record saved successfully.', 'success');
+
+                        if (res.s14bAction === 'created') {
+                            showAlert('Related S1.4B record has been CREATED.', 'info');
+                        } else if (res.s14bAction === 'updated') {
+                            showAlert('Related S1.4B record has been UPDATED.', 'info');
+                        }
                         loadRecordsFromDatabase();
                     } else {
                         const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');

@@ -17,4 +17,6 @@ public interface IClientService
     Task<IEnumerable<object>> SearchClientsAsync(ClientType type, ClientFilterRequest request);
     Task<BaseCompany> UpdateCompanyAsync(UpdateCompanyRequest req);
     Task<IndividualClient> UpdateIndividualAsync(UpdateIndividualRequest req);
+    Task<List<SdnBhdOptionDto>> GetAllSdnBhdOptionsAsync();
+
 }

@@ -348,66 +348,80 @@
                     "columns": [
                         {
                             "data": null,
-                            "render": function(data, type, row, meta) {
-                                return meta.row + 1;
+                            "render": function (data, type, row, meta) {
+                                return meta.row + 1; // No
                             }
                         },
-                        { "data": "Ref" },
-                        { "data": "CompanyName" },
-                        { "data": "CompanyNo" },
-                        { "data": "IncorpDate" },
-                        { "data": "YearEnd" },
-                        { "data": "StartDate" },
-                        { "data": "CompleteDate" },
-                        { "data": "DoneBy" },
-                        { "data": "CompletedDate" },
+                        { "data": "ref" },
+                        { "data": "companyName" },
+                        { "data": "companyNo" },
+                        { "data": "incorpDate" },
+                        { "data": "yearEnd" },
+                        { "data": "startDate" },
+                        { "data": "completeDate" },
+                        { "data": "doneBy" },
+                        { "data": "completedDate" },
                         {
-                            "data": "PenaltiesRM",
-                            "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
-                            }
-                        },
-                        {
-                            "data": "RevisedPenalties",
-                            "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
-                            }
-                        },
-                        { "data": "AppealDate" },
-                        { "data": "PaymentDate" },
-                        { "data": "S_OffDocsendtoClient" },
-                        { "data": "SSMsubmitDate" },
-                        { "data": "SSMstrikeoffDate" },
-                        { "data": "Remark" },
-                        { "data": "Action" },
-                        { "data": "DatePassToTaxDept" },
-                        { "data": "FormCSubmitDate" },
-                        {
-                            "data": "JobCompleted",
-                            "render": function(data, type, row) {
-                                const statusClass = data === 'Completed' ? 'badge bg-success' :
-                                                  data === 'In Progress' ? 'badge bg-warning' :
-                                                  data === 'Backlog' ? 'badge bg-danger' : 'badge bg-secondary';
-                                return data ? `<span class="${statusClass}">${data}</span>` : '<span class="badge bg-secondary">Unknown</span>';
+                            "data": "penaltiesRM",
+                            "render": function (data) {
+                                return data
+                                    ? 'RM ' + parseFloat(data).toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })
+                                    : '-';
                             }
                         },
                         {
-                            "data": "Id",
-                            "render": function(data, type, row) {
+                            "data": "revisedPenalties",
+                            "render": function (data) {
+                                return data
+                                    ? 'RM ' + parseFloat(data).toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })
+                                    : '-';
+                            }
+                        },
+                        { "data": "appealDate" },
+                        { "data": "paymentDate" },
+                        { "data": "s_OffDocsendtoClient" },
+                        { "data": "ssMsubmitDate" },
+                        { "data": "ssMstrikeoffDate" },
+                        { "data": "remark" },
+                        { "data": "action" },
+                        { "data": "datePassToTaxDept" },
+                        { "data": "formCSubmitDate" },
+                        {
+                            "data": "jobCompleted",
+                            "render": function (data) {
+                                const statusClass =
+                                    data === 'Completed' ? 'badge bg-success' :
+                                        data === 'In Progress' ? 'badge bg-warning' :
+                                            data === 'Backlog' ? 'badge bg-danger' :
+                                                'badge bg-secondary';
+                                return data
+                                    ? `<span class="${statusClass}">${data}</span>`
+                                    : '<span class="badge bg-secondary">Unknown</span>';
+                            }
+                        },
+                        {
+                            "data": "id",
+                            "render": function (data, type, row) {
                                 return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                `;
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>`;
                             },
                             "orderable": false
                         }
-                    ],
+                    ]
+                    ,
                     "language": {
                         "emptyTable": "No records available",
                         "info": "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -511,33 +525,32 @@
 
             // 编辑记录
             function editRecord(id) {
-                $.get(`/secretary-dept/api/s16/get/${id}`, function(response) {
+                $.get(`/secretary-dept/api/s16/get/${id}`, function (response) {
                     if (response.success) {
                         const record = response.data;
-                        currentEditId = record.Id;
+                        currentEditId = record.id;
 
-                        // 填充表单
-                        $('#ref').val(record.Ref || '');
-                        $('#companyName').val(record.CompanyName || '');
-                        $('#companyNo').val(record.CompanyNo || '');
-                        $('#incorpDate').val(record.IncorpDate || '');
-                        $('#yearEnd').val(record.YearEnd || '');
-                        $('#startDate').val(record.StartDate || '');
-                        $('#completeDate').val(record.CompleteDate || '');
-                        $('#doneBy').val(record.DoneBy || '');
-                        $('#completedDate').val(record.CompletedDate || '');
-                        $('#penaltiesRM').val(record.PenaltiesRM || '');
-                        $('#revisedPenalties').val(record.RevisedPenalties || '');
-                        $('#appealDate').val(record.AppealDate || '');
-                        $('#paymentDate').val(record.PaymentDate || '');
-                        $('#s_OffDocsendtoClient').val(record.S_OffDocsendtoClient || '');
-                        $('#ssmSubmitDate').val(record.SSMsubmitDate || '');
-                        $('#ssmStrikeoffDate').val(record.SSMstrikeoffDate || '');
-                        $('#remark').val(record.Remark || '');
-                        $('#action').val(record.Action || '');
-                        $('#datePassToTaxDept').val(record.DatePassToTaxDept || '');
-                        $('#formCSubmitDate').val(record.FormCSubmitDate || '');
-                        $('#jobCompleted').val(record.JobCompleted || '');
+                        $('#ref').val(record.ref || '');
+                        $('#companyName').val(record.companyName || '');
+                        $('#companyNo').val(record.companyNo || '');
+                        $('#incorpDate').val(record.incorpDate || '');
+                        $('#yearEnd').val(record.yearEnd || '');
+                        $('#startDate').val(record.startDate || '');
+                        $('#completeDate').val(record.completeDate || '');
+                        $('#doneBy').val(record.doneBy || '');
+                        $('#completedDate').val(record.completedDate || '');
+                        $('#penaltiesRM').val(record.penaltiesRM || '');
+                        $('#revisedPenalties').val(record.revisedPenalties || '');
+                        $('#appealDate').val(record.appealDate || '');
+                        $('#paymentDate').val(record.paymentDate || '');
+                        $('#s_OffDocsendtoClient').val(record.s_OffDocsendtoClient || '');
+                        $('#ssmSubmitDate').val(record.ssMsubmitDate || '');
+                        $('#ssmStrikeoffDate').val(record.ssMstrikeoffDate || '');
+                        $('#remark').val(record.remark || '');
+                        $('#action').val(record.action || '');
+                        $('#datePassToTaxDept').val(record.datePassToTaxDept || '');
+                        $('#formCSubmitDate').val(record.formCSubmitDate || '');
+                        $('#jobCompleted').val(record.jobCompleted || '');
 
                         $('#modalTitle').text('Edit Strike Off Record');
                         $('#taskModal').modal('show');
@@ -546,6 +559,7 @@
                     }
                 });
             }
+
 
             // 删除记录
             function deleteRecord(id) {

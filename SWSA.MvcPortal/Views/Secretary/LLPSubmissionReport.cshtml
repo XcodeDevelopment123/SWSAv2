@@ -170,9 +170,16 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="adDueDate">Annual Declaration (AD) Due date</label>
-                                <input type="text" id="adDueDate" name="adDueDate" class="form-control" placeholder="Select date" />
+                                <small class="text-muted">(auto = Year end + 90 days)</small>
+                                <input type="text"
+                                       id="adDueDate"
+                                       name="adDueDate"
+                                       class="form-control"
+                                       placeholder="Auto calculated"
+                                       readonly />
                             </div>
                         </div>
+
                     </div>
 
                     <!-- AD Submission Date -->
@@ -313,6 +320,44 @@
             return s; // 先原样显示
         }
 
+        // 把 dd/MM/yyyy 字串转成 Date 对象
+        function parseDdMmYyyy(str) {
+            if (!str) return null;
+            const parts = str.split('/');
+            if (parts.length !== 3) return null;
+
+            const d = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1; // 月份 0-11
+            const y = parseInt(parts[2], 10);
+
+            if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+            return new Date(y, m, d);
+        }
+
+        // 把 Date 对象转回 dd/MM/yyyy
+        function formatDdMmYyyy(date) {
+            if (!date) return '';
+            const dd = ('0' + date.getDate()).slice(-2);
+            const mm = ('0' + (date.getMonth() + 1)).slice(-2);
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+        // 根据 Year End 自动计算 AD Due date = Year End + 90 天
+        function recalcAdDueDate() {
+            const yearEndStr = ($('#yearEnd').val() || '').trim();
+            const yearEndDate = parseDdMmYyyy(yearEndStr);
+            if (!yearEndDate) {
+                $('#adDueDate').val('');
+                return;
+            }
+
+            // 加 90 天
+            yearEndDate.setDate(yearEndDate.getDate() + 90);
+
+            $('#adDueDate').val(formatDdMmYyyy(yearEndDate));
+        }
+
         function getVal(obj, name) {
             if (!obj) return '';
 
@@ -339,6 +384,11 @@
 
         // ---------- Init ----------
         $(document).ready(function () {
+
+            // Year End 改变时，自动重算 AD Due date
+            $('#yearEnd').on('change blur', function () {
+                recalcAdDueDate();
+            });
 
             // 所有和 date 相关的 text input 套 datepicker（包含 yearEnd）
             $('input[type="text"]').filter(function () {
