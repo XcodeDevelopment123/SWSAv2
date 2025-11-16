@@ -1,253 +1,148 @@
 ﻿@{
-    ViewData["Title"] = "TaxDeptWorkSchedule";
+    ViewData["Title"] = "AT34AADSP";
 }
 
-<h1>Tax Dept Work Schedule</h1>
+<h1>AT3.4 Active Audit Directors Signing Pages</h1>
 
 <div class="row">
     <div class="col-md-12">
-        <!-- Alert Container -->
-        <div id="alertContainer"></div>
-
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>Tax Department Work Schedule
+                    <i class="fas fa-tasks me-2"></i>Directors Signing Pages Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                    <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
                         <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th colspan="10"></th>
-                            <th colspan="2">Current YA Est Data</th>
-                            <th colspan="2">Audit WIP Info</th>
-                            <th colspan="2">Doc Avail To Work</th>
-                            <th rowspan="3">Actions</th>
-                        </tr>
-
-                        <tr>
-                            <th rowspan="2">No</th>
-                            <th rowspan="2">Company Name</th>
-                            <th colspan="2">Activity</th>
-                            <th colspan="2">PIC</th>
-                            <th rowspan="2">Year Ended</th>
-                            <th rowspan="2">Tax Due Dates</th>
-                            <th rowspan="2">Est Month To Do</th>
-                            <th rowspan="2">Transfer to WIP TX3</th>
-                            <th rowspan="2">Revenue</th>
-                            <th rowspan="2">Net Profit</th>
-                            <th rowspan="2">Start Date</th>
-                            <th rowspan="2">Total%</th>
-                            <th rowspan="2">Doc Pass fr Audit Dept</th>
-                            <th rowspan="2">Date mgmt acc available</th>
-                        </tr>
-
-                        <tr>
-                            <th>Activity</th>
-                            <th>AEX/OT</th>
-                            <th>RAKC</th>
-                            <th>BTM</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be loaded dynamically -->
-                    </tbody>
-                </table>
+                <div id="loadingMessage" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading data...</p>
+                </div>
+                <div id="tableContainer" style="display: none;">
+                    <table id="taskDatatable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th colspan="6"></th>
+                                <th colspan="5">Directors' signing pages</th>
+                                <th colspan="1">Actions</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">No</th>
+                                <th rowspan="2">Company Name</th>
+                                <th rowspan="2">YE to do</th>
+                                <th rowspan="2">PIC</th>
+                                <th colspan="2">Activity</th>
+                                <th rowspan="2">Date Sent</th>
+                                <th rowspan="2">Follow up dates</th>
+                                <th rowspan="2">First 18 mths date</th>
+                                <th rowspan="2">Date received</th>
+                                <th rowspan="2">Comm of Oaths Date</th>
+                                <th rowspan="2">Actions</th>
+                            </tr>
+                            <tr>
+                                <th>Active</th>
+                                <th>AEX</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
+<!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Tax Dept Work Schedule Record</span>
+                    <span id="modalTitle">Add New Directors Signing Pages Record</span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="taskForm">
                     <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
-                    <div class="form-info-label col-12">
-                        <label>Basic Information</label>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2">Basic Information</h6>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="companyName">Company Name *</label>
-                                <select id="companyName" name="companyName" class="form-control" required>
-                                    <option value="">Select Company from Audit Department</option>
-                                </select>
-                                <small class="form-text text-muted">Select company from AT31 Audit Master Log Book</small>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="companyName" class="form-label">Company Name <span class="text-danger">*</span></label>
+                            <input type="text" id="companyName" class="form-control" placeholder="Enter company name" required />
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="yearEnded">Year Ended</label>
-                                <input type="text" id="yearEnded" name="yearEnded" class="form-control" placeholder="Enter year ended (e.g., 31 Dec 2024)" />
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="yeToDo" class="form-label">YE to do</label>
+                            <input type="text" id="yeToDo" class="form-control" placeholder="Enter year" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="pic" class="form-label">PIC</label>
+                            <input type="text" id="pic" class="form-control" placeholder="Enter PIC name" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="active" class="form-label">Active</label>
+                            <select id="active" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="aex" class="form-label">AEX</label>
+                            <select id="aex" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Activity Information -->
-                    <div class="form-info-label col-12">
-                        <label>Activity Information</label>
+                    <!-- Directors' Signing Pages -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2">Directors' Signing Pages</h6>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dateSent" class="form-label">Date Sent</label>
+                            <input type="date" id="dateSent" class="form-control" />
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="aexOt">AEX/OT</label>
-                                <select id="aexOt" name="aexOt" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="AEX">AEX</option>
-                                    <option value="OT">OT</option>
-                                </select>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="followUpDates" class="form-label">Follow up dates</label>
+                            <input type="text" id="followUpDates" class="form-control" placeholder="e.g., 03/02/2025, 10/02/2025" />
+                            <small class="form-text text-muted">Enter multiple dates separated by commas</small>
                         </div>
-                    </div>
-
-                    <!-- PIC Information -->
-                    <div class="form-info-label col-12">
-                        <label>PIC Information</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="rakc">RAKC</label>
-                                <input type="text" id="rakc" name="rakc" class="form-control" placeholder="Enter RAKC name" />
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="first18MonthsDate" class="form-label">First 18 mths date</label>
+                            <input type="date" id="first18MonthsDate" class="form-control" />
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="btm">BTM</label>
-                                <input type="text" id="btm" name="btm" class="form-control" placeholder="Enter BTM name" />
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="dateReceived" class="form-label">Date received</label>
+                            <input type="date" id="dateReceived" class="form-control" />
                         </div>
-                    </div>
-
-                    <!-- Schedule Information -->
-                    <div class="form-info-label col-12">
-                        <label>Schedule Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="estMonthToDo">Est Month To Do</label>
-                                <select id="estMonthToDo" name="estMonthToDo" class="form-control">
-                                    <option value="">Select Month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="May">May</option>
-                                    <option value="June">June</option>
-                                    <option value="July">July</option>
-                                    <option value="August">August</option>
-                                    <option value="September">September</option>
-                                    <option value="October">October</option>
-                                    <option value="November">November</option>
-                                    <option value="December">December</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="transferToWip">Transfer to WIP TX3</label>
-                                <select id="transferToWip" name="transferToWip" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="startDate">Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Financial Information -->
-                    <div class="form-info-label col-12">
-                        <label>Current YA Est Data</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="revenue">Revenue (RM)</label>
-                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" step="0.01" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="netProfit">Net Profit (RM)</label>
-                                <input type="number" id="netProfit" name="netProfit" class="form-control" placeholder="Enter net profit" step="0.01" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Progress Information -->
-                    <div class="form-info-label col-12">
-                        <label>Progress Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="totalPercentage">Total %</label>
-                                <input type="number" id="totalPercentage" name="totalPercentage" class="form-control" placeholder="Enter percentage" min="0" max="100" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Document Availability -->
-                    <div class="form-info-label col-12">
-                        <label>Document Availability</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="docPassFromAuditDept">Doc Pass fr Audit Dept</label>
-                                <input type="text" id="docPassFromAuditDept" name="docPassFromAuditDept" class="form-control datepicker" placeholder="Select date" readonly />
-                                <small class="form-text text-muted">Auto-filled from Audit Department</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateMgmtAccAvailable">Date mgmt acc available</label>
-                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control datepicker" placeholder="Select date" />
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="commOfOathsDate" class="form-label">Comm of Oaths Date</label>
+                            <input type="date" id="commOfOathsDate" class="form-control" />
                         </div>
                     </div>
                 </form>
@@ -265,345 +160,368 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
-    <!-- Include DataTables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Include Datepicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
     <script>
+        let isEditMode = false;
+        let allRecords = [];
+
         $(document).ready(function() {
-            let dataTable;
-            let currentEditId = null;
-            let at31Companies = [];
+            console.log('Document ready, starting initialization...');
 
-            // 初始化 DataTable
-            initializeDataTable();
+            // Load data immediately
+            loadTableData();
 
-            // 初始化日期选择器
-            initializeDatePickers();
-
-            // 加载 AT31 公司数据
-            loadAT31Companies();
-
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                saveTX2Record();
+            // Add new button click
+            $('#addNewBtn').on('click', function() {
+                openModal(false);
             });
 
-            // 初始化 DataTable
-            function initializeDataTable() {
-                dataTable = $('#taskDatatable').DataTable({
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                    "ajax": {
-                        "url": "/api/tx2/get-all",
-                        "type": "GET",
-                        "dataSrc": function(response) {
-                            if (response.success) {
-                                return response.data;
-                            } else {
-                                console.error('Error loading data:', response.message);
-                                showAlert('Error loading data: ' + response.message, 'danger');
-                                return [];
-                            }
-                        }
-                    },
-                    "columns": [
-                        {
-                            "data": null,
-                            "render": function(data, type, row, meta) {
-                                return meta.row + 1;
-                            }
-                        },
-                        { "data": "companyName" },
-                        { "data": "activity" },
-                        { "data": "aexOT" },
-                        { "data": "rakc" },
-                        { "data": "btm" },
-                        { "data": "yearEnd" },
-                        { "data": "taxDueDate" },
-                        { "data": "estMthTodo" },
-                        {
-                            "data": "transferToWIPTX3",
-                            "render": function(data, type, row) {
-                                return data || 'No';
-                            }
-                        },
-                        {
-                            "data": "revenue",
-                            "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
-                            }
-                        },
-                        {
-                            "data": "netProfit",
-                            "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
-                            }
-                        },
-                        { "data": "startDate" },
-                        {
-                            "data": "totalPercent",
-                            "render": function(data, type, row) {
-                                return data ? data + '%' : '-';
-                            }
-                        },
-                        { "data": "docPassFrAuditDept" },
-                        { "data": "dateMgmtAccAvailable" },
-                        {
-                            "data": "id",
-                            "render": function(data, type, row) {
-                                return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                `;
-                            },
-                            "orderable": false
-                        }
-                    ],
-                    "language": {
-                        "emptyTable": "No records available",
-                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                        "infoEmpty": "Showing 0 to 0 of 0 entries",
-                        "infoFiltered": "(filtered from _MAX_ total entries)",
-                        "lengthMenu": "Show _MENU_ entries",
-                        "loadingRecords": "Loading...",
-                        "processing": "Processing...",
-                        "search": "Search:",
-                        "zeroRecords": "No matching records found"
-                    }
-                });
-            }
-
-            // 初始化日期选择器
-            function initializeDatePickers() {
-                $('.datepicker').datepicker({
-                    format: 'dd/mm/yyyy',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-            }
-
-            // 加载 AT31 公司数据
-            function loadAT31Companies() {
-                $.get('/api/at31/get-companies', function(response) {
-                    if (response.success) {
-                        at31Companies = response.data;
-                        populateCompanyDropdown();
-                        showAlert('Successfully loaded companies from Audit Department', 'success');
-                    } else {
-                        console.error('Error loading AT31 companies:', response.message);
-                        showAlert('Warning: Could not load companies from Audit Department', 'warning');
-                    }
-                }).fail(function() {
-                    showAlert('Warning: Could not connect to Audit Department data', 'warning');
-                });
-            }
-
-            // 填充公司下拉菜单
-            function populateCompanyDropdown() {
-                const companySelect = $('#companyName');
-                companySelect.empty();
-                companySelect.append('<option value="">Select Company from Audit Department</option>');
-
-                at31Companies.forEach(company => {
-                    const displayText = company.DocInwardsDate ?
-                        `${company.CompanyName} (Doc Date: ${company.DocInwardsDate})` :
-                        company.CompanyName;
-
-                    companySelect.append(`<option value="${company.CompanyName}" data-doc-date="${company.DocInwardsDate || ''}">${displayText}</option>`);
-                });
-            }
-
-            // 公司选择变化时自动填充 Doc Pass Date
-            $(document).on('change', '#companyName', function() {
-                const selectedOption = $(this).find('option:selected');
-                const docDate = selectedOption.data('doc-date');
-                if (docDate) {
-                    $('#docPassFromAuditDept').val(docDate);
-                } else {
-                    $('#docPassFromAuditDept').val('');
-                }
+            // Save button click
+            $('#saveBtn').on('click', function() {
+                saveRecord();
             });
 
-            // 保存 TX2 记录
-            function saveTX2Record() {
-                // 基本验证
-                if (!$('#companyName').val()) {
-                    showAlert('Please select a company name', 'warning');
-                    return;
-                }
-
-                const formData = {
-                    companyName: $('#companyName').val(),
-                    activity: $('#activity').val(),
-                    aexOT: $('#aexOt').val(),
-                    rakc: $('#rakc').val(),
-                    btm: $('#btm').val(),
-                    yearEnd: $('#yearEnded').val(),
-                    taxDueDate: $('#taxDueDate').val(),
-                    estMthTodo: $('#estMonthToDo').val(),
-                    transferToWIPTX3: $('#transferToWip').val(),
-                    revenue: $('#revenue').val(),
-                    netProfit: $('#netProfit').val(),
-                    startDate: $('#startDate').val(),
-                    totalPercent: $('#totalPercentage').val(),
-                    docPassFrAuditDept: $('#docPassFromAuditDept').val(),
-                    dateMgmtAccAvailable: $('#dateMgmtAccAvailable').val()
-                };
-
-                const url = currentEditId ? '/api/tx2/update' : '/api/tx2/create';
-                const method = currentEditId ? 'PUT' : 'POST';
-
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
-
-                // 显示加载状态
-                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
-
-                $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#taskModal').modal('hide');
-                            dataTable.ajax.reload();
-                            resetForm();
-                            showAlert('Record saved successfully!', 'success');
-                        } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Error saving record: ' + error, 'danger');
-                    },
-                    complete: function() {
-                        // 恢复保存按钮状态
-                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    }
-                });
-            }
-
-            // 编辑记录
-            $(document).on('click', '.edit-btn', function() {
-                const id = $(this).data('id');
-                editRecord(id);
-            });
-
-            // 删除记录
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 编辑记录
-            function editRecord(id) {
-                $.get(`/api/tx2/get/${id}`, function(response) {
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditId = record.id;
-
-                        // 填充表单
-                        $('#companyName').val(record.companyName);
-                        $('#activity').val(record.activity);
-                        $('#aexOt').val(record.aexOT);
-                        $('#rakc').val(record.rakc);
-                        $('#btm').val(record.btm);
-                        $('#yearEnded').val(record.yearEnd);
-                        $('#taxDueDate').val(record.taxDueDate);
-                        $('#estMonthToDo').val(record.estMthTodo);
-                        $('#transferToWip').val(record.transferToWIPTX3);
-                        $('#revenue').val(record.revenue);
-                        $('#netProfit').val(record.netProfit);
-                        $('#startDate').val(record.startDate);
-                        $('#totalPercentage').val(record.totalPercent);
-                        $('#docPassFromAuditDept').val(record.docPassFrAuditDept);
-                        $('#dateMgmtAccAvailable').val(record.dateMgmtAccAvailable);
-
-                        $('#modalTitle').text('Edit Tax Dept Work Schedule Record');
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
-                    }
-                });
-            }
-
-            // 删除记录
-            function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-                    $.ajax({
-                        url: `/api/tx2/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                dataTable.ajax.reload();
-                                showAlert('Record deleted successfully!', 'success');
-                            } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            showAlert('Error deleting record: ' + error, 'danger');
-                        }
-                    });
-                }
-            }
-
-            // 重置表单
-            function resetForm() {
-                $('#taskForm')[0].reset();
-                currentEditId = null;
-                $('#modalTitle').text('Add New Tax Dept Work Schedule Record');
-                $('.datepicker').datepicker('update', '');
-            }
-
-            // 显示提示信息
-            function showAlert(message, type) {
-                const alertClass = `alert alert-${type} alert-dismissible fade show`;
-                const alertHtml = `
-                    <div class="${alertClass}" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                $('#alertContainer').html(alertHtml);
-
-                // 自动隐藏
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
-            }
-
-            // 模态框关闭时重置表单
+            // Reset form when modal is hidden
             $('#taskModal').on('hidden.bs.modal', function() {
                 resetForm();
             });
-
-            // 刷新数据按钮
-            $('#refreshBtn').click(function() {
-                dataTable.ajax.reload();
-                showAlert('Data refreshed successfully!', 'info');
-            });
         });
+
+        function loadTableData() {
+            console.log('Starting to load table data...');
+            $('#loadingMessage').show();
+            $('#tableContainer').hide();
+
+            $.ajax({
+                url: '/api/auditdept/at34/get-all',
+                type: 'GET',
+                success: function(response) {
+                    console.log('Ajax success, response:', response);
+                    $('#loadingMessage').hide();
+
+                    if (response.success) {
+                        allRecords = response.data || [];
+                        console.log('Records loaded:', allRecords.length);
+                        populateTable(allRecords);
+                        $('#tableContainer').show();
+                    } else {
+                        console.error('Response not successful:', response.message);
+                        showAlert('Error loading data: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax error:', {
+                        status: status,
+                        error: error,
+                        responseText: xhr.responseText
+                    });
+                    $('#loadingMessage').hide();
+                    showAlert('Error loading data: ' + error + '. Please check console for details.', 'danger');
+                }
+            });
+        }
+
+        function populateTable(data) {
+            console.log('Populating table with', data.length, 'records');
+            const tbody = $('#tableBody');
+            tbody.empty();
+
+            if (data && data.length > 0) {
+                data.forEach((record, index) => {
+                    // 调试：打印第一条记录的所有字段
+                    if (index === 0) {
+                        console.log('First record fields:', record);
+                        console.log('dateReceived value:', record.dateReceived);
+                        console.log('commofOathsDate value:', record.commofOathsDate);
+                    }
+
+                    // 统一格式化所有日期为 DD-MM-YYYY
+                    const dateSentDisplay = formatDateToDDMMYYYY(record.dateSent);
+                    const first18mthDateDisplay = formatDateToDDMMYYYY(record.first18mthDate);
+                    const dateReceivedDisplay = formatDateToDDMMYYYY(record.dateReceived);
+                    const commofOathsDateDisplay = formatDateToDDMMYYYY(record.commofOathsDate);
+
+                    console.log(`Record ${index + 1}:`);
+                    console.log('  dateReceived:', record.dateReceived, '->', dateReceivedDisplay);
+                    console.log('  commofOathsDate:', record.commofOathsDate, '->', commofOathsDateDisplay);
+
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${escapeHtml(record.companyName || '')}</td>
+                            <td>${escapeHtml(record.yEtodo || '')}</td>
+                            <td>${escapeHtml(record.pic || '')}</td>
+                            <td>${escapeHtml(record.active || '')}</td>
+                            <td>${escapeHtml(record.aex || '')}</td>
+                            <td>${dateSentDisplay}</td>
+                            <td>${escapeHtml(record.flwUpDates || '')}</td>
+                            <td>${first18mthDateDisplay}</td>
+                            <td>${dateReceivedDisplay}</td>
+                            <td>${commofOathsDateDisplay}</td>
+                            <td style="white-space: nowrap;">
+                                <button class="btn btn-sm btn-info" onclick="editRecord(${record.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${record.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            } else {
+                tbody.append('<tr><td colspan="12" class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>No records found. Click "New Record" to add data.</td></tr>');
+            }
+            console.log('Table populated successfully');
+        }
+
+        function formatDateToDDMMYYYY(dateString) {
+            if (!dateString) return '';
+
+            console.log('Formatting to DD-MM-YYYY:', dateString);
+
+            try {
+                // 如果已经是 DD/MM/YYYY 格式，转换为 DD-MM-YYYY
+                if (typeof dateString === 'string' && dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                    const formatted = dateString.replace(/\//g, '-');
+                    console.log('Converted DD/MM/YYYY to DD-MM-YYYY:', dateString, '->', formatted);
+                    return formatted;
+                }
+
+                // 如果是 YYYY-MM-DD 格式
+                if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    const parts = dateString.split('-');
+                    const year = parts[0];
+                    const month = parts[1];
+                    const day = parts[2];
+                    const formatted = `${day}-${month}-${year}`;
+                    console.log('Converted YYYY-MM-DD to DD-MM-YYYY:', dateString, '->', formatted);
+                    return formatted;
+                }
+
+                // 如果是 ISO 格式 (包含 T)
+                if (dateString.includes('T')) {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) {
+                        console.warn('Invalid ISO date:', dateString);
+                        return '';
+                    }
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const formatted = `${day}-${month}-${year}`;
+                    console.log('Converted ISO to DD-MM-YYYY:', dateString, '->', formatted);
+                    return formatted;
+                }
+
+                // 如果已经是 DD-MM-YYYY 格式，直接返回
+                if (typeof dateString === 'string' && dateString.match(/^\d{2}-\d{2}-\d{4}$/)) {
+                    return dateString;
+                }
+
+                console.log('Returning original value:', dateString);
+                return dateString;
+
+            } catch (e) {
+                console.error('Date formatting error for:', dateString, e);
+                return dateString || '';
+            }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+
+            console.log('Formatting date for input:', dateString);
+
+            try {
+                // 如果已经是 YYYY-MM-DD 格式，直接返回
+                if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    return dateString;
+                }
+
+                // 如果是 DD/MM/YYYY 或 DD-MM-YYYY 格式
+                if (typeof dateString === 'string' && (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/) || dateString.match(/^\d{2}-\d{2}-\d{4}$/))) {
+                    const separator = dateString.includes('/') ? '/' : '-';
+                    const parts = dateString.split(separator);
+                    const day = parts[0];
+                    const month = parts[1];
+                    const year = parts[2];
+                    const formatted = `${year}-${month}-${day}`;
+                    console.log('Converted to YYYY-MM-DD:', dateString, '->', formatted);
+                    return formatted;
+                }
+
+                return dateString;
+
+            } catch (e) {
+                console.error('Date format error for input:', dateString, e);
+                return '';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function openModal(editMode, recordId = null) {
+            isEditMode = editMode;
+            $('#modalTitle').text(editMode ? 'Edit Directors Signing Pages Record' : 'Add New Directors Signing Pages Record');
+
+            if (editMode && recordId) {
+                loadRecordForEdit(recordId);
+            } else {
+                resetForm();
+            }
+
+            $('#taskModal').modal('show');
+        }
+
+        function loadRecordForEdit(id) {
+            $.ajax({
+                url: `/api/auditdept/at34/get/${id}`,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        console.log('Loading record for edit:', record);
+
+                        $('#recordId').val(record.id);
+                        $('#companyName').val(record.companyName || '');
+                        $('#yeToDo').val(record.yEtodo || '');
+                        $('#pic').val(record.pic || '');
+                        $('#active').val(record.active || '');
+                        $('#aex').val(record.aex || '');
+                        $('#dateSent').val(formatDateForInput(record.dateSent));
+                        $('#followUpDates').val(record.flwUpDates || '');
+                        $('#first18MonthsDate').val(formatDateForInput(record.first18mthDate));
+                        $('#dateReceived').val(formatDateForInput(record.dateReceived));
+                        $('#commOfOathsDate').val(formatDateForInput(record.commofOathsDate));
+
+                        console.log('Form values set:');
+                        console.log('dateReceived input:', $('#dateReceived').val());
+                        console.log('commOfOathsDate input:', $('#commOfOathsDate').val());
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error loading record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function saveRecord() {
+            // Validate required fields
+            if (!$('#companyName').val().trim()) {
+                showAlert('Please enter Company Name', 'warning');
+                return;
+            }
+
+            const formData = {
+                companyName: $('#companyName').val(),
+                yEtodo: $('#yeToDo').val() || null,
+                pic: $('#pic').val() || null,
+                active: $('#active').val() || null,
+                aex: $('#aex').val() || null,
+                dateSent: $('#dateSent').val() || null,
+                flwUpDates: $('#followUpDates').val() || null,
+                first18mthDate: $('#first18MonthsDate').val() || null,
+                dateReceived: $('#dateReceived').val() || null,
+                commofOathsDate: $('#commOfOathsDate').val() || null
+            };
+
+            if (isEditMode) {
+                formData.id = parseInt($('#recordId').val());
+            }
+
+            console.log('Saving record:', formData);
+
+            const url = isEditMode ? '/api/auditdept/at34/update' : '/api/auditdept/at34/create';
+            const method = isEditMode ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    console.log('Save response:', response);
+                    if (response.success) {
+                        showAlert(response.message, 'success');
+                        $('#taskModal').modal('hide');
+                        loadTableData();
+                    } else {
+                        showAlert('Error: ' + (response.message || 'Unknown error'), 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Save error:', xhr.responseText);
+                    showAlert('Error saving record: ' + error, 'danger');
+                }
+            });
+        }
+
+        function editRecord(id) {
+            console.log('Editing record:', id);
+            openModal(true, id);
+        }
+
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                console.log('Deleting record:', id);
+                $.ajax({
+                    url: `/api/auditdept/at34/delete/${id}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            showAlert(response.message, 'success');
+                            loadTableData();
+                        } else {
+                            showAlert('Error: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error deleting record: ' + error, 'danger');
+                    }
+                });
+            }
+        }
+
+        function resetForm() {
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            isEditMode = false;
+        }
+
+        function showAlert(message, type) {
+            const alertId = 'alert-' + Date.now();
+            const alertHtml = `
+                <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <strong>${type === 'success' ? 'Success!' : type === 'danger' ? 'Error!' : 'Warning!'}</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+
+            // Remove old alerts
+            $('.alert').remove();
+
+            // Add new alert at the top of card body
+            $('.card-body').prepend(alertHtml);
+
+            // Auto remove after 5 seconds
+            setTimeout(function() {
+                $('#' + alertId).fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
     </script>
 }

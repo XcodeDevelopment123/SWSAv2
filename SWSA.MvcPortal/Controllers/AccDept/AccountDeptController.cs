@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using SWSA.MvcPortal.Models;
 using SWSA.MvcPortal.Models.AccDeptModel;
 
@@ -138,23 +139,51 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP21 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP21] 
-                    ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
-                     [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
-                     [Description], [ServiceType], [CoStatus], [ActiveCoActivitySize],
-                     [YEtodo], [AuditDeptMth], [DueDate], [ESTmthToDo], [DateDocIn], [Staff],
-                     [AllocateToWkSch], [Completed])
-                    VALUES 
-                    (@Grouping, @Refferal, @FileNo, @CompanyName, @YearEnd,
-                     @IncorpDate, @CO, @Enumber, @TINnumber, @Code,
-                     @Description, @ServiceType, @CoStatus, @ActiveCoActivitySize,
-                     @YEtodo, @AuditDeptMth, @DueDate, @ESTmthToDo, @DateDocIn, @Staff,
-                     @AllocateToWkSch, @Completed);
-                    SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP21 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP21] 
+            ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
+             [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
+             [Description], [ServiceType], [CoStatus], [ActiveCoActivitySize],
+             [YEtodo], [AuditDeptMth], [DueDate], [ESTmthToDo], [DateDocIn], [Staff],
+             [AllocateToWkSch], [Completed])
+            VALUES 
+            (@Grouping, @Refferal, @FileNo, @CompanyName, @YearEnd,
+             @IncorpDate, @CO, @Enumber, @TINnumber, @Code,
+             @Description, @ServiceType, @CoStatus, @ActiveCoActivitySize,
+             @YEtodo, @AuditDeptMth, @DueDate, @ESTmthToDo, @DateDocIn, @Staff,
+             @AllocateToWkSch, @Completed);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP21 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31B(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP21 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -170,28 +199,114 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP21] SET 
-                    [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
-                    [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
-                    [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
-                    [TINnumber] = @TINnumber, [Code] = @Code, [Description] = @Description,
-                    [ServiceType] = @ServiceType, [CoStatus] = @CoStatus,
-                    [ActiveCoActivitySize] = @ActiveCoActivitySize, [YEtodo] = @YEtodo,
-                    [AuditDeptMth] = @AuditDeptMth, [DueDate] = @DueDate, 
-                    [ESTmthToDo] = @ESTmthToDo, [DateDocIn] = @DateDocIn, [Staff] = @Staff,
-                    [AllocateToWkSch] = @AllocateToWkSch, [Completed] = @Completed
-                    WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                await connection.OpenAsync();
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP21] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP21Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP21 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP21] SET 
+            [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
+            [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
+            [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
+            [TINnumber] = @TINnumber, [Code] = @Code, [Description] = @Description,
+            [ServiceType] = @ServiceType, [CoStatus] = @CoStatus,
+            [ActiveCoActivitySize] = @ActiveCoActivitySize, [YEtodo] = @YEtodo,
+            [AuditDeptMth] = @AuditDeptMth, [DueDate] = @DueDate, 
+            [ESTmthToDo] = @ESTmthToDo, [DateDocIn] = @DateDocIn, [Staff] = @Staff,
+            [AllocateToWkSch] = @AllocateToWkSch, [Completed] = @Completed
+            WHERE Id = @Id";
+
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
+
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31B(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in UpdateBP21: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task SyncDateDocInToA31B(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing DateDocIn to A31B for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFrAccDept 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                         SET [DateDocFr] = @DateDocIn 
+                         WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP21')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31B: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
             }
         }
 
@@ -284,7 +399,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP22 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP22] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP22 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP22] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
                      [Description], [ServicesType], [ActiveCoActivitySize], [YEtodo],
@@ -298,9 +422,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP22 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP22 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -316,7 +459,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP22] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP22] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP22Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP22 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP22] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -327,16 +483,89 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [AllocateToWkSch] = @AllocateToWkSch, [Completed] = @Completed
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in UpdateBP22: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task SyncDateDocInToA31BDateDocFr(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP22')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
             }
         }
 
@@ -429,7 +658,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP23 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP23] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP23 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP23] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [RegistrationDate], [CO], [Enumber], [TINnumber], [Login],
                      [Password], [Code], [Description], [JobService], [ActiveCoActivitySize],
@@ -441,9 +679,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @YEtoDo, @DateDocIn, @MthTodo, @Staff, @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP23 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr1(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP23 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -459,7 +716,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP23] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP23] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP23Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP23 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP23] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [RegistrationDate] = @RegistrationDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -470,11 +740,34 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [AllocateToWkSch] = @AllocateToWkSch, [Completed] = @Completed
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr1(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -482,6 +775,57 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        private async Task SyncDateDocInToA31BDateDocFr1(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP23')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpDelete("api/bp23/delete/{id}")]
@@ -572,7 +916,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP24 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP24] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP24 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP24] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [ServicesType], [ActiveCoActivitSize], [YEtodo], [DateDocIn], 
                      [MthTodo], [Staff], [AllocateToWkSch], [Completed])
@@ -582,9 +935,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @MthTodo, @Staff, @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP24 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr2(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP24 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -600,7 +972,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP24] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP24] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP24Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP24 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP24] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [ServicesType] = @ServicesType, [ActiveCoActivitSize] = @ActiveCoActivitSize,
@@ -608,11 +993,34 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [Staff] = @Staff, [AllocateToWkSch] = @AllocateToWkSch, [Completed] = @Completed
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr2(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -620,6 +1028,57 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        private async Task SyncDateDocInToA31BDateDocFr2(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP24')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpDelete("api/bp24/delete/{id}")]
@@ -710,7 +1169,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP25 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP25] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP25 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP25] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [Enumber], [TinNumber], [Login], [Password], [Code],
                      [Description], [JobServices], [YEtodo], [DateDocIn], 
@@ -722,9 +1190,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @MthTodo, @Staff, @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP25 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP25 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -740,7 +1227,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP25] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP25] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP25Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP25 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP25] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [Enumber] = @Enumber, [TinNumber] = @TinNumber, [Login] = @Login,
@@ -750,11 +1250,34 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [Completed] = @Completed
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -762,6 +1285,56 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        private async Task SyncDateDocInToA31BDateDocFr3(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP25')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpDelete("api/bp25/delete/{id}")]
@@ -852,7 +1425,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP26 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP26] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP26 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP26] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [Enumber], [TinNumber], [Login], [Password], [Code],
                      [Description], [JobServices], [YEtodo], [DateDocIn], 
@@ -864,9 +1446,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @MthTodo, @Staff, @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP26 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr4(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP26 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -882,7 +1483,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP26] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP26] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP26Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP26 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP26] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [Enumber] = @Enumber, [TinNumber] = @TinNumber, [Login] = @Login,
@@ -892,16 +1506,89 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [Completed] = @Completed
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr4(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in UpdateBP26: {ex.Message}");
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task SyncDateDocInToA31BDateDocFr4(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP26')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
             }
         }
 
@@ -994,7 +1681,16 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP31 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP31] 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 插入 BP31 记录
+                    var sql = @"INSERT INTO [Quartz].[dbo].[BP31] 
                     ([Grouping], [Referral], [FileNo], [CompanyName], [YearEnd],
                      [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
                      [Description], [ServicesType], [CoStatus], [ActiveCoActivitySize],
@@ -1006,9 +1702,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @YEtoDo, @DateDocIn, @EstMthTodo, @Staff, @AllocateToWkSch);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
+                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    Console.WriteLine($"BP31 record created successfully with ID: {id}");
+
+                    // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
+                    if (!string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr5(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    Console.WriteLine($"Transaction committed successfully for BP31 ID: {id}");
+                    return Json(new { success = true, id = id, message = "Record created successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -1024,7 +1739,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP31] SET 
+
+                await connection.OpenAsync();
+
+                // 开始事务 - 使用 SqlTransaction
+                using var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP31] WHERE Id = @Id";
+                    var oldRecord = await connection.QueryFirstOrDefaultAsync<BP31Model>(oldRecordSql, new { Id = model.Id }, transaction);
+
+                    // 2. 更新 BP31 记录
+                    var sql = @"UPDATE [Quartz].[dbo].[BP31] SET 
                     [Grouping] = @Grouping, [Referral] = @Referral, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -1035,11 +1763,34 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [AllocateToWkSch] = @AllocateToWkSch
                     WHERE Id = @Id";
 
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
+                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    if (affectedRows == 0)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Record not found" });
+                    }
 
-                return Json(new { success = true, message = "Record updated successfully" });
+                    // 3. 检查 DateDocIn 字段是否从空变为有值，或者值发生了变化
+                    bool dateDocInChanged = (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn)) ||
+                                          (oldRecord?.DateDocIn != model.DateDocIn);
+
+                    if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
+                    {
+                        await SyncDateDocInToA31BDateDocFr5(connection, transaction, model.CompanyName, model.DateDocIn);
+                    }
+
+                    // 提交事务
+                    transaction.Commit();
+
+                    return Json(new { success = true, message = "Record updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    // 回滚事务
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    throw;
+                }
             }
             catch (Exception ex)
             {
@@ -1047,6 +1798,57 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        private async Task SyncDateDocInToA31BDateDocFr5(SqlConnection connection, SqlTransaction transaction, string companyName, string dateDocIn)
+        {
+            try
+            {
+                Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
+
+                // 首先检查 A31B 表中是否存在对应公司的记录
+                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
+
+                if (recordCount > 0)
+                {
+                    // 如果存在记录，则更新 DateDocFr 字段
+                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                             SET [DateDocFr] = @DateDocIn 
+                             WHERE Clients = @CompanyName";
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Updated {affectedRows} A31B record(s) DateDocFr for company: {companyName}");
+                }
+                else
+                {
+                    // 如果不存在记录，则创建新的 A31B 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                            ([Clients], [DateDocFr], [CoStatus], [Remark])
+                            VALUES 
+                            (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP31')";
+
+                    await connection.ExecuteAsync(insertSql, new
+                    {
+                        CompanyName = companyName,
+                        DateDocIn = dateDocIn
+                    }, transaction);
+
+                    Console.WriteLine($"Created new A31B record with DateDocFr for company: {companyName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SyncDateDocInToA31BDateDocFr: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; // 重新抛出异常以便事务回滚
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpDelete("api/bp31/delete/{id}")]

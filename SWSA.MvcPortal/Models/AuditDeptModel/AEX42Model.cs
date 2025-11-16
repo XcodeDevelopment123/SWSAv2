@@ -29,7 +29,7 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
         public string? MoveToActiveSch { get; set; }
 
         [Display(Name = "Date Doc In")]
-        public DateTime? DateDocIn { get; set; }
+        public string? DateDocIn { get; set; }
 
         [Display(Name = "Acctng Wk")]
         public string? AcctngWk { get; set; }

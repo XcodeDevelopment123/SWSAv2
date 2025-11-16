@@ -262,7 +262,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+               $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
 
@@ -296,6 +296,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 `;
+                // 如果没有 alertContainer，创建一个临时的
+                if ($('#alertContainer').length === 0) {
+                    $('.card-header').after('<div id="alertContainer"></div>');
+                }
                 $('#alertContainer').html(alertHtml);
 
                 setTimeout(() => {
@@ -307,9 +311,57 @@
             function resetForm() {
                 $('#taskForm')[0].reset();
                 currentEditId = null;
-                $('#modalTitle').text('Add New Sdn Bhd Backlog Record');
+                $('#modalTitle').text('Add New ACC LLP Back log');
                 $('.datepicker').datepicker('update', '');
-                $('#recordId').val('');
+                $('#editIndex').val('');
+            }
+
+            // 映射表单字段（修复 ID 不匹配问题）
+            function getFormData() {
+                return {
+                    grouping: $('#grouping').val(),
+                    referral: $('#referral').val(),
+                    fileNo: $('#fileNo').val(),
+                    companyName: $('#coName').val(), // 映射到正确的 ID
+                    yearEnd: $('#yearEnd').val(),
+                    incorpDate: $('#incorpDate').val(),
+                    co: $('#coNumber').val(), // 映射到正确的 ID
+                    enumber: $('#eNumber').val(), // 映射到正确的 ID
+                    tINnumber: $('#tinNumber').val(), // 映射到正确的 ID
+                    code: $('#miscCode').val(), // 映射到正确的 ID
+                    description: $('#miscDescription').val(), // 映射到正确的 ID
+                    servicesType: $('#servicesType').val(),
+                    coStatus: $('#coStatus').val(),
+                    activeCoActivitySize: $('#activitySize').val(), // 映射到正确的 ID
+                    yEtoDo: $('#yeToDo').val(), // 映射到正确的 ID
+                    dateDocIn: $('#dateDocIn').val(),
+                    estMthTodo: $('#estMonthToDo').val(), // 映射到正确的 ID
+                    staff: $('#staff').val(),
+                    allocateToWkSch: $('#allocateToWkSch').val()
+                };
+            }
+
+            // 填充表单数据（编辑时使用）
+            function populateForm(data) {
+                $('#grouping').val(data.grouping || '');
+                $('#referral').val(data.referral || '');
+                $('#fileNo').val(data.fileNo || '');
+                $('#coName').val(data.companyName || ''); // 映射到正确的 ID
+                $('#yearEnd').val(data.yearEnd || '');
+                $('#incorpDate').val(data.incorpDate ? data.incorpDate.split('T')[0] : '');
+                $('#coNumber').val(data.co || ''); // 映射到正确的 ID
+                $('#eNumber').val(data.enumber || ''); // 映射到正确的 ID
+                $('#tinNumber').val(data.tINnumber || ''); // 映射到正确的 ID
+                $('#miscCode').val(data.code || ''); // 映射到正确的 ID
+                $('#miscDescription').val(data.description || ''); // 映射到正确的 ID
+                $('#servicesType').val(data.servicesType || '');
+                $('#coStatus').val(data.coStatus || '');
+                $('#activitySize').val(data.activeCoActivitySize || ''); // 映射到正确的 ID
+                $('#yeToDo').val(data.yEtoDo || ''); // 映射到正确的 ID
+                $('#dateDocIn').val(data.dateDocIn ? data.dateDocIn.split('T')[0] : '');
+                $('#estMonthToDo').val(data.estMthTodo || ''); // 映射到正确的 ID
+                $('#staff').val(data.staff || '');
+                $('#allocateToWkSch').val(data.allocateToWkSch || '');
             }
 
             // 测试 API 连接
@@ -341,7 +393,6 @@
             // 初始化 DataTable
             function initializeDataTable() {
                 try {
-                    // 先检查 DataTable 是否已经存在，如果存在则销毁
                     if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                         dataTable.destroy();
                         $('#taskDatatable').empty();
@@ -368,26 +419,11 @@
                             }
                         },
                         "columns": [
-                            {
-                                "data": "grouping",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "referral",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "fileNo",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "companyName",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "yearEnd",
-                                "defaultContent": ""
-                            },
+                            { "data": "grouping", "defaultContent": "" },
+                            { "data": "referral", "defaultContent": "" },
+                            { "data": "fileNo", "defaultContent": "" },
+                            { "data": "companyName", "defaultContent": "" },
+                            { "data": "yearEnd", "defaultContent": "" },
                             {
                                 "data": "incorpDate",
                                 "render": function(data) {
@@ -395,42 +431,15 @@
                                 },
                                 "defaultContent": ""
                             },
-                            {
-                                "data": "co",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "enumber",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "tINnumber",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "code",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "description",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "servicesType",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "coStatus",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "activeCoActivitySize",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "yEtoDo",
-                                "defaultContent": ""
-                            },
+                            { "data": "co", "defaultContent": "" },
+                            { "data": "enumber", "defaultContent": "" },
+                            { "data": "tINnumber", "defaultContent": "" },
+                            { "data": "code", "defaultContent": "" },
+                            { "data": "description", "defaultContent": "" },
+                            { "data": "servicesType", "defaultContent": "" },
+                            { "data": "coStatus", "defaultContent": "" },
+                            { "data": "activeCoActivitySize", "defaultContent": "" },
+                            { "data": "yEtoDo", "defaultContent": "" },
                             {
                                 "data": "dateDocIn",
                                 "render": function(data) {
@@ -438,18 +447,9 @@
                                 },
                                 "defaultContent": ""
                             },
-                            {
-                                "data": "estMthTodo",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "staff",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "allocateToWkSch",
-                                "defaultContent": ""
-                            },
+                            { "data": "estMthTodo", "defaultContent": "" },
+                            { "data": "staff", "defaultContent": "" },
+                            { "data": "allocateToWkSch", "defaultContent": "" },
                             {
                                 "data": "id",
                                 "render": function(data, type, row) {
@@ -548,28 +548,7 @@
 
             // 保存 BP31 记录
             function saveBP31Record() {
-                const formData = {
-                    grouping: $('#grouping').val(),
-                    referral: $('#referral').val(),
-                    fileNo: $('#fileNo').val(),
-                    companyName: $('#companyName').val(),
-                    yearEnd: $('#yearEnd').val(),
-                    incorpDate: $('#incorpDate').val(),
-                    co: $('#co').val(),
-                    enumber: $('#enumber').val(),
-                    tINnumber: $('#tINnumber').val(),
-                    code: $('#code').val(),
-                    description: $('#description').val(),
-                    servicesType: $('#servicesType').val(),
-                    coStatus: $('#coStatus').val(),
-                    activeCoActivitySize: $('#activeCoActivitySize').val(),
-                    yEtoDo: $('#yEtoDo').val(),
-                    dateDocIn: $('#dateDocIn').val(),
-                    estMthTodo: $('#estMthTodo').val(),
-                    staff: $('#staff').val(),
-                    allocateToWkSch: $('#allocateToWkSch').val()
-                };
-
+                const formData = getFormData();
                 const url = currentEditId ? '/api/bp31/update' : '/api/bp31/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
@@ -609,29 +588,8 @@
                     if (response.success) {
                         const record = response.data;
                         currentEditId = record.id;
-
-                        // 填充表单
-                        $('#grouping').val(record.grouping || '');
-                        $('#referral').val(record.referral || '');
-                        $('#fileNo').val(record.fileNo || '');
-                        $('#companyName').val(record.companyName || '');
-                        $('#yearEnd').val(record.yearEnd || '');
-                        $('#incorpDate').val(record.incorpDate ? record.incorpDate.split('T')[0] : '');
-                        $('#co').val(record.co || '');
-                        $('#enumber').val(record.enumber || '');
-                        $('#tINnumber').val(record.tINnumber || '');
-                        $('#code').val(record.code || '');
-                        $('#description').val(record.description || '');
-                        $('#servicesType').val(record.servicesType || '');
-                        $('#coStatus').val(record.coStatus || '');
-                        $('#activeCoActivitySize').val(record.activeCoActivitySize || '');
-                        $('#yEtoDo').val(record.yEtoDo || '');
-                        $('#dateDocIn').val(record.dateDocIn ? record.dateDocIn.split('T')[0] : '');
-                        $('#estMthTodo').val(record.estMthTodo || '');
-                        $('#staff').val(record.staff || '');
-                        $('#allocateToWkSch').val(record.allocateToWkSch || '');
-
-                        $('#modalTitle').text('Edit Sdn Bhd Backlog Record');
+                        populateForm(record);
+                        $('#modalTitle').text('Edit ACC LLP Back log');
                         $('#taskModal').modal('show');
                     } else {
                         showAlert('Error loading record: ' + response.message, 'danger');
@@ -686,9 +644,9 @@
 
             $('#taskModal').on('hidden.bs.modal', resetForm);
 
-            $('#addNewBtn').click(function() {
+            $('[data-bs-target="#taskModal"]').click(function() {
                 resetForm();
-                $('#modalTitle').text('Add New Sdn Bhd Backlog Record');
+                $('#modalTitle').text('Add New ACC LLP Back log');
             });
 
             $('#taskForm').on('submit', function(e) {
@@ -697,7 +655,7 @@
             });
 
             // === 初始化应用 ===
-            console.log('Initializing Sdn Bhd Backlog application...');
+            console.log('Initializing ACC LLP Back log application...');
             initializeDatePickers();
             testApiConnection();
         });

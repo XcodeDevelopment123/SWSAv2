@@ -8,7 +8,7 @@
         public string? FileNo { get; set; }
         public string? CompanyName { get; set; }
         public string? YearEnd { get; set; }
-        public DateTime? RegistrationDate { get; set; }
+        public string? RegistrationDate { get; set; }
         public string? CO { get; set; }
         public string? Enumber { get; set; }
         public string? TINnumber { get; set; }
@@ -19,7 +19,7 @@
         public string? JobService { get; set; }
         public string? ActiveCoActivitySize { get; set; }
         public string? YEtoDo { get; set; }
-        public DateTime? DateDocIn { get; set; }
+        public string? DateDocIn { get; set; }
         public string? MthTodo { get; set; }
         public string? Staff { get; set; }
         public string? AllocateToWkSch { get; set; }

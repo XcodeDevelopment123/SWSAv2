@@ -1868,176 +1868,6 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         }
         #endregion
 
-        #region AEX42 (Audit Aex Backlog) CRUD Methods
-        [AllowAnonymous]
-        [HttpGet("api/auditdept/aex42/get-all")]
-        public async Task<IActionResult> GetAllAEX42Records()
-        {
-            try
-            {
-                Console.WriteLine("=== Starting GetAllAEX42Records ===");
-                using var connection = new SqlConnection(_connectionString);
-
-                await connection.OpenAsync();
-                Console.WriteLine("Database connection successful");
-
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] ORDER BY Id DESC";
-                Console.WriteLine($"Executing SQL: {sql}");
-
-                var records = await connection.QueryAsync<AEX42Model>(sql);
-                Console.WriteLine($"Query executed successfully. Found {records?.Count() ?? 0} records");
-
-                return Json(new { success = true, data = records });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"!!! ERROR in GetAllAEX42Records !!!");
-                Console.WriteLine($"Message: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet("api/auditdept/aex42/get/{id}")]
-        public async Task<IActionResult> GetAEX42ById(int id)
-        {
-            try
-            {
-                using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
-                var record = await connection.QueryFirstOrDefaultAsync<AEX42Model>(sql, new { Id = id });
-
-                if (record == null)
-                    return Json(new { success = false, message = "Record not found" });
-
-                return Json(new { success = true, data = record });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetAEX42ById: {ex.Message}");
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost("api/auditdept/aex42/create")]
-        public async Task<IActionResult> CreateAEX42([FromBody] AEX42Model model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
-
-                Console.WriteLine("Creating new AEX42 record...");
-                using var connection = new SqlConnection(_connectionString);
-
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX42] 
-        ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
-         [YearToDo], [MoveToActiveSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
-        VALUES 
-        (@Grouping, @CompanyName, @QuarterToDoAudit, @Activity, @YearEnd, 
-         @YearToDo, @MoveToActiveSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
-        SELECT CAST(SCOPE_IDENTITY() as int);";
-
-                var id = await connection.ExecuteScalarAsync<int>(sql, model);
-                Console.WriteLine($"Record created successfully with ID: {id}");
-                return Json(new { success = true, id = id, message = "Record created successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in CreateAEX42: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPut("api/auditdept/aex42/update")]
-        public async Task<IActionResult> UpdateAEX42([FromBody] AEX42Model model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
-
-                Console.WriteLine($"Updating AEX42 record with ID: {model.Id}");
-                using var connection = new SqlConnection(_connectionString);
-
-                var sql = @"UPDATE [Quartz].[dbo].[AEX42] SET 
-        [Grouping] = @Grouping, 
-        [CompanyName] = @CompanyName, 
-        [QuarterToDoAudit] = @QuarterToDoAudit, 
-        [Activity] = @Activity, 
-        [YearEnd] = @YearEnd, 
-        [YearToDo] = @YearToDo, 
-        [MoveToActiveSch] = @MoveToActiveSch, 
-        [DateDocIn] = @DateDocIn, 
-        [AcctngWk] = @AcctngWk, 
-        [ReasonWhyBacklog] = @ReasonWhyBacklog
-        WHERE Id = @Id";
-
-                var affectedRows = await connection.ExecuteAsync(sql, model);
-                Console.WriteLine($"Affected rows: {affectedRows}");
-
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
-
-                return Json(new { success = true, message = "Record updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in UpdateAEX42: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpDelete("api/auditdept/aex42/delete/{id}")]
-        public async Task<IActionResult> DeleteAEX42(int id)
-        {
-            try
-            {
-                Console.WriteLine($"Deleting AEX42 record with ID: {id}");
-                using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
-                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
-
-                Console.WriteLine($"Affected rows: {affectedRows}");
-
-                if (affectedRows == 0)
-                    return Json(new { success = false, message = "Record not found" });
-
-                return Json(new { success = true, message = "Record deleted successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in DeleteAEX42: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
-                return Json(new { success = false, message = $"Database error: {ex.Message}" });
-            }
-        }
-        #endregion
-
         #region AEX41 (AEX41S) CRUD Methods
         [AllowAnonymous]
         [HttpGet("api/auditdept/aex41/get-all")]
@@ -2122,6 +1952,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 新增逻辑：检查是否有 DateDocIn，如果有则创建 A31A 记录
+                if (!string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAEX41(model);
+                }
+
                 return Json(new { success = true, id = id, message = "Record created successfully" });
             }
             catch (Exception ex)
@@ -2147,6 +1984,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 Console.WriteLine($"Updating AEX41 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查 DateDocIn 是否变化
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AEX41] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX41Model>(oldRecordSql, new { Id = model.Id });
 
                 var sql = @"UPDATE [Quartz].[dbo].[AEX41] SET 
         [Grouping] = @Grouping, 
@@ -2175,6 +2016,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 新增逻辑：检查 DateDocIn 是否从空变为有值，如果是则创建 A31A 记录
+                if (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAEX41(model);
+                }
+
                 return Json(new { success = true, message = "Record updated successfully" });
             }
             catch (Exception ex)
@@ -2186,6 +2033,52 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                 }
                 return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        // 新增方法：从 AEX41 创建 A31A 记录
+        private async Task CreateA31AFromAEX41(AEX41Model aex41Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating A31A record from AEX41 record (Company: {aex41Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+                 [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                 [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+                VALUES 
+                (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+                 @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                 @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2)";
+
+                var a31aModel = new A31AModel
+                {
+                    Client = aex41Model.CompanyName,
+                    YearEnded = aex41Model.YearEnd ?? string.Empty,
+                    DateReceived = aex41Model.DateDocIn, // 将 AEX41 的 DateDocIn 存入 A31A 的 DateReceived
+                    NoOfBagBox = null,
+                    ByWhom = null,
+                    UploadLetter = null,
+                    Remark = $"Auto-created from AEX41 record (ID: {aex41Model.Id})", // 按照要求写入 remark
+                    DateSendToAD = null,
+                    Date = null,
+                    NoOfBoxBag = null,
+                    ByWhoam2 = null,
+                    UploadLetter2 = null,
+                    Remark2 = null
+                };
+
+                await connection.ExecuteAsync(sql, a31aModel);
+                Console.WriteLine($"A31A record created successfully for company: {aex41Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating A31A record from AEX41: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AEX41 记录创建是主要的，A31A 创建是附加功能
             }
         }
 
@@ -2210,6 +2103,238 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in DeleteAEX41: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+        #endregion
+
+        #region AEX42 (Audit Aex Backlog) CRUD Methods
+        [AllowAnonymous]
+        [HttpGet("api/auditdept/aex42/get-all")]
+        public async Task<IActionResult> GetAllAEX42Records()
+        {
+            try
+            {
+                Console.WriteLine("=== Starting GetAllAEX42Records ===");
+                using var connection = new SqlConnection(_connectionString);
+
+                await connection.OpenAsync();
+                Console.WriteLine("Database connection successful");
+
+                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] ORDER BY Id DESC";
+                Console.WriteLine($"Executing SQL: {sql}");
+
+                var records = await connection.QueryAsync<AEX42Model>(sql);
+                Console.WriteLine($"Query executed successfully. Found {records?.Count() ?? 0} records");
+
+                return Json(new { success = true, data = records });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"!!! ERROR in GetAllAEX42Records !!!");
+                Console.WriteLine($"Message: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("api/auditdept/aex42/get/{id}")]
+        public async Task<IActionResult> GetAEX42ById(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var record = await connection.QueryFirstOrDefaultAsync<AEX42Model>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetAEX42ById: {ex.Message}");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("api/auditdept/aex42/create")]
+        public async Task<IActionResult> CreateAEX42([FromBody] AEX42Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                Console.WriteLine("Creating new AEX42 record...");
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[AEX42] 
+        ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
+         [YearToDo], [MoveToActiveSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
+        VALUES 
+        (@Grouping, @CompanyName, @QuarterToDoAudit, @Activity, @YearEnd, 
+         @YearToDo, @MoveToActiveSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
+        SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                Console.WriteLine($"Record created successfully with ID: {id}");
+
+                // 新增逻辑：检查是否有 DateDocIn，如果有则创建 A31A 记录
+                if (!string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAEX42(model);
+                }
+
+                return Json(new { success = true, id = id, message = "Record created successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in CreateAEX42: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut("api/auditdept/aex42/update")]
+        public async Task<IActionResult> UpdateAEX42([FromBody] AEX42Model model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                Console.WriteLine($"Updating AEX42 record with ID: {model.Id}");
+                using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查 DateDocIn 是否变化
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX42Model>(oldRecordSql, new { Id = model.Id });
+
+                var sql = @"UPDATE [Quartz].[dbo].[AEX42] SET 
+        [Grouping] = @Grouping, 
+        [CompanyName] = @CompanyName, 
+        [QuarterToDoAudit] = @QuarterToDoAudit, 
+        [Activity] = @Activity, 
+        [YearEnd] = @YearEnd, 
+        [YearToDo] = @YearToDo, 
+        [MoveToActiveSch] = @MoveToActiveSch, 
+        [DateDocIn] = @DateDocIn, 
+        [AcctngWk] = @AcctngWk, 
+        [ReasonWhyBacklog] = @ReasonWhyBacklog
+        WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                Console.WriteLine($"Affected rows: {affectedRows}");
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                // 新增逻辑：检查 DateDocIn 是否从空变为有值，如果是则创建 A31A 记录
+                if (string.IsNullOrEmpty(oldRecord?.DateDocIn) && !string.IsNullOrEmpty(model.DateDocIn))
+                {
+                    await CreateA31AFromAEX42(model);
+                }
+
+                return Json(new { success = true, message = "Record updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in UpdateAEX42: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return Json(new { success = false, message = $"Database error: {ex.Message}" });
+            }
+        }
+
+        // 新增方法：从 AEX42 创建 A31A 记录
+        private async Task CreateA31AFromAEX42(AEX42Model aex42Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating A31A record from AEX42 record (Company: {aex42Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+                 [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                 [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+                VALUES 
+                (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+                 @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                 @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2)";
+
+                var a31aModel = new A31AModel
+                {
+                    Client = aex42Model.CompanyName,
+                    YearEnded = aex42Model.YearEnd ?? string.Empty,
+                    DateReceived = aex42Model.DateDocIn, // 将 AEX42 的 DateDocIn 存入 A31A 的 DateReceived
+                    NoOfBagBox = null,
+                    ByWhom = null,
+                    UploadLetter = null,
+                    Remark = $"Auto-created from AEX42 record (ID: {aex42Model.Id})", // 按照要求写入 remark
+                    DateSendToAD = null,
+                    Date = null,
+                    NoOfBoxBag = null,
+                    ByWhoam2 = null,
+                    UploadLetter2 = null,
+                    Remark2 = null
+                };
+
+                await connection.ExecuteAsync(sql, a31aModel);
+                Console.WriteLine($"A31A record created successfully for company: {aex42Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating A31A record from AEX42: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AEX42 记录创建是主要的，A31A 创建是附加功能
+            }
+        }
+        [AllowAnonymous]
+        [HttpDelete("api/auditdept/aex42/delete/{id}")]
+        public async Task<IActionResult> DeleteAEX42(int id)
+        {
+            try
+            {
+                Console.WriteLine($"Deleting AEX42 record with ID: {id}");
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "DELETE FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                Console.WriteLine($"Affected rows: {affectedRows}");
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, message = "Record deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in DeleteAEX42: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 if (ex.InnerException != null)
                 {
@@ -2285,6 +2410,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                // 新增逻辑：检查相关字段，创建对应记录
+                await CreateRelatedRecordsFromAEX51(model);
+
                 return Json(new { success = true, id = id, data = model });
             }
             catch (Exception ex)
@@ -2303,6 +2432,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查字段是否变化
+                var oldRecordSql = @"SELECT DocInwardsDate, DateSentClient, DateReceivedBack, PasstoTaxDept 
+                           FROM [Quartz].[dbo].[AEX51] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX51Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AEX51] SET 
         [CompanyName] = @CompanyName, 
         [Activity] = @Activity, 
@@ -2340,11 +2475,265 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查相关字段是否从空变为有值，如果是则创建对应记录
+                bool shouldCreateRecords =
+                    (string.IsNullOrEmpty(oldRecord?.DocInwardsDate) && !string.IsNullOrEmpty(model.DocInwardsDate)) ||
+                    (string.IsNullOrEmpty(oldRecord?.DateSentClient) && !string.IsNullOrEmpty(model.DateSentClient)) ||
+                    (string.IsNullOrEmpty(oldRecord?.DateReceivedBack) && !string.IsNullOrEmpty(model.DateReceivedBack)) ||
+                    (string.IsNullOrEmpty(oldRecord?.PasstoTaxDept) && !string.IsNullOrEmpty(model.PasstoTaxDept));
+
+                if (shouldCreateRecords)
+                {
+                    await CreateRelatedRecordsFromAEX51(model);
+                }
+
                 return Json(new { success = true, data = model });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task CreateRelatedRecordsFromAEX51(AEX51Model aex51Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating related records from AEX51 record (Company: {aex51Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                // 日期格式转换函数：将 12/21/2002 转换为 12-12-2002
+                string ConvertDateFormat(string dateString)
+                {
+                    if (string.IsNullOrEmpty(dateString)) return null;
+
+                    try
+                    {
+                        // 如果已经是 DD-MM-YYYY 格式，直接返回
+                        if (dateString.Contains('-') && dateString.Length == 10)
+                            return dateString;
+
+                        // 将 MM/DD/YYYY 或 DD/MM/YYYY 转换为 DD-MM-YYYY
+                        if (dateString.Contains('/'))
+                        {
+                            var parts = dateString.Split('/');
+                            if (parts.Length == 3)
+                            {
+                                // 假设格式是 MM/DD/YYYY，转换为 DD-MM-YYYY
+                                var month = parts[0];
+                                var day = parts[1];
+                                var year = parts[2];
+
+                                // 确保日期格式正确
+                                return $"{day.PadLeft(2, '0')}-{month.PadLeft(2, '0')}-{year}";
+                            }
+                        }
+
+                        return dateString;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error converting date format '{dateString}': {ex.Message}");
+                        return dateString; // 如果转换失败，返回原值
+                    }
+                }
+
+                // 1. 将 DocInwardsDate 存进 A31A 的 Date
+                if (!string.IsNullOrEmpty(aex51Model.DocInwardsDate))
+                {
+                    var convertedDocInwardsDate = ConvertDateFormat(aex51Model.DocInwardsDate);
+
+                    var a31aSql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+            ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
+             [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+             [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
+            VALUES 
+            (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
+             @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+             @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2)";
+
+                    var a31aModel = new A31AModel
+                    {
+                        Client = aex51Model.CompanyName,
+                        YearEnded = null,
+                        DateReceived = null,
+                        NoOfBagBox = null,
+                        ByWhom = null,
+                        UploadLetter = null,
+                        Remark = "Auto-created from AEX51 record",
+                        DateSendToAD = null,
+                        Date = convertedDocInwardsDate, // 使用转换后的日期
+                        NoOfBoxBag = null,
+                        ByWhoam2 = null,
+                        UploadLetter2 = null,
+                        Remark2 = null
+                    };
+
+                    await connection.ExecuteAsync(a31aSql, a31aModel);
+                    Console.WriteLine($"A31A record created with Date: {convertedDocInwardsDate} (original: {aex51Model.DocInwardsDate})");
+                }
+
+                // 2. 将 DateSentClient 存进 AT34 的 DateReceived
+                if (!string.IsNullOrEmpty(aex51Model.DateSentClient))
+                {
+                    var convertedDateSentClient = ConvertDateFormat(aex51Model.DateSentClient);
+
+                    var at34Sql = @"INSERT INTO [Quartz].[dbo].[AT34] 
+            ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
+             [DateSent], [FlwUpDates], [First18mthDate], [DateReceived], [CommofOathsDate])
+            VALUES 
+            (@CompanyName, @YEtodo, @PIC, @Active, @AEX, 
+             @DateSent, @FlwUpDates, @First18mthDate, @DateReceived, @CommofOathsDate)";
+
+                    var at34Model = new AT34Model
+                    {
+                        CompanyName = aex51Model.CompanyName,
+                        YEtodo = null,
+                        PIC = aex51Model.PIC,
+                        Active = "Yes",
+                        AEX = "Yes",
+                        DateSent = convertedDateSentClient, // 使用转换后的日期
+                        FlwUpDates = null,
+                        First18mthDate = null,
+                        DateReceived = convertedDateSentClient, // 使用转换后的日期
+                        CommofOathsDate = null
+                    };
+
+                    await connection.ExecuteAsync(at34Sql, at34Model);
+                    Console.WriteLine($"AT34 record created with DateReceived: {convertedDateSentClient} (original: {aex51Model.DateSentClient})");
+                }
+
+                // 3. 将 DateReceivedBack 存进 AT34 的 CommofOathsDate
+                if (!string.IsNullOrEmpty(aex51Model.DateReceivedBack))
+                {
+                    var convertedDateReceivedBack = ConvertDateFormat(aex51Model.DateReceivedBack);
+
+                    var checkAt34Sql = "SELECT Id FROM [Quartz].[dbo].[AT34] WHERE CompanyName = @CompanyName";
+                    var existingAt34Id = await connection.ExecuteScalarAsync<int?>(checkAt34Sql, new { CompanyName = aex51Model.CompanyName });
+
+                    if (existingAt34Id.HasValue)
+                    {
+                        var updateAt34Sql = @"UPDATE [Quartz].[dbo].[AT34] SET 
+                        [CommofOathsDate] = @CommofOathsDate
+                        WHERE CompanyName = @CompanyName";
+
+                        await connection.ExecuteAsync(updateAt34Sql, new
+                        {
+                            CommofOathsDate = convertedDateReceivedBack, // 使用转换后的日期
+                            CompanyName = aex51Model.CompanyName
+                        });
+                        Console.WriteLine($"AT34 record updated with CommofOathsDate: {convertedDateReceivedBack} (original: {aex51Model.DateReceivedBack})");
+                    }
+                    else
+                    {
+                        var insertAt34Sql = @"INSERT INTO [Quartz].[dbo].[AT34] 
+                        ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
+                         [DateSent], [FlwUpDates], [First18mthDate], [DateReceived], [CommofOathsDate])
+                        VALUES 
+                        (@CompanyName, @YEtodo, @PIC, @Active, @AEX, 
+                         @DateSent, @FlwUpDates, @First18mthDate, @DateReceived, @CommofOathsDate)";
+
+                        var at34Model = new AT34Model
+                        {
+                            CompanyName = aex51Model.CompanyName,
+                            YEtodo = null,
+                            PIC = aex51Model.PIC,
+                            Active = "Yes",
+                            AEX = "Yes",
+                            DateSent = null,
+                            FlwUpDates = null,
+                            First18mthDate = null,
+                            DateReceived = null,
+                            CommofOathsDate = convertedDateReceivedBack // 使用转换后的日期
+                        };
+
+                        await connection.ExecuteAsync(insertAt34Sql, at34Model);
+                        Console.WriteLine($"AT34 record created with CommofOathsDate: {convertedDateReceivedBack} (original: {aex51Model.DateReceivedBack})");
+                    }
+                }
+
+                // 4. 将 PasstoTaxDept 存进 TX2 的 AEXOT
+                if (!string.IsNullOrEmpty(aex51Model.PasstoTaxDept))
+                {
+                    try
+                    {
+                        var convertedPassToTax = ConvertDateFormat(aex51Model.PasstoTaxDept);
+                        var convertedTaxDueDate = ConvertDateFormat(aex51Model.TaxDueDate);
+                        var convertedStartDate = ConvertDateFormat(aex51Model.StartDate);
+
+                        Console.WriteLine($"Attempting to insert into TX2 with CompanyName: {aex51Model.CompanyName}, AEXOT: {convertedPassToTax}");
+
+                        var tx2Sql = @"
+                INSERT INTO [Quartz].[dbo].[TX2] 
+                ([CompanyName], [Activity], [AEXOT], [RAKC], [BTM], [YearEnd], 
+                 [TaxDueDate], [EstMthTodo], [TransferToWIPTX3], [Revenue], 
+                 [NetProfit], [StartDate], [TotalPercent], [DocPassFrAuditDept], 
+                 [DateMgmtAccAvailable])
+                VALUES 
+                (@CompanyName, @Activity, @AEXOT, @RAKC, @BTM, @YearEnd, 
+                 @TaxDueDate, @EstMthTodo, @TransferToWIPTX3, @Revenue, 
+                 @NetProfit, @StartDate, @TotalPercent, @DocPassFrAuditDept, 
+                 @DateMgmtAccAvailable)";
+
+                        var tx2Model = new
+                        {
+                            CompanyName = aex51Model.CompanyName,
+                            Activity = aex51Model.Activity ?? "Audit",
+                            AEXOT = convertedPassToTax, // 使用转换后的日期
+                            RAKC = null as string,
+                            BTM = null as string,
+                            YearEnd = null as string,
+                            TaxDueDate = convertedTaxDueDate, // 使用转换后的日期
+                            EstMthTodo = null as string,
+                            TransferToWIPTX3 = null as string,
+                            Revenue = aex51Model.Revenue,
+                            NetProfit = aex51Model.Profit,
+                            StartDate = convertedStartDate, // 使用转换后的日期
+                            TotalPercent = aex51Model.DonePercent,
+                            DocPassFrAuditDept = convertedPassToTax, // 使用转换后的日期
+                            DateMgmtAccAvailable = null as string
+                        };
+
+                        var affectedRows = await connection.ExecuteAsync(tx2Sql, tx2Model);
+                        Console.WriteLine($"✅ TX2 record created successfully. Affected rows: {affectedRows}");
+                    }
+                    catch (Exception tx2Ex)
+                    {
+                        Console.WriteLine($"❌ Error creating TX2 record: {tx2Ex.Message}");
+
+                        // 简化版本
+                        try
+                        {
+                            Console.WriteLine("🔄 Trying simplified TX2 insert...");
+                            var simpleTx2Sql = @"
+                    INSERT INTO [Quartz].[dbo].[TX2] 
+                    ([CompanyName], [AEXOT])
+                    VALUES 
+                    (@CompanyName, @AEXOT)";
+
+                            var simpleModel = new
+                            {
+                                CompanyName = aex51Model.CompanyName,
+                                AEXOT = ConvertDateFormat(aex51Model.PasstoTaxDept) // 使用转换后的日期
+                            };
+
+                            var simpleAffectedRows = await connection.ExecuteAsync(simpleTx2Sql, simpleModel);
+                            Console.WriteLine($"✅ Simplified TX2 insert successful. Affected rows: {simpleAffectedRows}");
+                        }
+                        catch (Exception simpleEx)
+                        {
+                            Console.WriteLine($"❌ Simplified TX2 insert also failed: {simpleEx.Message}");
+                        }
+                    }
+                }
+
+                Console.WriteLine($"All related records creation completed for company: {aex51Model.CompanyName}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating related records from AEX51: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
             }
         }
 
@@ -2433,6 +2822,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                // 新增逻辑：检查相关字段，创建或更新 AEX51 记录
+                await CreateOrUpdateAEX51FromAEX52(model);
+
                 return Json(new { success = true, id = id, data = model });
             }
             catch (Exception ex)
@@ -2451,6 +2844,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
+
+                // 先获取旧的记录来检查字段是否变化
+                var oldRecordSql = @"SELECT NoofDays, ResultOverUnder, ReviewDateSent 
+                           FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX52Model>(oldRecordSql, new { Id = model.Id });
+
                 var sql = @"UPDATE [Quartz].[dbo].[AEX52] SET 
         [CompanyName] = @CompanyName, 
         [Activity] = @Activity, 
@@ -2483,11 +2882,124 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
+                // 检查相关字段是否变化，如果是则更新 AEX51 记录
+                bool shouldUpdateAEX51 =
+                    (string.IsNullOrEmpty(oldRecord?.NoofDays) && !string.IsNullOrEmpty(model.NoofDays)) ||
+                    (string.IsNullOrEmpty(oldRecord?.ResultOverUnder) && !string.IsNullOrEmpty(model.ResultOverUnder)) ||
+                    (string.IsNullOrEmpty(oldRecord?.ReviewDateSent) && !string.IsNullOrEmpty(model.ReviewDateSent)) ||
+                    (!string.IsNullOrEmpty(oldRecord?.NoofDays) && !string.IsNullOrEmpty(model.NoofDays) && oldRecord.NoofDays != model.NoofDays) ||
+                    (!string.IsNullOrEmpty(oldRecord?.ResultOverUnder) && !string.IsNullOrEmpty(model.ResultOverUnder) && oldRecord.ResultOverUnder != model.ResultOverUnder) ||
+                    (!string.IsNullOrEmpty(oldRecord?.ReviewDateSent) && !string.IsNullOrEmpty(model.ReviewDateSent) && oldRecord.ReviewDateSent != model.ReviewDateSent);
+
+                if (shouldUpdateAEX51)
+                {
+                    await CreateOrUpdateAEX51FromAEX52(model);
+                }
+
                 return Json(new { success = true, data = model });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // 新增方法：从 AEX52 创建或更新 AEX51 记录
+        private async Task CreateOrUpdateAEX51FromAEX52(AEX52Model aex52Model)
+        {
+            try
+            {
+                Console.WriteLine($"Creating or updating AEX51 record from AEX52 record (Company: {aex52Model.CompanyName})");
+
+                using var connection = new SqlConnection(_connectionString);
+
+                // 首先检查是否已存在相同公司名的 AEX51 记录
+                var checkSql = "SELECT Id FROM [Quartz].[dbo].[AEX51] WHERE CompanyName = @CompanyName";
+                var existingId = await connection.ExecuteScalarAsync<int?>(checkSql, new { CompanyName = aex52Model.CompanyName });
+
+                if (existingId.HasValue)
+                {
+                    // 更新已存在的 AEX51 记录
+                    var updateSql = @"UPDATE [Quartz].[dbo].[AEX51] SET 
+                        [DonePercent] = @DonePercent,
+                        [ResultOverUnder] = @ResultOverUnder,
+                        [DateSent] = @DateSent,
+                        [Remark] = @Remark
+                        WHERE CompanyName = @CompanyName";
+
+                    var aex51UpdateModel = new
+                    {
+                        DonePercent = aex52Model.NoofDays, // AEX52 的 NoofDays 存入 AEX51 的 DonePercent
+                        ResultOverUnder = aex52Model.ResultOverUnder, // AEX52 的 ResultOverUnder 存入 AEX51 的 ResultOverUnder
+                        DateSent = aex52Model.ReviewDateSent, // AEX52 的 ReviewDateSent 存入 AEX51 的 DateSent
+                        Remark = $"Auto-updated from AEX52 record (ID: {aex52Model.Id})",
+                        CompanyName = aex52Model.CompanyName
+                    };
+
+                    var affectedRows = await connection.ExecuteAsync(updateSql, aex51UpdateModel);
+                    Console.WriteLine($"AEX51 record updated successfully. Affected rows: {affectedRows}");
+                    Console.WriteLine($"AEX51 updated with - DonePercent: {aex52Model.NoofDays}, ResultOverUnder: {aex52Model.ResultOverUnder}, DateSent: {aex52Model.ReviewDateSent}");
+                }
+                else
+                {
+                    // 创建新的 AEX51 记录
+                    var insertSql = @"INSERT INTO [Quartz].[dbo].[AEX51] 
+                        ([CompanyName], [Activity], [YEtodo], [Quartertodo], [PIC], [First18mthDue], [Status],
+                         [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate], [EndDate],
+                         [DonePercent], [ResultOverUnder], [Completed], [DateSent], [DateSenttoKK], [ReviewResult],
+                         [DateReceivedfrKK], [WhomeetClientDate], [DateSentClient], [DateReceivedBack], [TaxDueDate],
+                         [PasstoTaxDept], [SSMdueDate], [DatePassToSecDept], [Binded], [DespatachDateClient])
+                        VALUES 
+                        (@CompanyName, @Activity, @YEtodo, @Quartertodo, @PIC, @First18mthDue, @Status,
+                         @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate, @EndDate,
+                         @DonePercent, @ResultOverUnder, @Completed, @DateSent, @DateSenttoKK, @ReviewResult,
+                         @DateReceivedfrKK, @WhomeetClientDate, @DateSentClient, @DateReceivedBack, @TaxDueDate,
+                         @PasstoTaxDept, @SSMdueDate, @DatePassToSecDept, @Binded, @DespatachDateClient)";
+
+                    var aex51Model = new AEX51Model
+                    {
+                        CompanyName = aex52Model.CompanyName,
+                        Activity = aex52Model.Activity,
+                        YEtodo = aex52Model.Yeartodo,
+                        Quartertodo = aex52Model.Quartertodo,
+                        PIC = aex52Model.PIC,
+                        First18mthDue = null,
+                        Status = aex52Model.Status,
+                        DocInwardsDate = null,
+                        Revenue = aex52Model.AuditFee, // 使用 AuditFee 作为 Revenue
+                        Profit = null,
+                        AuditFee = aex52Model.AuditFee,
+                        DateBilled = aex52Model.DateBilled,
+                        StartDate = aex52Model.StartDate,
+                        EndDate = aex52Model.EndDate,
+                        DonePercent = aex52Model.NoofDays, // AEX52 的 NoofDays 存入 AEX51 的 DonePercent
+                        ResultOverUnder = aex52Model.ResultOverUnder, // AEX52 的 ResultOverUnder 存入 AEX51 的 ResultOverUnder
+                        Completed = "No",
+                        DateSent = aex52Model.ReviewDateSent, // AEX52 的 ReviewDateSent 存入 AEX51 的 DateSent
+                        DateSenttoKK = aex52Model.KKDateSent,
+                        ReviewResult = aex52Model.ReviewResultOverUnder,
+                        DateReceivedfrKK = null,
+                        WhomeetClientDate = null,
+                        DateSentClient = null,
+                        DateReceivedBack = null,
+                        TaxDueDate = null,
+                        PasstoTaxDept = null,
+                        SSMdueDate = null,
+                        DatePassToSecDept = null,
+                        Binded = null,
+                        DespatachDateClient = null
+                    };
+
+                    await connection.ExecuteAsync(insertSql, aex51Model);
+                    Console.WriteLine($"AEX51 record created successfully for company: {aex52Model.CompanyName}");
+                    Console.WriteLine($"AEX51 created with - DonePercent: {aex52Model.NoofDays}, ResultOverUnder: {aex52Model.ResultOverUnder}, DateSent: {aex52Model.ReviewDateSent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating/updating AEX51 record from AEX52: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                // 这里不抛出异常，因为 AEX52 记录创建是主要的，AEX51 创建是附加功能
             }
         }
 

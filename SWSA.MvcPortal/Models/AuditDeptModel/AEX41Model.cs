@@ -11,11 +11,11 @@
         public string? Yeattodo { get; set; }
         public string? MovetoActiveSch { get; set; }
         public string? MovetoBacklog { get; set; }
-        public DateTime? First18mthsdue { get; set; }
-        public DateTime? AuditedAccDueDate { get; set; }
+        public string? First18mthsdue { get; set; }
+        public string? AuditedAccDueDate { get; set; }
         public string? CoSec { get; set; }
         public string? Team { get; set; }
-        public DateTime? DateDocIn { get; set; }
+        public string? DateDocIn { get; set; }
         public decimal? EstRev { get; set; }
         public decimal? EstNetProfit { get; set; }
         public string? AcctngWk { get; set; }

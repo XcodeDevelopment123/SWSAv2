@@ -38,12 +38,12 @@
         public string CoStatus { get; set; }
         public string DateDocFr { get; set; }
         public string DateReceived { get; set; }
-        public int? NoOfBoxBag { get; set; }
+        public string? NoOfBoxBag { get; set; }
         public string ByWhom { get; set; }
         public string UploadLetter { get; set; }
         public string Remark { get; set; }
         public string Date { get; set; }
-        public int? NoOfbox { get; set; }
+        public string? NoOfbox { get; set; }
         public string ByWhom2 { get; set; }
         public string UploadLetter2 { get; set; }
         public string Remark2 { get; set; }

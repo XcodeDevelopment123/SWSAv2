@@ -16,7 +16,7 @@
         public string? Description { get; set; }
         public string? JobServices { get; set; }
         public string? YEtodo { get; set; }
-        public DateTime? DateDocIn { get; set; }
+        public string? DateDocIn { get; set; }
         public string? MthTodo { get; set; }
         public string? Staff { get; set; }
         public string? AllocateToWkSch { get; set; }

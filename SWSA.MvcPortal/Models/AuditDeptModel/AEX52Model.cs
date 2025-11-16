@@ -26,55 +26,55 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
         public string Status { get; set; }
 
         [Display(Name = "Audit Fee")]
-        public decimal? AuditFee { get; set; }
+        public string? AuditFee { get; set; }
 
         [Display(Name = "Date Billed")]
-        public DateTime? DateBilled { get; set; }
+        public string? DateBilled { get; set; }
 
         [Display(Name = "Start Date")]
-        public DateTime? StartDate { get; set; }
+        public string? StartDate { get; set; }
 
         [Display(Name = "End Date")]
-        public DateTime? EndDate { get; set; }
+        public string? EndDate { get; set; }
 
         [Display(Name = "No of Days")]
-        public int? NoofDays { get; set; }
+        public string? NoofDays { get; set; }
 
         [Display(Name = "Result Over Under")]
         public string ResultOverUnder { get; set; }
 
         [Display(Name = "Acc Setup")]
-        public decimal? AccSetup { get; set; }
+        public string? AccSetup { get; set; }
 
         [Display(Name = "Acc Summary")]
-        public decimal? AccSummary { get; set; }
+        public string? AccSummary { get; set; }
 
         [Display(Name = "Audit Planning")]
-        public decimal? AuditPlanning { get; set; }
+        public string? AuditPlanning { get; set; }
 
         [Display(Name = "Audit Execution")]
-        public decimal? AuditExecution { get; set; }
+        public string? AuditExecution { get; set; }
 
         [Display(Name = "Audit Completion")]
-        public decimal? AuditCompletion { get; set; }
+        public string? AuditCompletion { get; set; }
 
         [Display(Name = "Total Percent")]
-        public decimal? TotalPercent { get; set; }
+        public string? TotalPercent { get; set; }
 
         [Display(Name = "Review Date Sent")]
-        public DateTime? ReviewDateSent { get; set; }
+        public string? ReviewDateSent { get; set; }
 
         [Display(Name = "Review End Date")]
-        public DateTime? ReviewEndDate { get; set; }
+        public string? ReviewEndDate { get; set; }
 
         [Display(Name = "Review Result Over Under")]
         public string ReviewResultOverUnder { get; set; }
 
         [Display(Name = "KK Date Sent")]
-        public DateTime? KKDateSent { get; set; }
+        public string? KKDateSent { get; set; }
 
         [Display(Name = "KK End Date")]
-        public DateTime? KKEndDate { get; set; }
+        public string? KKEndDate { get; set; }
 
         [Display(Name = "KK Result Over Under")]
         public string KKResultOverUnder { get; set; }
