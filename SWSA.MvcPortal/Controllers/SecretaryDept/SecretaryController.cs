@@ -211,6 +211,48 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        public class S16Tx4SourceOption
+        {
+            public int Tx4Id { get; set; }             // TX4.Id
+            public string CompanyName { get; set; }    // 公司名
+            public string YearEnd { get; set; }        // dd/MM/yyyy
+
+            public string SsmStrikeOffDate { get; set; }      // = TX4.DateSOff
+            public string DatePassToTaxDept { get; set; }     // = TX4.DateReceiveFrSecDept
+            public string FormCSubmissionDate { get; set; }   // = TX4.FormCsubmitDate
+        }
+
+        [HttpGet("api/s16/get-tx4-source-options")]
+        public async Task<IActionResult> GetS16Tx4SourceOptions()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id                                    AS Tx4Id,
+    CompanyName,
+    CONVERT(varchar(10), YearEnd, 103)    AS YearEnd,             -- dd/MM/yyyy
+    CONVERT(varchar(10), DateSOff, 103)   AS SsmStrikeOffDate,    -- dd/MM/yyyy
+    CONVERT(varchar(10), DateReceiveFrSecDept, 103) AS DatePassToTaxDept,   -- dd/MM/yyyy
+    CONVERT(varchar(10), FormCsubmitDate, 103) AS FormCSubmissionDate      -- dd/MM/yyyy
+FROM [Quartz].[dbo].[TX4]
+ORDER BY CompanyName, YearEnd DESC;
+";
+
+                var list = (await connection.QueryAsync<S16Tx4SourceOption>(sql)).ToList();
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
         #endregion
 
         #region API S13A
@@ -434,9 +476,12 @@ FROM [Quartz].[dbo].[AEX41];";
                 IncorpDate = incorpFromAr,
                 YearEnd = s13a.YearEnd ?? string.Empty,
                 CompanyStatus = s13a.CompanyStatus ?? string.Empty,
-                YrMthdueDate = string.Empty,
-                CirculationAFSduedate = string.Empty,
-                MBRSreceivedDate = string.Empty,
+
+                // ✅ 用 S13A 的值带去 S14B（只在 INSERT 时用到）
+                YrMthdueDate = s13a.YrMthDueDate ?? string.Empty,
+                CirculationAFSduedate = s13a.Circulation ?? string.Empty,
+
+                MBRSreceivedDate = string.Empty,   // 如果将来要从 AFSSubmitDate 带，也可以改这里
                 OntimeLate = string.Empty,
                 ReasonForLate = string.Empty,
                 JobCompleted = s13a.JobCompleted ?? string.Empty
@@ -457,6 +502,8 @@ BEGIN
         CompanyNo     = CASE WHEN CompanyNo IS NULL OR CompanyNo = '' THEN @CompanyNo ELSE CompanyNo END,
         IncorpDate    = CASE WHEN (IncorpDate IS NULL OR IncorpDate = '') AND @IncorpDate <> '' THEN @IncorpDate ELSE IncorpDate END,
         CompanyStatus = @CompanyStatus,
+        YrMthdueDate = @YrMthdueDate,
+        CirculationAFSduedate = @CirculationAFSduedate,
         JobCompleted  = @JobCompleted
     WHERE FileNo = @FileNo
       AND YearEnd = @YearEnd;
@@ -501,6 +548,7 @@ SELECT @Action;
             var action = await connection.ExecuteScalarAsync<string>(sql, param);
             return action ?? "none";
         }
+
 
 
 
@@ -823,26 +871,45 @@ WHERE Id = @Id";
             }
         }
 
-        //// 获取公司列表用于下拉选择
-        //[HttpGet("api/s13a/get-companies")]
-        //public async Task<IActionResult> GetS13ACompanies()
-        //{
-        //    try
-        //    {
-        //        using var connection = new SqlConnection(_connectionString);
-        //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
-        //                           DatePassToTaxDept, FormCSubmitDate 
-        //                    FROM [Quartz].[dbo].[S13A] 
-        //                    ORDER BY CompanyName";
-        //        var records = await connection.QueryAsync<S13A>(sql);
+        [HttpGet("get-s14b-mbrs-source-options")]
+        public async Task<IActionResult> GetS14B_MbrsSourceOptions()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
 
-        //        return Json(new { success = true, data = records });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
+                var sql = @"
+SELECT 
+    Id AS SourceId,
+    'AT31' AS SourceType,
+    CompanyName,
+    CONVERT(varchar(50), DateReceiveBack, 113) AS MbrsReceivedDate
+FROM [Quartz].[dbo].[AT31];
+";
+
+                var list = (await connection.QueryAsync<S14BMbrsSourceOption>(sql)).ToList();
+
+                // 统一转 dd/MM/yyyy
+                foreach (var x in list)
+                {
+                    x.MbrsReceivedDate = NormalizeToDdMmYyyy(x.MbrsReceivedDate);
+                }
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public class S14BMbrsSourceOption
+        {
+            public string SourceType { get; set; }        // "AT31"
+            public int SourceId { get; set; }
+            public string CompanyName { get; set; }
+            public string MbrsReceivedDate { get; set; }  // dd/MM/yyyy
+        }
         #endregion
 
         #region API S15

@@ -136,21 +136,36 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="first18MonthsDueDate">1st 18mths due date</label>
-                                <input type="text" id="first18MonthsDueDate" name="first18MonthsDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="first18MonthsDueDate" name="first18MonthsDueDate" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="circulationAFSDueDate">Circulation & AFS due date</label>
-                                <input type="text" id="circulationAFSDueDate" name="circulationAFSDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="circulationAFSDueDate" name="circulationAFSDueDate" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mbrsReceivedDate">MBRS received date</label>
-                                <input type="text" id="mbrsReceivedDate" name="mbrsReceivedDate" class="form-control" placeholder="Select date" />
+
+                                <!-- 🔵 来自 AT3.1 的列表 -->
+                                <select id="mbrsSourceSelect" class="form-control mb-2">
+                                    <option value="">-- Link from AT3.1 Audit Logbook --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Select a record from AT3.1 to auto-fill MBRS received date.
+                                </small>
+
+                                <!-- 真实保存到 S14B 的日期（仍然可以手动改） -->
+                                <input type="text"
+                                       id="mbrsReceivedDate"
+                                       name="mbrsReceivedDate"
+                                       class="form-control mt-2"
+                                       placeholder="Select date or choose from AT3.1" />
                             </div>
                         </div>
+
                     </div>
 
                     <!-- Result -->
@@ -226,6 +241,38 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+
+        let mbrsSourceOptions = [];   // 存 AT3.1 的 list
+        // ---------- Load MBRS source list from AT3.1 ----------
+        function loadMbrsSourceOptions() {
+            $.ajax({
+                url: 'get-s14b-mbrs-source-options',   // 就是你刚才加的后端 API 路径
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        mbrsSourceOptions = res.data || [];
+
+                        const $sel = $('#mbrsSourceSelect');
+                        $sel.empty();
+                        $sel.append('<option value="">-- Link from AT3.1 Audit Logbook --</option>');
+
+                        mbrsSourceOptions.forEach(function (x) {
+                            const id = getVal(x, 'SourceId');
+                            const coName = getVal(x, 'CompanyName');
+                            const date = getVal(x, 'MbrsReceivedDate');
+
+                            const text = coName + (date ? ' (' + date + ')' : '');
+                            $sel.append(`<option value="${id}">${text}</option>`);
+                        });
+                    } else {
+                        console.error('Failed to load AT3.1 MBRS source list:', res?.message || 'Unknown error');
+                    }
+                },
+                error: function (xhr) {
+                    console.error('Failed to load AT3.1 MBRS source list:', xhr.statusText || 'Network error');
+                }
+            });
+        }
 
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
@@ -308,6 +355,27 @@
 
         // ---------- Init ----------
         $(document).ready(function () {
+
+            loadMbrsSourceOptions();
+
+            // 🔵 当用户选择一个 AT3.1 记录时，自动填充 MBRS received date
+            $('#mbrsSourceSelect').on('change', function () {
+                const selectedId = $(this).val();
+                if (!selectedId) {
+                    return;
+                }
+
+                const item = mbrsSourceOptions.find(x =>
+                    String(getVal(x, 'SourceId')) === String(selectedId)
+                );
+
+                if (!item) {
+                    return;
+                }
+
+                const date = getVal(item, 'MbrsReceivedDate');
+                $('#mbrsReceivedDate').val(date || '');
+            });
 
             // 所有和 date 相关的 text input 套 datepicker（包含 yearEnd）
             $('input[type="text"]').filter(function () {
