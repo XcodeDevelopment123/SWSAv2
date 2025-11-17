@@ -92,13 +92,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyName">Company Name *</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <select id="companyName" name="companyName" class="form-control" required>
+                                    <option value="">-- Select company --</option>
+                                    <!-- 选项用 JS 动态加载 -->
+                                </select>
+                                <small class="text-muted">* Company list is linked from the Client List</small>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end (e.g., 31 Dec 2023)" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end (e.g., Dec 2023)" />
                             </div>
                         </div>
                     </div>
@@ -263,6 +268,9 @@
             let dataTable;
             let currentEditId = null;
 
+            loadClientOptionsForTx4();
+
+
             // 初始化 DataTable
             initializeDataTable();
 
@@ -273,6 +281,26 @@
             $('#saveBtn').click(function() {
                 saveTX4Record();
             });
+
+            // 选公司时自动带出 Year End，格式：MM/yyyy
+            $('#companyName').on('change', function () {
+                const $selected = $(this).find('option:selected');
+                const yearEndMonth = parseInt($selected.data('yearendmonth'), 10);   // 1~12
+
+                if (yearEndMonth && yearEndMonth >= 1 && yearEndMonth <= 12) {
+                    const now = new Date();
+                    const year = now.getFullYear();  // 默认用今年的年份
+
+                    const mm = yearEndMonth.toString().padStart(2, '0');  // 01~12
+                    const formatted = `${mm}/${year}`;
+
+                    $('#yearEnd').val(formatted);
+                } else {
+                    $('#yearEnd').val('');
+                }
+            });
+
+    
 
             // 初始化 DataTable
             function initializeDataTable() {
@@ -457,7 +485,20 @@
                         currentEditId = record.id;
 
                         // 填充表单
-                        $('#companyName').val(record.companyName);
+                        // ★ 先尝试在下拉中选中对应公司
+                        const $ddl = $('#companyName');
+                        // 如果下拉没有该公司名（可能是旧数据），就动态加一个 option
+                        if ($ddl.find('option[value="' + record.companyName + '"]').length === 0 && record.companyName) {
+                            $ddl.append(
+                                $('<option>')
+                                    .val(record.companyName)
+                                    .text(record.companyName)
+                                    .attr('data-yearendmonth', '')
+                            );
+                        }
+                        $ddl.val(record.companyName);
+
+                        // YearEnd 直接用记录里的值
                         $('#yearEnd').val(record.yearEnd);
                         $('#ssmSubmissionDate').val(record.ssmSubmissionDate);
                         $('#dateSOff').val(record.dateSOff);
@@ -502,6 +543,33 @@
                     });
                 }
             }
+
+            // ★ 新增：加载公司下拉
+            function loadClientOptionsForTx4() {
+                $.get('/api/tx4/client-options', function (response) {
+                    if (!response.success) {
+                        showAlert('Error loading clients: ' + response.message, 'danger');
+                        return;
+                    }
+
+                    const $ddl = $('#companyName');
+                    $ddl.empty();
+                    $ddl.append('<option value="">-- Select company --</option>');
+
+                    response.data.forEach(function (item) {
+                        // 把 YearEndMonth 放在 data-yearendmonth 里，后面用
+                        const option = $('<option>')
+                            .val(item.companyName)                         // value就是公司名，直接存到TX4.CompanyName
+                            .text(item.companyName)
+                            .attr('data-yearendmonth', item.yearEndMonth || '');
+
+                        $ddl.append(option);
+                    });
+                }).fail(function (xhr, status, error) {
+                    showAlert('Error loading clients: ' + error, 'danger');
+                });
+            }
+
 
             // 重置表单
             function resetForm() {

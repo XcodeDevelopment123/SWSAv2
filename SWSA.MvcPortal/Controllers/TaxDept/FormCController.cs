@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using SWSA.MvcPortal.Models.Clients;
 using SWSA.MvcPortal.Models.TaxDeptModel;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.TaxDept
 {
@@ -10,10 +11,12 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        public readonly IClientService _clientService;
 
-        public FormCController(IConfiguration configuration)
+        public FormCController(IConfiguration configuration,IClientService clientService)
         {
             _configuration = configuration;
+            _clientService = clientService;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
         }
 
@@ -570,6 +573,39 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        public class ClientOptionForTx4
+        {
+            public int Id { get; set; }
+            public string CompanyName { get; set; }
+            public string? YearEndMonth { get; set; }   // 对应 Clients.YearEndMonth
+        }
+        [HttpGet("api/tx4/client-options")]
+        public async Task<IActionResult> GetClientOptionsForTx4()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+
+                var sql = @"
+SELECT 
+    Id,
+    [Name]           AS CompanyName,
+    YearEndMonth
+FROM [Quartz].[dbo].[Clients]
+ORDER BY [Name];";
+
+                var list = await connection.QueryAsync<ClientOptionForTx4>(sql);
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
 
         // 创建或更新 S16 记录的辅助方法
         private async Task CreateOrUpdateS16Record(SqlConnection connection, TX4Model tx4Model)
