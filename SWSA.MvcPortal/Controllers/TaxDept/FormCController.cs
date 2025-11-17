@@ -99,7 +99,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                              [EndDate], [NoOfDays], [PnLAnalysis], [CAnTaxCompu], [DraftFormC], 
                              [TaxPayableRM], [TaxCompCA], [FormC], [Sent], [Received], 
                              [TaxPaymentDate], [FormCsubmitedDate], [InvDate], [Fees], 
-                             [Printing], [Despatch])
+                             [Printing], [Despatch], [JobCompleted])
                             VALUES 
                             (@TaxDueDate, @EstQuarterTodo, @DateMgmtAccAvailable, @StartDate, 
                              @EndDate, @NoOfDays, @PnLAnalysis, @CAnTaxCompu, @DraftFormC, 

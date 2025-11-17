@@ -37,23 +37,23 @@
 
 
 @{
-			        /*
-			        var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-			        var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-			        var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+					        /*
+					        var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+					        var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+					        var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-			        var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-			        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-			        var submissionNav = new List<string> { };
-			        */
+					        var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+					        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+					        var submissionNav = new List<string> { };
+					        */
 
-			        // 临时使用默认值
-			        var currentController = new ControllerInfo("Home");
-			        var currentAction = new ActionInfo("Index");
-			        var currentClientType = new ActionInfo("");
-			        var url = Context.Request.Path.ToString();
-			        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-			        var submissionNav = new List<string> { };
+					        // 临时使用默认值
+					        var currentController = new ControllerInfo("Home");
+					        var currentAction = new ActionInfo("Index");
+					        var currentClientType = new ActionInfo("");
+					        var url = Context.Request.Path.ToString();
+					        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+					        var submissionNav = new List<string> { };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -386,7 +386,7 @@
 									</a>
 									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document) ? @"display:block" : "display:none")">
 
-										<li class="nav-item">
+										@* <li class="nav-item">
 											<a href="/documents/audit-dept"
 											   class="nav-link @(currentController.Is(ControllerNames.Document) && currentAction.Is("AuditDepartment") ? "active" : "")">
 												<span class="nav-icon ">3.1.1</span>
@@ -403,7 +403,7 @@
 													Acc Department
 												</p>
 											</a>
-										</li>
+										</li> *@
 
 										<li class="nav-item">
 											<a href="/documents/doct-audA31A" class="nav-link ">
@@ -436,24 +436,6 @@
 									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
 
 										<li class="nav-item">
-											<a href="#" class="nav-link ">
-												<span class="nav-icon ">3.2.1</span>
-												<p>
-													Inward Correspond
-												</p>
-											</a>
-										</li>
-
-										<li class="nav-item">
-											<a href="#" class="nav-link ">
-												<span class="nav-icon ">3.2.2</span>
-												<p>
-													Tax Audit
-												</p>
-											</a>
-										</li>
-
-										<li class="nav-item">
 											<a href="/documents/doct-accA32A" class="nav-link ">
 												<span class="nav-icon ">A3.2A</span>
 												<p>
@@ -482,24 +464,6 @@
 										</p>
 									</a>
 									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
-
-										<li class="nav-item">
-											<a href="#" class="nav-link ">
-												<span class="nav-icon ">3.3.1</span>
-												<p>
-													Inward Correspond
-												</p>
-											</a>
-										</li>
-
-										<li class="nav-item">
-											<a href="#" class="nav-link ">
-												<span class="nav-icon ">3.3.2</span>
-												<p>
-													Tax Audit
-												</p>
-											</a>
-										</li>
 
 										<li class="nav-item">
 											<a href="/FormC/FormC" class="nav-link ">
@@ -1006,65 +970,20 @@
 											Strike Off Tax Work
 										</p>
 									</a>
+
 								</li>
 
-								<li class="nav-item">
+								@* <li class="nav-item">
 									<a href="/FormC/TX5TEMPLATE" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
 										<span class="nav-icon "></span>
 										<p>
 											TX5 CP204/CP204A TEMPLATE
 										</p>
 									</a>
-								</li>
+								</li> *@
 
-								<li class="nav-item">
-									<a href="/AuditDept/AuditMasterSchedule" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Audit Master Schedule
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/AuditDept/AuditMasterLogBook" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Audit Master Log Book
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/AuditDept/AT32Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											AT32 Audit
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/AuditDept/AT33Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											AT33 Audit
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/AuditDept/AT34Audit" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											AT34 Audit
-										</p>
-									</a>
-								</li>
 							</ul>
-
 						</li>
-
 						<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
 							<a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
 								<span class="nav-icon">9</span>
@@ -1238,7 +1157,7 @@
 							</a>
 						</li>
 
-					</ul>
+						</li>
 				</nav>
 				<!-- /.sidebar-menu -->
 			</div>
