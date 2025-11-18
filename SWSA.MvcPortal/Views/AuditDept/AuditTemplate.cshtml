@@ -490,7 +490,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveRecord()">
+                <button type="button" class="btn btn-primary" id="saveBtn">
                     <i class="fas fa-save me-2"></i>Save
                 </button>
             </div>
@@ -516,6 +516,7 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+        let isSubmitting = false; // 防重复提交标志
 
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
@@ -614,6 +615,7 @@
             $('#modalTitle').text('Add New Audit Template Record');
             hideModalAlert();
             clearFieldErrors();
+            resetSubmitState(); // 重置提交状态
         }
 
         function formatCurrency(amount) {
@@ -635,6 +637,17 @@
             } catch (e) {
                 return value || '';
             }
+        }
+
+        // ---------- Submit State Management ----------
+        function resetSubmitState() {
+            isSubmitting = false;
+            $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+        }
+
+        function setSubmittingState() {
+            isSubmitting = true;
+            $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
         }
 
         // ---------- Init ----------
@@ -704,8 +717,14 @@
                 dataTableInitialized = false;
             }
 
-            // 绑定按钮事件
-            $('#saveBtn').click(saveRecord);
+            // 绑定保存按钮事件 - 使用防重复提交
+            $('#saveBtn').click(function() {
+                if (!isSubmitting) {
+                    saveRecord();
+                } else {
+                    console.log('Submission in progress, please wait...');
+                }
+            });
 
             // 使用事件委托绑定动态按钮
             $(document).on('click', '.edit-btn', function () {
@@ -720,7 +739,11 @@
                 deleteRecord(id);
             });
 
-            $('#taskModal').on('hidden.bs.modal', clearForm);
+            // 模态框关闭时重置状态
+            $('#taskModal').on('hidden.bs.modal', function() {
+                clearForm();
+                resetSubmitState();
+            });
 
             // 新建按钮点击事件
             $('[data-bs-target="#taskModal"]').on('click', function () {
@@ -985,8 +1008,8 @@
 
             console.log('Saving via:', url, method);
 
-            const $btn = $('#saveBtn');
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+            // 设置提交状态
+            setSubmittingState();
 
             $.ajax({
                 url: url,
@@ -995,7 +1018,10 @@
                 data: JSON.stringify(formData),
                 success: function (res) {
                     console.log('Save response:', res);
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+
+                    // 重置提交状态
+                    resetSubmitState();
+
                     if (res && res.success) {
                         $('#taskModal').modal('hide');
                         showAlert('Record saved successfully.', 'success');
@@ -1007,7 +1033,9 @@
                 },
                 error: function (xhr, status, error) {
                     console.error('Save error:', error);
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+
+                    // 重置提交状态
+                    resetSubmitState();
                     showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
