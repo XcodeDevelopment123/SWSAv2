@@ -1,0 +1,497 @@
+﻿@{
+    ViewData["Title"] = "GroupList";
+}
+
+<h1>Group List</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-layer-group me-2"></i>Groups
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Group
+                    </button>
+                    <button type="button" class="btn btn-info btn-sm ms-2" id="refreshBtn">
+                        <i class="fas fa-sync me-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body" style="overflow:auto">
+                <table id="groupDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"></th>   <!-- 展开箭头 -->
+                            <th>Group Name</th>
+                            <th>Clients</th>
+                            <th>Active</th>
+                            <th>Created At</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Group</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 顶部提示框 -->
+                <div id="modalAlert" class="alert d-none" role="alert" tabindex="-1"></div>
+
+                <form id="groupForm">
+                    <input type="hidden" id="editId" value="">
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="groupName">Group Name</label>
+                                <input type="text" id="groupName" name="groupName" class="form-control" placeholder="e.g. Priority A" />
+                                <small class="text-muted">Unique name.</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="isActive">Active</label>
+                                <select id="isActive" name="isActive" class="form-control">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Tip: You can manage clients under each group later on the Clients page.
+                        </small>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        let dt;
+        let initialized = false;
+
+        // 生成展开行的 HTML（里面是一张小 table）
+        function buildClientsTableHtml(groupName, clients) {
+            if (!clients || !clients.length) {
+                return `<div class="p-2 text-muted">
+                            No clients in this group.
+                        </div>`;
+            }
+
+            let rowsHtml = clients.map(c => `
+                <tr>
+                    <td>${c.companyName || ''}</td>
+                    <td>${c.registrationNumber || ''}</td>
+                    <td>${c.yearEndMonth || ''}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="p-2">
+                    <strong>Clients in "${groupName}"</strong>
+                    <table class="table table-sm table-bordered mt-2 mb-0">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tax Identification No.</th>
+                                <th>Year End Month</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+
+        // Ajax 取某 Group 的 Clients 后，回调处理
+        function loadGroupClients(groupId, groupName, callback) {
+            $.ajax({
+                url: `/api/groups/${groupId}/clients`,
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        const html = buildClientsTableHtml(groupName, res.data || []);
+                        callback(html);
+                    } else {
+                        callback(`<div class="p-2 text-danger">
+                                    Failed to load clients: ${(res && res.message) || 'Unknown error'}
+                                  </div>`);
+                    }
+                },
+                error: function (xhr) {
+                    callback(`<div class="p-2 text-danger">
+                                Failed to load clients: ${xhr.statusText || 'Network error'}
+                              </div>`);
+                }
+            });
+        }
+
+
+
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                            ${message}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                          </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        function showModalAlert(msg, type) {
+            const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+            const $body = $('#groupModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
+            });
+        }
+
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+
+        function clearFieldErrors() {
+            $('#groupForm .is-invalid').removeClass('is-invalid');
+            $('#groupForm .invalid-feedback').remove();
+        }
+
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) $f.after('<div class="invalid-feedback"></div>');
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- DataTable ----------
+        function initTable() {
+            dt = $('#groupDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                // 现在 0 列是展开箭头，GroupName 在 1 列
+                order: [[1, 'asc']],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+                },
+                columns: [
+                    {   // 0: 展开箭头
+                        data: null,
+                        className: 'details-control text-center',
+                        orderable: false,
+                        searchable: false,
+                        defaultContent: '<i class="fas fa-chevron-right"></i>'
+                    },
+                    { data: 'GroupName' },                                  // 1
+                    { data: 'ClientCount', className: 'text-end', defaultContent: 0 }, // 2
+                    {
+                        data: 'IsActive',
+                        className: 'text-center',
+                        render: (val) => val ? 'Yes' : 'No'
+                    },                                                      // 3
+                    {
+                        data: 'CreatedAt',
+                        className: 'text-nowrap',
+                        render: (s) => {
+                            if (!s) return '';
+                            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+                            return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+                        }
+                    },                                                      // 4
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: (row) => `
+                            <button class="btn btn-sm btn-warning me-1 edit-btn" data-id="${row.Id}" title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${row.Id}" title="Delete">
+                              <i class="fas fa-trash"></i>
+                            </button>`
+                    }                                                       // 5
+                ]
+            });
+            initialized = true;
+        }
+
+
+        // ---------- Load ----------
+        function loadGroups() {
+            $.ajax({
+                url: '/api/groups/with-counts',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        const rows = res.data || [];
+                        if (!initialized) initTable();
+                        dt.clear();
+                        dt.rows.add(rows);
+                        dt.draw();
+                        showAlert('Loaded ' + rows.length + ' groups.', 'success');
+                    } else {
+                        showAlert('Failed to load groups: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load groups: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Clear Form ----------
+        function clearForm() {
+            $('#groupForm')[0].reset();
+            $('#editId').val('');
+            $('#modalTitle').text('Add New Group');
+            $('#groupName').val('');
+            $('#isActive').val('true');
+            hideModalAlert();
+            clearFieldErrors();
+        }
+
+        // ---------- Save (Create / Update) ----------
+        function saveGroup() {
+            hideModalAlert();
+            clearFieldErrors();
+
+            const editIdVal = $('#editId').val();
+            const id = editIdVal ? Number(editIdVal) : 0;
+
+            const formData = {
+                GroupName: ($('#groupName').val() || '').trim(),
+                IsActive: ($('#isActive').val() === 'true')
+            };
+
+            // 如果是 Update，加上 Id
+            if (id > 0) {
+                formData.Id = id;
+            }
+
+            let hasError = false;
+            if (!formData.GroupName) {
+                setFieldError('#groupName', 'Required');
+                hasError = true;
+            }
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                return;
+            }
+
+            const isUpdate = id > 0;
+            const url = isUpdate ? '/api/groups/update' : '/api/groups/create';
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
+                        $('#groupModal').modal('hide');
+                        showAlert(isUpdate ? 'Updated successfully.' : 'Created successfully.', 'success');
+                        loadGroups();
+                    } else {
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error: ' + msg, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Edit ----------
+        function editGroup(id) {
+            console.log('=== Edit Group Started ===');
+            console.log('ID:', id);
+
+            // 先清空表单
+            clearForm();
+
+            // 设置标题为 Loading
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+
+            // 先打开 modal
+            $('#groupModal').modal('show');
+
+            const url = '/api/groups/get/' + id;
+            console.log('Calling URL:', url);
+
+            // 然后加载数据
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (res) {
+                    console.log('API Response:', res);
+
+                    if (res && res.success && res.data) {
+                        const item = res.data;
+                        console.log('Group Data:', item);
+
+                        // 填充表单 - 注意：JSON 返回的属性名是小写开头的驼峰式
+                        $('#editId').val(item.id);
+                        $('#groupName').val(item.groupName || '');
+                        $('#isActive').val(item.isActive ? 'true' : 'false');
+
+                        console.log('Form filled:');
+                        console.log('- editId:', $('#editId').val());
+                        console.log('- groupName:', $('#groupName').val());
+                        console.log('- isActive:', $('#isActive').val());
+
+                        // 更新标题
+                        $('#modalTitle').text('Edit Group');
+                    } else {
+                        console.error('API returned success=false or no data:', res);
+                        showModalAlert('Error loading group: ' + (res?.message || 'Group not found'), 'error');
+                        $('#modalTitle').text('Edit Group');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error
+                    });
+                    showModalAlert('Error loading group: ' + (xhr.statusText || 'Network error'), 'error');
+                    $('#modalTitle').text('Edit Group');
+                }
+            });
+        }
+
+        // ---------- Delete ----------
+        function deleteGroup(id) {
+            if (!confirm('Delete this group? If in use by clients, deletion is blocked.')) return;
+
+            $.ajax({
+                url: '/api/groups/delete?id=' + id,
+                type: 'POST',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Deleted successfully.', 'success');
+                        loadGroups();
+                    } else {
+                        showAlert('Delete failed: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Delete failed: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Bind Events ----------
+        $(document).ready(function () {
+            initTable();
+            loadGroups();
+
+            $('#refreshBtn').on('click', loadGroups);
+            $('#saveBtn').on('click', saveGroup);
+
+            // Add New 按钮：清空表单并打开 modal
+            $('#addNewBtn').on('click', function () {
+                clearForm();
+                $('#groupModal').modal('show');
+            });
+
+            // Modal 关闭时清空表单
+            $('#groupModal').on('hidden.bs.modal', clearForm);
+
+            // Edit 和 Delete 按钮
+            $(document).on('click', '.edit-btn', function () {
+                editGroup($(this).data('id'));
+            });
+            $(document).on('click', '.delete-btn', function () {
+                deleteGroup($(this).data('id'));
+            });
+
+            // 🔽🔽🔽 这一段是新的：点箭头展开 / 收起
+            $('#groupDatatable tbody').on('click', 'td.details-control', function () {
+                const tr = $(this).closest('tr');
+                const row = dt.row(tr);
+                const icon = $(this).find('i');
+
+                if (row.child.isShown()) {
+                    // 已经展开 -> 收起
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                } else {
+                    // 展开：先 show Loading，再去拿数据
+                    const data = row.data();
+                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                    row.child('<div class="p-2 text-muted">Loading clients...</div>').show();
+                    tr.addClass('shown');
+
+                    loadGroupClients(data.Id, data.GroupName, function (innerHtml) {
+                        row.child(innerHtml).show();
+                    });
+                }
+            });
+        });
+    </script>
+}

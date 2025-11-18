@@ -13,6 +13,7 @@ public class ControllerNames
     public const string Notification = "Notification";
     public const string SystemAuditLog = "SystemAuditLog";
     public const string SchedulerJob = "SchedulerJob";
+    public const string Group = "Group";
 
 }
 

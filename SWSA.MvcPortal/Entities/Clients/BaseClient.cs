@@ -14,6 +14,8 @@ public abstract class BaseClient
     [SystemAuditLog("Group")]
     public string? Group { get; set; }    //User input
 
+    public int? GroupId { get; set; }
+
     [SystemAuditLog("Referral")]
     public string? Referral { get; set; }    //User input
 
