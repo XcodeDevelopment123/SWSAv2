@@ -2,7 +2,7 @@
     //#region Admin Form
     const $adminForm = $("#adminForm");
     const adminFormInputs = {
-        group: $adminForm.find('input[name="group"]'),
+        groupId: $adminForm.find('select[name="groupId"]'),  // ⭐ 改成 select
         referral: $adminForm.find('input[name="referral"]'),
         fileNo: $adminForm.find('input[name="fileNo"]'),
     };
@@ -11,7 +11,7 @@
     //#region Company Form 
     const $companyForm = $("#companyForm");
     const companyFormInputs = {
-        clientId:$("#clientId"),
+        clientId: $("#clientId"),
         companyName: $companyForm.find('input[name="companyName"]'),
         registrationNumber: $companyForm.find('input[name="regisNumber"]'),
         employerNumber: $companyForm.find('input[name="eNumber"]'),
@@ -88,11 +88,18 @@
         }
     });
     //#endregion
+
+    // 初始化 Select2
     initSelect2();
 
+    // ⭐ 新增：加载 Groups（在 initSelect2 之后）
+    loadGroupsForEdit();
+
+    // Flatpickr 初始化
     flatpickr("#incorpDate", {
         allowInput: true
     });
+
     flatpickr("#yearEndMonth", {
         plugins: [
             new monthSelectPlugin({
@@ -103,12 +110,10 @@
         ],
         altInput: true,
         onChange: function (selectedDates, dateStr, instance) {
-
             if (!selectedDates.length) return;
             const selectedDate = selectedDates[0];
             var lastDay = getLastDay(selectedDate);
             if (selectedDate.getTime() === lastDay.getTime()) return;
-
             instance.setDate(lastDay, true);
         },
         onReady: function (selectedDates, dateStr, instance) {
@@ -118,11 +123,11 @@
             const selectedDate = selectedDates[0];
             var lastDay = getLastDay(selectedDate);
             if (selectedDate.getTime() === lastDay.getTime()) return;
-
             instance.setDate(lastDay, true);
         },
     });
 
+    // 提交按钮
     $("#btnSubmitRequest").on("click", function () {
         if (!$companyForm.valid()) {
             return;
@@ -133,6 +138,8 @@
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.categoryInfo = adminInfo;
 
+        console.log('Submitting update data:', companyData);
+
         $.ajax({
             url: `${urls.edit_client}/company`,
             method: "POST",
@@ -141,13 +148,59 @@
             },
             success: function (res) {
                 if (res) {
-                    Toast_Fire(ICON_SUCCESS, "Created", "Company Client save successfully.");
+                    Toast_Fire(ICON_SUCCESS, "Updated", "Company Client saved successfully.");
                     window.location.href = `${urls.client}/${toCleanLower(res.clientType)}?id=${res.id}`;
                 }
             },
             error: (res) => {
+                console.error('Error updating client:', res);
+                Toast_Fire(ICON_ERROR, "Error", "Failed to update client.");
             }
-        })
-    })
+        });
+    });
 
-})
+    // ⭐ 新增：加载 Groups 并预选当前 Group
+    function loadGroupsForEdit() {
+        const $groupSelect = $('select[name="groupId"]');
+        const currentGroupId = $groupSelect.data('current-group-id');
+
+        console.log('Loading groups for edit, current GroupId:', currentGroupId);
+
+        $.ajax({
+            url: '/api/groups/options',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.success && res.data) {
+                    const groups = res.data;
+
+                    // 清空现有选项（保留第一个空选项）
+                    $groupSelect.find('option:not(:first)').remove();
+
+                    // 添加 Groups
+                    groups.forEach(function (group) {
+                        const option = new Option(group.text, group.value, false, false);
+                        $groupSelect.append(option);
+                    });
+
+                    // ⭐ 预选当前的 GroupId
+                    if (currentGroupId) {
+                        $groupSelect.val(currentGroupId).trigger('change');
+                        console.log('Pre-selected GroupId:', currentGroupId);
+                    } else {
+                        // 如果没有 GroupId，触发一次 change 确保 Select2 更新
+                        $groupSelect.trigger('change');
+                    }
+
+                    console.log('Loaded ' + groups.length + ' groups');
+                } else {
+                    console.error('Failed to load groups:', res?.message);
+                    Toast_Fire(ICON_WARNING, "Warning", "Failed to load groups.");
+                }
+            },
+            error: function (xhr) {
+                console.error('Error loading groups:', xhr);
+                Toast_Fire(ICON_ERROR, "Error", "Error loading groups: " + (xhr.statusText || 'Network error'));
+            }
+        });
+    }
+});

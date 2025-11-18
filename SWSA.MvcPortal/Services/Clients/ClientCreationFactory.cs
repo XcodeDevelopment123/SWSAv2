@@ -24,6 +24,8 @@ public class ClientCreationFactory : IClientCreationFactory
             ClientType.SdnBhd => new SdnBhdClient
             {
                 Group = req.CategoryInfo?.Group,
+                GroupId = req.CategoryInfo?.GroupId,        // ⭐ 新增
+
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
                 ActivitySize = req.ActivitySize,

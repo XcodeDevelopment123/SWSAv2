@@ -1,5 +1,7 @@
-﻿using Force.DeepCloner;
+﻿using Dapper;
+using Force.DeepCloner;
 using Mapster;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
@@ -19,13 +21,16 @@ namespace SWSA.MvcPortal.Services.Clients;
 public class ClientService(
    IClientCreationFactory _clientCreationFactory,
    AppDbContext db,
-   ISystemAuditLogService _sysAuditService
+   ISystemAuditLogService _sysAuditService,
+   IConfiguration _configuration
     ) : IClientService
 {
     private readonly DbSet<BaseClient> _clients = db.Set<BaseClient>();
     private readonly DbSet<MsicCode> _msicCodeds = db.Set<MsicCode>();
     private readonly DbSet<BaseCompany> _companies = db.Set<BaseCompany>();
     private readonly DbSet<IndividualClient> _individualClients = db.Set<IndividualClient>();
+    private readonly string _connectionString = _configuration.GetConnectionString("SwsaConntection");  // ⭐ 获取连接字符串
+
 
     #region Get Data
     public async Task<IEnumerable<object>> SearchClientsAsync(ClientType type, ClientFilterRequest request)
@@ -127,6 +132,31 @@ public class ClientService(
         var isExist = await _companies.CompanyExistsAsync(req.RegistrationNumber, req.CompanyName);
         Guard.AgainstExist(isExist, "Company Name / Number already exists");
 
+        // ===== 使用 Dapper 处理 GroupId =====
+        string? groupName = null;
+        if (req.CategoryInfo?.GroupId.HasValue == true && req.CategoryInfo.GroupId.Value > 0)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            var sql = "SELECT Id, GroupName, IsActive FROM dbo.Groups WHERE Id = @GroupId";
+            var group = await connection.QueryFirstOrDefaultAsync<GroupInfoDto>(
+                sql,
+                new { GroupId = req.CategoryInfo.GroupId.Value }
+            );
+
+            if (group == null)
+                throw new BusinessLogicException("Selected group not found.");
+
+            if (!group.IsActive)
+                throw new BusinessLogicException("Selected group is not active.");
+
+            groupName = group.GroupName;
+
+            // 将 GroupName 设置到 CategoryInfo.Group
+            req.CategoryInfo.Group = groupName;
+        }
+        // ===== 结束 =====
+
         var entity = _clientCreationFactory.CreateCompanyAsync(req);
 
         await db.AddAsync(entity);
@@ -164,8 +194,33 @@ public class ClientService(
 
         var oldData = entity.DeepClone();
 
+        // ===== 处理 GroupId（如果有变更）=====
+        string? groupName = req.CategoryInfo?.Group;
+
+        if (req.CategoryInfo?.GroupId.HasValue == true && req.CategoryInfo.GroupId.Value > 0)
+        {
+            // 如果前端传了 GroupId，需要验证并获取 GroupName
+            using var connection = new SqlConnection(_connectionString);
+
+            var sql = "SELECT Id, GroupName, IsActive FROM dbo.Groups WHERE Id = @GroupId";
+            var group = await connection.QueryFirstOrDefaultAsync<GroupInfoDto>(
+                sql,
+                new { GroupId = req.CategoryInfo.GroupId.Value }
+            );
+
+            if (group == null)
+                throw new BusinessLogicException("Selected group not found.");
+
+            if (!group.IsActive)
+                throw new BusinessLogicException("Selected group is not active.");
+
+            groupName = group.GroupName;
+        }
+        // ===== 结束 =====
+
         entity.UpdateCompanyInfo(req.CompanyName, req.RegistrationNumber,req.ActivitySize, req.TaxIdentificationNumber, req.EmployerNumber, req.YearEndMonth, req.IncorporationDate);
-        entity.UpdateAdminInfo(req.CategoryInfo?.Group, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
+        entity.GroupId = req.CategoryInfo?.GroupId;
+        entity.UpdateAdminInfo(groupName, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
         entity.SyncMsicCode(req.MsicCodeIds);
 
         var currentMsicCodesId = entity.MsicCodes.Select(m => m.MsicCodeId).ToList();
@@ -220,5 +275,10 @@ public class ClientService(
             .ToListAsync();
     }
 
-
+    private class GroupInfoDto
+    {
+        public int Id { get; set; }
+        public string GroupName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+    }
 }
