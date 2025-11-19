@@ -1,5 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B11>
-@{
+﻿@{
     ViewData["Title"] = "SdnBhd18monthReminder";
 }
 <h1>Sdn Bhd first 18 months Reminder</h1>
@@ -45,35 +44,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.File</td>
-                                    <td>@record.Company</td>
-                                    <td>@record.CompanyNo</td>
-                                    <td>@record.IncorporationDate</td>
-                                    <td>@record.YearEnd</td>
-                                    <td>@record.YMDueDate</td>
-                                    <td>@record.CirculationAFSDueDate</td>
-                                    <td>@record.ReminderDate</td>
-                                    <td>@record.EmailSend</td>
-                                    <td>@record.DateSent</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>                                    
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                       
                     </tbody>
                 </table>
             </div>
@@ -108,13 +79,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly/>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="file">File</label>
-                                <input type="text" id="file" name="file" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="file" name="file" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -126,23 +97,32 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="company">Company</label>
-                                <input type="text" id="company" name="company" class="form-control" placeholder="Enter company name" />
+                                <label for="companySelect">Company</label>
+                                <select id="companySelect" name="companySelect" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
                                 <small class="text-muted">
-                                    This field should be linked from the Client List.
+                                    Options are linked from the Sdn Bhd Client List.
                                 </small>
+
+                                <!-- 真正要存进 B11 的公司名、ClientId 用隐藏字段 -->
+                                <input type="hidden" id="company" name="company" />
+                                <input type="hidden" id="companyClientId" name="companyClientId" />
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyNumber">Company Number</label>
-                                <input type="text" id="companyNumber" name="companyNumber" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="companyNumber" name="companyNumber"
+                                       class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="incorporationDate">Incorporation Date</label>
-                                <input type="text" id="incorporationDate" name="incorporationDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="incorporationDate" name="incorporationDate"
+                                       class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -150,7 +130,8 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year end</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd"
+                                       class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -240,6 +221,59 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+        let companyOptionsMap = {};
+
+        // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
+        function yearEndMonthToDateString(monthName) {
+            if (!monthName) return '';
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const idx = months.indexOf(monthName);
+            if (idx === -1) return monthName; // 不认识就原样返回
+
+            const today = new Date();
+            let year = today.getFullYear();
+
+            // 如果这个 month 已经过了，就当作明年的 year end
+            if (idx < today.getMonth()) {
+                year += 1;
+            }
+
+            // 取这个月的最后一天
+            const dt = new Date(year, idx + 1, 0);
+            return formatDdMMyyyy(dt); // 复用你已有的函数
+        }
+
+        function loadCompanyOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function (res) {
+                    if (!(res && res.success && Array.isArray(res.data))) return;
+
+                    companyOptionsMap = {};
+                    const $sel = $('#companySelect');
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    res.data.forEach(o => {
+                        // 后端 B11CompanyOptionDto -> 前端是 camelCase：id, grouping, fileNo, companyName, companyNo, incorporationDate, yearEndMonth
+                        companyOptionsMap[o.id] = o;
+
+                        const display = o.companyNo
+                            ? `${o.companyName} (${o.companyNo})`
+                            : o.companyName;
+
+                        $sel.append(`<option value="${o.id}">${display}</option>`);
+                    });
+                },
+                error: function (xhr) {
+                    console.error('Failed to load B11 company options', xhr);
+                }
+            });
+        }
 
         function load18MthSourceList() {
             $.ajax({
@@ -368,6 +402,8 @@
         function clearForm() {
             $('#taskForm')[0].reset();
             $('#editIndex').val('');
+            $('#companySelect').val('');
+            $('#companyClientId').val('');
             $('#modalTitle').text('Add New 18 Months Reminder');
             $('#dateSend').prop('disabled', false);
             hideModalAlert();
@@ -376,6 +412,43 @@
 
         // ---------- Init ----------
         $(document).ready(function () {
+            loadCompanyOptions();
+            load18MthSourceList();
+
+            $('#companySelect').on('change', function () {
+                const id = $(this).val();
+                const o = companyOptionsMap[id];
+
+                if (!o) {
+                    // 清空自动字段
+                    $('#companyClientId').val('');
+                    $('#company').val('');
+                    $('#grouping').val('');
+                    $('#file').val('');
+                    $('#companyNumber').val('');
+                    $('#incorporationDate').val('');
+                    $('#yearEnd').val('').trigger('change');
+                    return;
+                }
+
+                // 1) 存 ClientId + 公司名（给后端用）
+                $('#companyClientId').val(o.id);
+                $('#company').val(o.companyName || '');
+
+                // 2) Admin 部分：Grouping / File
+                $('#grouping').val(o.grouping || '');
+                $('#file').val(o.fileNo || '');
+
+                // 3) Co info: Company No / Incorp Date / Year End
+                $('#companyNumber').val(o.companyNo || '');
+                $('#incorporationDate').val(formatDateForDisplay(o.incorporationDate));
+
+                const yeStr = yearEndMonthToDateString(o.yearEndMonth);
+                $('#yearEnd').val(yeStr).trigger('change'); // 触发原本的 YearEnd +6m 逻辑
+            });
+
+            // 你原来的绑定 / DataTable 初始化 / loadRecordsFromDatabase() 继续写在后面...
+
             // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
                 const ye = parseDdMMyyyy($(this).val());
@@ -471,7 +544,6 @@
             $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
             $('#taskModal').on('show.bs.modal', function () {
-                load18MthSourceList();
             });
 
             // First load
@@ -645,11 +717,37 @@
                         $('#companyNumber').val(d.companyNo || d.companyNumber || '');
                         $('#incorporationDate').val(d.incorporationDate || '');
                         $('#yearEnd').val(d.yearEnd || '').trigger('change');
-                        $('#first18MonthsDue').val(d.ymDueDate || d.first18MonthsDue || '');
+
+                        // 1st yr 18mths due date
+                        const ym = d.ymDueDate || d.first18MonthsDue || '';
+                        $('#first18MonthsDue').val(ym).trigger('change');
+
                         $('#circulationAfsDue').val(d.circulationAFSDueDate || '');
                         $('#reminderDate').val(d.reminderDate || '');
                         $('#emailSend').val(d.emailSend || '').trigger('change');
                         $('#dateSend').val(d.dateSent || '');
+                        // === 根据 Company + Company Number 反选 dropdown ===
+                        const existingCompanyName = (d.company || '').trim().toUpperCase();
+                        const existingCompanyNo = (d.companyNo || d.companyNumber || '').trim().toUpperCase();
+
+                        let matchedId = null;
+
+                        for (const [id, o] of Object.entries(companyOptionsMap)) {
+                            const optName = (o.companyName || '').trim().toUpperCase();
+                            const optNo = (o.companyNo || '').trim().toUpperCase();
+
+                            if (optName === existingCompanyName && optNo === existingCompanyNo) {
+                                matchedId = id;
+                                break;
+                            }
+                        }
+
+                        if (matchedId) {
+                            $('#companySelect').val(matchedId);
+                            // 一般不用触发 change，避免把已经从 record 载入的值再覆盖一遍
+                            // 如果你希望重新根据 dropdown 再算一遍，也可以加: $('#companySelect').trigger('change');
+                        }
+
                         $('#taskModal').modal('show');
                     } else {
                         showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');

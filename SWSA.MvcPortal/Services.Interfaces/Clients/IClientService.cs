@@ -18,5 +18,5 @@ public interface IClientService
     Task<BaseCompany> UpdateCompanyAsync(UpdateCompanyRequest req);
     Task<IndividualClient> UpdateIndividualAsync(UpdateIndividualRequest req);
     Task<List<SdnBhdOptionDto>> GetAllSdnBhdOptionsAsync();
-
+    Task<List<CompanyOptionDto>> GetCompanyOptionsAsync();
 }

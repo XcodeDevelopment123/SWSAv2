@@ -1,6 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B31>
-
-@{
+﻿@{
     ViewData["Title"] = "SdnBhdAccDocReminderSchedule";
 }
 
@@ -75,49 +73,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                   @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.CompanyName</td>
-
-                                    <td>@record.ActiveStatus</td>
-                                    <td>@record.AEXstatus</td>
-                                    <td>@record.YearEnd</td>
-                                    <td>@record.PIC</td>
-
-                                    <td>@record.SSM18MthDue</td>
-                                    <td>@record.SSM_TAX</td>
-
-                                    <td>@record.T_startAccWk</td>
-
-                                    <td>@record.T_Date</td>
-                                    <td>@record.DateSent</td>
-
-                                    <td>@record.T_Call</td>
-                                    <td>@record.DateRemind</td>
-
-                                    <td>@record.T_FinalText</td>
-                                    <td>@record.DateText</td>
-
-                                    <td>@record.DateReceived</td>
-                                    <td>@record.Note</td>
-
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>                                    
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+               
                     </tbody>
                 </table>
             </div>
@@ -150,13 +106,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Options are linked from the Sdn Bhd Client List. Grouping & Yearend will be filled automatically.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -190,7 +151,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -364,6 +325,60 @@
         let dataTable;
         let dataTableInitialized = false;
 
+        // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
+        function yearEndMonthToDateString(monthName) {
+            if (!monthName) return '';
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const idx = months.indexOf(monthName);
+            if (idx === -1) return monthName; // 不认识就原样返回
+
+            const today = new Date();
+            let year = today.getFullYear();
+
+            // 如果这个 month 已经过了，就当作明年的 year end
+            if (idx < today.getMonth()) {
+                year += 1;
+            }
+
+            // 取这个月的最后一天
+            const dt = new Date(year, idx + 1, 0);
+            return formatDdMMyyyy(dt); // 复用你已有的函数
+        }
+
+        // 0) Company 下拉：从 Sdn Bhd Client List 拿 Group + YearEndMonth
+        function loadCompanyOptions() {
+            $.ajax({
+                url: "/api/get/company-options",   // 你刚才的 API
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#companyName");
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const name = o.companyName || o.name || "-";
+                        const grouping = o.group || o.grouping || o.groupName || "";
+                        const yeMonth = o.yearEndMonth || "";    // e.g. "December"
+
+                        // 把 Grouping / YearEndMonth 存在 data-* 里，后面 change 时用
+                        $sel.append(`
+                            <option value="${name}"
+                                    data-grouping="${grouping}"
+                                    data-yearendmonth="${yeMonth}">
+                                ${name}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+
         // 1) PIC：AT21 / AEX41.Team
         function loadPicSourceList() {
             $.ajax({
@@ -422,10 +437,10 @@
             });
         }
 
-        // 3) SSM 18 Mth Due：Clients · Sdn Bhd (IncorporationDate)
+        // 3) SSM 18 Mth Due：Clients · Sdn Bhd (IncorpDate) → 计算出 18mth due 作 value
         function loadSsm18SourceList() {
             $.ajax({
-                url: "/get-b31-sdnbhd-sources",   // 后端那支 API
+                url: "/get-b31-sdnbhd-sources",
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#ssm18Source");
@@ -437,27 +452,30 @@
 
                     res.data.forEach(o => {
                         const company = o.companyName || "-";
-                        const raw = o.incorporationDate;  // e.g. "2023-01-15T00:00:00"
+                        const raw = o.incorporationDate; // e.g. "2023-01-15T00:00:00"
                         let incorpDisplay = "";
+                        let due18 = "";
 
                         if (raw) {
                             const dt = new Date(raw);
                             if (!isNaN(dt)) {
-                                // 用你上面已经写好的 formatDdMMyyyy 工具
                                 incorpDisplay = formatDdMMyyyy(dt);
+                                const d18 = addMonthsKeepEnd(dt, 17);   // +17 个月
+                                due18 = formatDdMMyyyy(d18);           // 18mth due
                             }
                         }
 
-                        // value 直接用 dd/MM/yyyy 的创建日字符串
+                        // 🔸 value = 18mth due，方便跟 DB 对应
                         $sel.append(`
-                            <option value="${incorpDisplay}">
-                                ${company}${incorpDisplay ? " - Incorp " + incorpDisplay : ""}
+                            <option value="${due18}">
+                                ${company}${incorpDisplay ? " - Incorp " + incorpDisplay : ""}${due18 ? " - 18mth " + due18 : ""}
                             </option>
                         `);
                     });
                 }
             });
         }
+
 
 
           // ---------- Date utils (dd/MM/yyyy) ----------
@@ -545,6 +563,20 @@
             loadInwardSourceList();
             loadSsm18SourceList();
 
+            loadCompanyOptions();
+
+          // 🔹 选公司 → 自动带出 Grouping + Year End
+            $('#companyName').on('change', function () {
+                const $opt = $(this).find('option:selected');
+
+                const grp = $opt.data('grouping') || '';
+                const yeMonth = $opt.data('yearendmonth') || '';   // "December"
+                const yeDate = yearEndMonthToDateString(yeMonth); // 转成 dd/MM/yyyy
+
+                $('#grouping').val(grp);
+                $('#yearEnd').val(yeDate).trigger('change');       // 触发 YearEnd 的 auto 计算
+            });
+
             // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
                 const ye = parseDdMMyyyy($(this).val());
@@ -555,24 +587,11 @@
                 $('#mth4TargetedFinal').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 4)) : '');
             });
 
-            // 当选择 Sdn Bhd 公司时：用创建日 + 17个月 计算 SSM 18 Mth Due
             $('#ssm18Source').on('change', function () {
-                const incorpStr = ($(this).val() || '').trim();  // dd/MM/yyyy
-
-                if (!incorpStr) {
-                    $('#ssm18MonthDue').val('');
-                    return;
-                }
-
-                const dt = parseDdMMyyyy(incorpStr);  // 你上面已经有这个函数
-                if (!dt) {
-                    $('#ssm18MonthDue').val('');
-                    return;
-                }
-
-                const due = addMonthsKeepEnd(dt, 17); // 同一套加月份逻辑
-                $('#ssm18MonthDue').val(formatDdMMyyyy(due));
+                const due = ($(this).val() || '').trim();  // value 就是 18mth due
+                $('#ssm18MonthDue').val(due);
             });
+
 
             // Datepickers (exclude read-only #circulationAfsDue)
             $('input[type="text"]').filter(function () {
@@ -739,7 +758,7 @@
             // === 验证逻辑 ===
             // 1️⃣ 基础资料
             if (!formData.Grouping) { setFieldError('#grouping', 'Required'); hasError = true; }
-            if (!formData.CompanyName) { setFieldError('#companyName ', 'Required'); hasError = true; }
+            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
             if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
             if (!formData.PIC) { setFieldError('#pic', 'Required'); hasError = true; }
             if (!formData.SSM18MthDue) { setFieldError('#ssm18MonthDue', 'Required'); hasError = true; }
@@ -807,14 +826,17 @@
                        const d = res.data || {};
                         $('#editIndex').val(d.id || d.Id || 0);
                         $('#grouping').val(d.grouping || d.Grouping || '');
-                        $('#companyName').val(d.companyName || d.CompanyName || '');
+                        $('#companyName').val(d.companyName || d.CompanyName || '').trigger('change');
 
                         $('#coStatusActive').val(d.activeStatus|| '');
                         $('#coStatusAEX').val(d.aeXstatus|| '');
                         $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
                         $('#pic').val(d.pic || d.PIC || '');
 
-                        $('#ssm18MonthDue').val(d.ssM18MthDue || '');
+                        const ssm18 = d.ssM18MthDue || '';
+                        $('#ssm18MonthDue').val(ssm18);
+                        $('#ssm18Source').val(ssm18);   // dropdown 用同一个值
+
                         $('#ssmTaxDue').val(d.ssM_TAX || '');
                         $('#targetedStartAcc').val(d.t_startAccWk || d.T_startAccWk || '');
 

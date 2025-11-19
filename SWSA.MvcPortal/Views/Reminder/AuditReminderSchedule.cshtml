@@ -1,5 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B2>
-@{
+﻿@{
     ViewData["Title"] = "AuditReminderSchedule";
 }
 
@@ -79,52 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.CompanyName</td>
-
-                                    <td>@record.ActiveStatus</td>
-                                    <td>@record.AEXstatus</td>
-                                    <td>@record.YearEnd</td>
-                                    <td>@record.PIC</td>
-
-                                    <td>@record.SSM18MthDue</td>
-                                    <td>@record.SSM_TAX</td>
-
-                                    <td>@record.TargetedSendDate</td>
-                                    <td>@record.DateSend</td>
-                                    <td>@record.TargetedReminder</td>
-                                    <td>@record.DateSend2</td>
-                                    <td>@record.DateReceived</td>
-
-                                    <td>@record.TargetedDate</td>
-                                    <td>@record.DateSent</td>
-
-                                    <td>@record.TargetedCall</td>
-                                    <td>@record.DateRemind</td>
-
-                                    <td>@record.TargetedFinalText</td>
-                                    <td>@record.DateText</td>
-
-                                    <td>@record.DateReceived2</td>
-                                    <td>@record.Note</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>                                    
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                     
                     </tbody>
                 </table>
             </div>
@@ -157,15 +111,17 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
                                 <small class="text-muted">
-                                    This field should be linked from the Client List.
+                                    Options are linked from the Sdn Bhd Client List. Grouping will be filled automatically.
                                 </small>
                             </div>
                         </div>
@@ -200,7 +156,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -404,6 +360,59 @@
     <script>
         let dataTable;
         let dataTableInitialized = false;
+
+        // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
+        function yearEndMonthToDateString(monthName) {
+            if (!monthName) return '';
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const idx = months.indexOf(monthName);
+            if (idx === -1) return monthName; // 不认识就原样返回
+
+            const today = new Date();
+            let year = today.getFullYear();
+
+            // 如果这个 month 已经过了，就当作明年的 year end
+            if (idx < today.getMonth()) {
+                year += 1;
+            }
+
+            // 取这个月的最后一天
+            const dt = new Date(year, idx + 1, 0);
+            return formatDdMMyyyy(dt); // 复用你已有的函数
+        }
+
+        // 0) Company 下拉：从 Sdn Bhd Client List 拿 Group + YearEndMonth
+        function loadCompanyOptions() {
+            $.ajax({
+                url: "/api/get/company-options",   // 你刚才的 API
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#companyName");
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const name = o.companyName || o.name || "-";
+                        const grouping = o.group || o.grouping || o.groupName || "";
+                        const yeMonth = o.yearEndMonth || "";    // e.g. "December"
+
+                        // 把 Grouping / YearEndMonth 存在 data-* 里，后面 change 时用
+                        $sel.append(`
+                            <option value="${name}"
+                                    data-grouping="${grouping}"
+                                    data-yearendmonth="${yeMonth}">
+                                ${name}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
 
         // 1) PIC：AT21 / AEX41.Team
         function loadPicSourceList() {
@@ -616,6 +625,19 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             loadPicSourceList();      
             loadSsm18MthSourceList();   
             loadInwardSourceList();
+
+            loadCompanyOptions();
+
+            $('#companyName').on('change', function () {
+                const $opt = $(this).find('option:selected');
+
+                const grp = $opt.data('grouping') || '';
+                const yeMonth = $opt.data('yearendmonth') || '';   // "December"
+                const yeDate = yearEndMonthToDateString(yeMonth); // 转成 dd/MM/yyyy
+
+                $('#grouping').val(grp);
+                $('#yearEnd').val(yeDate).trigger('change');       // 触发 YearEnd 的 auto 计算
+            });
 
             // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
@@ -929,14 +951,18 @@ function calcMonthNPlus7th(yeStr, nMonths) {
                         const d = res.data || {};
                         $('#editIndex').val(d.id || 0);
                         $('#grouping').val(d.grouping || '');
-                        $('#companyName').val(d.companyName || '');
+                        $('#companyName').val(d.companyName || '').trigger('change');
 
                         $('#coStatusActive').val(d.activeStatus || '');
                         $('#coStatusAEX').val(d.aeXstatus || '');
-                        $('#yearEnd').val(d.yearEnd || '').trigger('change');
+
+                        if (d.yearEnd || d.YearEnd) {
+                            $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
+                        }
                         $('#pic').val(d.pic || '');
 
-                        $('#ssm18MonthDue').val(d.ssM18MthDue || '');
+                        const ssm18 = d.ssM18MthDue || '';
+                        $('#ssm18MonthDue').val(ssm18).trigger('change');
                         $('#ssmTaxDue').val(d.ssM_TAX || '');
 
                         $('#bankTargetedSend').val(d.targetedSendDate || '');

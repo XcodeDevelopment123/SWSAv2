@@ -1,5 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B34>
-@{
+﻿@{
     ViewData["Title"] = "FormBnPReminderSchedule";
 }
 
@@ -72,47 +71,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.CompanyName</td>
-
-                                    <td>@record.SingleEntry</td>
-                                    <td>@record.FullSet</td>
-                                    <td>@record.Reveiw</td>
-                                    <td>@record.TaxOnly</td>
-
-                                    <td>@record.PIC</td>
-
-                                    <td>@record.T_startAccWk</td>
-
-                                    <td>@record.T_Date</td>
-                                    <td>@record.DateSent</td>
-
-                                    <td>@record.T_Call</td>
-                                    <td>@record.DateRemind</td>
-
-                                    <td>@record.T_FinalText</td>
-                                    <td>@record.DateText</td>
-
-                                    <td>@record.DateReceived</td>
-                                    <td>@record.Note</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                        
                     </tbody>
                 </table>
             </div>
@@ -145,13 +104,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Options are linked from the LLP Client List. Grouping will be filled automatically.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -334,6 +298,33 @@
         let dataTable;
         let dataTableInitialized = false;
 
+          // 0) Company 下拉：从 Sdn Bhd Client List 拿 Group 
+function loadCompanyOptions() {
+    $.ajax({
+        url: "/api/get/company-options",
+        type: "GET",
+        success: function (res) {
+            const $sel = $("#companyName");
+            $sel.empty().append('<option value="">-- Select company --</option>');
+
+            if (!(res && res.success && res.data)) return;
+
+            res.data.forEach(o => {
+                const name = o.companyName || o.name || "-";
+                const grouping = o.group || o.grouping || o.groupName || "";
+
+                // ✅ 正确写法：先关掉 >，再写文字
+                $sel.append(`
+                    <option value="${name}" data-grouping="${grouping}">
+                        ${name}
+                    </option>
+                `);
+            });
+        }
+    });
+}
+
+
         // ========= 1) PIC 来源：AT21 / AEX41 =========
         function loadPicSourceListB34() {
             $.ajax({
@@ -468,6 +459,17 @@
             // ★ 载入 PIC & DateReceived 下拉
             loadPicSourceListB34();
             loadInwardSourceListB34();
+
+            loadCompanyOptions();
+
+              // 🔹 选公司 → 自动带出 Grouping 
+            $('#companyName').on('change', function () {
+                const $opt = $(this).find('option:selected');
+
+                const grp = $opt.data('grouping') || '';
+              
+                $('#grouping').val(grp);
+            });
 
             // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
             ['#mth1DateSent', '#mth2DateRemind', '#mth1DateText']

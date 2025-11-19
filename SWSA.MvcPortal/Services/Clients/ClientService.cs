@@ -281,4 +281,36 @@ public class ClientService(
         public string GroupName { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
+
+    public async Task<List<CompanyOptionDto>> GetCompanyOptionsAsync()
+    {
+        // 如果你有特定 filter（比如只要 active），可以在这里设置
+        var filter = new ClientFilterRequest
+        {
+            // IsActive = true,
+            // 其他过滤条件按你现有的来
+        };
+
+        // 1️⃣ 先用 SearchClientsAsync 拿到所有 SdnBhd
+        var raw = await SearchClientsAsync(ClientType.SdnBhd, filter);
+
+        // 2️⃣ 把 object 转回 SdnBhdClient，然后投影成我们要的 DTO
+        return raw
+            .Cast<SdnBhdClient>()
+            .Select(c => new CompanyOptionDto
+            {
+                Id = c.Id,
+                Grouping = c.Group,                  // 如果是导航对象就用 c.Group.GroupName
+                FileNo = c.FileNo,
+                CompanyName = c.Name,
+                CompanyNo = c.RegistrationNumber,
+                IncorporationDate = c.IncorporationDate,
+                YearEndMonth = c.YearEndMonth.HasValue
+                    ? c.YearEndMonth.Value.ToString()   // "December"
+                    : string.Empty
+            })
+            .ToList();
+    }
+
+
 }

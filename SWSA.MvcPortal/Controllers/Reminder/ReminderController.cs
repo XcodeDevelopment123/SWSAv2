@@ -20,197 +20,36 @@ namespace SWSA.MvcPortal.Controllers.Reminder
         private readonly string _connectionString = configuration.GetConnectionString("SwsaConntection");
         private readonly IClientService _clientService = clientService;
 
-        public async Task<IActionResult> SdnBhd18monthReminder()
+        public IActionResult SdnBhd18monthReminder()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B11] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B11>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B11AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B11>());
-            }
+            return View();
         }
-        public async Task<IActionResult> AuditReminderSchedule()
+        public IActionResult AuditReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B2] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B2>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B2AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B2>());
-            }
+            return View();
         }
-        public async Task<IActionResult> SdnBhdAccDocReminderSchedule()
+        public IActionResult SdnBhdAccDocReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B31] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B31>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B31AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B31>());
-            }
+            return View();
         }
 
-        public async Task <IActionResult> LLPAccDocReminderSchedule()
+        public IActionResult LLPAccDocReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B32] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B32>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B32AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B31>());
-            }
+            return View();
         }
 
-        public async Task<IActionResult> FormBnPReminderSchedule()
+        public IActionResult FormBnPReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B34] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B34>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B34AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B34>());
-            }
+            return View();
         }
 
-        public async Task <IActionResult> FormEReminderSchedule()
+        public IActionResult FormEReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B35>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B35AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B34>());
-            }
+            return View();
         }
-        public async Task <IActionResult> FormBEindividualTaxReminderSchedule()
+        public IActionResult FormBEindividualTaxReminderSchedule()
         {
-            try
-            {
-                Console.WriteLine("=== Loading Reminder Page with Dapper ===");
-
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-                    Console.WriteLine("✅ Database connection successful");
-
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B36] ORDER BY Id DESC";
-                    var records = await connection.QueryAsync<B36>(sql);
-
-                    Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
-                    return View(records);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in B36AcorrespondanceRecord: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                // 返回空列表而不是抛出异常
-                return View(new List<B34>());
-            }
+            return View();
         }
 
         #region B11 API Methods
@@ -425,7 +264,6 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             public string YearEnd { get; set; }
             public string First18MthDue { get; set; }
         }
-
         #endregion
 
         #region B2 Api Method
@@ -1289,29 +1127,7 @@ FROM [Quartz].[dbo].[A31B];";
             public string CompanyName { get; set; }
             public string YearEnd { get; set; }      // dd/MM/yyyy
             public string DateReceived { get; set; } // dd/MM/yyyy → 用来塞 DateReceived2
-        }
-
-        [HttpGet("get-b32-sdnbhd-sources")]
-        public async Task<IActionResult> GetB32SdnBhdSources()
-        {
-            try
-            {
-                var list = await _clientService.GetAllSdnBhdOptionsAsync();
-
-                var result = list.Select(x => new
-                {
-                    ClientId = x.Id,
-                    CompanyName = x.Name,
-                    IncorporationDate = x.IncorporationDate   // DateTime?，前端收到会是字符串
-                }).ToList();
-
-                return Json(new { success = true, data = result });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+        }   
         #endregion
 
         #region B34 Api Method
@@ -2013,5 +1829,19 @@ FROM [Quartz].[dbo].[AEX41];";
             public string Pic { get; set; }          // AuditStaff / Team
         }
         #endregion
+
+        [HttpGet("api/get/company-options")]
+        public async Task<IActionResult> GetCompanyOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetCompanyOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

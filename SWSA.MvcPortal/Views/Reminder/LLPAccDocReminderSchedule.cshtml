@@ -1,5 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B32>
-@{
+﻿@{
     ViewData["Title"] = "LLPAccDocReminderSchedule";
 }
 
@@ -73,50 +72,7 @@
                             <th>Date text</th>
                         </tr>
                     </thead>
-                    <tbody>
-                             @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.CompanyName</td>
-
-                                    <td>@record.ActiveStatus</td>
-                                    <td>@record.AEXstatus</td>
-                                    <td>@record.YearEnd</td>
-                                    <td>@record.PIC</td>
-
-                                    <td>@record.SSM18MthDue</td>
-                                    <td>@record.SSM_TAX</td>
-
-                                    <td>@record.T_startAccWk</td>
-
-                                    <td>@record.T_Date</td>
-                                    <td>@record.DateSent</td>
-
-                                    <td>@record.T_Call</td>
-                                    <td>@record.DateRemind</td>
-
-                                    <td>@record.T_FinalText</td>
-                                    <td>@record.DateText</td>
-
-                                    <td>@record.DateReceived</td>
-                                    <td>@record.Note</td>
-
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>                                    
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                    <tbody>                   
                     </tbody>
                 </table>
             </div>
@@ -149,13 +105,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">
+                                     Options are linked from the LLP Client List. Grouping & Yearend will be filled automatically.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -189,7 +150,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -212,23 +173,17 @@
                     <div class="row">
                         <div class="col-md-4">
                           <div class="form-group">
-                            <label for="ssm18MonthDue">SSM 18 Mth Due</label>
-
-                             <!-- ★ 新增：从 Clients · Sdn Bhd (或 LLP) 选公司，显示名字+创建日 -->
-                             <select id="ssm18SourceB32" class="form-control mb-1">
-                                <option value="">-- Select LLP (Incorp Date) --</option>
-                             </select>
-                             <small class="text-muted">
-                                Pulled from Clients · Sdn Bhd / LLP (Incorporation Date as base date)
-                             </small>
-
-                             <!-- ★ 自动计算：成立日 + 17 个月 -->
+                            <label for="ssm18MonthDue">SSM 18 Mth Due</label>  
+                           <!-- ★ 自动计算：成立日 + 17 个月 -->
                              <input type="text"
                               id="ssm18MonthDue"
                               name="ssm18MonthDue"
                               class="form-control mt-1"
                               placeholder="Auto = Incorporation Date + 17 months"
                               readonly />
+                             <small class="text-muted">
+                                Pulled from Clients · Sdn Bhd / LLP (Incorporation Date as base date)
+                             </small>
                           </div>
                         </div>
 
@@ -357,107 +312,11 @@
     <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-
     <script>
         let dataTable;
         let dataTableInitialized = false;
 
-  // 1) PIC：AT21 / AEX41.Team
-        function loadPicSourceListB32() {
-            $.ajax({
-                url: "/get-b32-pic-sources", // ✅ 改这里：b31
-                type: "GET",
-                success: function (res) {
-                    const $sel = $("#pic");
-                    $sel.empty().append(
-                        '<option value="">-- Select from AT2.1 / AEX4.1 --</option>'
-                    );
-
-                    if (!(res && res.success && res.data)) return;
-
-                    res.data.forEach(o => {
-                        const company = o.companyName || "-";
-                        const ye = formatDateForDisplay(o.yearEnd);
-                        const pic = o.pic || "-";
-
-                        // value 直接存 PIC 名字到 B31.PIC
-                        $sel.append(`
-                            <option value="${pic}">
-                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
-                            </option>
-                        `);
-                    });
-                }
-            });
-        }
-
-        // 2) Inward Date Received：A31A.DateReceived -> B31.DateReceived
-        function loadInwardSourceListB32() {
-            $.ajax({
-                url: "/get-b32-inward-sources",
-                type: "GET",
-                success: function (res) {
-                    const $sel = $("#inwardDateReceived");
-                    $sel.empty().append(
-                        '<option value="">-- Select from A31B (DateReceived) --</option>'
-                    );
-
-                    if (!(res && res.success && res.data)) return;
-
-                    res.data.forEach(o => {
-                        const company = o.companyName || "-";
-                        const ye = formatDateForDisplay(o.yearEnd);
-                        const dr = formatDateForDisplay(o.dateReceived);
-
-                        // value 用日期字串，存入 B31.DateReceived
-                        $sel.append(`
-                            <option value="${dr}">
-                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
-                            </option>
-                        `);
-                    });
-                }
-            });
-        }
-
-        // 3) SSM 18 Mth Due：Clients · Sdn Bhd (IncorporationDate)
-        function loadSsm18SourceListB32() {
-            $.ajax({
-                url: "/get-b32-sdnbhd-sources",
-                type: "GET",
-                success: function (res) {
-                    const $sel = $("#ssm18SourceB32");
-                    $sel.empty().append(
-                        '<option value="">-- Select Sdn Bhd (Incorp Date) --</option>'
-                    );
-
-                    if (!(res && res.success && res.data)) return;
-
-                    res.data.forEach(o => {
-                        const company = o.companyName || "-";
-                        const raw = o.incorporationDate;  // e.g. "2023-01-15T00:00:00"
-                        let incorpDisplay = "";
-
-                        if (raw) {
-                            const dt = new Date(raw);
-                            if (!isNaN(dt)) {
-                                // 用你上面已经写好的 formatDdMMyyyy 工具
-                                incorpDisplay = formatDdMMyyyy(dt);
-                            }
-                        }
-
-                        // value 直接用 dd/MM/yyyy 的创建日字符串
-                        $sel.append(`
-                            <option value="${incorpDisplay}">
-                                ${company}${incorpDisplay ? " - Incorp " + incorpDisplay : ""}
-                            </option>
-                        `);
-                    });
-                }
-            });
-        }
-
- // ---------- Date utils (dd/MM/yyyy) ----------
+        // ---------- Date utils (dd/MM/yyyy) ----------
         function parseDdMMyyyy(s) {
             if (!s) return null;
             const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s.trim());
@@ -480,17 +339,133 @@
             return new Date(y, m + months, day);
         }
 
-         // ---------- Modal alert + inline field errors ----------
+        // 把 YearEndMonth ("December") 转成 dd/MM/yyyy（该月最后一天）
+        function yearEndMonthToDateString(monthName) {
+            if (!monthName) return '';
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const idx = months.indexOf(monthName);
+            if (idx === -1) return monthName; // 不认识就原样返回
+
+            const today = new Date();
+            let year = today.getFullYear();
+
+            // 如果这个 month 已经过了，就当作下一年的 year end
+            if (idx < today.getMonth()) {
+                year += 1;
+            }
+
+            // 取这个月的最后一天
+            const dt = new Date(year, idx + 1, 0);
+            return formatDdMMyyyy(dt);
+        }
+
+        // 0) Company 下拉：从 LLP Client List 拿 Grouping + YearEndMonth + IncorporationDate
+        function loadCompanyOptionsB32() {
+            $.ajax({
+                url: "/api/get/company-options",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#companyName");
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        // 对应 CompanyOptionDto 的属性：CompanyName / Grouping / YearEndMonth / IncorporationDate
+                        const name      = o.companyName || "-";
+                        const grouping  = o.grouping || "";
+                        const yeMonth   = o.yearEndMonth || "";       // e.g. "December"
+                        const incorpRaw = o.incorporationDate || "";  // e.g. "2024-06-15T00:00:00"
+
+                        $sel.append(`
+                            <option value="${name}"
+                                    data-grouping="${grouping}"
+                                    data-yearendmonth="${yeMonth}"
+                                    data-incorp="${incorpRaw}">
+                                ${name}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 1) PIC：AT21 / AEX41.Team
+        function loadPicSourceListB32() {
+            $.ajax({
+                url: "/get-b32-pic-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#pic");
+                    $sel.empty().append(
+                        '<option value="">-- Select from AT2.1 / AEX4.1 --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const pic = o.pic || "-";
+
+                        // value 直接存 PIC 名字到 B32.PIC
+                        $sel.append(`
+                            <option value="${pic}">
+                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // 2) Inward Date Received：A31B.DateReceived -> B32.DateReceived
+        function loadInwardSourceListB32() {
+            $.ajax({
+                url: "/get-b32-inward-sources",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#inwardDateReceived");
+                    $sel.empty().append(
+                        '<option value="">-- Select from A31B (DateReceived) --</option>'
+                    );
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const company = o.companyName || "-";
+                        const ye = formatDateForDisplay(o.yearEnd);
+                        const dr = formatDateForDisplay(o.dateReceived);
+
+                        // value 用日期字串，存入 B32.DateReceived
+                        $sel.append(`
+                            <option value="${dr}">
+                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
             const $box = $('#modalAlert');
+            if (!$box.length) return; // 没定义就直接跳过，避免报错
+
             $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
                 .addClass(map[type] || 'alert-info')
                 .html(msg);
 
-            // scroll modal body to top so the alert is visible
             const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
+            });
         }
         function hideModalAlert() {
             $('#modalAlert').addClass('d-none').empty();
@@ -499,21 +474,12 @@
             $('#taskForm .is-invalid').removeClass('is-invalid');
             $('#taskForm .invalid-feedback').remove();
         }
-        function setFieldError(selector, message) {
-            const $f = $(selector);
-            if (!$f.length) return;
-            $f.addClass('is-invalid');
-            if ($f.next('.invalid-feedback').length === 0) {
-                $f.after('<div class="invalid-feedback"></div>');
-            }
-            $f.next('.invalid-feedback').text(message);
-        }
 
-          // ---------- Page-level alert (outside modal) ----------
+        // ---------- Page-level alert (outside modal) ----------
         function showAlert(message, type) {
             const cls = type === 'success' ? 'alert-success'
                 : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+                : type === 'warning' ? 'alert-warning' : 'alert-info';
             const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
                             ${message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -522,7 +488,7 @@
             setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
         }
 
-           // ---------- Helpers ----------
+        // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
             if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
@@ -536,39 +502,42 @@
             clearFieldErrors();
         }
 
-   // ---------- Init ----------
+        // ---------- Init ----------
         $(document).ready(function () {
             loadPicSourceListB32();
             loadInwardSourceListB32();
-            loadSsm18SourceListB32();
+            loadCompanyOptionsB32();
 
-                // ★ 当选择 LLP / Sdn Bhd 时：用成立日 + 17 个月 算 SSM 18 Mth Due
-    $('#ssm18SourceB32').on('change', function () {
-        const incorpStr = ($(this).val() || '').trim();  // dd/MM/yyyy
+            // 选 Company -> 自动填 Grouping / Year End / SSM 18 Mth Due
+            $('#companyName').on('change', function () {
+                const $opt = $(this).find('option:selected');
 
-        if (!incorpStr) {
-            $('#ssm18MonthDue').val('');
-            return;
-        }
+                const grp     = $opt.data('grouping') || '';
+                const yeMonth = $opt.data('yearendmonth') || ''; // "December"
+                const incorp  = $opt.data('incorp') || '';        // "2024-06-15T00:00:00"
 
-        const dt = parseDdMMyyyy(incorpStr);
-        if (!dt) {
-            $('#ssm18MonthDue').val('');
-            return;
-        }
+                // 1) Grouping
+                $('#grouping').val(grp);
 
-        const due = addMonthsKeepEnd(dt, 17); // 17 个月后 = 18 个月 due
-        $('#ssm18MonthDue').val(formatDdMMyyyy(due));
+                // 2) Year End：用 YearEndMonth 算一个 dd/MM/yyyy（该月最后一天）
+                const yeStr = yearEndMonthToDateString(yeMonth);
+                $('#yearEnd').val(yeStr).trigger('change'); // 触发 YearEnd 的自动逻辑（SSM/Tax、Mth1/2/3）
 
-        // （可选）顺手把 CompanyName 带进去
-        const companyName = $('#ssm18SourceB32 option:selected').data('name') || '';
-        if (companyName) {
-            $('#companyName').val(companyName);
-        }
-    });
+                // 3) SSM 18 Mth Due：用 IncorporationDate + 17 个月
+                if (incorp) {
+                    const dt = new Date(incorp);
+                    if (!isNaN(dt)) {
+                        const due = addMonthsKeepEnd(dt, 17); // 成立日 + 17 个月
+                        $('#ssm18MonthDue').val(formatDdMMyyyy(due));
+                    } else {
+                        $('#ssm18MonthDue').val('');
+                    }
+                } else {
+                    $('#ssm18MonthDue').val('');
+                }
+            });
 
-
-            // Year end -> Circulation & AFS due (auto = +6 months, read-only)
+            // Year end -> 一堆自动日期 (Year end + n months)
             $('#yearEnd').on('change', function () {
                 const ye = parseDdMMyyyy($(this).val());
                 $('#ssmTaxDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 3)) : '');
@@ -578,17 +547,16 @@
                 $('#mth3TargetedFinal').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 3)) : '');
             });
 
-            // Datepickers (exclude read-only #circulationAfsDue)
+            // Datepickers
             $('input[type="text"]').filter(function () {
                 const id = $(this).attr('id') || '';
-                return (id.includes('Date') || id.includes('date') || id.includes('yearEnd')) && id !== 'circulationAfsDue';
+                return (id.includes('Date') || id.includes('date') || id.includes('yearEnd'));
             }).datepicker({
                 format: 'dd/mm/yyyy',
                 autoclose: true,
                 todayHighlight: true
             });
 
-          
             // DataTable
             dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
@@ -617,10 +585,10 @@
                     { data: 8 },  // Targeted to start Acc wk
                     { data: 9 },  // Mth1 Targeted Date
                     { data: 10 }, // Mth1 Date sent
-                    { data: 11 }, // Mth3 Targeted call/text
-                    { data: 12 }, // Mth3 Date Remind
-                    { data: 13 }, // Mth4 Targeted Final Text
-                    { data: 14 }, // Mth4 Date text
+                    { data: 11 }, // Mth2 Targeted call/text
+                    { data: 12 }, // Mth2 Date Remind
+                    { data: 13 }, // Mth3 Targeted Final Text
+                    { data: 14 }, // Mth3 Date text
                     { data: 15 }, // Date Received
                     { data: 16 }, // Note
                     { data: 17, orderable: false, searchable: false }, // Edit
@@ -648,8 +616,7 @@
                     if (res && res.success) {
                         populateTable(res.data || []);
                         showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
-                       console.log('sample keys:', Object.keys((res.data||[])[0]||{}));
-
+                        console.log('sample keys:', Object.keys((res.data || [])[0] || {}));
                     } else {
                         showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
                     }
@@ -668,25 +635,19 @@
                     dataTable.row.add([
                         r.grouping || '',
                         r.companyName || '',
-
                         r.activeStatus || '',
                         r.aeXstatus || '',
                         formatDateForDisplay(r.yearEnd),
                         r.pic || '',
-
                         formatDateForDisplay(r.ssM18MthDue),
                         formatDateForDisplay(r.ssM_TAX),
                         formatDateForDisplay(r.t_startAccWk),
-
                         formatDateForDisplay(r.t_Date),
                         formatDateForDisplay(r.dateSent),
-
                         formatDateForDisplay(r.t_Call),
                         formatDateForDisplay(r.dateRemind),
-
                         formatDateForDisplay(r.t_FinalText),
                         formatDateForDisplay(r.dateText),
-
                         formatDateForDisplay(r.dateReceived),
                         r.note || '',
                         `<button class="btn btn-sm btn-warning edit-btn" data-id="${r.id || r.Id}" title="Edit"><i class="fas fa-edit"></i></button>`,
@@ -723,15 +684,11 @@
                 Note: ($('#inwardNote').val() || '').trim()
             };
 
-            // Required validations + inline errors
-            // === 表单验证 ===
             let hasError = false;
 
-            // 清除旧的错误标记
             $('#taskForm .form-control').removeClass('is-invalid');
             $('.invalid-feedback').remove();
 
-            // 工具函数：在某个字段下方显示错误提示
             function setFieldError(selector, message) {
                 const $field = $(selector);
                 $field.addClass('is-invalid');
@@ -740,31 +697,28 @@
                 }
             }
 
-            // === 验证逻辑 ===
-            // 1️⃣ 基础资料
+            // 基础必填
             if (!formData.Grouping) { setFieldError('#grouping', 'Required'); hasError = true; }
-            if (!formData.CompanyName) { setFieldError('#companyName ', 'Required'); hasError = true; }
+            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
             if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
             if (!formData.PIC) { setFieldError('#pic', 'Required'); hasError = true; }
             if (!formData.SSM18MthDue) { setFieldError('#ssm18MonthDue', 'Required'); hasError = true; }
 
-            // 3️⃣ Email Send 必选
-           if (!formData.ActiveStatus) {
+            // Active / AEX 必选
+            if (!formData.ActiveStatus) {
                 setFieldError('#coStatusActive', 'Please select Yes or No');
                 hasError = true;
             }
-             if (!formData.AEXstatus) {
+            if (!formData.AEXstatus) {
                 setFieldError('#coStatusAEX', 'Please select AEX / OT or No');
                 hasError = true;
             }
-            // === 触发提示 ===
+
             if (hasError) {
                 showModalAlert('Please fix the highlighted fields.', 'error');
                 $('#taskForm .is-invalid').first().focus();
                 return;
             }
-
-            if (formData.EmailSend === 'No') formData.DateSent = '-';
 
             const isUpdate = Number(formData.Id) > 0;
             const url = isUpdate ? '/update-b32' : '/create-b32';
@@ -808,14 +762,18 @@
                 success: function (res) {
                     $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Account Document Reminder');
                     if (res && res.success) {
-                       const d = res.data || {};
+                        const d = res.data || {};
                         $('#editIndex').val(d.id || d.Id || 0);
                         $('#grouping').val(d.grouping || d.Grouping || '');
-                        $('#companyName').val(d.companyName || d.CompanyName || '');
+                        $('#companyName').val(d.companyName || d.CompanyName || '').trigger('change');
 
-                        $('#coStatusActive').val(d.activeStatus|| '');
-                        $('#coStatusAEX').val(d.aeXstatus|| '');
-                        $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
+                        $('#coStatusActive').val(d.activeStatus || '');
+                        $('#coStatusAEX').val(d.aeXstatus || '');
+
+                        if (d.yearEnd || d.YearEnd) {
+                            $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
+                        }
+
                         $('#pic').val(d.pic || d.PIC || '');
 
                         $('#ssm18MonthDue').val(d.ssM18MthDue || '');

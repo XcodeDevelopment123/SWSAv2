@@ -1,5 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Reminder.B35>
-@{
+﻿@{
     ViewData["Title"] = "FormEReminderSchedule";
 }
 
@@ -62,43 +61,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.Grouping</td>
-                                    <td>@record.CompanyName</td>
-
-                                    <td>@record.YearEnd</td>
-                                    <td>@record.PIC</td>
-                                    <td>@record.T_startWk</td>
-
-                                    <td>@record.T_Date</td>
-                                    <td>@record.DateSent</td>
-
-                                    <td>@record.T_startWk</td>
-                                    <td>@record.DateRemind</td>
-
-                                    <td>@record.T_finalText</td>
-                                    <td>@record.DateText</td>
-
-                                    <td>@record.DateReceived</td>
-                                    <td>@record.Note</td>
-
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                        
                     </tbody>
                 </table>
             </div>
@@ -131,13 +94,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Options are linked from the Sdn Bhd Client List. Grouping & Yearend will be filled automatically.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -150,7 +118,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -277,6 +245,67 @@
         let dataTable;
         let dataTableInitialized = false;
 
+             function formatDdMMyyyy(dt) {
+            const dd = String(dt.getDate()).padStart(2, '0');
+            const mm = String(dt.getMonth() + 1).padStart(2, '0');
+            const yyyy = dt.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+          // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
+        function yearEndMonthToDateString(monthName) {
+            if (!monthName) return '';
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            const idx = months.indexOf(monthName);
+            if (idx === -1) return monthName; // 不认识就原样返回
+
+            const today = new Date();
+            let year = today.getFullYear();
+
+            // 如果这个 month 已经过了，就当作明年的 year end
+            if (idx < today.getMonth()) {
+                year += 1;
+            }
+
+            // 取这个月的最后一天
+            const dt = new Date(year, idx + 1, 0);
+            return formatDdMMyyyy(dt); // 复用你已有的函数
+        }
+
+       
+// 0) Company 下拉：从 Sdn Bhd Client List 拿 Grouping + YearEndMonth
+function loadCompanyOptions() {
+    $.ajax({
+        url: "/api/get/company-options",
+        type: "GET",
+        success: function (res) {
+            const $sel = $("#companyName");
+            $sel.empty().append('<option value="">-- Select company --</option>');
+
+            if (!(res && res.success && res.data)) return;
+
+            res.data.forEach(o => {
+                const name     = o.companyName || o.name || "-";
+                const grouping = o.grouping || o.group || o.Grouping || "";
+                const yeMonth  = o.yearEndMonth || o.YearEndMonth || ""; // e.g. "December"
+
+                // 把 Grouping / YearEndMonth 存在 data-*，后面 change 用
+                $sel.append(`
+                    <option value="${name}"
+                            data-grouping="${grouping}"
+                            data-yearendmonth="${yeMonth}">
+                        ${name}${yeMonth ? ` - YeadEnd ${yeMonth}` : ""}
+                    </option>
+                `);
+            });
+        }
+    });
+}
+
         // ========= 1) PIC 来源：AT21 / AEX41 =========
         function loadPicSourceListB35() {
             $.ajax({
@@ -380,18 +409,31 @@
             setFixedTargetMonths();
 
             loadPicSourceListB35();
+            loadCompanyOptions();
+
+// 选中公司 → 自动带出 Grouping + Year End (using yearEndMonthToDateString)
+$('#companyName').on('change', function () {
+    const $opt    = $(this).find('option:selected');
+
+    const grp     = $opt.data('grouping') || '';
+    const yeMonth = $opt.data('yearendmonth') || '';            // "December"
+    const yeDate  = yearEndMonthToDateString(yeMonth);          // 31/12/yyyy
+
+    $('#grouping').val(grp);
+    $('#yearEnd').val(yeDate);  // Year End 用你那套逻辑算出来
+});
+
 
 
             // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
-            ['#mth1DateSent', '#mth2DateRemind', '#mth1DateText', '#inwardDateReceived']
-                .forEach(function (id) {
-                    $(id).datepicker({
-                        format: 'dd/mm/yyyy',
-                        autoclose: true,
-                        todayHighlight: true
-                    });
-                });
-
+       ['#mth1DateSent', '#mth2DateReminder', '#mth3DateText', '#inwardDateReceived']
+    .forEach(function (id) {
+        $(id).datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
 
             // Datepickers (exclude read-only #circulationAfsDue)
             $('input[type="text"]').filter(function () {
