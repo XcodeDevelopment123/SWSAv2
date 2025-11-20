@@ -170,6 +170,32 @@ public class ClientService(
     public async Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req)
     {
         var isExist = await _individualClients.IcOrPassportExistsAsync(req.ICOrPassportNumber);
+
+        // ===== 使用 Dapper 处理 GroupId =====
+        string? groupName = null;
+        if (req.CategoryInfo?.GroupId.HasValue == true && req.CategoryInfo.GroupId.Value > 0)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            var sql = "SELECT Id, GroupName, IsActive FROM dbo.Groups WHERE Id = @GroupId";
+            var group = await connection.QueryFirstOrDefaultAsync<GroupInfoDto>(
+                sql,
+                new { GroupId = req.CategoryInfo.GroupId.Value }
+            );
+
+            if (group == null)
+                throw new BusinessLogicException("Selected group not found.");
+
+            if (!group.IsActive)
+                throw new BusinessLogicException("Selected group is not active.");
+
+            groupName = group.GroupName;
+
+            // 将 GroupName 设置到 CategoryInfo.Group
+            req.CategoryInfo.Group = groupName;
+        }
+        // ===== 结束 =====
+
         Guard.AgainstExist(isExist, "IC/Passport already exists");
 
         var entity = _clientCreationFactory.CreateIndividualAsync(req);
@@ -250,7 +276,32 @@ public class ClientService(
 
         var oldData = entity.DeepClone();
 
-        entity.UpdateAdminInfo(req.CategoryInfo?.Group, req.CategoryInfo?.Referral);
+        // ===== 处理 GroupId（如果有变更）=====
+        string? groupName = req.CategoryInfo?.Group;
+
+        if (req.CategoryInfo?.GroupId.HasValue == true && req.CategoryInfo.GroupId.Value > 0)
+        {
+            // 如果前端传了 GroupId，需要验证并获取 GroupName
+            using var connection = new SqlConnection(_connectionString);
+
+            var sql = "SELECT Id, GroupName, IsActive FROM dbo.Groups WHERE Id = @GroupId";
+            var group = await connection.QueryFirstOrDefaultAsync<GroupInfoDto>(
+                sql,
+                new { GroupId = req.CategoryInfo.GroupId.Value }
+            );
+
+            if (group == null)
+                throw new BusinessLogicException("Selected group not found.");
+
+            if (!group.IsActive)
+                throw new BusinessLogicException("Selected group is not active.");
+
+            groupName = group.GroupName;
+        }
+        // ===== 结束 =====
+
+        entity.UpdateAdminInfo(groupName, req.CategoryInfo?.Referral);
+        entity.GroupId = req.CategoryInfo?.GroupId;
         entity.UpdateClientInfo(req.IndividualName, req.TaxIdentificationNumber, req.YearEndMonth, req.ICOrPassportNumber, req.Professions);
 
         db.Update(entity);

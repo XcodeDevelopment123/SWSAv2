@@ -43,6 +43,8 @@ public class ClientCreationFactory : IClientCreationFactory
             ClientType.Enterprise => new EnterpriseClient
             {
                 Group = req.CategoryInfo?.Group,
+                GroupId = req.CategoryInfo?.GroupId,        // ⭐ 新增
+
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
                 ActivitySize = req.ActivitySize,
@@ -60,6 +62,7 @@ public class ClientCreationFactory : IClientCreationFactory
             ClientType.LLP => new LLPClient
             {
                 Group = req.CategoryInfo?.Group,
+                GroupId = req.CategoryInfo?.GroupId,        // ⭐ 新增
                 Referral = req.CategoryInfo?.Referral,
                 FileNo = req.CategoryInfo?.FileNo,
                 ActivitySize = req.ActivitySize,
@@ -83,6 +86,7 @@ public class ClientCreationFactory : IClientCreationFactory
         var entity = new IndividualClient
         {
             Group = req.CategoryInfo?.Group,
+            GroupId = req.CategoryInfo?.GroupId,
             Referral = req.CategoryInfo?.Referral,
 
             Name = req.IndividualName,

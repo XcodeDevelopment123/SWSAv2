@@ -51,7 +51,21 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="group">Group</label>
-                                <input value="@client.Group" name="group" class="form-control" placeholder="" />
+                                <select id="groupId" name="groupId" class="form-control select2" data-current-group-id="@client.GroupId">
+                                    <option value="">-- Select Group --</option>
+                                    @* 选项会通过 JavaScript 动态加载，并自动选中当前的 GroupId *@
+                                </select>
+                                <small class="text-muted">
+                                    @if (!string.IsNullOrEmpty(client.Group))
+                                    {
+                                        <span>Current: <strong>@client.Group</strong></span>
+                                    }
+                                    else
+                                    {
+                                        <span>Optional: Select a group for this client.</span>
+                                    }
+
+                                </small>
                             </div>
                         </div>
                         <div class="col-md-4">

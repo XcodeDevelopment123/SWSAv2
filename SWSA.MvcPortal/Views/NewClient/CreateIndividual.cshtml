@@ -38,7 +38,11 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="group">Group</label>
-                                <input name="group" class="form-control" placeholder="" />
+                                <select id="groupId" name="groupId" class="form-control select2">
+                                    <option value="">-- Select Group --</option>
+                                    @* 选项会通过 JavaScript 动态加载 *@
+                                </select>
+                                <small class="text-muted">Select a group for this client.</small>
                             </div>
                         </div>
                         <div class="col-md-4">
