@@ -302,6 +302,7 @@ public class ClientService(
                 Id = c.Id,
                 Grouping = c.Group,                  // 如果是导航对象就用 c.Group.GroupName
                 FileNo = c.FileNo,
+                Referral = c.Referral,
                 CompanyName = c.Name,
                 CompanyNo = c.RegistrationNumber,
                 IncorporationDate = c.IncorporationDate,

@@ -25,5 +25,10 @@
         public string? LinkedSSMstrikeoffDate { get; set; }
         public string? LinkedDatePassToTaxDept { get; set; }
         public string? LinkedFormCSubmitDate { get; set; }
+
+        // ★ 新增：仅用于同步到 S16，不写入 TX4 表
+        public string? Referral { get; set; }
+        public string? CompanyNo { get; set; }
+        public string? IncorporationDate { get; set; }   // 建议用 dd/MM/yyyy 字串即可
     }
 }

@@ -96,19 +96,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Refferal</label>
-                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Enter referral" />
+                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="secFileNo">Sec file no</label>
-                                <input type="text" id="secFileNo" name="secFileNo" class="form-control" placeholder="Enter sec file number" />
+                                <input type="text" id="secFileNo" name="secFileNo" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -139,10 +139,12 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="coName">Co Name</label>
-                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
                                 <small class="text-muted">
-                                    This field should be linked from the Client List.
+                                    Options are linked from the Sdn Bhd Client List. Grouping,Refferal ,File No will be filled automatically.
                                 </small>
                             </div>
                         </div>
@@ -266,6 +268,8 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="companyNoHidden" name="CompanyNo" />
+                    <input type="hidden" id="incorpDateHidden" name="IncorpDate" />
                 </form>
             </div>
             <div class="modal-footer">
@@ -298,6 +302,65 @@
         let dataTableInitialized = false;
 
         let s13aSources = [];
+
+        // 忽略大小写比较
+        function eqIgnoreCase(a, b) {
+            if (!a || !b) return false;
+            return String(a).trim().toLowerCase() === String(b).trim().toLowerCase();
+        }
+
+        // 把任何日期转成统一的 dd/MM/yyyy，用来做比较
+        function normalizeDdMMyyyy(str) {
+            if (!str) return '';
+            return formatDateForDisplay(str); // 你原本的函数，已经会帮你转各种格式
+        }
+
+
+
+        // 从 Sdn Bhd Client List 载入公司列表
+        // 并把 Grouping / FileNo / Referral 放进 data-* 里
+   function loadCompanyOptions() {
+    $.ajax({
+        url: "/api/get/company-options",
+        type: "GET",
+        success: function (res) {
+            const $sel = $("#companyName");
+            $sel.empty().append('<option value="">-- Select company --</option>');
+
+            if (!(res && res.success && res.data)) return;
+
+            res.data.forEach(o => {
+                const name      = o.companyName || o.CompanyName || "-";
+                const grouping  = o.grouping || o.Grouping || "";
+                const fileNo    = o.fileNo || o.FileNo || "";
+                const referral  = o.referral || o.Referral || "";
+
+                const companyNo = o.companyNo || o.CompanyNo || "";
+                const incorpRaw =
+                    o.incorpDate || o.IncorpDate ||
+                    o.incorporationDate || o.IncorporationDate || "";
+
+                // 用你通用的日期格式化（如果已经在这个 View 里有）
+                const incorpDisplay = formatDateForDisplay
+                    ? formatDateForDisplay(incorpRaw)
+                    : incorpRaw;
+
+                $sel.append(`
+                    <option value="${name}"
+                            data-grouping="${grouping}"
+                            data-fileno="${fileNo}"
+                            data-referral="${referral}"
+                            data-companyno="${companyNo}"
+                            data-incorpdate="${incorpDisplay}">
+                        ${name}
+                    </option>
+                `);
+            });
+        }
+    });
+}
+
+
 
         // 输入任何日期字串，先转成 dd/MM/yyyy，再加 N 个月，返回 MM/yyyy
         function addMonthsToDdMmYyyy(dateStr, monthsToAdd) {
@@ -393,8 +456,9 @@
 
 
             // 1️⃣ 自动填 Company 信息 + Year End
-            $('#coName').val(companyName);
+            $('#companyName').val(companyName);
             $('#yearEnd').val(yearEndDisplay);
+
 
             // 2️⃣ 自动填 YE to Do（直接取年份）
             let yeYear = '';
@@ -548,7 +612,27 @@
         // ---------- Init ----------
         $(document).ready(function () {
 
+            loadCompanyOptions();
             loadS13ASourceOptions();
+
+          $('#companyName').on('change', function () {
+    const $opt = $(this).find('option:selected');
+
+    const grouping   = $opt.data('grouping') || '';
+    const referral   = $opt.data('referral') || '';
+    const fileNo     = $opt.data('fileno') || '';
+    const companyNo  = $opt.data('companyno') || '';
+    const incorpDate = $opt.data('incorpdate') || '';
+
+    $('#grouping').val(grouping);
+    $('#referral').val(referral);
+    $('#secFileNo').val(fileNo);
+
+    // 🔹 专门给 UpsertS14B 用，不用显示在画面也可以
+    $('#companyNoHidden').val(companyNo);
+    $('#incorpDateHidden').val(incorpDate);
+});
+
 
             $('#sourceOption').on('change', onSourceOptionChanged);
 
@@ -690,6 +774,19 @@
             hideModalAlert();
             clearFieldErrors();
 
+            // 从 Link from 2.1 / 4.1 下拉拿到 SourceType / SourceId
+            const sourceVal = $('#sourceOption').val() || '';
+            let sourceType = '';
+            let sourceId = 0;
+
+            if (sourceVal) {
+                const parts = sourceVal.split('|');
+                if (parts.length === 2) {
+                    sourceType = parts[0];
+                    sourceId = parseInt(parts[1], 10) || 0;
+                }
+            }
+
             const formData = {
                 Id: ($('#editIndex').val() || '0').trim(),
 
@@ -697,9 +794,13 @@
                 Referral: ($('#referral').val() || '').trim(),
                 SecFileNo: ($('#secFileNo').val() || '').trim(),
 
-                CompanyName: ($('#coName').val() || '').trim(),
+                CompanyName: ($('#companyName').val() || '').trim(),
                 CompanyType: ($('#coType').val() || '').trim(),
                 YearEnd: ($('#yearEnd').val() || '').trim(),
+                  // 🔸 新增：从 hidden 取 CompanyNo / IncorpDate
+    CompanyNo: ($('#companyNoHidden').val() || '').trim(),
+    IncorpDate: ($('#incorpDateHidden').val() || '').trim(),
+
 
                 CompanyStatus: ($('#coStatus').val() || '').trim(),
                 ActiveCoActivitySize: ($('#activitySize').val() || '').trim(),
@@ -713,10 +814,11 @@
 
                 AFSSubmitDate: ($('#afsSubmittedDate').val() || '').trim(),
                 ARSubmitDate: ($('#arSubmittedDate').val() || '').trim(),
-                JobCompleted: ($('#jobStatus').val() || '').trim()
+                JobCompleted: ($('#jobStatus').val() || '').trim(),
+       
             };
 
-            // 简单必填验证（你可以再调整）
+            // 简单必填验证
             let hasError = false;
             if (!formData.Grouping) {
                 setFieldError('#grouping', 'Required');
@@ -731,7 +833,7 @@
                 hasError = true;
             }
             if (!formData.CompanyName) {
-                setFieldError('#coName', 'Required');
+                setFieldError('#companyName', 'Required');
                 hasError = true;
             }
             if (!formData.CompanyType) {
@@ -785,6 +887,7 @@
             });
         }
 
+
         // ------------ Edit -------------
         function editRecord(id) {
             $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
@@ -805,7 +908,7 @@
                         $('#referral').val(getVal(d, 'Referral'));
                         $('#secFileNo').val(getVal(d, 'SecFileNo'));
 
-                        $('#coName').val(getVal(d, 'CompanyName'));
+                        $('#companyName').val(getVal(d, 'CompanyName'));
                         $('#coType').val(getVal(d, 'CompanyType'));
                         $('#yearEnd').val(formatDateForDisplay(getVal(d, 'YearEnd')));
 
@@ -822,6 +925,51 @@
                         $('#afsSubmittedDate').val(formatDateForDisplay(getVal(d, 'AFSSubmitDate')));
                         $('#arSubmittedDate').val(formatDateForDisplay(getVal(d, 'ARSubmitDate')));
                         $('#jobStatus').val(getVal(d, 'JobCompleted'));
+
+                        try {
+                            // 这条 S13A record 现在的值
+                            const recName = (getVal(d, 'CompanyName') || '').trim();
+                            const recYearEnd = normalizeDdMMyyyy(getVal(d, 'YearEnd'));
+                            const rec18 = normalizeDdMMyyyy(getVal(d, 'YrMthDueDate'));
+                            const recAfs = normalizeDdMMyyyy(getVal(d, 'Circulation'));
+
+                            let matched = null;
+
+                            if (Array.isArray(s13aSources) && s13aSources.length > 0) {
+                                matched = s13aSources.find(src => {
+                                    const srcName = (src.companyName || src.CompanyName || '').trim();
+                                    const srcYearEnd = normalizeDdMMyyyy(src.yearEnd || src.YearEnd);
+                                    const src18 = normalizeDdMMyyyy(src.first18MthsDue || src.First18MthsDue);
+                                    const srcAfs = normalizeDdMMyyyy(src.afsDueDate || src.AfsDueDate);
+
+                                    // ① 公司名称一定要一样
+                                    const nameOk = eqIgnoreCase(recName, srcName);
+
+                                    // ② YearEnd 要一样
+                                    const yeOk = recYearEnd && srcYearEnd && recYearEnd === srcYearEnd;
+
+                                    // ③ 尽量再用 18mths / AFS 去加强匹配（有就比，没有就忽略）
+                                    const first18Ok = rec18 && src18 ? rec18 === src18 : true;
+                                    const afsOk = recAfs && srcAfs ? recAfs === srcAfs : true;
+
+                                    return nameOk && yeOk && first18Ok && afsOk;
+                                });
+                            }
+
+                            if (matched) {
+                                const st = matched.sourceType || matched.SourceType;
+                                const sid = matched.sourceId || matched.SourceId;
+                                if (st && sid != null) {
+                                    const value = `${st}|${sid}`;
+                                    $('#sourceOption').val(value);   // ✅ 选回原来的那一条
+
+                                    // 如果你想在 Edit 时不让他们改这一栏，可以顺便锁死：
+                                    // $('#sourceOption').prop('disabled', true);
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('match sourceOption error:', e);
+                        }
 
                         $('#taskModal').modal('show');
                     } else {

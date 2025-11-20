@@ -20,5 +20,9 @@
         public string? AFSSubmitDate { get; set; }
         public string? ARSubmitDate { get; set; }
         public string? JobCompleted { get; set; }
+
+        // 🔸 新增：只用于传去 S14B，不一定要是 DB column
+        public string? CompanyNo { get; set; }
+        public string? IncorpDate { get; set; }
     }
 }

@@ -574,87 +574,152 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             }
         }
 
-        public class ClientOptionForTx4
+        //        public class ClientOptionForTx4
+        //        {
+        //            public int Id { get; set; }
+        //            public string CompanyName { get; set; }
+        //            public string? YearEndMonth { get; set; }   // 对应 Clients.YearEndMonth
+        //        }
+        //        [HttpGet("api/tx4/client-options")]
+        //        public async Task<IActionResult> GetClientOptionsForTx4()
+        //        {
+        //            try
+        //            {
+        //                using var connection = new SqlConnection(_connectionString);
+
+        //                var sql = @"
+        //SELECT 
+        //    Id,
+        //    [Name]           AS CompanyName,
+        //    YearEndMonth
+        //FROM [Quartz].[dbo].[Clients]
+        //ORDER BY [Name];";
+
+        //                var list = await connection.QueryAsync<ClientOptionForTx4>(sql);
+
+        //                return Json(new { success = true, data = list });
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return Json(new { success = false, message = ex.Message });
+        //            }
+        //        }
+
+        private class ClientBasicInfo
         {
-            public int Id { get; set; }
-            public string CompanyName { get; set; }
-            public string? YearEndMonth { get; set; }   // 对应 Clients.YearEndMonth
+            public string Referral { get; set; } = "";
+            public string CompanyNo { get; set; } = "";
+            public DateTime? IncorporationDate { get; set; }
         }
-        [HttpGet("api/tx4/client-options")]
-        public async Task<IActionResult> GetClientOptionsForTx4()
-        {
-            try
-            {
-                using var connection = new SqlConnection(_connectionString);
-
-                var sql = @"
-SELECT 
-    Id,
-    [Name]           AS CompanyName,
-    YearEndMonth
-FROM [Quartz].[dbo].[Clients]
-ORDER BY [Name];";
-
-                var list = await connection.QueryAsync<ClientOptionForTx4>(sql);
-
-                return Json(new { success = true, data = list });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
 
 
         // 创建或更新 S16 记录的辅助方法
         private async Task CreateOrUpdateS16Record(SqlConnection connection, TX4Model tx4Model)
         {
-            // 检查 S16 中是否已存在该公司记录
+            // 从 TX4Model 里拿值（前端已经从 Client List 带过来）
+            var companyName = tx4Model.CompanyName ?? string.Empty;
+            var yearEnd = tx4Model.YearEnd ?? string.Empty;
+            var refFromClient = tx4Model.Referral ?? string.Empty;          // 对应 S16.[Ref]
+            var companyNo = tx4Model.CompanyNo ?? string.Empty;             // 对应 S16.[CompanyNo]
+            var incorpDate = tx4Model.IncorporationDate ?? string.Empty;    // 对应 S16.[IncorpDate]
+
+            // 1) 判断 S16 是否已有该公司
             var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[S16] WHERE CompanyName = @CompanyName";
-            var exists = await connection.ExecuteScalarAsync<int>(checkSql, new { tx4Model.CompanyName });
+            var exists = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName });
 
             if (exists > 0)
             {
-                // 更新现有 S16 记录
-                var updateSql = @"UPDATE [Quartz].[dbo].[S16] SET 
-                         [SSMsubmitDate] = @SSMsubmitDate,
-                         [SSMstrikeoffDate] = @SSMstrikeoffDate,
-                         [DatePassToTaxDept] = @DatePassToTaxDept,
-                         [FormCSubmitDate] = @FormCSubmitDate
-                         WHERE CompanyName = @CompanyName";
+                // 2) 已存在 → 更新
+                var updateSql = @"
+UPDATE [Quartz].[dbo].[S16]
+SET
+    [SSMsubmitDate]     = @SSMsubmitDate,
+    [SSMstrikeoffDate]  = @SSMstrikeoffDate,
+    [DatePassToTaxDept] = @DatePassToTaxDept,
+    [FormCSubmitDate]   = @FormCSubmitDate,
+
+    -- 如果 YearEnd 原本是空，就用这次的 TX4.YearEnd
+    [YearEnd] = CASE 
+                    WHEN (YearEnd IS NULL OR YearEnd = '') AND @YearEnd <> '' 
+                        THEN @YearEnd 
+                    ELSE YearEnd 
+                END,
+
+    -- 只在原本为空时才用 Client List 的资料补上
+    [Ref] = CASE 
+                WHEN (Ref IS NULL OR Ref = '') AND @Ref <> '' 
+                    THEN @Ref 
+                ELSE Ref 
+            END,
+    [CompanyNo] = CASE 
+                    WHEN (CompanyNo IS NULL OR CompanyNo = '') AND @CompanyNo <> '' 
+                        THEN @CompanyNo 
+                    ELSE CompanyNo 
+                  END,
+    [IncorpDate] = CASE 
+                    WHEN (IncorpDate IS NULL OR IncorpDate = '') AND @IncorpDate <> '' 
+                        THEN @IncorpDate 
+                    ELSE IncorpDate 
+                   END
+WHERE CompanyName = @CompanyName;";
 
                 await connection.ExecuteAsync(updateSql, new
                 {
+                    CompanyName = companyName,
+                    YearEnd = yearEnd,
                     SSMsubmitDate = tx4Model.SSMsubmissionDate,
                     SSMstrikeoffDate = tx4Model.DateSOff,
                     DatePassToTaxDept = tx4Model.DateReceiveFrSecDept,
                     FormCSubmitDate = tx4Model.FormCsubmitDate,
-                    CompanyName = tx4Model.CompanyName
+
+                    Ref = refFromClient,
+                    CompanyNo = companyNo,
+                    IncorpDate = incorpDate
                 });
             }
             else
             {
-                // 创建新的 S16 记录
-                var insertSql = @"INSERT INTO [Quartz].[dbo].[S16] 
-                         ([CompanyName], [YearEnd], [SSMsubmitDate], [SSMstrikeoffDate], 
-                          [DatePassToTaxDept], [FormCSubmitDate], [JobCompleted])
-                         VALUES 
-                         (@CompanyName, @YearEnd, @SSMsubmitDate, @SSMstrikeoffDate, 
-                          @DatePassToTaxDept, @FormCSubmitDate, @JobCompleted)";
+                // 3) 不存在 → 新增一条记录
+                var insertSql = @"
+INSERT INTO [Quartz].[dbo].[S16]
+    ([Ref],
+     [CompanyName],
+     [CompanyNo],
+     [IncorpDate],
+     [YearEnd],
+     [SSMsubmitDate],
+     [SSMstrikeoffDate],
+     [DatePassToTaxDept],
+     [FormCSubmitDate],
+     [JobCompleted])
+VALUES
+    (@Ref,
+     @CompanyName,
+     @CompanyNo,
+     @IncorpDate,
+     @YearEnd,
+     @SSMsubmitDate,
+     @SSMstrikeoffDate,
+     @DatePassToTaxDept,
+     @FormCSubmitDate,
+     @JobCompleted);";
 
                 await connection.ExecuteAsync(insertSql, new
                 {
-                    CompanyName = tx4Model.CompanyName,
-                    YearEnd = tx4Model.YearEnd,
+                    Ref = refFromClient,
+                    CompanyName = companyName,
+                    CompanyNo = companyNo,
+                    IncorpDate = incorpDate,
+                    YearEnd = yearEnd,
                     SSMsubmitDate = tx4Model.SSMsubmissionDate,
                     SSMstrikeoffDate = tx4Model.DateSOff,
                     DatePassToTaxDept = tx4Model.DateReceiveFrSecDept,
                     FormCSubmitDate = tx4Model.FormCsubmitDate,
-                    JobCompleted = "In Progress" // 默认值
+                    JobCompleted = "In Progress"
                 });
             }
         }
-        #endregion    
+
+        #endregion
     }
 }

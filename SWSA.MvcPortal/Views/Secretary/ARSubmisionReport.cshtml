@@ -88,28 +88,30 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
                                 <small class="text-muted">
-                                    This field should be linked from the Client List.
+                                    Options are linked from the Sdn Bhd Client List. File No,Company No & Incorp Date will be filled automatically.
                                 </small>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="companyNo">Company No.</label>
-                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -262,6 +264,45 @@
         let dataTable;
         let dataTableInitialized = false;
 
+        function loadCompanyOptions() {
+            $.ajax({
+                url: "/api/get/company-options",
+                type: "GET",
+                success: function (res) {
+                    const $sel = $("#companyName");
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    if (!(res && res.success && res.data)) return;
+
+                    res.data.forEach(o => {
+                        const name = o.companyName || o.CompanyName || "-";
+                        const fileNo = o.fileNo || o.FileNo || "";
+                        const companyNo = o.companyNo || o.CompanyNo || "";
+
+                        // 可能的 Incorp 字段名：IncorpDate / IncorporationDate / incorporationDate
+                        const incorpRaw =
+                            o.incorpDate || o.IncorpDate ||
+                            o.incorporationDate || o.IncorporationDate || "";
+
+                        // 统一成 dd/MM/yyyy（你已有 formatDateForDisplay 的话就用它）
+                        const incorpDisplay = formatDateForDisplay
+                            ? formatDateForDisplay(incorpRaw)
+                            : incorpRaw;
+
+                        // 存在 data-* 里，方便 change 事件读取
+                        $sel.append(`
+                            <option value="${name}"
+                                    data-fileno="${fileNo}"
+                                    data-companyno="${companyNo}"
+                                    data-incorpdate="${incorpDisplay}">
+                                ${name}
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = {
@@ -391,9 +432,45 @@
 
         function formatDateForDisplay(s) {
             if (!s) return '';
-            // 现在先直接原样显示，有需要再做真正格式转换
+            if (typeof s !== 'string') s = String(s);
+            s = s.trim();
+            if (!s) return '';
+
+            // 已经是 dd/MM/yyyy 了
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
+                return s;
+            }
+
+            // /Date(1730006400000)/
+            let m = /\/Date\((\d+)\)\//.exec(s);
+            if (m) {
+                const ticks = parseInt(m[1], 10);
+                if (!isNaN(ticks)) {
+                    const d = new Date(ticks);
+                    return formatDdMmYyyy(d);
+                }
+            }
+
+            // ISO: 2025-02-27T00:00:00
+            m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+            if (m) {
+                const y = parseInt(m[1], 10);
+                const mo = parseInt(m[2], 10) - 1;
+                const d = parseInt(m[3], 10);
+                const dt = new Date(y, mo, d);
+                return formatDdMmYyyy(dt);
+            }
+
+            // 类似 "Feb 27 2025 12:00AM" 丢给 Date 解析
+            const dt2 = new Date(s);
+            if (!isNaN(dt2.getTime())) {
+                return formatDdMmYyyy(dt2);
+            }
+
+            // 实在不认识，就原样返回（例如 "Sep-2025"、"Sep"）
             return s;
         }
+
 
         function getVal(obj, name) {
             if (!obj) return '';
@@ -421,6 +498,23 @@
 
         // ---------- Init ----------
         $(document).ready(function () {
+
+            loadCompanyOptions();
+
+            $('#companyName').on('change', function () {
+                const $opt = $(this).find('option:selected');
+
+                const fileNo = $opt.data('fileno') || '';
+                const companyNo = $opt.data('companyno') || '';
+                const incorp = $opt.data('incorpdate') || '';
+
+                $('#fileNo').val(fileNo);
+                $('#companyNo').val(companyNo);
+                $('#incorpDate').val(incorp);
+
+                recalcFromIncorp();
+            });
+
 
             // 当 Incorp Date 选择/修改时，自动重算三个栏位
             $('#incorpDate')

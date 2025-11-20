@@ -11,6 +11,7 @@
     {
         public int Id { get; set; }                 // Client Id
         public string Grouping { get; set; } = "";  // Group AB
+        public string Referral { get; set; } = "";
         public string FileNo { get; set; } = "";    // fileNo
         public string CompanyName { get; set; } = "";
         public string CompanyNo { get; set; } = ""; // registrationNumber

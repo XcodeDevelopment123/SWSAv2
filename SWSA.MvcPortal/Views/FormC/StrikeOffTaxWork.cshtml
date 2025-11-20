@@ -237,6 +237,10 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="referral" name="referral" />
+                    <input type="hidden" id="companyNoHidden" name="companyNoHidden" />
+                    <input type="hidden" id="incorporationDate" name="incorporationDate" />
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -289,16 +293,21 @@
 
                 if (yearEndMonth && yearEndMonth >= 1 && yearEndMonth <= 12) {
                     const now = new Date();
-                    const year = now.getFullYear();  // 默认用今年的年份
+                    const year = now.getFullYear();  // 还是用今年
 
-                    const mm = yearEndMonth.toString().padStart(2, '0');  // 01~12
+                    const mm = yearEndMonth.toString().padStart(2, '0');
                     const formatted = `${mm}/${year}`;
-
                     $('#yearEnd').val(formatted);
                 } else {
                     $('#yearEnd').val('');
                 }
+
+                // ★ 顺便把 Referral / CompanyNo / IncorporationDate 写到隐藏栏位
+                $('#referral').val($selected.data('referral') || '');
+                $('#companyNoHidden').val($selected.data('companyno') || '');
+                $('#incorporationDate').val($selected.data('incorpdate') || '');
             });
+
 
     
 
@@ -427,7 +436,11 @@
                     invoiceDate: $('#invoiceDate').val(),
                     amountRM: $('#amountRM').val(),
                     clientCopySent: $('#clientCopySent').val(),
-                    jobCompletedDate: $('#jobCompletedDate').val()
+                    jobCompletedDate: $('#jobCompletedDate').val(),
+
+                    referral: $('#referral').val(),
+                    companyNo: $('#companyNoHidden').val(),
+                    incorporationDate: $('#incorporationDate').val()
                 };
 
                 const url = currentEditId ? '/api/tx4/update' : '/api/tx4/create';
@@ -544,11 +557,11 @@
                 }
             }
 
-            // ★ 新增：加载公司下拉
+            // ★ 用共用的 /api/get/company-options，并挂上 yearEndMonth + 3 个 data
             function loadClientOptionsForTx4() {
-                $.get('/api/tx4/client-options', function (response) {
-                    if (!response.success) {
-                        showAlert('Error loading clients: ' + response.message, 'danger');
+                $.get('/api/get/company-options', function (response) {
+                    if (!response || !response.success) {
+                        showAlert('Error loading clients: ' + (response?.message || ''), 'danger');
                         return;
                     }
 
@@ -556,19 +569,55 @@
                     $ddl.empty();
                     $ddl.append('<option value="">-- Select company --</option>');
 
-                    response.data.forEach(function (item) {
-                        // 把 YearEndMonth 放在 data-yearendmonth 里，后面用
-                        const option = $('<option>')
-                            .val(item.companyName)                         // value就是公司名，直接存到TX4.CompanyName
-                            .text(item.companyName)
-                            .attr('data-yearendmonth', item.yearEndMonth || '');
+                    (response.data || []).forEach(function (item) {
+                        const name = item.companyName || item.CompanyName || '';
+                        const yearEndMthRaw = item.yearEndMonth || item.YearEndMonth || '';
+                        const referral = item.referral || item.Referral || '';
+                        const companyNo = item.companyNo || item.CompanyNo || '';
+                        const incorpRaw = item.incorporationDate || item.IncorporationDate || '';
 
-                        $ddl.append(option);
+                        // ★ 把英文月份转成数字 1~12
+                        let yearEndMth = '';
+                        if (yearEndMthRaw) {
+                            const monthMap = {
+                                'january': 1,
+                                'february': 2,
+                                'march': 3,
+                                'april': 4,
+                                'may': 5,
+                                'june': 6,
+                                'july': 7,
+                                'august': 8,
+                                'september': 9,
+                                'october': 10,
+                                'november': 11,
+                                'december': 12
+                            };
+                            const key = yearEndMthRaw.toString().trim().toLowerCase();
+                            yearEndMth = monthMap[key] || '';
+                        }
+
+                        const incorpDisplay = typeof formatDateForDisplay === 'function'
+                            ? formatDateForDisplay(incorpRaw)
+                            : incorpRaw;
+
+                        const $opt = $('<option>')
+                            .val(name)
+                            .text(name)
+                            .attr('data-yearendmonth', yearEndMth || '')   // 这里现在是 1~12
+                            .attr('data-referral', referral || '')
+                            .attr('data-companyno', companyNo || '')
+                            .attr('data-incorpdate', incorpDisplay || '');
+
+                        $ddl.append($opt);
                     });
                 }).fail(function (xhr, status, error) {
                     showAlert('Error loading clients: ' + error, 'danger');
                 });
             }
+
+
+
 
 
             // 重置表单

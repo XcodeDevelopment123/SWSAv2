@@ -6,6 +6,7 @@ using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Models.SecDeptModel;
 using System.Globalization;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.SecretaryDept
 {
@@ -16,13 +17,15 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
         private readonly DbSet<SecDeptTaskTemplate> _tasks;
+        private readonly IClientService _clientService;
 
-        public SecretaryController(AppDbContext db, IConfiguration configuration)
+        public SecretaryController(AppDbContext db, IConfiguration configuration,IClientService clientService)
         {
             _db = db;
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
             _tasks = _db.Set<SecDeptTaskTemplate>();
+            _clientService = clientService;
         }
 
         #region Page/View
@@ -468,25 +471,32 @@ FROM [Quartz].[dbo].[AEX41];";
         {
             var incorpFromAr = CalculateIncorpDateFromArDue(s13a.ARdueDate);
 
+            var finalIncorp = !string.IsNullOrWhiteSpace(incorpFromAr)
+                ? incorpFromAr
+                : (s13a.IncorpDate ?? string.Empty);
+
             var param = new
             {
                 FileNo = s13a.SecFileNo ?? string.Empty,
                 CompanyName = s13a.CompanyName ?? string.Empty,
-                CompanyNo = string.Empty,
-                IncorpDate = incorpFromAr,
+
+                // 🔹 这里用 S13A 带过来的 CompanyNo
+                CompanyNo = s13a.CompanyNo ?? string.Empty,
+
+                // 🔹 IncorpDate 最终值（Ar 算出来优先，其次用 S13A 的）
+                IncorpDate = finalIncorp,
+
                 YearEnd = s13a.YearEnd ?? string.Empty,
                 CompanyStatus = s13a.CompanyStatus ?? string.Empty,
 
-                // ✅ 用 S13A 的值带去 S14B（只在 INSERT 时用到）
                 YrMthdueDate = s13a.YrMthDueDate ?? string.Empty,
                 CirculationAFSduedate = s13a.Circulation ?? string.Empty,
 
-                MBRSreceivedDate = string.Empty,   // 如果将来要从 AFSSubmitDate 带，也可以改这里
+                MBRSreceivedDate = string.Empty, // 如果将来要从 AFSSubmitDate 带，也可以改这里
                 OntimeLate = string.Empty,
                 ReasonForLate = string.Empty,
                 JobCompleted = s13a.JobCompleted ?? string.Empty
             };
-
             var sql = @"
 DECLARE @Action nvarchar(10);
 
@@ -1059,6 +1069,19 @@ FROM [Quartz].[dbo].[AT31];
         //}
         #endregion
 
+        [HttpGet("api/get/company-options")]
+        public async Task<IActionResult> GetCompanyOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetCompanyOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 
 }
