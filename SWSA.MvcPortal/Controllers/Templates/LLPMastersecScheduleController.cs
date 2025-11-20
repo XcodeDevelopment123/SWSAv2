@@ -3,6 +3,8 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using SWSA.MvcPortal.Models.SecDeptModel;
 using System.Data;
+using SWSA.MvcPortal.Services.Clients;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.Templates
 {
@@ -10,11 +12,14 @@ namespace SWSA.MvcPortal.Controllers.Templates
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private readonly IClientService _clientService;
 
-        public LLPMastersecScheduleController(IConfiguration configuration)
+
+        public LLPMastersecScheduleController(IConfiguration configuration, IClientService clientService)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
+            _clientService = clientService;
         }
 
         // GET: 显示页面
@@ -183,5 +188,20 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpGet("api/get/llp-company-options")]
+        public async Task<IActionResult> GetLlpCompanyOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetLlpCompanyOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }

@@ -364,5 +364,34 @@ public class ClientService(
             .ToList();
     }
 
+    public async Task<List<CompanyOptionDto>> GetLlpCompanyOptionsAsync()
+    {
+        var filter = new ClientFilterRequest
+        {
+            // IsActive = true,
+            // 其他过滤条件按需设置
+        };
+
+        // ① 拉 LLP 客户
+        var raw = await SearchClientsAsync(ClientType.LLP, filter);
+
+        // ② Cast 成 LLP Client 并投影为 DTO
+        return raw
+            .Cast<LLPClient>() // 如果你的类型名不同，请换成实际的 LLP 客户类型
+            .Select(c => new CompanyOptionDto
+            {
+                Id = c.Id,
+                Grouping = c.Group,                     // 若是导航对象：c.Group?.GroupName
+                Referral = c.Referral,                  // LLP 需求
+                FileNo = c.FileNo,
+                CompanyName = c.Name,
+                CompanyNo = c.RegistrationNumber,
+                IncorporationDate = c.IncorporationDate, // 或 c.RegistrationDate（视你的模型）
+                YearEndMonth = c.YearEndMonth.HasValue
+                    ? c.YearEndMonth.Value.ToString()
+                    : string.Empty
+            })
+            .ToList();
+    }
 
 }
