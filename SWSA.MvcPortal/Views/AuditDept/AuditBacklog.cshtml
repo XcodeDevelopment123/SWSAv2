@@ -6,7 +6,6 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -18,7 +17,6 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
@@ -37,17 +35,13 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -71,8 +65,10 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="companyName">Company Name</label>
+                                <select id="companyName" name="companyName" class="form-select form-control" required>
+                                    <option value="">-- Select Company --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -167,7 +163,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- 确保 DataTables 库已加载 -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -178,10 +173,46 @@
         let isInitialLoad = true;
 
         $(document).ready(function() {
+            // ⭐⭐ 1. Load Client List into Dropdown
+            loadClientOptions();
+
             // 先初始化 DataTable，然后再加载数据
             initializeDataTable();
             loadData();
         });
+
+        // ⭐⭐ 新增：加载客户列表函数
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/auditdept/clients/get-list', // 确保 Controller 有这个 API
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success && res.data) {
+                        const $select = $('#companyName');
+                        // 保留第一项 "-- Select Company --"，清空后面的
+                        $select.find('option:not(:first)').remove();
+
+                        res.data.forEach(client => {
+                            // 兼容属性名大小写
+                            const name = client.CompanyName || client.companyName || client.Name || client.name;
+                            // 获取客户类型
+                            const type = client.ClientType || client.clientType || '';
+
+                            if (name) {
+                                let displayText = name;
+                                if (type) {
+                                    displayText = `${name} (${type})`;
+                                }
+                                $select.append(`<option value="${name}">${displayText}</option>`);
+                            }
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.error('Failed to load client list', err);
+                }
+            });
+        }
 
         function initializeDataTable() {
             if (dataTable) {
@@ -206,10 +237,16 @@
                     { "data": "companyName" },
                     { "data": "quarterToDoAudit" },
                     { "data": "activity" },
-                    { "data": "yearEnd" },
+                    {
+                        "data": "yearEnd",
+                        "render": function(data) { return formatDate(data); }
+                    },
                     { "data": "yearToDo" },
                     { "data": "moveToActiveAexSch" },
-                    { "data": "dateDocIn" },
+                    {
+                        "data": "dateDocIn",
+                        "render": function(data) { return formatDate(data); }
+                    },
                     { "data": "acctngWk" },
                     { "data": "reasonWhyBacklog" },
                     {
@@ -232,8 +269,8 @@
         }
 
         function loadData() {
-            // 显示加载状态
-            dataTable.clear().draw();
+            // 显示加载状态 (如果需要可以加 spinner，这里直接依赖 DataTable 的 loading)
+            // dataTable.clear().draw(); // 不需要 clear，ajax reload 会处理
 
             $.ajax({
                 url: '/api/auditdept/at22/get-all',
@@ -258,20 +295,21 @@
             console.log('Populating table with data:', data);
 
             if (data && data.length > 0) {
-                // 格式化数据供 DataTables 使用
+                // DataTables 可以直接吃 JSON 数组，只要 key 对应 columns 定义
+                // 这里做一层简单的 map 确保 null 值变空字符串
                 const formattedData = data.map(function(item) {
                     return {
-                        id: item.id,
-                        grouping: escapeHtml(item.grouping || ''),
-                        companyName: escapeHtml(item.companyName || ''),
-                        quarterToDoAudit: escapeHtml(item.quarterToDoAudit || ''),
-                        activity: escapeHtml(item.activity || ''),
-                        yearEnd: formatDate(item.yearEnd),
-                        yearToDo: escapeHtml(item.yearToDo || ''),
-                        moveToActiveAexSch: escapeHtml(item.moveToActiveAexSch || ''),
-                        dateDocIn: formatDate(item.dateDocIn),
-                        acctngWk: escapeHtml(item.acctngWk || ''),
-                        reasonWhyBacklog: escapeHtml(item.reasonWhyBacklog || '')
+                        id: item.id || item.Id,
+                        grouping: escapeHtml(item.grouping || item.Grouping || ''),
+                        companyName: escapeHtml(item.companyName || item.CompanyName || ''),
+                        quarterToDoAudit: escapeHtml(item.quarterToDoAudit || item.QuarterToDoAudit || ''),
+                        activity: escapeHtml(item.activity || item.Activity || ''),
+                        yearEnd: item.yearEnd || item.YearEnd, // 保持原始值，交给 render 处理
+                        yearToDo: escapeHtml(item.yearToDo || item.YearToDo || ''),
+                        moveToActiveAexSch: escapeHtml(item.moveToActiveAexSch || item.MoveToActiveAexSch || ''),
+                        dateDocIn: item.dateDocIn || item.DateDocIn, // 保持原始值
+                        acctngWk: escapeHtml(item.acctngWk || item.AcctngWk || ''),
+                        reasonWhyBacklog: escapeHtml(item.reasonWhyBacklog || item.ReasonWhyBacklog || '')
                     };
                 });
 
@@ -302,7 +340,17 @@
                         $('#modalTitle').text('Edit Audit Backlog Record');
                         $('#recordId').val(record.id);
                         $('#grouping').val(record.grouping || '');
-                        $('#companyName').val(record.companyName || '');
+
+                        // ⭐⭐ 修改：下拉菜单回显逻辑 ⭐⭐
+                        const existingCompany = record.companyName || '';
+                        const $select = $('#companyName');
+                        $select.val(existingCompany);
+                        // 如果下拉框没有这个值（已归档），临时添加
+                        if (!$select.val() && existingCompany) {
+                            $select.append(`<option value="${existingCompany}" selected>${existingCompany} (Archived)</option>`);
+                            $select.val(existingCompany);
+                        }
+
                         $('#quarterToDoAudit').val(record.quarterToDoAudit || '');
                         $('#activity').val(record.activity || '');
                         $('#yearEnd').val(formatDateForInput(record.yearEnd));
@@ -326,7 +374,7 @@
         function saveRecord() {
             const formData = {
                 grouping: $('#grouping').val(),
-                companyName: $('#companyName').val(),
+                companyName: $('#companyName').val(), // Select 的值
                 quarterToDoAudit: $('#quarterToDoAudit').val(),
                 activity: $('#activity').val(),
                 yearEnd: $('#yearEnd').val() || null,
@@ -396,7 +444,8 @@
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+                if (isNaN(date.getTime())) return '';
+                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY
             } catch (e) {
                 return '';
             }
@@ -406,7 +455,8 @@
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+                if (isNaN(date.getTime())) return '';
+                return date.toISOString().split('T')[0]; // YYYY-MM-DD
             } catch (e) {
                 return '';
             }
