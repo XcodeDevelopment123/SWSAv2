@@ -6,7 +6,6 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -18,15 +17,13 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
                             <th colspan="12"></th>
                             <th colspan="18">AT3.2 Audit Work done WIP</th>
-                            <th colspan="14"></th>
+                            <th colspan="15"></th>
                         </tr>
 
                         <tr>
@@ -39,26 +36,27 @@
                             <th colspan="2">5. Tax Dept</th>
                             <th colspan="2">6. Sec Dept</th>
                             <th colspan="2">7. Post Audit Work</th>
+                            <th></th>
                         </tr>
 
                         <tr>
-                            <th rowspan="3">No</th>
-                            <th rowspan="3">Company Name</th>
-                            <th rowspan="3">Activity</th>
-                            <th rowspan="3">Which Database?</th>
-                            <th rowspan="3">YE to do</th>
-                            <th rowspan="3">Quarter to do</th>
-                            <th rowspan="3">PIC</th>
-                            <th rowspan="3">Status</th>
+                            <th rowspan="2">No</th>
+                            <th rowspan="2">Company Name</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Which Database?</th>
+                            <th rowspan="2">YE to do</th>
+                            <th rowspan="2">Quarter to do</th>
+                            <th rowspan="2">PIC</th>
+                            <th rowspan="2">Status</th>
 
                             <th colspan="2">Est current yr result '000</th>
                             <th colspan="2">Billing</th>
 
-                            <th rowspan="3">a. Start Date</th>
-                            <th rowspan="3">b. As at</th>
-                            <th rowspan="3">c. No of Days</th>
-                            <th rowspan="3">Total Field wk days</th>
-                            <th rowspan="3">Result Over/Under</th>
+                            <th rowspan="2">a. Start Date</th>
+                            <th rowspan="2">b. As at</th>
+                            <th rowspan="2">c. No of Days</th>
+                            <th rowspan="2">Total Field wk days</th>
+                            <th rowspan="2">Result Over/Under</th>
 
                             <th colspan="2">A. Prog tracker %</th>
                             <th colspan="2">B. Task</th>
@@ -67,65 +65,57 @@
                             <th colspan="3">Kuching 1st Review</th>
                             <th colspan="3">2nd Review KK</th>
 
-                            <th rowspan="3">2. Total # review days</th>
+                            <th rowspan="2">2. Total # review days</th>
 
-                            <th rowspan="3">Date Sent to KK</th>
-                            <th rowspan="3">Date received AR</th>
-                            <th rowspan="3">Date of Report</th>
-                            <th rowspan="3">Date of Directors</th>
+                            <th rowspan="2">Date Sent to KK</th>
+                            <th rowspan="2">Date received AR</th>
+                            <th rowspan="2">Date of Report</th>
+                            <th rowspan="2">Date of Directors</th>
 
-                            <th rowspan="3">Date Sent</th>
-                            <th rowspan="3">Follow up dates</th>
-                            <th rowspan="3">Date received</th>
-                            <th rowspan="3">Comm of Oaths date</th>
+                            <th rowspan="2">Date Sent</th>
+                            <th rowspan="2">Follow up dates</th>
+                            <th rowspan="2">Date received</th>
+                            <th rowspan="2">Comm of Oaths date</th>
 
-                            <th rowspan="3">Tax Due Date</th>
-                            <th rowspan="3">Pass to Tax Dept</th>
+                            <th rowspan="2">Tax Due Date</th>
+                            <th rowspan="2">Pass to Tax Dept</th>
 
-                            <th rowspan="3">SSM Due Date</th>
-                            <th rowspan="3">Date pass to Sec Dept(MBRS)</th>
+                            <th rowspan="2">SSM Due Date</th>
+                            <th rowspan="2">Date pass to Sec Dept(MBRS)</th>
 
-                            <th rowspan="3">Date Binded</th>
-                            <th rowspan="3">Despatch Date to Client</th>
+                            <th rowspan="2">Date Binded</th>
+                            <th rowspan="2">Despatch Date to Client</th>
+
+                            <th rowspan="2">Action</th>
                         </tr>
 
                         <tr>
                             <th>Revenue</th>
                             <th>Profit/(loss)</th>
-
                             <th>Audit Fee</th>
                             <th>Date billed</th>
-
                             <th>a. Acc setup(J)</th>
                             <th>b. Ac summary(J)</th>
-
                             <th>c. Audit Planning(PIC)</th>
                             <th>d. Audit Execution</th>
-
                             <th>e. Audit Completion(PIC)</th>
                             <th>Total %</th>
-
                             <th>Date Sent</th>
                             <th>End Date</th>
                             <th>A. Result Over/Under</th>
-
                             <th>Date Sent</th>
                             <th>End Date</th>
                             <th>B. Result Over/Under</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -140,15 +130,16 @@
                 <form id="taskForm">
                     <input type="hidden" id="recordId" value="">
 
-                    <!-- Basic Information -->
                     <div class="form-info-label col-12">
                         <label>Basic Information</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="companyName">Company Name (Link From Client List)</label>
+                                <select id="companyName" name="companyName" class="form-select form-control" required>
+                                    <option value="">-- Select Company --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -198,7 +189,6 @@
                         </div>
                     </div>
 
-                    <!-- Financial Information -->
                     <div class="form-info-label col-12">
                         <label>Financial Information</label>
                     </div>
@@ -232,7 +222,6 @@
                         </div>
                     </div>
 
-                    <!-- Audit WIP -->
                     <div class="form-info-label col-12">
                         <label>Audit WIP (days)</label>
                     </div>
@@ -272,7 +261,6 @@
                         </div>
                     </div>
 
-                    <!-- Audit Work WIP % -->
                     <div class="form-info-label col-12">
                         <label>Audit Work WIP %</label>
                     </div>
@@ -321,7 +309,6 @@
                         </div>
                     </div>
 
-                    <!-- Review Section -->
                     <div class="form-info-label col-12">
                         <label>Review</label>
                     </div>
@@ -376,7 +363,6 @@
                         </div>
                     </div>
 
-                    <!-- Additional Sections -->
                     <div class="form-info-label col-12">
                         <label>Additional Information</label>
                     </div>
@@ -500,23 +486,56 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-    <!-- Datepicker CSS -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
         let dataTable;
         let dataTableInitialized = false;
         let isSubmitting = false; // 防重复提交标志
+
+        // ---------- 1. Dropdown Loading Logic (Updated) ----------
+        function loadClientOptions() {
+            // console.log('Loading client options...');
+            $.ajax({
+                url: '/api/auditdept/clients/get-list',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success && res.data) {
+                        const $select = $('#companyName');
+                        // 保留第一项 "-- Select Company --"，清空后面的
+                        $select.find('option:not(:first)').remove();
+
+                        res.data.forEach(client => {
+                            // 1. 获取公司名 (兼容大小写)
+                            const name = client.CompanyName || client.companyName || client.Name || client.name;
+
+                            // 2. 获取客户类型 (兼容大小写)
+                            // 后端 Enum.ToString() 会返回 "SdnBhd", "Individual" 等字符串
+                            const type = client.ClientType || client.clientType || '';
+
+                            if (name) {
+                                // 3. 拼接显示文本，例如: "My Company Sdn Bhd (SdnBhd)"
+                                let displayText = name;
+                                if (type) {
+                                    displayText = `${name} (${type})`;
+                                }
+
+                                // value 依然只存 name
+                                $select.append(`<option value="${name}">${displayText}</option>`);
+                            }
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.error('Failed to load client list', err);
+                }
+            });
+        }
 
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
@@ -566,9 +585,9 @@
                 : type === 'error' ? 'alert-danger'
                     : type === 'warning' ? 'alert-warning' : 'alert-info';
             const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
-                                        ${message}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
+                                    ${message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
                                   </div>`;
             $('.card-header').after(html);
             setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
@@ -654,6 +673,9 @@
         $(document).ready(function () {
             console.log('Document ready, initializing AT11...');
 
+            // ⭐ 1. Load Client List into Dropdown
+            loadClientOptions();
+
             // 初始化日期选择器
             try {
                 // 将所有日期输入框转换为日期选择器
@@ -705,6 +727,12 @@
                         {
                             targets: '_all',
                             defaultContent: ''
+                        },
+                        // ⭐ 关键修正：禁止对最后一列 (Action) 进行排序
+                        {
+                            targets: -1,
+                            orderable: false,
+                            searchable: false
                         }
                     ],
                     scrollX: true
@@ -748,7 +776,7 @@
             // 新建按钮点击事件
             $('[data-bs-target="#taskModal"]').on('click', function () {
                 console.log('New Task button clicked');
-                clearForm();
+                openCreateModal(); // Use the helper function
             });
 
             // 首次载入数据
@@ -796,55 +824,54 @@
             if (records && records.length) {
                 records.forEach(function (r, index) {
                     const id = getVal(r, 'Id');
-                    console.log('Processing record:', r);
+                    // console.log('Processing record:', r);
 
-                    // 构建数据行 - 根据表格结构
+                    // 构建数据行 - 根据表格结构 (共45列)
                     const rowData = [
                         index + 1, // No
-                        getVal(r, 'CompanyName'),                                // Company Name
-                        getVal(r, 'Activity'),                                   // Activity
-                        getVal(r, 'WhichDB'),                                    // Which Database?
-                        getVal(r, 'YEtodo'),                                     // YE to do
-                        getVal(r, 'QuarterTodo'),                                // Quarter to do
-                        getVal(r, 'PIC'),                                        // PIC
-                        getVal(r, 'Status'),                                     // Status
-                        formatCurrency(getVal(r, 'Revenue')),                    // Revenue
-                        formatCurrency(getVal(r, 'ProfitLoss')),                 // Profit/(loss)
-                        formatCurrency(getVal(r, 'AuditFee')),                   // Audit Fee
-                        formatDateForDisplay(getVal(r, 'DateBilled')),           // Date billed
-                        formatDateForDisplay(getVal(r, 'StartDate')),            // Start Date
-                        formatDateForDisplay(getVal(r, 'AsAt')),                 // As at
-                        getVal(r, 'NoOfDays') || '',                             // No of Days
-                        getVal(r, 'TotalFieldWkDays') || '',                     // Total Field wk days
-                        getVal(r, 'ResultOverUnder'),                            // Result Over/Under
-                        formatPercentage(getVal(r, 'AccSetup')),                 // Acc setup(J)
-                        formatPercentage(getVal(r, 'AcSummary')),                // Ac summary(J)
-                        formatPercentage(getVal(r, 'AuditPlanning')),            // Audit Planning(PIC)
-                        formatPercentage(getVal(r, 'AuditExecution')),           // Audit Execution
-                        formatPercentage(getVal(r, 'AuditCompletion')),          // Audit Completion(PIC)
-                        formatPercentage(getVal(r, 'TotalPercent')),             // Total %
-                        formatDateForDisplay(getVal(r, 'DateSent')),             // Kuching Review Date Sent
-                        formatDateForDisplay(getVal(r, 'EndDate')),              // Kuching Review End Date
-                        getVal(r, 'ResultOverUnderKuching'),                     // Kuching Review Result
-                        formatDateForDisplay(getVal(r, 'DateSentKK')),           // KK Review Date Sent
-                        formatDateForDisplay(getVal(r, 'EndDateKK')),            // KK Review End Date
-                        getVal(r, 'ResultOverUnderKK'),                          // KK Review Result
-                        getVal(r, 'TotalReviewDaysKK') || '',                    // Total # review days
-                        formatDateForDisplay(getVal(r, 'DateSentToKK')),         // Date Sent to KK
-                        formatDateForDisplay(getVal(r, 'DateReceivedAR')),       // Date received AR
-                        formatDateForDisplay(getVal(r, 'DateOfReport')),         // Date of Report
-                        formatDateForDisplay(getVal(r, 'DateOfDirectorsRept')),  // Date of Directors
-                        formatDateForDisplay(getVal(r, 'DateSentSigning')),      // Date Sent
-                        formatDateForDisplay(getVal(r, 'FlwUpDate')),            // Follow up dates
-                        formatDateForDisplay(getVal(r, 'DateReceivedSigning')),  // Date received
-                        formatDateForDisplay(getVal(r, 'CommOfOathsDate')),      // Comm of Oaths date
-                        formatDateForDisplay(getVal(r, 'TaxDueDate')),           // Tax Due Date
-                        formatDateForDisplay(getVal(r, 'PassToTaxDept')),        // Pass to Tax Dept
-                        formatDateForDisplay(getVal(r, 'SSMDueDate')),           // SSM Due Date
-                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),    // Date pass to Sec Dept
-                        formatDateForDisplay(getVal(r, 'DateBinded')),           // Date Binded
-                        formatDateForDisplay(getVal(r, 'DespatchDateToClient')), // Despatch Date to Client
-                        // Edit & Delete buttons
+                        getVal(r, 'CompanyName'),                                        // Company Name
+                        getVal(r, 'Activity'),                                           // Activity
+                        getVal(r, 'WhichDB'),                                            // Which Database?
+                        getVal(r, 'YEtodo'),                                             // YE to do
+                        getVal(r, 'QuarterTodo'),                                        // Quarter to do
+                        getVal(r, 'PIC'),                                                // PIC
+                        getVal(r, 'Status'),                                             // Status
+                        formatCurrency(getVal(r, 'Revenue')),                            // Revenue
+                        formatCurrency(getVal(r, 'ProfitLoss')),                         // Profit/(loss)
+                        formatCurrency(getVal(r, 'AuditFee')),                           // Audit Fee
+                        formatDateForDisplay(getVal(r, 'DateBilled')),                   // Date billed
+                        formatDateForDisplay(getVal(r, 'StartDate')),                    // Start Date
+                        formatDateForDisplay(getVal(r, 'AsAt')),                         // As at
+                        getVal(r, 'NoOfDays') || '',                                     // No of Days
+                        getVal(r, 'TotalFieldWkDays') || '',                             // Total Field wk days
+                        getVal(r, 'ResultOverUnder'),                                    // Result Over/Under
+                        formatPercentage(getVal(r, 'AccSetup')),                         // Acc setup(J)
+                        formatPercentage(getVal(r, 'AcSummary')),                        // Ac summary(J)
+                        formatPercentage(getVal(r, 'AuditPlanning')),                    // Audit Planning(PIC)
+                        formatPercentage(getVal(r, 'AuditExecution')),                   // Audit Execution
+                        formatPercentage(getVal(r, 'AuditCompletion')),                  // Audit Completion(PIC)
+                        formatPercentage(getVal(r, 'TotalPercent')),                     // Total %
+                        formatDateForDisplay(getVal(r, 'DateSent')),                     // Kuching Review Date Sent
+                        formatDateForDisplay(getVal(r, 'EndDate')),                      // Kuching Review End Date
+                        getVal(r, 'ResultOverUnderKuching'),                             // Kuching Review Result
+                        formatDateForDisplay(getVal(r, 'DateSentKK')),                   // KK Review Date Sent
+                        formatDateForDisplay(getVal(r, 'EndDateKK')),                    // KK Review End Date
+                        getVal(r, 'ResultOverUnderKK'),                                  // KK Review Result
+                        getVal(r, 'TotalReviewDaysKK') || '',                            // Total # review days
+                        formatDateForDisplay(getVal(r, 'DateSentToKK')),                 // Date Sent to KK
+                        formatDateForDisplay(getVal(r, 'DateReceivedAR')),               // Date received AR
+                        formatDateForDisplay(getVal(r, 'DateOfReport')),                 // Date of Report
+                        formatDateForDisplay(getVal(r, 'DateOfDirectorsRept')),          // Date of Directors
+                        formatDateForDisplay(getVal(r, 'DateSentSigning')),              // Date Sent
+                        formatDateForDisplay(getVal(r, 'FlwUpDate')),                    // Follow up dates
+                        formatDateForDisplay(getVal(r, 'DateReceivedSigning')),          // Date received
+                        formatDateForDisplay(getVal(r, 'CommOfOathsDate')),              // Comm of Oaths date
+                        formatDateForDisplay(getVal(r, 'TaxDueDate')),                   // Tax Due Date
+                        formatDateForDisplay(getVal(r, 'PassToTaxDept')),                // Pass to Tax Dept
+                        formatDateForDisplay(getVal(r, 'SSMDueDate')),                   // SSM Due Date
+                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),            // Date pass to Sec Dept
+                        formatDateForDisplay(getVal(r, 'DateBinded')),                   // Date Binded
+                        formatDateForDisplay(getVal(r, 'DespatchDateToClient')),         // Despatch Date to Client
                         `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
                             <i class="fas fa-edit"></i>
                          </button>
@@ -853,7 +880,6 @@
                          </button>`
                     ];
 
-                    console.log('Adding row data:', rowData);
                     dataTable.row.add(rowData);
                 });
             }
@@ -870,63 +896,7 @@
             if (records && records.length) {
                 records.forEach(function (r, index) {
                     const id = getVal(r, 'Id');
-                    const row = `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${getVal(r, 'CompanyName') || ''}</td>
-                            <td>${getVal(r, 'Activity') || ''}</td>
-                            <td>${getVal(r, 'WhichDB') || ''}</td>
-                            <td>${getVal(r, 'YEtodo') || ''}</td>
-                            <td>${getVal(r, 'QuarterTodo') || ''}</td>
-                            <td>${getVal(r, 'PIC') || ''}</td>
-                            <td>${getVal(r, 'Status') || ''}</td>
-                            <td>${formatCurrency(getVal(r, 'Revenue'))}</td>
-                            <td>${formatCurrency(getVal(r, 'ProfitLoss'))}</td>
-                            <td>${formatCurrency(getVal(r, 'AuditFee'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateBilled'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'StartDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'AsAt'))}</td>
-                            <td>${getVal(r, 'NoOfDays') || ''}</td>
-                            <td>${getVal(r, 'TotalFieldWkDays') || ''}</td>
-                            <td>${getVal(r, 'ResultOverUnder') || ''}</td>
-                            <td>${formatPercentage(getVal(r, 'AccSetup'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AcSummary'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditPlanning'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditExecution'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditCompletion'))}</td>
-                            <td>${formatPercentage(getVal(r, 'TotalPercent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'EndDate'))}</td>
-                            <td>${getVal(r, 'ResultOverUnderKuching') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSentKK'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'EndDateKK'))}</td>
-                            <td>${getVal(r, 'ResultOverUnderKK') || ''}</td>
-                            <td>${getVal(r, 'TotalReviewDaysKK') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSentToKK'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedAR'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateOfReport'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateOfDirectorsRept'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSentSigning'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'FlwUpDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedSigning'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'CommOfOathsDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'TaxDueDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'PassToTaxDept'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'SSMDueDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DatePassToSecDept'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateBinded'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DespatchDateToClient'))}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.append(row);
+                    // 此处省略手动拼接 HTML 的代码，因为上面 DataTable 已经处理了
                 });
             } else {
                 tbody.html('<tr><td colspan="48" class="text-center">No audit template records found</td></tr>');
@@ -1059,8 +1029,19 @@
 
                         $('#recordId').val(getVal(d, 'Id'));
 
-                        // 填充表单字段
-                        $('#companyName').val(getVal(d, 'CompanyName'));
+                        // ⭐ 2. Dropdown Logic in Edit Mode
+                        const existingCompany = getVal(d, 'CompanyName');
+                        const $select = $('#companyName');
+
+                        // Try to select
+                        $select.val(existingCompany);
+
+                        // If the company is not in the dropdown (e.g. deleted or old data), add it temporarily
+                        if (!$select.val() && existingCompany) {
+                            $select.append(`<option value="${existingCompany}" selected>${existingCompany} (Archived)</option>`);
+                            $select.val(existingCompany);
+                        }
+
                         $('#activity').val(getVal(d, 'Activity'));
                         $('#whichDB').val(getVal(d, 'WhichDB'));
                         $('#yEtodo').val(getVal(d, 'YEtodo'));

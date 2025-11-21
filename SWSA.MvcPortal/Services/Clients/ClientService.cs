@@ -399,33 +399,40 @@ public class ClientService(
     }
 
 
+    // ... 其他 using ...
+
     public async Task<List<ClientListDto>> GetAllClientsListAsync()
     {
-        // 直接从 _clients (BaseClient) 查询，涵盖所有子类
-        var query = _clients.AsNoTracking(); // 只读操作，加 AsNoTracking 提升性能
+        var query = _clients.AsNoTracking();
 
         var result = await query.Select(c => new ClientListDto
         {
             Id = c.Id,
-            Name = c.Name, // BaseClient 应该有 Name 属性
-            Group = c.Group, // 假设 BaseClient 有 Group 字段
+            Grouping = c.Group ?? "",
+            Referral = c.Referral ?? "",
 
-            // 将 Enum 转换为字符串返回给前端
+            // ⭐ 修复：将 BaseClient 转为 BaseCompany 才能获取 FileNo
+            // 如果是 Individual，这里会是 null，?? "" 会将其变为空字符串，不会报错
+            FileNo = (c as BaseCompany).FileNo ?? "",
+
+            CompanyName = c.Name ?? "",
+
+            // 处理 BaseCompany 特有字段
+            CompanyNo = (c as BaseCompany).RegistrationNumber ?? "",
+            IncorporationDate = (c as BaseCompany).IncorporationDate,
+
+            // ⭐ 关键：将 Enum 转换为字符串传给前端
             ClientType = c.ClientType.ToString(),
 
-            TaxIdentificationNumber = c.TaxIdentificationNumber,
-
-            // 处理可能为空的 YearEndMonth
             YearEndMonth = c.YearEndMonth.HasValue
                 ? c.YearEndMonth.Value.ToString()
                 : string.Empty,
 
             IsActive = c.IsActive
         })
-        .OrderByDescending(c => c.Id) // 可选：按 ID 倒序
+        .OrderByDescending(c => c.Id)
         .ToListAsync();
 
         return result;
     }
-
 }

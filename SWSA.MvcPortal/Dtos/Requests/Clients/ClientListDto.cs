@@ -11,5 +11,7 @@
         public string CompanyNo { get; set; } = ""; // registrationNumber
         public DateTime? IncorporationDate { get; set; }
         public string YearEndMonth { get; set; } = ""; // e.g. "December"
+        public bool IsActive { get; set; }
+        public string ClientType { get; set; } = "";
     }
 }
