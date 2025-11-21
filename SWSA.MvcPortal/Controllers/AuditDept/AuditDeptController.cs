@@ -7,6 +7,8 @@ using Newtonsoft.Json.Serialization;
 using SWSA.MvcPortal.Models.AccDeptModel;
 using SWSA.MvcPortal.Models.AuditDeptModel;
 using SWSA.MvcPortal.Models.Clients;
+using SWSA.MvcPortal.Services.Clients;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.AuditDept
 {
@@ -14,11 +16,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private readonly IClientService _clientService;
 
-        public AuditDeptController(IConfiguration configuration)
+        public AuditDeptController(IConfiguration configuration,IClientService clientService)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
+            _clientService = clientService;
         }
 
 
@@ -3025,5 +3029,27 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         }
         #endregion
 
+
+        #region Link Client List
+        [AllowAnonymous]
+        [HttpGet("api/auditdept/clients/get-list")]
+        public async Task<IActionResult> GetClientList()
+        {
+            try
+            {
+                // 直接复用 ClientService 里的逻辑
+                // 这会返回包含 SdnBhd, LLP, Enterprise, Individual 的完整列表
+                var list = await _clientService.GetAllClientsListAsync();
+
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                // 简单的错误记录
+                Console.WriteLine($"Error getting client list: {ex.Message}");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
     }
 }

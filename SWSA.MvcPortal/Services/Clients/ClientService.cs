@@ -394,4 +394,34 @@ public class ClientService(
             .ToList();
     }
 
+
+    public async Task<List<ClientListDto>> GetAllClientsListAsync()
+    {
+        // 直接从 _clients (BaseClient) 查询，涵盖所有子类
+        var query = _clients.AsNoTracking(); // 只读操作，加 AsNoTracking 提升性能
+
+        var result = await query.Select(c => new ClientListDto
+        {
+            Id = c.Id,
+            Name = c.Name, // BaseClient 应该有 Name 属性
+            Group = c.Group, // 假设 BaseClient 有 Group 字段
+
+            // 将 Enum 转换为字符串返回给前端
+            ClientType = c.ClientType.ToString(),
+
+            TaxIdentificationNumber = c.TaxIdentificationNumber,
+
+            // 处理可能为空的 YearEndMonth
+            YearEndMonth = c.YearEndMonth.HasValue
+                ? c.YearEndMonth.Value.ToString()
+                : string.Empty,
+
+            IsActive = c.IsActive
+        })
+        .OrderByDescending(c => c.Id) // 可选：按 ID 倒序
+        .ToListAsync();
+
+        return result;
+    }
+
 }

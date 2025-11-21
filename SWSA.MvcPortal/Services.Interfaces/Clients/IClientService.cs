@@ -20,4 +20,5 @@ public interface IClientService
     Task<List<SdnBhdOptionDto>> GetAllSdnBhdOptionsAsync();
     Task<List<CompanyOptionDto>> GetCompanyOptionsAsync();
     Task<List<CompanyOptionDto>> GetLlpCompanyOptionsAsync();
+    Task<List<ClientListDto>> GetAllClientsListAsync();
 }

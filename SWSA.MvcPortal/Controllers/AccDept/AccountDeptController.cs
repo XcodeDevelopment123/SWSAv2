@@ -14,6 +14,8 @@ namespace SWSA.MvcPortal.Controllers.AccDept
         private readonly string _connectionString;
 
         public AccountDeptController(IConfiguration configuration)
+
+
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
