@@ -366,7 +366,7 @@
         // 0) Company 下拉：从 LLP Client List 拿 Grouping + YearEndMonth + IncorporationDate
         function loadCompanyOptionsB32() {
             $.ajax({
-                url: "/api/get/company-options",
+                url: "/api/get/llp-company-options",
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#companyName");
