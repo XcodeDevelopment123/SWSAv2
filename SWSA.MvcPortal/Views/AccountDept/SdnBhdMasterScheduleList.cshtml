@@ -109,19 +109,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
-                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Enter referral" />
+                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -129,14 +129,24 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Co Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Co Name</label>
+                                <select id="companySelect" name="companySelect" class="form-control">
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">
+                                    Options are linked from the Sdn Bhd Client List.
+                                </small>
+
+                                <!-- 真正要存进 B11 的公司名、ClientId 用隐藏字段 -->
+                                <input type="hidden" id="company" name="company" />
+                                <input type="hidden" id="companyClientId" name="companyClientId" />
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -145,13 +155,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="co">Co #</label>
-                                <input type="text" id="co" name="co" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="co" name="co" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -160,13 +170,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="enumber">E number</label>
-                                <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Enter E number" />
+                                <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="tINnumber">TIN number</label>
-                                <input type="text" id="tINnumber" name="tINnumber" class="form-control" placeholder="Enter TIN number" />
+                                <input type="text" id="tINnumber" name="tINnumber" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -302,113 +312,192 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             let dataTable;
             let currentEditId = null;
 
-            // 初始化 DataTable
-            initializeDataTable();
+            // ========= 新增：公司选项缓存 =========
+            let companyOptionsMap = {}; // { [id]: optionDto }
 
-            // 初始化日期选择器
-            initializeDatePickers();
+            // ========= 通用日期工具 =========
+            function toIsoYYYYMMDD(d) {
+                const date = (d instanceof Date) ? d : new Date(d);
+                if (isNaN(date)) return "";
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+            function formatDdMMyyyy(d) {
+                const date = (d instanceof Date) ? d : new Date(d);
+                if (isNaN(date)) return "";
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY
+            }
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                saveBP21Record();
-            });
+            // ========= 从 YearEndMonth 计算“当/下一年该月最后一天” =========
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                const idx = months.indexOf(monthName);
+                if (idx === -1) return monthName; // 兜底
 
-            // 初始化 DataTable
-            function initializeDataTable() {
-                dataTable = $('#taskDatatable').DataTable({
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                    "ajax": {
-                        "url": "/api/bp21/get-all",
-                        "type": "GET",
-                        "dataSrc": function(response) {
-                            if (response.success) {
-                                return response.data;
-                            } else {
-                                console.error('Error loading data:', response.message);
-                                showAlert('Error loading data: ' + response.message, 'danger');
-                                return [];
-                            }
-                        }
+                const today = new Date();
+                let year = today.getFullYear();
+                // 若该月已过去，则视为下一年
+                if (idx < today.getMonth()) year += 1;
+
+                // 该月最后一天
+                const dt = new Date(year, idx + 1, 0);
+                return formatDdMMyyyy(dt); // 返回 DD/MM/YYYY（用于“Year End”展示）
+            }
+
+            // ========= 载入公司选项，下拉显示“公司名 (公司编号)” =========
+            function loadCompanyOptions() {
+                $.ajax({
+                    url: '/api/get/company-options',
+                    type: 'GET',
+                    success: function (res) {
+                        if (!(res && res.success && Array.isArray(res.data))) return;
+
+                        companyOptionsMap = {};
+                        const $sel = $('#companySelect');
+                        $sel.empty().append('<option value="">-- Select company --</option>');
+
+                        res.data.forEach(o => {
+                            // o: { id, grouping, fileNo, referral, companyName, companyNo, incorporationDate, yearEndMonth, taxIdentificationNumber, employerNumber }
+                            companyOptionsMap[o.id] = o;
+                            const display = o.companyNo ? `${o.companyName} (${o.companyNo})` : o.companyName;
+                            $sel.append(`<option value="${o.id}">${display}</option>`);
+                        });
                     },
-                    "columns": [
-                        { "data": "grouping" },
-                        { "data": "refferal" },
-                        { "data": "fileNo" },
-                        { "data": "companyName" },
-                        { "data": "yearEnd" },
-                        {
-                            "data": "incorpDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
-                        },
-                        { "data": "co" },
-                        { "data": "enumber" },
-                        { "data": "tINnumber" },
-                        { "data": "code" },
-                        { "data": "description" },
-                        { "data": "serviceType" },
-                        { "data": "coStatus" },
-                        { "data": "activeCoActivitySize" },
-                        { "data": "yEtodo" },
-                        { "data": "auditDeptMth" },
-                        {
-                            "data": "dueDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
-                        },
-                        { "data": "esTmthToDo" },
-                        {
-                            "data": "dateDocIn",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
-                        },
-                        { "data": "staff" },
-                        { "data": "allocateToWkSch" },
-                        { "data": "completed" },
-                        {
-                            "data": "id",
-                            "render": function(data, type, row) {
-                                return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                `;
-                            },
-                            "orderable": false
-                        }
-                    ],
-                    "createdRow": function(row, data, dataIndex) {
-                        // 根据状态添加行样式
-                        if (data.completed === 'Completed') {
-                            $(row).addClass('table-success');
-                        } else if (data.completed === 'Backlog') {
-                            $(row).addClass('table-warning');
-                        } else if (data.completed === 'In Progress') {
-                            $(row).addClass('table-info');
-                        }
+                    error: function (xhr) {
+                        console.error('Failed to load company options', xhr);
                     }
                 });
             }
 
-            // 初始化日期选择器
+            // ========= 选公司 → 自动带出 =========
+            $('#companySelect').on('change', function () {
+                const selectedId = $(this).val();
+                if (!selectedId || !companyOptionsMap[selectedId]) {
+                    // 清空并还原
+                    $('#grouping').val('');
+                    $('#referral').val('');
+                    $('#fileNo').val('');
+                    $('#company').val('');
+                    $('#companyClientId').val('');
+                    $('#yearEnd').val('');
+                    $('#incorpDate').val('');
+                    $('#co').val('');
+                    $('#enumber').val('');
+                    $('#tINnumber').val('');
+                    return;
+                }
+
+                const c = companyOptionsMap[selectedId];
+
+                // 计算 YearEnd（DD/MM/YYYY）
+                const yearEndText = yearEndMonthToDateString(c.yearEndMonth || '');
+
+                // IncorpDate → 输入里用 YYYY-MM-DD（方便 Datepicker），表格渲染再转 DD/MM/YYYY
+                const incorpIso = c.incorporationDate ? toIsoYYYYMMDD(c.incorporationDate) : '';
+
+                // 逐项填充（只读字段）
+                $('#grouping').val(c.grouping || '');
+                $('#referral').val(c.referral || '');
+                $('#fileNo').val(c.fileNo || '');
+                $('#company').val(c.companyName || '');
+                $('#companyClientId').val(c.id);                 // 关键：带上 Client 主键
+                $('#yearEnd').val(yearEndText || '');
+                $('#incorpDate').val(incorpIso || '');
+                $('#co').val(c.companyNo || '');
+                $('#enumber').val(c.employerNumber || '');
+                $('#tINnumber').val(c.taxIdentificationNumber || '');
+            });
+
+            // ========= DataTable =========
+            initializeDataTable();
+
+            // ========= Datepicker =========
+            initializeDatePickers();
+
+            // 初始载入公司下拉（打开页面就载一次；若你想在“新增”时再载，可改到模态框显示事件里）
+            loadCompanyOptions();
+
+            // 保存
+            $('#saveBtn').click(function () {
+                saveBP21Record();
+            });
+
+            function initializeDataTable() {
+                dataTable = $('#taskDatatable').DataTable({
+                    paging: true, lengthChange: true, searching: true, ordering: true, info: true,
+                    autoWidth: false, responsive: true,
+                    ajax: {
+                        url: '/api/bp21/get-all',
+                        type: 'GET',
+                        dataSrc: function (response) {
+                            if (response.success) return response.data;
+                            console.error('Error loading data:', response.message);
+                            showAlert('Error loading data: ' + response.message, 'danger');
+                            return [];
+                        }
+                    },
+                    columns: [
+                        { data: 'grouping' },
+                        { data: 'refferal' },
+                        { data: 'fileNo' },
+                        { data: 'companyName' },
+                        { data: 'yearEnd' },
+                        { data: 'incorpDate', render: d => d ? formatDate(d) : '' },
+                        { data: 'co' },
+                        { data: 'enumber' },
+                        { data: 'tiNnumber' },
+                        { data: 'code' },
+                        { data: 'description' },
+                        { data: 'serviceType' },
+                        { data: 'coStatus' },
+                        { data: 'activeCoActivitySize' },
+                        { data: 'yEtodo' },
+                        { data: 'auditDeptMth' },
+                        { data: 'dueDate', render: d => d ? formatDate(d) : '' },
+                        { data: 'esTmthToDo' },
+                        { data: 'dateDocIn', render: d => d ? formatDate(d) : '' },
+                        { data: 'staff' },
+                        { data: 'allocateToWkSch' },
+                        { data: 'completed' },
+                        {
+                            data: 'id', orderable: false,
+                            render: (id) => `
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>`
+                        }
+                    ],
+                    createdRow: function (row, data) {
+                        if (data.completed === 'Completed') $(row).addClass('table-success');
+                        else if (data.completed === 'Backlog') $(row).addClass('table-warning');
+                        else if (data.completed === 'In Progress') $(row).addClass('table-info');
+                    }
+                });
+            }
+
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
                     format: 'yyyy-mm-dd',
@@ -417,25 +506,21 @@
                 });
             }
 
-            // 格式化日期
-            function formatDate(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
-            }
-
-            // 保存 BP21 记录
+            // ========= 保存：改为提交隐藏字段 company / companyClientId =========
             function saveBP21Record() {
                 const formData = {
                     grouping: $('#grouping').val(),
                     refferal: $('#referral').val(),
                     fileNo: $('#fileNo').val(),
-                    companyName: $('#companyName').val(),
+
+                    companyName: $('#company').val(),                 // 改：用隐藏的真实公司名
+                    companyClientId: $('#companyClientId').val(),     // 新增：带上 Client 主键
+
                     yearEnd: $('#yearEnd').val(),
                     incorpDate: $('#incorpDate').val(),
                     co: $('#co').val(),
                     enumber: $('#enumber').val(),
-                    tINnumber: $('#tINnumber').val(),
+                    tiNnumber: $('#tINnumber').val(),
                     code: $('#code').val(),
                     description: $('#description').val(),
                     serviceType: $('#serviceType').val(),
@@ -453,122 +538,144 @@
 
                 const url = currentEditId ? '/api/bp21/update' : '/api/bp21/create';
                 const method = currentEditId ? 'PUT' : 'POST';
+                if (currentEditId) formData.id = currentEditId;
 
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
-
-                // 显示加载状态
                 $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
                 $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json',
+                    url, type: method, contentType: 'application/json',
                     data: JSON.stringify(formData),
-                    success: function(response) {
+                    success: function (response) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
                         if (response.success) {
                             $('#taskModal').modal('hide');
-                            dataTable.ajax.reload(null, false); // 保持当前分页位置
+                            dataTable.ajax.reload(null, false);
                             resetForm();
                             showAlert('Record saved successfully!', 'success');
                         } else {
                             showAlert('Error saving record: ' + response.message, 'danger');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                         showAlert('Error saving record: ' + error, 'danger');
                     }
                 });
             }
 
-            // 编辑记录
-            $(document).on('click', '.edit-btn', function() {
+            // ========= Edit：尽量回填下拉；找不到就动态加一个只读项 =========
+            $(document).on('click', '.edit-btn', function () {
                 const id = $(this).data('id');
                 editRecord(id);
             });
 
-            // 删除记录
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 编辑记录
             function editRecord(id) {
-                $.get(`/api/bp21/get/${id}`, function(response) {
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditId = record.id;
-
-                        // 填充表单
-                        $('#grouping').val(record.grouping);
-                        $('#referral').val(record.refferal);
-                        $('#fileNo').val(record.fileNo);
-                        $('#companyName').val(record.companyName);
-                        $('#yearEnd').val(record.yearEnd);
-                        $('#incorpDate').val(record.incorpDate ? record.incorpDate.split('T')[0] : '');
-                        $('#co').val(record.co);
-                        $('#enumber').val(record.enumber);
-                        $('#tINnumber').val(record.tINnumber);
-                        $('#code').val(record.code);
-                        $('#description').val(record.description);
-                        $('#serviceType').val(record.serviceType);
-                        $('#coStatus').val(record.coStatus);
-                        $('#activeCoActivitySize').val(record.activeCoActivitySize);
-                        $('#yEtodo').val(record.yEtodo);
-                        $('#auditDeptMth').val(record.auditDeptMth);
-                        $('#dueDate').val(record.dueDate ? record.dueDate.split('T')[0] : '');
-                        $('#esTmthToDo').val(record.esTmthToDo);
-                        $('#dateDocIn').val(record.dateDocIn ? record.dateDocIn.split('T')[0] : '');
-                        $('#staff').val(record.staff);
-                        $('#allocateToWkSch').val(record.allocateToWkSch);
-                        $('#completed').val(record.completed);
-
-                        $('#modalTitle').text('Edit Sdn Bhd Record');
-                        $('#taskModal').modal('show');
-                    } else {
+                $.get(`/api/bp21/get/${id}`, function (response) {
+                    if (!response.success) {
                         showAlert('Error loading record: ' + response.message, 'danger');
+                        return;
                     }
-                }).fail(function(xhr, status, error) {
+                    const record = response.data;
+                    currentEditId = record.id;
+
+                    // 顶部只读栏位
+                    $('#grouping').val(record.grouping);
+                    $('#referral').val(record.refferal);
+                    $('#fileNo').val(record.fileNo);
+
+                    // 公司（隐藏：真实保存字段）
+                    $('#company').val(record.companyName || '');
+                    $('#companyClientId').val(record.companyClientId || ''); // 若后端已存
+
+                    // 选择下拉：优先按 companyClientId 选中；否则按公司名匹配；再不行临时插入
+                    const $sel = $('#companySelect');
+                    const cid = record.companyClientId;
+                    if (cid && companyOptionsMap[cid]) {
+                        $sel.val(String(cid));
+                    } else {
+                        // 尝试用名称匹配
+                        const textMatch = $sel.find('option').filter(function () {
+                            return $(this).text().trim().toLowerCase().startsWith((record.companyName || '').trim().toLowerCase());
+                        });
+                        if (textMatch.length > 0) {
+                            $sel.val(textMatch.first().val());
+                        } else if (record.companyName) {
+                            // 插入一个只读显示项（value 为空，不参与提交）
+                            if ($sel.find('option[value="__temp__"]').length === 0) {
+                                $sel.prepend(`<option value="__temp__">${record.companyName}</option>`);
+                            } else {
+                                $sel.find('option[value="__temp__"]').text(record.companyName);
+                            }
+                            $sel.val('__temp__');
+                        } else {
+                            $sel.val('');
+                        }
+                    }
+
+                    // 年结、注册日等
+                    $('#yearEnd').val(record.yearEnd || '');
+                    $('#incorpDate').val(record.incorpDate ? record.incorpDate.split('T')[0] : '');
+                    $('#co').val(record.co);
+                    $('#enumber').val(record.enumber);
+                    $('#tINnumber').val(record.tiNnumber);
+
+                    // 其余
+                    $('#code').val(record.code);
+                    $('#description').val(record.description);
+                    $('#serviceType').val(record.serviceType);
+                    $('#coStatus').val(record.coStatus);
+                    $('#activeCoActivitySize').val(record.activeCoActivitySize);
+                    $('#yEtodo').val(record.yEtodo);
+                    $('#auditDeptMth').val(record.auditDeptMth);
+                    $('#dueDate').val(record.dueDate ? record.dueDate.split('T')[0] : '');
+                    $('#esTmthToDo').val(record.esTmthToDo);
+                    $('#dateDocIn').val(record.dateDocIn ? record.dateDocIn.split('T')[0] : '');
+                    $('#staff').val(record.staff);
+                    $('#allocateToWkSch').val(record.allocateToWkSch);
+                    $('#completed').val(record.completed);
+
+                    $('#modalTitle').text('Edit Sdn Bhd Record');
+                    $('#taskModal').modal('show');
+                }).fail(function (xhr, status, error) {
                     showAlert('Error loading record: ' + error, 'danger');
                 });
             }
 
-            // 删除记录
+            // 删除
+            $(document).on('click', '.delete-btn', function () {
+                const id = $(this).data('id');
+                deleteRecord(id);
+            });
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-                    $.ajax({
-                        url: `/api/bp21/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                dataTable.ajax.reload(null, false); // 保持当前分页位置
-                                showAlert('Record deleted successfully!', 'success');
-                            } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            showAlert('Error deleting record: ' + error, 'danger');
+                if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+                $.ajax({
+                    url: `/api/bp21/delete/${id}`, type: 'DELETE',
+                    success: function (response) {
+                        if (response.success) {
+                            dataTable.ajax.reload(null, false);
+                            showAlert('Record deleted successfully!', 'success');
+                        } else {
+                            showAlert('Error deleting record: ' + response.message, 'danger');
                         }
-                    });
-                }
+                    },
+                    error: function (xhr, status, error) {
+                        showAlert('Error deleting record: ' + error, 'danger');
+                    }
+                });
             }
 
-            // 重置表单
+            // 表单与提示
             function resetForm() {
                 $('#taskForm')[0].reset();
                 currentEditId = null;
                 $('#modalTitle').text('Add New Sdn Bhd Record');
                 $('.datepicker').datepicker('update', '');
                 $('#recordId').val('');
+                // 还原下拉到默认
+                $('#companySelect').val('');
+                $('#company').val('');
+                $('#companyClientId').val('');
             }
-
-            // 显示提示信息
             function showAlert(message, type) {
                 const alertClass = `alert alert-${type} alert-dismissible fade show`;
                 const alertHtml = `
@@ -576,32 +683,28 @@
                         <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
                         ${message}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
+                    </div>`;
                 $('#alertContainer').html(alertHtml);
-
-                // 自动隐藏
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
+                setTimeout(() => { $('.alert').alert('close'); }, 5000);
             }
 
-            // 模态框关闭时重置表单
-            $('#taskModal').on('hidden.bs.modal', function() {
+            // 模态框关闭时重置
+            $('#taskModal').on('hidden.bs.modal', function () {
                 resetForm();
             });
 
-            // 添加新的记录按钮点击事件
-            $('#addNewBtn').click(function() {
+            // 新增按钮
+            $('#addNewBtn').click(function () {
                 resetForm();
                 $('#modalTitle').text('Add New Sdn Bhd Record');
             });
 
-            // 表单提交事件
-            $('#taskForm').on('submit', function(e) {
+            // 表单提交
+            $('#taskForm').on('submit', function (e) {
                 e.preventDefault();
                 saveBP21Record();
             });
         });
     </script>
+
 }

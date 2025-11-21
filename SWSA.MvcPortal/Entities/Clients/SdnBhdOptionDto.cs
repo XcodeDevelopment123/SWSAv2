@@ -13,10 +13,13 @@
         public string Grouping { get; set; } = "";  // Group AB
         public string Referral { get; set; } = "";
         public string FileNo { get; set; } = "";    // fileNo
+
         public string CompanyName { get; set; } = "";
         public string CompanyNo { get; set; } = ""; // registrationNumber
         public DateTime? IncorporationDate { get; set; }
         public string YearEndMonth { get; set; } = ""; // e.g. "December"
+        public string TaxIdentificationNumber { get; set; } = ""; // e.g. "December"
+        public string EmployerNumber { get; set; } = ""; // e.g. "December"
     }
 
 }

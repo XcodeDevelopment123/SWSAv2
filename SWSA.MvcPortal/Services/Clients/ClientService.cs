@@ -359,7 +359,9 @@ public class ClientService(
                 IncorporationDate = c.IncorporationDate,
                 YearEndMonth = c.YearEndMonth.HasValue
                     ? c.YearEndMonth.Value.ToString()   // "December"
-                    : string.Empty
+                    : string.Empty,
+                TaxIdentificationNumber =c.TaxIdentificationNumber,
+                EmployerNumber = c.EmployerNumber
             })
             .ToList();
     }
@@ -389,7 +391,9 @@ public class ClientService(
                 IncorporationDate = c.IncorporationDate, // 或 c.RegistrationDate（视你的模型）
                 YearEndMonth = c.YearEndMonth.HasValue
                     ? c.YearEndMonth.Value.ToString()
-                    : string.Empty
+                    : string.Empty,
+                TaxIdentificationNumber = c.TaxIdentificationNumber,
+                EmployerNumber = c.EmployerNumber
             })
             .ToList();
     }
