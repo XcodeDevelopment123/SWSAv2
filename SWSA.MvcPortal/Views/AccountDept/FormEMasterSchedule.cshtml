@@ -6,10 +6,8 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- Alert Container -->
         <div id="alertContainer"></div>
 
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -21,45 +19,34 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="3">Admin</th>
-                            <th colspan="9">Co Information</th>
-                            <th colspan="7">Scheduling</th>
-                            <th rowspan="3">Actions</th>
+                            <th colspan="3" class="text-center">Admin</th>
+                            <th colspan="9" class="text-center">Co Information</th>
+                            <th colspan="6" class="text-center">Scheduling</th>
+                            <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
-
-                        <!-- 第二行：细分标题 -->
                         <tr>
-                            <th rowspan="2">Grouping</th>
-                            <th rowspan="2">Referral</th>
-                            <th rowspan="2">File No</th>
-
-                            <th rowspan="2">Co Name</th>
-                            <th rowspan="2">Year End</th>
-                            <th colspan="2">Tax Reference</th>
-                            <th colspan="2">Login Info</th>
-                            <th colspan="2">MISC Code</th>
-                            <th rowspan="2">Job Services</th>
-
-                            <th colspan="6">Acc Dept</th>
+                            <th rowspan="2" style="vertical-align: middle;">Grouping</th>
+                            <th rowspan="2" style="vertical-align: middle;">Referral</th>
+                            <th rowspan="2" style="vertical-align: middle;">File No</th>
+                            <th rowspan="2" style="vertical-align: middle;">Co Name</th>
+                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
+                            <th colspan="2" class="text-center">Tax Reference</th>
+                            <th colspan="2" class="text-center">Login Info</th>
+                            <th colspan="2" class="text-center">MISC Code</th>
+                            <th rowspan="2" style="vertical-align: middle;">Job Services</th>
+                            <th colspan="6" class="text-center">Acc Dept</th>
                         </tr>
-
-                        <!-- 第三行：每个字段的详细标题 -->
                         <tr>
                             <th>E number</th>
                             <th>TIN number</th>
-
                             <th>Login</th>
                             <th>Password</th>
-
                             <th>Code</th>
                             <th>Description</th>
-
                             <th>YE to do</th>
                             <th>Date Doc In</th>
                             <th>Month to do</th>
@@ -69,17 +56,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -98,19 +81,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
-                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Enter referral" />
+                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -118,14 +101,17 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Co Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companyName">Co Name (Select Client)</label>
+                                <select id="companySelect" class="form-control">
+                                    <option value="">-- Loading... --</option>
+                                </select>
+                                <input type="hidden" id="companyName" name="companyName" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -134,13 +120,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="enumber">E number</label>
-                                <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Enter E number" />
+                                <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="tinNumber">TIN number</label>
-                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Enter TIN number" />
+                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -251,12 +237,10 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- Include DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-    <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
@@ -264,6 +248,111 @@
         $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
+            // 🟢 全局变量存 Dropdown 数据
+            let companyOptionsMap = {};
+
+            // 🟢 Helper: 格式化日期 dd/mm/yyyy
+            function formatDdMMyyyy(d) {
+                const date = (d instanceof Date) ? d : new Date(d);
+                if (isNaN(date)) return "";
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+            // 🟢 Helper: 将 "December" 转为 "31/12/2025" (Sample 逻辑)
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+                // 尝试直接解析，如果已经是日期格式就不处理
+                if (monthName.includes('/') || monthName.includes('-')) return monthName;
+
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                // 处理可能的大小写
+                const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
+
+                if (idx === -1) return monthName; // 如果不是月份名，直接返回原值
+
+                const today = new Date();
+                let year = today.getFullYear();
+                // 如果月份已经过了，算作明年 (参考 Sample 逻辑)
+                if (idx < today.getMonth()) year += 1;
+
+                // 获取该月最后一天 (idx + 1 是下个月，第 0 天即上个月最后一天)
+                const dt = new Date(year, idx + 1, 0);
+                return formatDdMMyyyy(dt);
+            }
+
+            // 🟢 1. 加载 Dropdown (使用你最开始提供的 API)
+            function loadCompanyOptions() {
+                 $.ajax({
+                     url: '/api/auditdept/clients/get-list',
+                     type: 'GET',
+                     success: function (res) {
+                         if (res.success && res.data) {
+                             companyOptionsMap = {};
+                             const $sel = $('#companySelect');
+                             $sel.empty().append('<option value="">-- Select Company (No Individual) --</option>');
+
+                             const filteredList = res.data.filter(c => c.clientType !== 'Individual');
+
+                             filteredList.forEach(client => {
+                                 // 缓存数据
+                                 companyOptionsMap[client.id] = client;
+
+                                 // Name (Type)
+                                 let displayText = client.companyName;
+                                 if (client.clientType) {
+                                     displayText += ` (${client.clientType})`;
+                                 }
+                                 $sel.append(`<option value="${client.id}">${displayText}</option>`);
+                             });
+                         }
+                     },
+                     error: function(xhr) { console.error("Failed to load clients", xhr); }
+                 });
+            }
+
+            // 🟢 2. Dropdown Change 事件 (参考 Sample 逻辑)
+            $('#companySelect').change(function() {
+                const selectedClientId = $(this).val();
+
+                if (!selectedClientId || !companyOptionsMap[selectedClientId]) {
+                    // 清空逻辑
+                    $('#companyName').val('');
+                    $('#grouping').val('');
+                    $('#referral').val('');
+                    $('#fileNo').val('');
+                    $('#yearEnd').val('');
+                    $('#enumber').val('');
+                    $('#tinNumber').val('');
+                    return;
+                }
+
+                const client = companyOptionsMap[selectedClientId];
+
+                // 填入 Hidden Input (给后端保存用)
+                $('#companyName').val(client.companyName || '');
+
+                // 填入其他字段
+                $('#grouping').val(client.grouping || '');
+                $('#referral').val(client.referral || '');
+                $('#fileNo').val(client.fileNo || '');
+
+                // 处理 E Number 和 TIN Number (注意 API 返回的字段名，这里做兼容处理)
+                $('#enumber').val(client.eNumber || client.enumber || '');
+                $('#tinNumber').val(client.taxIdentificationNumber || client.taxRefNo || '');
+
+                // 🟢 处理 Year End (转换 Month Name -> Date String)
+                // 假设 API 返回的是 client.yearEnd 或 client.yearEndMonth
+                const rawYearEnd = client.yearEnd || client.yearEndMonth || '';
+                const formattedYearEnd = yearEndMonthToDateString(rawYearEnd);
+                $('#yearEnd').val(formattedYearEnd);
+            });
 
             // 初始化日期选择器
             function initializeDatePickers() {
@@ -274,7 +363,6 @@
                 });
             }
 
-            // 格式化日期
             function formatDate(dateString) {
                 if (!dateString) return '';
                 try {
@@ -285,7 +373,6 @@
                 }
             }
 
-            // 显示提示信息
             function showAlert(message, type) {
                 const alertClass = `alert alert-${type} alert-dismissible fade show`;
                 const alertHtml = `
@@ -302,16 +389,16 @@
                 }, 5000);
             }
 
-            // 重置表单
             function resetForm() {
                 $('#taskForm')[0].reset();
                 currentEditId = null;
                 $('#modalTitle').text('Add New Form E Record');
                 $('.datepicker').datepicker('update', '');
                 $('#recordId').val('');
+                $('#companySelect').val(''); // 重置 Dropdown
             }
 
-            // 测试 API 连接
+            // 测试 API 连接 (你的原始逻辑)
             function testApiConnection() {
                 console.log('Testing API connection to /api/bp26/get-all');
 
@@ -320,9 +407,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log('API test successful:', response);
                         if (response.success) {
-                            console.log('Found', response.data.length, 'records');
                             initializeDataTable();
                         } else {
                             showAlert('API returned error: ' + response.message, 'danger');
@@ -330,17 +415,15 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('API test failed:', error);
                         showAlert('Cannot connect to server. Please check your connection.', 'danger');
                         initializeSimpleTable();
                     }
                 });
             }
 
-            // 初始化 DataTable
+            // 初始化 DataTable (保持你的原始逻辑)
             function initializeDataTable() {
                 try {
-                    // 先检查 DataTable 是否已经存在，如果存在则销毁
                     if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                         dataTable.destroy();
                         $('#taskDatatable').empty();
@@ -353,106 +436,42 @@
                             "url": "/api/bp26/get-all",
                             "type": "GET",
                             "dataSrc": function(response) {
-                                if (response.success) {
-                                    return response.data;
-                                } else {
-                                    console.error('Error loading data:', response.message);
-                                    showAlert('Error loading data: ' + response.message, 'danger');
-                                    return [];
-                                }
+                                return response.success ? response.data : [];
                             },
                             "error": function(xhr, error, thrown) {
-                                console.error('DataTable AJAX error:', error);
                                 showAlert('Failed to load data: ' + error, 'danger');
                             }
                         },
                         "columns": [
-                            {
-                                "data": "grouping",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "refferal",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "fileNo",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "companyName",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "yearEnd",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "enumber",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "tinNumber",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "login",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "password",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "code",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "description",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "jobServices",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "yEtodo",
-                                "defaultContent": ""
-                            },
+                            { "data": "grouping", "defaultContent": "" },
+                            { "data": "refferal", "defaultContent": "" },
+                            { "data": "fileNo", "defaultContent": "" },
+                            { "data": "companyName", "defaultContent": "" },
+                            { "data": "yearEnd", "defaultContent": "" },
+                            { "data": "enumber", "defaultContent": "" },
+                            { "data": "taxIdentificationNumber", "defaultContent": "" },
+                            { "data": "login", "defaultContent": "" },
+                            { "data": "password", "defaultContent": "" },
+                            { "data": "code", "defaultContent": "" },
+                            { "data": "description", "defaultContent": "" },
+                            { "data": "jobServices", "defaultContent": "" },
+                            { "data": "yEtodo", "defaultContent": "" },
                             {
                                 "data": "dateDocIn",
-                                "render": function(data) {
-                                    return data ? formatDate(data) : '';
-                                },
+                                "render": function(data) { return data ? formatDate(data) : ''; },
                                 "defaultContent": ""
                             },
-                            {
-                                "data": "mthTodo",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "staff",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "allocateToWkSch",
-                                "defaultContent": ""
-                            },
-                            {
-                                "data": "completed",
-                                "defaultContent": ""
-                            },
+                            { "data": "mthTodo", "defaultContent": "" },
+                            { "data": "staff", "defaultContent": "" },
+                            { "data": "allocateToWkSch", "defaultContent": "" },
+                            { "data": "completed", "defaultContent": "" },
                             {
                                 "data": "id",
                                 "render": function(data, type, row) {
                                     return `
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
                                         </div>
                                     `;
                                 },
@@ -463,38 +482,26 @@
                         "responsive": true,
                         "searching": true,
                         "paging": true,
-                        "pageLength": 10,
-                        "language": {
-                            "emptyTable": "No records found",
-                            "zeroRecords": "No matching records found",
-                            "loadingRecords": "Loading...",
-                            "processing": "Processing..."
-                        }
+                        "pageLength": 10
                     });
-
-                    console.log('DataTable initialized successfully');
-
                 } catch (error) {
                     console.error('DataTable initialization failed:', error);
-                    showAlert('DataTable initialization failed. Using simple table.', 'warning');
                     initializeSimpleTable();
                 }
             }
 
-            // 初始化简单表格（备用）
             function initializeSimpleTable() {
-                console.log('Initializing simple table without DataTable');
-
-                $.ajax({
+                // ... (略，保持你的原始逻辑) ...
+                 $.ajax({
                     url: '/api/bp26/get-all',
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
                             var tbody = $('#taskDatatable tbody');
                             tbody.empty();
-
                             if (response.data && response.data.length > 0) {
                                 response.data.forEach(function(item) {
+                                    // 简单的 HTML 拼接，保持不变
                                     var row = `<tr>
                                         <td>${item.grouping || ''}</td>
                                         <td>${item.refferal || ''}</td>
@@ -502,7 +509,7 @@
                                         <td>${item.companyName || ''}</td>
                                         <td>${item.yearEnd || ''}</td>
                                         <td>${item.enumber || ''}</td>
-                                        <td>${item.tinNumber || ''}</td>
+                                        <td>${item.taxIdentificationNumber || ''}</td>
                                         <td>${item.login || ''}</td>
                                         <td>${item.password || ''}</td>
                                         <td>${item.code || ''}</td>
@@ -515,38 +522,28 @@
                                         <td>${item.allocateToWkSch || ''}</td>
                                         <td>${item.completed || ''}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}"><i class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>`;
                                     tbody.append(row);
                                 });
-                            } else {
-                                tbody.append('<tr><td colspan="19" class="text-center">No records found</td></tr>');
                             }
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Failed to load data for simple table:', error);
-                        $('#taskDatatable tbody').html('<tr><td colspan="19" class="text-center">Error loading data</td></tr>');
                     }
                 });
             }
 
-            // 保存 BP26 记录
+            // 保存 BP26 记录 (保持你的原始逻辑)
             function saveBP26Record() {
                 const formData = {
                     grouping: $('#grouping').val(),
                     refferal: $('#referral').val(),
                     fileNo: $('#fileNo').val(),
-                    companyName: $('#companyName').val(),
+                    companyName: $('#companyName').val(), // 🟢 注意：这里会取到 Hidden Input 的值
                     yearEnd: $('#yearEnd').val(),
                     enumber: $('#enumber').val(),
-                    tinNumber: $('#tinNumber').val(),
+                    taxIdentificationNumber: $('#tinNumber').val(),
                     login: $('#login').val(),
                     password: $('#password').val(),
                     code: $('#code').val(),
@@ -563,9 +560,7 @@
                 const url = currentEditId ? '/api/bp26/update' : '/api/bp26/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
+                if (currentEditId) formData.id = currentEditId;
 
                 $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
@@ -576,7 +571,6 @@
                     data: JSON.stringify(formData),
                     success: function(response) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
                         if (response.success) {
                             $('#taskModal').modal('hide');
                             refreshTable();
@@ -600,6 +594,17 @@
                         const record = response.data;
                         currentEditId = record.id;
 
+                        // 🟢 反向匹配 Dropdown
+                        let foundId = "";
+                        for (const [key, val] of Object.entries(companyOptionsMap)) {
+                            // 比较名字是否一致
+                            if (val.companyName === record.companyName) {
+                                foundId = key;
+                                break;
+                            }
+                        }
+                        $('#companySelect').val(foundId);
+
                         // 填充表单
                         $('#grouping').val(record.grouping || '');
                         $('#referral').val(record.refferal || '');
@@ -607,7 +612,7 @@
                         $('#companyName').val(record.companyName || '');
                         $('#yearEnd').val(record.yearEnd || '');
                         $('#enumber').val(record.enumber || '');
-                        $('#tinNumber').val(record.tinNumber || '');
+                        $('#tinNumber').val(record.taxIdentificationNumber || '');
                         $('#login').val(record.login || '');
                         $('#password').val(record.password || '');
                         $('#code').val(record.code || '');
@@ -632,7 +637,7 @@
 
             // 删除记录
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                if (confirm('Are you sure you want to delete this record?')) {
                     $.ajax({
                         url: `/api/bp26/delete/${id}`,
                         type: 'DELETE',
@@ -651,7 +656,6 @@
                 }
             }
 
-            // 刷新表格
             function refreshTable() {
                 if (dataTable && typeof dataTable.ajax.reload === 'function') {
                     dataTable.ajax.reload(null, false);
@@ -660,34 +664,24 @@
                 }
             }
 
-            // === 事件监听器 ===
+            // 事件监听
             $('#saveBtn').click(saveBP26Record);
-
-            $(document).on('click', '.edit-btn', function() {
-                const id = $(this).data('id');
-                editRecord(id);
-            });
-
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', resetForm);
-
             $('#addNewBtn').click(function() {
                 resetForm();
                 $('#modalTitle').text('Add New Form E Record');
             });
-
             $('#taskForm').on('submit', function(e) {
                 e.preventDefault();
                 saveBP26Record();
             });
 
-            // === 初始化应用 ===
+            // 初始化
             console.log('Initializing Form E application...');
             initializeDatePickers();
+            loadCompanyOptions(); // 🟢 启动时加载 Dropdown
             testApiConnection();
         });
     </script>

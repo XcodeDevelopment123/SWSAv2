@@ -399,7 +399,63 @@ public class ClientService(
     }
 
 
-    // ... 其他 using ...
+    public async Task<List<CompanyOptionDto>> GetEnterpriseCompanyOptionsAsync()
+    {
+        var filter = new ClientFilterRequest
+        {
+            // IsActive = true,
+            // 其他过滤条件按需设置
+        };
+
+        // ① 拉 LLP 客户
+        var raw = await SearchClientsAsync(ClientType.Enterprise, filter);
+
+        // ② Cast 成 LLP Client 并投影为 DTO
+        return raw
+            .Cast<EnterpriseClient>() // 如果你的类型名不同，请换成实际的 LLP 客户类型
+            .Select(c => new CompanyOptionDto
+            {
+                Id = c.Id,
+                Grouping = c.Group,                     // 若是导航对象：c.Group?.GroupName
+                Referral = c.Referral,                  // LLP 需求
+                FileNo = c.FileNo,
+                CompanyName = c.Name,
+                CompanyNo = c.RegistrationNumber,
+                IncorporationDate = c.IncorporationDate, // 或 c.RegistrationDate（视你的模型）
+                YearEndMonth = c.YearEndMonth.HasValue
+                    ? c.YearEndMonth.Value.ToString()
+                    : string.Empty,
+                TaxIdentificationNumber = c.TaxIdentificationNumber,
+                EmployerNumber = c.EmployerNumber
+            })
+            .ToList();
+    }
+
+    public async Task<List<CompanyOptionDto>> GetIndividualOptionsAsync()
+    {
+        var filter = new ClientFilterRequest
+        {
+            // IsActive = true,
+            // 其他过滤条件按需设置
+        };
+
+        var raw = await SearchClientsAsync(ClientType.Individual, filter);
+
+        return raw
+            .Cast<IndividualClient>() 
+            .Select(c => new CompanyOptionDto
+            {
+                Id = c.Id,
+                Grouping = c.Group,                    
+                Referral = c.Referral,                  
+                CompanyName = c.Name,
+                YearEndMonth = c.YearEndMonth.HasValue
+                    ? c.YearEndMonth.Value.ToString()
+                    : string.Empty,
+                TaxIdentificationNumber = c.TaxIdentificationNumber,
+            })
+            .ToList();
+    }
 
     public async Task<List<ClientListDto>> GetAllClientsListAsync()
     {
@@ -428,7 +484,11 @@ public class ClientService(
                 ? c.YearEndMonth.Value.ToString()
                 : string.Empty,
 
-            IsActive = c.IsActive
+            IsActive = c.IsActive,
+
+            TaxIdentificationNumber = c.TaxIdentificationNumber ?? "",
+
+            ENumber = (c as BaseCompany).EmployerNumber ?? ""
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();

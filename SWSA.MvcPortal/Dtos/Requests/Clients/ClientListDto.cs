@@ -13,5 +13,8 @@
         public string YearEndMonth { get; set; } = ""; // e.g. "December"
         public bool IsActive { get; set; }
         public string ClientType { get; set; } = "";
+
+        public string ENumber { get; set; } = "";               // Employer Number (Form E 关键字段)
+        public string TaxIdentificationNumber { get; set; } = ""; // TIN
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using SWSA.MvcPortal.Models;
 using SWSA.MvcPortal.Models.AccDeptModel;
+using SWSA.MvcPortal.Services.Clients;
+using SWSA.MvcPortal.Services.Interfaces.Clients;
 
 namespace SWSA.MvcPortal.Controllers.AccDept
 {
@@ -12,13 +14,17 @@ namespace SWSA.MvcPortal.Controllers.AccDept
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private readonly IClientService _clientService;
 
-        public AccountDeptController(IConfiguration configuration)
+
+        public AccountDeptController(IConfiguration configuration, IClientService clientService)
 
 
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
+            _clientService = clientService;
+
         }
 
         public IActionResult SdnBhdMasterScheduleList()
@@ -2313,5 +2319,33 @@ namespace SWSA.MvcPortal.Controllers.AccDept
         }
         #endregion
 
+
+        [HttpGet("api/get/enterprise-company-options")]
+        public async Task<IActionResult> GetEnterpriseCompanyOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetEnterpriseCompanyOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/get/individual-company-options")]
+        public async Task<IActionResult> GetIndividualOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetIndividualOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
