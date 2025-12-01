@@ -721,5 +721,155 @@ VALUES
         }
 
         #endregion
+
+        #region TX5 Methods
+        [HttpGet("api/tx5/get-all")]
+        public async Task<IActionResult> GetAllTX5()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[TX5] ORDER BY Id DESC"; 
+                var records = await connection.QueryAsync<TX5>(sql);
+                return Json(new { success = true, data = records });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/tx5/get/{id}")]
+        public async Task<IActionResult> GetTX5ById(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT * FROM [Quartz].[dbo].[TX5] WHERE Id = @Id";
+                var record = await connection.QueryFirstOrDefaultAsync<TX5>(sql, new { Id = id });
+
+                if (record == null)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = record });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("api/tx5/create")]
+        public async Task<IActionResult> CreateTX5([FromBody] TX5 model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"
+                INSERT INTO [Quartz].[dbo].[TX5] 
+                (
+                    [CompanyName], [TaxReferenceNo], [YearEnd], [CompanyType], [PersonInCharge], [PastYearTaxEstimate],
+                    [Cp204OneMonthBeforeYE], [Cp204ReminderDate], [Cp204ClientResponse], [Cp204CurrentETP], [Cp204DateSubmitIRB],
+                    [Cp204a6thMonthAfterYE], [Cp204a1stReminderDate], [Cp204a1stClientResponse], [Cp204a1stRevisedETP], [Cp204a1stDateSubmitIRB],
+                    [Cp204a9thMonthAfterYE], [Cp204a2ndReminderDate], [Cp204a2ndClientResponse], [Cp204a2ndRevisedETP], [Cp204a2ndDateSubmitIRB],
+                    [Cp204a11thMonthAfterYE], [Cp204a3rdReminderDate], [Cp204a3rdClientResponse], [Cp204a3rdRevisedETP], [Cp204a3rdDateSubmitIRB]
+                )
+                VALUES 
+                (
+                    @CompanyName, @TaxReferenceNo, @YearEnd, @CompanyType, @PersonInCharge, @PastYearTaxEstimate,
+                    @Cp204OneMonthBeforeYE, @Cp204ReminderDate, @Cp204ClientResponse, @Cp204CurrentETP, @Cp204DateSubmitIRB,
+                    @Cp204a6thMonthAfterYE, @Cp204a1stReminderDate, @Cp204a1stClientResponse, @Cp204a1stRevisedETP, @Cp204a1stDateSubmitIRB,
+                    @Cp204a9thMonthAfterYE, @Cp204a2ndReminderDate, @Cp204a2ndClientResponse, @Cp204a2ndRevisedETP, @Cp204a2ndDateSubmitIRB,
+                    @Cp204a11thMonthAfterYE, @Cp204a3rdReminderDate, @Cp204a3rdClientResponse, @Cp204a3rdRevisedETP, @Cp204a3rdDateSubmitIRB
+                );
+                SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var id = await connection.ExecuteScalarAsync<int>(sql, model);
+                return Json(new { success = true, id = id, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("api/tx5/update")]
+        public async Task<IActionResult> UpdateTX5([FromBody]TX5 model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = @"
+                UPDATE [Quartz].[dbo].[TX5] SET 
+                    [CompanyName] = @CompanyName, 
+                    [TaxReferenceNo] = @TaxReferenceNo, 
+                    [YearEnd] = @YearEnd, 
+                    [CompanyType] = @CompanyType, 
+                    [PersonInCharge] = @PersonInCharge, 
+                    [PastYearTaxEstimate] = @PastYearTaxEstimate,
+
+                    [Cp204OneMonthBeforeYE] = @Cp204OneMonthBeforeYE, 
+                    [Cp204ReminderDate] = @Cp204ReminderDate, 
+                    [Cp204ClientResponse] = @Cp204ClientResponse, 
+                    [Cp204CurrentETP] = @Cp204CurrentETP, 
+                    [Cp204DateSubmitIRB] = @Cp204DateSubmitIRB,
+
+                    [Cp204a6thMonthAfterYE] = @Cp204a6thMonthAfterYE, 
+                    [Cp204a1stReminderDate] = @Cp204a1stReminderDate, 
+                    [Cp204a1stClientResponse] = @Cp204a1stClientResponse, 
+                    [Cp204a1stRevisedETP] = @Cp204a1stRevisedETP, 
+                    [Cp204a1stDateSubmitIRB] = @Cp204a1stDateSubmitIRB,
+
+                    [Cp204a9thMonthAfterYE] = @Cp204a9thMonthAfterYE, 
+                    [Cp204a2ndReminderDate] = @Cp204a2ndReminderDate, 
+                    [Cp204a2ndClientResponse] = @Cp204a2ndClientResponse, 
+                    [Cp204a2ndRevisedETP] = @Cp204a2ndRevisedETP, 
+                    [Cp204a2ndDateSubmitIRB] = @Cp204a2ndDateSubmitIRB,
+
+                    [Cp204a11thMonthAfterYE] = @Cp204a11thMonthAfterYE, 
+                    [Cp204a3rdReminderDate] = @Cp204a3rdReminderDate, 
+                    [Cp204a3rdClientResponse] = @Cp204a3rdClientResponse, 
+                    [Cp204a3rdRevisedETP] = @Cp204a3rdRevisedETP, 
+                    [Cp204a3rdDateSubmitIRB] = @Cp204a3rdDateSubmitIRB
+                WHERE Id = @Id";
+
+                var affectedRows = await connection.ExecuteAsync(sql, model);
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true, data = model });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpDelete("api/tx5/delete/{id}")]
+        public async Task<IActionResult> DeleteTX5(int id)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "DELETE FROM [Quartz].[dbo].[TX5] WHERE Id = @Id";
+                var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
+
+                if (affectedRows == 0)
+                    return Json(new { success = false, message = "Record not found" });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
     }
 }

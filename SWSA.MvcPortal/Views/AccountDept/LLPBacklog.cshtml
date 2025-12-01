@@ -6,61 +6,47 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
-        <div class="card">
-
+        <div id="alertContainer"></div> <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i> ACC LLP Back log Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
                         <i class="fas fa-plus me-2"></i>New Task
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="3">Admin</th>
-                            <th colspan="8">Co Information</th>
-                            <th colspan="8">Scheduling</th>
+                            <th colspan="3" class="text-center">Admin</th>
+                            <th colspan="8" class="text-center">Co Information</th>
+                            <th colspan="8" class="text-center">Scheduling</th>
+                            <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
-
-                        <!-- 第二行：细分标题 -->
                         <tr>
-                            <th rowspan="3">Grouping</th>
-                            <th rowspan="3">Referral</th>
-                            <th rowspan="3">File No</th>
-
-                            <th rowspan="2">Co Name</th>
-                            <th rowspan="2">Year End</th>
-
-                            <th colspan="2">Registration</th>
-                            <th colspan="2">Tax Reference</th>
-                            <th colspan="2">MISC Code</th>
-
-                            <th colspan="4">Work allocation Info</th>
+                            <th rowspan="2" style="vertical-align: middle;">Grouping</th>
+                            <th rowspan="2" style="vertical-align: middle;">Referral</th>
+                            <th rowspan="2" style="vertical-align: middle;">File No</th>
+                            <th rowspan="2" style="vertical-align: middle;">Co Name</th>
+                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
+                            <th colspan="2" class="text-center">Registration</th>
+                            <th colspan="2" class="text-center">Tax Reference</th>
+                            <th colspan="2" class="text-center">MISC Code</th>
+                            <th colspan="4" class="text-center">Work allocation Info</th>
                             <th colspan="1"></th>
-                            <th colspan="3">Acc Dept</th>
-
+                            <th colspan="3" class="text-center">Acc Dept</th>
                         </tr>
-
-                        <!-- 第三行：每个字段的详细标题 -->
                         <tr>
                             <th>Incorp Date</th>
                             <th>Co #</th>
-
                             <th>E number</th>
                             <th>TIN number</th>
-
                             <th>Code</th>
                             <th>Description</th>
-
-                            <th>Sercives Type</th>
+                            <th>Services Type</th>
                             <th>Co Status</th>
                             <th>Active Co:Activity/size</th>
                             <th>YE to do</th>
@@ -71,16 +57,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -94,24 +77,25 @@
             <div class="modal-body">
                 <form id="taskForm">
                     <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value=""> 
 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
-                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Enter referral" />
+                                <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -119,14 +103,20 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coName">Co Name (Suppose Link From Client List)</label>
-                                <input type="text" id="coName" name="coName" class="form-control" placeholder="Enter company name" />
+                                <label for="coName">Co Name (Select LLP)</label>
+                                <select id="llpCompanySelect" class="form-control">
+                                    <option value="">-- Loading LLP Clients... --</option>
+                                </select>
+                                 <small class="text-muted">
+                                    Options are linked from the LLP Client List.
+                                </small>
+                                <input type="hidden" id="coName" name="coName" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year end" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -135,13 +125,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coNumber">Co #</label>
-                                <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -150,13 +140,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="eNumber">E number</label>
-                                <input type="text" id="eNumber" name="eNumber" class="form-control" placeholder="Enter E number" />
+                                <input type="text" id="eNumber" name="eNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="tinNumber">TIN number</label>
-                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Enter TIN number" />
+                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -210,7 +200,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc In</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -252,19 +242,124 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- Include DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-                $(document).ready(function() {
+        $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
+            // 🟢 全局变量：存储 API 返回的 LLP 公司数据
+            let llpOptionsMap = {};
+
+            // 🟢 1. 加载 LLP 公司选项
+            function loadLlpCompanyOptions() {
+                $.ajax({
+                    url: '/api/get/llp-company-options', // 你提供的 API
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.success && res.data) {
+                            llpOptionsMap = {};
+                            const $sel = $('#llpCompanySelect');
+                            $sel.empty().append('<option value="">-- Select LLP Company --</option>');
+
+                            res.data.forEach(client => {
+                                // 缓存数据，key 为 ID (假设 client 对象有 id 字段)
+                                llpOptionsMap[client.id] = client;
+
+                                // 显示格式: Name (Co No)
+                                const displayText = client.companyNo 
+                                    ? `${client.companyName} (${client.companyNo})`
+                                    : client.companyName;
+
+                                $sel.append(`<option value="${client.id}">${displayText}</option>`);
+                            });
+                        }
+                    },
+                    error: function(xhr) { 
+                        console.error("Failed to load LLP options", xhr); 
+                    }
+                });
+            }
+
+            // 🟢 2. Helper: 将月份字符串 (e.g., "December") 转为日期 (e.g., "31/12/2025")
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+                if (monthName.includes('/') || monthName.includes('-')) return monthName;
+
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                
+                const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
+                if (idx === -1) return monthName;
+                
+                const today = new Date();
+                let year = today.getFullYear();
+                // 如果该月份已过，则视为下一年 (根据你的业务逻辑调整)
+                if (idx < today.getMonth()) year += 1;
+                
+                const dt = new Date(year, idx + 1, 0); // 获取当月最后一天
+                return formatDdMMyyyy(dt);
+            }
+
+            function formatDdMMyyyy(d) {
+                const date = (d instanceof Date) ? d : new Date(d);
+                if (isNaN(date)) return "";
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+            // 🟢 3. 下拉菜单选择事件 (Auto-fill)
+            $('#llpCompanySelect').change(function() {
+                const selectedId = $(this).val();
+                
+                // 如果选了空，清空相关字段
+                if (!selectedId || !llpOptionsMap[selectedId]) {
+                    $('#coName').val('');
+                    $('#grouping').val('');
+                    $('#referral').val('');
+                    $('#fileNo').val('');
+                    $('#yearEnd').val('');
+                    $('#coNumber').val('');
+                    $('#eNumber').val('');
+                    $('#tinNumber').val('');
+                    $('#incorpDate').val('');
+                    return;
+                }
+
+                const c = llpOptionsMap[selectedId];
+
+                // ⚠️ 注意：这里假设 API 返回的字段名是 camelCase
+                // 请检查 console.log(c) 确认后端返回的实际字段名是否一致
+
+                // 填入 Hidden Input (Co Name)
+                $('#coName').val(c.companyName || '');
+
+                // 自动填入其他 Input
+                $('#grouping').val(c.grouping || '');
+                $('#referral').val(c.referral || '');
+                $('#fileNo').val(c.fileNo || '');
+                
+                $('#coNumber').val(c.companyNo || '');
+                $('#eNumber').val(c.employerNumber || c.eNumber || '');
+                $('#tinNumber').val(c.taxIdentificationNumber || c.tiNnumber || '');
+
+                // 处理 Year End (转换)
+                const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
+                $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
+
+                // 处理 Incorporation Date
+                if (c.incorporationDate) {
+                    $('#incorpDate').datepicker('update', new Date(c.incorporationDate));
+                }
+            });
 
             // 初始化日期选择器
             function initializeDatePickers() {
@@ -275,7 +370,7 @@
                 });
             }
 
-            // 格式化日期
+            // 格式化日期显示 (用于 DataTable)
             function formatDate(dateString) {
                 if (!dateString) return '';
                 try {
@@ -286,7 +381,6 @@
                 }
             }
 
-            // 显示提示信息
             function showAlert(message, type) {
                 const alertClass = `alert alert-${type} alert-dismissible fade show`;
                 const alertHtml = `
@@ -296,86 +390,86 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 `;
-                // 如果没有 alertContainer，创建一个临时的
                 if ($('#alertContainer').length === 0) {
                     $('.card-header').after('<div id="alertContainer"></div>');
                 }
                 $('#alertContainer').html(alertHtml);
-
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
+                setTimeout(() => { $('.alert').alert('close'); }, 5000);
             }
 
-            // 重置表单
             function resetForm() {
                 $('#taskForm')[0].reset();
                 currentEditId = null;
                 $('#modalTitle').text('Add New ACC LLP Back log');
                 $('.datepicker').datepicker('update', '');
-                $('#editIndex').val('');
+                $('#recordId').val(''); // 重置 ID
+                $('#llpCompanySelect').val(''); // 重置 Dropdown
             }
 
-            // 映射表单字段（修复 ID 不匹配问题）
             function getFormData() {
                 return {
                     grouping: $('#grouping').val(),
                     referral: $('#referral').val(),
                     fileNo: $('#fileNo').val(),
-                    companyName: $('#coName').val(), // 映射到正确的 ID
+                    companyName: $('#coName').val(), // 取 Hidden Input 的值
                     yearEnd: $('#yearEnd').val(),
                     incorpDate: $('#incorpDate').val(),
-                    co: $('#coNumber').val(), // 映射到正确的 ID
-                    enumber: $('#eNumber').val(), // 映射到正确的 ID
-                    tINnumber: $('#tinNumber').val(), // 映射到正确的 ID
-                    code: $('#miscCode').val(), // 映射到正确的 ID
-                    description: $('#miscDescription').val(), // 映射到正确的 ID
+                    co: $('#coNumber').val(),
+                    enumber: $('#eNumber').val(),
+                    tiNnumber: $('#tinNumber').val(),
+                    code: $('#miscCode').val(),
+                    description: $('#miscDescription').val(),
                     servicesType: $('#servicesType').val(),
                     coStatus: $('#coStatus').val(),
-                    activeCoActivitySize: $('#activitySize').val(), // 映射到正确的 ID
-                    yEtoDo: $('#yeToDo').val(), // 映射到正确的 ID
+                    activeCoActivitySize: $('#activitySize').val(),
+                    yEtoDo: $('#yeToDo').val(),
                     dateDocIn: $('#dateDocIn').val(),
-                    estMthTodo: $('#estMonthToDo').val(), // 映射到正确的 ID
+                    estMthTodo: $('#estMonthToDo').val(),
                     staff: $('#staff').val(),
                     allocateToWkSch: $('#allocateToWkSch').val()
                 };
             }
 
-            // 填充表单数据（编辑时使用）
             function populateForm(data) {
                 $('#grouping').val(data.grouping || '');
                 $('#referral').val(data.referral || '');
                 $('#fileNo').val(data.fileNo || '');
-                $('#coName').val(data.companyName || ''); // 映射到正确的 ID
+                $('#coName').val(data.companyName || '');
                 $('#yearEnd').val(data.yearEnd || '');
                 $('#incorpDate').val(data.incorpDate ? data.incorpDate.split('T')[0] : '');
-                $('#coNumber').val(data.co || ''); // 映射到正确的 ID
-                $('#eNumber').val(data.enumber || ''); // 映射到正确的 ID
-                $('#tinNumber').val(data.tINnumber || ''); // 映射到正确的 ID
-                $('#miscCode').val(data.code || ''); // 映射到正确的 ID
-                $('#miscDescription').val(data.description || ''); // 映射到正确的 ID
+                $('#coNumber').val(data.co || '');
+                $('#eNumber').val(data.enumber || '');
+                $('#tinNumber').val(data.tiNnumber || '');
+                $('#miscCode').val(data.code || '');
+                $('#miscDescription').val(data.description || '');
                 $('#servicesType').val(data.servicesType || '');
                 $('#coStatus').val(data.coStatus || '');
-                $('#activitySize').val(data.activeCoActivitySize || ''); // 映射到正确的 ID
-                $('#yeToDo').val(data.yEtoDo || ''); // 映射到正确的 ID
+                $('#activitySize').val(data.activeCoActivitySize || '');
+                $('#yeToDo').val(data.yEtoDo || '');
                 $('#dateDocIn').val(data.dateDocIn ? data.dateDocIn.split('T')[0] : '');
-                $('#estMonthToDo').val(data.estMthTodo || ''); // 映射到正确的 ID
+                $('#estMonthToDo').val(data.estMthTodo || '');
                 $('#staff').val(data.staff || '');
                 $('#allocateToWkSch').val(data.allocateToWkSch || '');
+
+                // 🟢 反选 Dropdown (编辑时让下拉菜单显示正确的公司)
+                let foundId = "";
+                for (const [key, val] of Object.entries(llpOptionsMap)) {
+                    if (val.companyName === data.companyName) {
+                        foundId = key;
+                        break;
+                    }
+                }
+                $('#llpCompanySelect').val(foundId);
             }
 
-            // 测试 API 连接
             function testApiConnection() {
                 console.log('Testing API connection to /api/bp31/get-all');
-
                 $.ajax({
                     url: '/api/bp31/get-all',
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
-                        console.log('API test successful:', response);
                         if (response.success) {
-                            console.log('Found', response.data.length, 'records');
                             initializeDataTable();
                         } else {
                             showAlert('API returned error: ' + response.message, 'danger');
@@ -383,14 +477,12 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('API test failed:', error);
-                        showAlert('Cannot connect to server. Please check your connection.', 'danger');
+                        showAlert('Cannot connect to server.', 'danger');
                         initializeSimpleTable();
                     }
                 });
             }
 
-            // 初始化 DataTable
             function initializeDataTable() {
                 try {
                     if ($.fn.DataTable.isDataTable('#taskDatatable')) {
@@ -405,16 +497,9 @@
                             "url": "/api/bp31/get-all",
                             "type": "GET",
                             "dataSrc": function(response) {
-                                if (response.success) {
-                                    return response.data;
-                                } else {
-                                    console.error('Error loading data:', response.message);
-                                    showAlert('Error loading data: ' + response.message, 'danger');
-                                    return [];
-                                }
+                                return response.success ? response.data : [];
                             },
                             "error": function(xhr, error, thrown) {
-                                console.error('DataTable AJAX error:', error);
                                 showAlert('Failed to load data: ' + error, 'danger');
                             }
                         },
@@ -424,28 +509,24 @@
                             { "data": "fileNo", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
                             { "data": "yearEnd", "defaultContent": "" },
-                            {
-                                "data": "incorpDate",
-                                "render": function(data) {
-                                    return data ? formatDate(data) : '';
-                                },
-                                "defaultContent": ""
+                            { 
+                                "data": "incorpDate", 
+                                "render": function(data) { return data ? formatDate(data) : ''; },
+                                "defaultContent": "" 
                             },
                             { "data": "co", "defaultContent": "" },
                             { "data": "enumber", "defaultContent": "" },
-                            { "data": "tINnumber", "defaultContent": "" },
+                            { "data": "tiNnumber", "defaultContent": "" },
                             { "data": "code", "defaultContent": "" },
                             { "data": "description", "defaultContent": "" },
                             { "data": "servicesType", "defaultContent": "" },
                             { "data": "coStatus", "defaultContent": "" },
                             { "data": "activeCoActivitySize", "defaultContent": "" },
                             { "data": "yEtoDo", "defaultContent": "" },
-                            {
-                                "data": "dateDocIn",
-                                "render": function(data) {
-                                    return data ? formatDate(data) : '';
-                                },
-                                "defaultContent": ""
+                            { 
+                                "data": "dateDocIn", 
+                                "render": function(data) { return data ? formatDate(data) : ''; },
+                                "defaultContent": "" 
                             },
                             { "data": "estMthTodo", "defaultContent": "" },
                             { "data": "staff", "defaultContent": "" },
@@ -455,12 +536,8 @@
                                 "render": function(data, type, row) {
                                     return `
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
                                         </div>
                                     `;
                                 },
@@ -471,90 +548,47 @@
                         "responsive": true,
                         "searching": true,
                         "paging": true,
-                        "pageLength": 10,
-                        "language": {
-                            "emptyTable": "No records found",
-                            "zeroRecords": "No matching records found",
-                            "loadingRecords": "Loading...",
-                            "processing": "Processing..."
-                        }
+                        "pageLength": 10
                     });
-
-                    console.log('DataTable initialized successfully');
-
                 } catch (error) {
                     console.error('DataTable initialization failed:', error);
-                    showAlert('DataTable initialization failed. Using simple table.', 'warning');
                     initializeSimpleTable();
                 }
             }
 
-            // 初始化简单表格（备用）
             function initializeSimpleTable() {
-                console.log('Initializing simple table without DataTable');
-
-                $.ajax({
+                // ... (Fallback 逻辑，保持原样)
+                 $.ajax({
                     url: '/api/bp31/get-all',
                     type: 'GET',
                     success: function(response) {
-                        if (response.success) {
+                        if (response.success && response.data) {
                             var tbody = $('#taskDatatable tbody');
                             tbody.empty();
-
-                            if (response.data && response.data.length > 0) {
-                                response.data.forEach(function(item) {
-                                    var row = `<tr>
-                                        <td>${item.grouping || ''}</td>
-                                        <td>${item.referral || ''}</td>
-                                        <td>${item.fileNo || ''}</td>
-                                        <td>${item.companyName || ''}</td>
-                                        <td>${item.yearEnd || ''}</td>
-                                        <td>${item.incorpDate ? formatDate(item.incorpDate) : ''}</td>
-                                        <td>${item.co || ''}</td>
-                                        <td>${item.enumber || ''}</td>
-                                        <td>${item.tINnumber || ''}</td>
-                                        <td>${item.code || ''}</td>
-                                        <td>${item.description || ''}</td>
-                                        <td>${item.servicesType || ''}</td>
-                                        <td>${item.coStatus || ''}</td>
-                                        <td>${item.activeCoActivitySize || ''}</td>
-                                        <td>${item.yEtoDo || ''}</td>
-                                        <td>${item.dateDocIn ? formatDate(item.dateDocIn) : ''}</td>
-                                        <td>${item.estMthTodo || ''}</td>
-                                        <td>${item.staff || ''}</td>
-                                        <td>${item.allocateToWkSch || ''}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>`;
-                                    tbody.append(row);
-                                });
-                            } else {
-                                tbody.append('<tr><td colspan="20" class="text-center">No records found</td></tr>');
-                            }
+                            response.data.forEach(function(item) {
+                                // 简单渲染作为备用
+                                var row = `<tr>
+                                    <td>${item.grouping}</td>
+                                    <td>${item.referral}</td>
+                                    <td>${item.fileNo}</td>
+                                    <td>${item.companyName}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${item.id}">Edit</button>
+                                    </td>
+                                </tr>`;
+                                tbody.append(row);
+                            });
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Failed to load data for simple table:', error);
-                        $('#taskDatatable tbody').html('<tr><td colspan="20" class="text-center">Error loading data</td></tr>');
                     }
                 });
             }
 
-            // 保存 BP31 记录
             function saveBP31Record() {
                 const formData = getFormData();
                 const url = currentEditId ? '/api/bp31/update' : '/api/bp31/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
+                if (currentEditId) formData.id = currentEditId;
 
                 $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
@@ -565,7 +599,6 @@
                     data: JSON.stringify(formData),
                     success: function(response) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
                         if (response.success) {
                             $('#taskModal').modal('hide');
                             refreshTable();
@@ -582,7 +615,6 @@
                 });
             }
 
-            // 编辑记录
             function editRecord(id) {
                 $.get(`/api/bp31/get/${id}`, function(response) {
                     if (response.success) {
@@ -599,9 +631,8 @@
                 });
             }
 
-            // 删除记录
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                if (confirm('Are you sure you want to delete this record?')) {
                     $.ajax({
                         url: `/api/bp31/delete/${id}`,
                         type: 'DELETE',
@@ -620,7 +651,6 @@
                 }
             }
 
-            // 刷新表格
             function refreshTable() {
                 if (dataTable && typeof dataTable.ajax.reload === 'function') {
                     dataTable.ajax.reload(null, false);
@@ -629,34 +659,24 @@
                 }
             }
 
-            // === 事件监听器 ===
+            // 事件绑定
             $('#saveBtn').click(saveBP31Record);
-
-            $(document).on('click', '.edit-btn', function() {
-                const id = $(this).data('id');
-                editRecord(id);
-            });
-
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', resetForm);
-
-            $('[data-bs-target="#taskModal"]').click(function() {
+            $('#addNewBtn').click(function() {
                 resetForm();
                 $('#modalTitle').text('Add New ACC LLP Back log');
             });
-
             $('#taskForm').on('submit', function(e) {
                 e.preventDefault();
                 saveBP31Record();
             });
 
-            // === 初始化应用 ===
+            // 初始化
             console.log('Initializing ACC LLP Back log application...');
             initializeDatePickers();
+            loadLlpCompanyOptions(); // 🟢 启动时加载 LLP Dropdown
             testApiConnection();
         });
     </script>

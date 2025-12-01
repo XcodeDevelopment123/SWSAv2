@@ -1,19 +1,17 @@
 ﻿@{
-    ViewData["Title"] = "BP32";
+    ViewData["Title"] = "BP32 - Tax Compliance Management";
 }
 
 <h1>BP32 - Tax Compliance Management</h1>
 
 <div class="row">
     <div class="col-md-12">
-        <!-- Alert Container -->
         <div id="alertContainer"></div>
 
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-file-invoice-dollar me-2"></i>BP32 Records
+                    <i class="fas fa-file-invoice-dollar me-2"></i> BP32 Records (Sdn Bhd)
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
@@ -21,21 +19,17 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
+            <div class="card-body">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
-                        <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="3">Basic Information</th>
-                            <th colspan="6">Company Details</th>
-                            <th colspan="8">Scheduling & Timeline</th>
-                            <th colspan="10">Tax Process Steps</th>
-                            <th colspan="6">E-Filing & Billing</th>
-                            <th rowspan="2">Actions</th>
+                            <th colspan="3" class="text-center">Basic Information</th>
+                            <th colspan="6" class="text-center">Company Details</th>
+                            <th colspan="8" class="text-center">Scheduling & Timeline</th>
+                            <th colspan="10" class="text-center">Tax Process Steps</th>
+                            <th colspan="6" class="text-center">E-Filing & Billing</th>
+                            <th rowspan="2" style="vertical-align: middle;">Actions</th>
                         </tr>
-
-                        <!-- 第二行：细分标题 -->
                         <tr>
                             <th>File No</th>
                             <th>Company Name</th>
@@ -78,17 +72,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be loaded dynamically -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -103,34 +93,35 @@
                 <form id="taskForm">
                     <input type="hidden" id="recordId" value="">
 
-                    <!-- Basic Information -->
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6 class="border-bottom pb-2"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="fileNo">File No *</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" required />
+                                <label for="companyName">Company Name (Select Sdn Bhd)</label>
+                                <select id="companySelect" class="form-control">
+                                    <option value="">-- Loading... --</option>
+                                </select>
+                                <input type="hidden" id="companyName" name="companyName" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="fileNo">File No</label>
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="yearEnd">Year End *</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="e.g., 2023-12-31" required />
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Company Details -->
                     <div class="row mb-3 mt-3">
                         <div class="col-md-12">
                             <h6 class="border-bottom pb-2"><i class="fas fa-building me-2"></i>Company Details</h6>
@@ -177,7 +168,6 @@
                         </div>
                     </div>
 
-                    <!-- Scheduling & Timeline -->
                     <div class="row mb-3 mt-3">
                         <div class="col-md-12">
                             <h6 class="border-bottom pb-2"><i class="fas fa-calendar-alt me-2"></i>Scheduling & Timeline</h6>
@@ -243,82 +233,30 @@
                         </div>
                     </div>
 
-                    <!-- Tax Process Steps -->
                     <div class="row mb-3 mt-3">
                         <div class="col-md-12">
                             <h6 class="border-bottom pb-2"><i class="fas fa-cogs me-2"></i>Tax Process Steps</h6>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="singleEntry" name="singleEntry" class="form-check-input" />
-                                <label class="form-check-label" for="singleEntry">Single Entry</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="taxComputation" name="taxComputation" class="form-check-input" />
-                                <label class="form-check-label" for="taxComputation">Tax Computation</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="sortingFiling" name="sortingFiling" class="form-check-input" />
-                                <label class="form-check-label" for="sortingFiling">Sorting Filing</label>
-                            </div>
-                        </div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="singleEntry" name="singleEntry" class="form-check-input" /><label class="form-check-label" for="singleEntry">Single Entry</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="taxComputation" name="taxComputation" class="form-check-input" /><label class="form-check-label" for="taxComputation">Tax Computation</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="sortingFiling" name="sortingFiling" class="form-check-input" /><label class="form-check-label" for="sortingFiling">Sorting Filing</label></div></div>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="keyinToExcel" name="keyinToExcel" class="form-check-input" />
-                                <label class="form-check-label" for="keyinToExcel">Keyin To Excel</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="reviewWorkingAcc" name="reviewWorkingAcc" class="form-check-input" />
-                                <label class="form-check-label" for="reviewWorkingAcc">Review Working Acc</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="draftFinancialStatement" name="draftFinancialStatement" class="form-check-input" />
-                                <label class="form-check-label" for="draftFinancialStatement">Draft Financial Statement</label>
-                            </div>
-                        </div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="keyinToExcel" name="keyinToExcel" class="form-check-input" /><label class="form-check-label" for="keyinToExcel">Keyin To Excel</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="reviewWorkingAcc" name="reviewWorkingAcc" class="form-check-input" /><label class="form-check-label" for="reviewWorkingAcc">Review Working Acc</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="draftFinancialStatement" name="draftFinancialStatement" class="form-check-input" /><label class="form-check-label" for="draftFinancialStatement">Draft Financial Statement</label></div></div>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="draftTaxCompleted" name="draftTaxCompleted" class="form-check-input" />
-                                <label class="form-check-label" for="draftTaxCompleted">Draft Tax Completed</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="reviewTax" name="reviewTax" class="form-check-input" />
-                                <label class="form-check-label" for="reviewTax">Review Tax</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="finalTax" name="finalTax" class="form-check-input" />
-                                <label class="form-check-label" for="finalTax">Final Tax</label>
-                            </div>
-                        </div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="draftTaxCompleted" name="draftTaxCompleted" class="form-check-input" /><label class="form-check-label" for="draftTaxCompleted">Draft Tax Completed</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="reviewTax" name="reviewTax" class="form-check-input" /><label class="form-check-label" for="reviewTax">Review Tax</label></div></div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="finalTax" name="finalTax" class="form-check-input" /><label class="form-check-label" for="finalTax">Final Tax</label></div></div>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                <input type="checkbox" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-check-input" />
-                                <label class="form-check-label" for="taxComFinalSignByClient">Tax Com Final Sign By Client</label>
-                            </div>
-                        </div>
+                        <div class="col-md-6"><div class="form-check"><input type="checkbox" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-check-input" /><label class="form-check-label" for="taxComFinalSignByClient">Tax Com Final Sign By Client</label></div></div>
                     </div>
 
-                    <!-- E-Filing & Billing -->
                     <div class="row mb-3 mt-3">
                         <div class="col-md-12">
                             <h6 class="border-bottom pb-2"><i class="fas fa-file-export me-2"></i>E-Filing & Billing</h6>
@@ -331,26 +269,11 @@
                                 <input type="number" step="0.01" id="amountTaxPay" name="amountTaxPay" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-check mt-4">
-                                <input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" />
-                                <label class="form-check-label" for="eFileDraft">E-File Draft</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check mt-4">
-                                <input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" />
-                                <label class="form-check-label" for="eFileFinal">E-File Final</label>
-                            </div>
-                        </div>
+                        <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" /><label class="form-check-label" for="eFileDraft">E-File Draft</label></div></div>
+                        <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" /><label class="form-check-label" for="eFileFinal">E-File Final</label></div></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" />
-                                <label class="form-check-label" for="eFileviaSPC">E-File via SPC</label>
-                            </div>
-                        </div>
+                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" /><label class="form-check-label" for="eFileviaSPC">E-File via SPC</label></div></div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="invoiceNo">Invoice No</label>
@@ -375,12 +298,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fas fa-save me-2"></i>Save</button>
             </div>
         </div>
     </div>
@@ -389,12 +308,9 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- Include DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
@@ -402,33 +318,111 @@
         $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
+            let companyOptionsMap = {}; // 存储 API 返回的公司数据
 
-            // 初始化 DataTable
-            initializeDataTable();
+            // 🟢 1. 加载 Company Options (Sdn Bhd)
+            function loadCompanyOptions() {
+                $.ajax({
+                    url: '/api/get/company-options', // 🟢 使用你要求的新 API
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.success && res.data) {
+                            companyOptionsMap = {};
+                            const $sel = $('#companySelect');
+                            $sel.empty().append('<option value="">-- Select Sdn Bhd --</option>');
 
-            // 初始化日期选择器
-            initializeDatePickers();
+                            res.data.forEach(client => {
+                                // 缓存数据
+                                companyOptionsMap[client.id] = client;
+                                
+                                // 显示逻辑：Company Name (Company No)
+                                const displayText = client.companyNo 
+                                    ? `${client.companyName} (${client.companyNo})`
+                                    : client.companyName;
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                saveBP32Record();
+                                $sel.append(`<option value="${client.id}">${displayText}</option>`);
+                            });
+                        }
+                    },
+                    error: function(xhr) { 
+                        console.error("Failed to load options", xhr); 
+                    }
+                });
+            }
+
+            // 🟢 2. Helper: Month -> Date String
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+                if (monthName.includes('/') || monthName.includes('-')) return monthName;
+
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                
+                const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
+                if (idx === -1) return monthName;
+                
+                const today = new Date();
+                let year = today.getFullYear();
+                if (idx < today.getMonth()) year += 1;
+                
+                const dt = new Date(year, idx + 1, 0);
+                return formatDdMMyyyy(dt);
+            }
+
+            function formatDdMMyyyy(d) {
+                const date = (d instanceof Date) ? d : new Date(d);
+                if (isNaN(date)) return "";
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+            // 🟢 3. Dropdown Change Event (Auto-fill)
+            $('#companySelect').change(function() {
+                const selectedId = $(this).val();
+                
+                if (!selectedId || !companyOptionsMap[selectedId]) {
+                    $('#companyName').val('');
+                    $('#fileNo').val('');
+                    $('#yearEnd').val('');
+                    return;
+                }
+
+                const c = companyOptionsMap[selectedId];
+
+                // 填入 Hidden Input (给后端保存)
+                $('#companyName').val(c.companyName || '');
+
+                // 填入 File No
+                $('#fileNo').val(c.fileNo || '');
+                
+                // 处理 Year End
+                const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
+                $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
+
+                // 自动填入其他字段 (如果 API 返回了这些)
+                if(c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activeCoActivitySize);
+                if(c.coStatus) $('#coStatus').val(c.coStatus);
+                if(c.jobServices) $('#jobServices').val(c.jobServices);
             });
 
-            // 初始化 DataTable
+            // 🟢 4. 核心：初始化 DataTable (修复 Not Defined 问题)
             function initializeDataTable() {
+                // 如果已存在则销毁
+                if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                    dataTable.destroy();
+                }
+
                 dataTable = $('#taskDatatable').DataTable({
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
+                    "processing": true,
+                    "serverSide": false,
                     "ajax": {
-                        "url": "/api/bp32/get-all",
+                        "url": "/api/bp32/get-all", // 假设后端接口
                         "type": "GET",
                         "dataSrc": function(response) {
-                            console.log("API Response:", response);
                             if (response.success) {
                                 return response.data;
                             } else {
@@ -437,192 +431,108 @@
                                 return [];
                             }
                         },
-                        "error": function(xhr, status, error) {
-                            console.error('AJAX Error:', error);
-                            showAlert('Error loading data: ' + error, 'danger');
+                        "error": function(xhr, error, thrown) {
+                            console.error('DataTable AJAX error:', error);
                         }
                     },
                     "columns": [
-                        { "data": "fileNo" },
-                        { "data": "companyName" },
-                        { "data": "yearEnd" },
-                        { "data": "jobServices" },
-                        { "data": "coStatus" },
-                        { "data": "activeCoActivitySize" },
-                        { "data": "yEtodo" },
-                        { "data": "mthTodo" },
-                        {
-                            "data": "docReceivedDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { "data": "fileNo", "defaultContent": "" },
+                        { "data": "companyName", "defaultContent": "" },
+                        { "data": "yearEnd", "defaultContent": "" },
+                        { "data": "jobServices", "defaultContent": "" },
+                        { "data": "coStatus", "defaultContent": "" },
+                        { "data": "activeCoActivitySize", "defaultContent": "" },
+                        { "data": "yEtodo", "defaultContent": "" },
+                        { "data": "mthTodo", "defaultContent": "" },
+                        { 
+                            "data": "docReceivedDate", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "taxARdueDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { 
+                            "data": "taxARdueDate", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        { "data": "staff" },
-                        {
-                            "data": "startDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { "data": "staff", "defaultContent": "" },
+                        { 
+                            "data": "startDate", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "endDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { 
+                            "data": "endDate", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "timeTaken",
-                            "render": function(data) {
-                                return data ? data + ' days' : '';
-                            }
+                        { "data": "timeTaken", "defaultContent": "" },
+                        { 
+                            "data": "datePassToAudit", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "datePassToAudit",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { 
+                            "data": "dateTaxSubmited", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "dateTaxSubmited",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { "data": "completedBacklog", "defaultContent": "" },
+                        // Boolean Fields (Render Checkmarks)
+                        { "data": "singleEntry", "render": renderCheck },
+                        { "data": "taxComputation", "render": renderCheck },
+                        { "data": "sortingFiling", "render": renderCheck },
+                        { "data": "keyinToExcel", "render": renderCheck },
+                        { "data": "reviewWorkingAcc", "render": renderCheck },
+                        { "data": "draftFinancialStatement", "render": renderCheck },
+                        { "data": "draftTaxCompleted", "render": renderCheck },
+                        { "data": "reviewTax", "render": renderCheck },
+                        { "data": "finalTax", "render": renderCheck },
+                        { "data": "taxComFinalSignByClient", "render": renderCheck },
+                        { 
+                            "data": "amountTaxPay", 
+                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
+                            "defaultContent": "" 
                         },
-                        { "data": "completedBacklog" },
-                        {
-                            "data": "singleEntry",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
+                        { "data": "eFileDraft", "render": renderCheck },
+                        { "data": "eFileFinal", "render": renderCheck },
+                        { "data": "eFileviaSPC", "render": renderCheck },
+                        { "data": "invoiceNo", "defaultContent": "" },
+                        { 
+                            "data": "amountRM", 
+                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
+                            "defaultContent": "" 
                         },
-                        {
-                            "data": "taxComputation",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "sortingFiling",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "keyinToExcel",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "reviewWorkingAcc",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "draftFinancialStatement",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "draftTaxCompleted",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "reviewTax",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "finalTax",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "taxComFinalSignByClient",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "amountTaxPay",
-                            "render": function(data) {
-                                return data ? 'RM ' + parseFloat(data).toFixed(2) : '';
-                            }
-                        },
-                        {
-                            "data": "eFileDraft",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "eFileFinal",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        {
-                            "data": "eFileviaSPC",
-                            "render": function(data) {
-                                return data === "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
-                            }
-                        },
-                        { "data": "invoiceNo" },
-                        {
-                            "data": "amountRM",
-                            "render": function(data) {
-                                return data ? 'RM ' + parseFloat(data).toFixed(2) : '';
-                            }
-                        },
-                        {
-                            "data": "docDespatchDate",
-                            "render": function(data) {
-                                return data ? formatDate(data) : '';
-                            }
+                        { 
+                            "data": "docDespatchDate", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
                         },
                         {
                             "data": "id",
                             "render": function(data, type, row) {
                                 return `
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
                                     </div>
                                 `;
                             },
                             "orderable": false
                         }
                     ],
-                    "createdRow": function(row, data, dataIndex) {
-                        // 根据状态添加行样式
-                        if (data.completedBacklog === 'Completed') {
-                            $(row).addClass('table-success');
-                        } else if (data.completedBacklog === 'Backlog') {
-                            $(row).addClass('table-warning');
-                        } else if (data.completedBacklog === 'In Progress') {
-                            $(row).addClass('table-info');
-                        }
-                    }
+                    "order": [[0, 'desc']]
                 });
             }
 
-            // 初始化日期选择器
+            // Helper: Render Checkbox Icons
+            function renderCheck(data) {
+                // 兼容字符串 "1" 或 boolean true
+                if (data == "1" || data == 1 || data === true || data === "true") {
+                    return '<i class="fas fa-check text-success"></i>';
+                }
+                return ''; // 空白表示未勾选
+            }
+
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
                     format: 'yyyy-mm-dd',
@@ -631,69 +541,44 @@
                 });
             }
 
-            // 格式化日期显示
             function formatDate(dateString) {
                 if (!dateString) return '';
                 try {
-                    let date;
-                    if (dateString.includes('/')) {
-                        // 处理 DD/MM/YYYY 格式
-                        const parts = dateString.split('/');
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    } else if (dateString.includes('-')) {
-                        // 处理 YYYY-MM-DD 格式
-                        date = new Date(dateString);
-                    } else {
-                        // 直接解析
-                        date = new Date(dateString);
-                    }
-
-                    if (isNaN(date.getTime())) {
-                        return dateString;
-                    }
-                    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-GB');
                 } catch (e) {
-                    console.error('Date formatting error:', e);
                     return dateString;
                 }
             }
 
-            // 格式化日期为输入框格式 (YYYY-MM-DD)
             function formatDateForInput(dateString) {
                 if (!dateString) return '';
                 try {
-                    let date;
-                    if (dateString.includes('/')) {
-                        // 处理 DD/MM/YYYY 格式
-                        const parts = dateString.split('/');
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    } else if (dateString.includes('-')) {
-                        // 处理 YYYY-MM-DD 格式
-                        date = new Date(dateString);
-                    } else {
-                        // 直接解析
-                        date = new Date(dateString);
-                    }
-
-                    if (isNaN(date.getTime())) {
-                        return dateString;
-                    }
+                    const date = new Date(dateString);
                     return date.toISOString().split('T')[0];
                 } catch (e) {
-                    console.error('Date formatting error:', e);
                     return dateString;
                 }
             }
 
-            // 保存 BP32 记录
-            function saveBP32Record() {
-                // 基本验证
-                if (!$('#fileNo').val() || !$('#companyName').val() || !$('#yearEnd').val()) {
-                    showAlert('Please fill in all required fields (File No, Company Name, Year End)', 'warning');
-                    return;
-                }
+            function showAlert(msg, type) {
+                const html = `<div class="alert alert-${type} alert-dismissible fade show">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+                $('#alertContainer').html(html);
+                setTimeout(() => $('.alert').alert('close'), 3000);
+            }
 
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#recordId').val('');
+                $('#companySelect').val(''); // 重置下拉
+                $('#modalTitle').text('Add New BP32 Record');
+                $('.datepicker').datepicker('update', '');
+            }
+
+            function saveBP32Record() {
                 const formData = {
+                    id: currentEditId || 0,
                     fileNo: $('#fileNo').val(),
                     companyName: $('#companyName').val(),
                     yearEnd: $('#yearEnd').val(),
@@ -711,8 +596,7 @@
                     datePassToAudit: $('#datePassToAudit').val(),
                     dateTaxSubmited: $('#dateTaxSubmited').val(),
                     completedBacklog: $('#completedBacklog').val(),
-
-                    // 布尔字段转换为字符串 '1'/'0'
+                    // Boolean fields
                     singleEntry: $('#singleEntry').is(':checked') ? "1" : "0",
                     taxComputation: $('#taxComputation').is(':checked') ? "1" : "0",
                     sortingFiling: $('#sortingFiling').is(':checked') ? "1" : "0",
@@ -723,13 +607,10 @@
                     reviewTax: $('#reviewTax').is(':checked') ? "1" : "0",
                     finalTax: $('#finalTax').is(':checked') ? "1" : "0",
                     taxComFinalSignByClient: $('#taxComFinalSignByClient').is(':checked') ? "1" : "0",
-
                     amountTaxPay: $('#amountTaxPay').val(),
-
                     eFileDraft: $('#eFileDraft').is(':checked') ? "1" : "0",
                     eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
                     eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
-
                     invoiceNo: $('#invoiceNo').val(),
                     amountRM: $('#amountRM').val(),
                     docDespatchDate: $('#docDespatchDate').val()
@@ -738,14 +619,7 @@
                 const url = currentEditId ? '/api/bp32/update' : '/api/bp32/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
-
-                console.log('Sending data:', formData);
-
-                // 显示加载状态
-                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+                $('#saveBtn').prop('disabled', true).html('Saving...');
 
                 $.ajax({
                     url: url,
@@ -753,171 +627,118 @@
                     contentType: 'application/json',
                     data: JSON.stringify(formData),
                     success: function(response) {
-                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
+                        $('#saveBtn').prop('disabled', false).html('Save');
                         if (response.success) {
                             $('#taskModal').modal('hide');
-                            dataTable.ajax.reload(null, false); // 保持当前分页位置
+                            if(dataTable) dataTable.ajax.reload(null, false);
                             resetForm();
-                            showAlert('Record saved successfully!', 'success');
+                            showAlert('Saved successfully!', 'success');
                         } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
+                            showAlert('Error: ' + response.message, 'danger');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                        console.error('Save error:', xhr.responseText);
-                        showAlert('Error saving record: ' + (xhr.responseJSON?.message || error), 'danger');
+                    error: function(xhr) {
+                        $('#saveBtn').prop('disabled', false).html('Save');
+                        showAlert('Error saving record', 'danger');
                     }
                 });
             }
 
-            // 编辑记录
-            $(document).on('click', '.edit-btn', function() {
-                const id = $(this).data('id');
-                editRecord(id);
-            });
-
-            // 删除记录
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 编辑记录
             function editRecord(id) {
-                console.log('Editing record ID:', id);
+                $.get(`/api/bp32/get/${id}`, function(res) {
+                    if (res.success) {
+                        const d = res.data;
+                        currentEditId = d.id;
+                        $('#recordId').val(d.id);
 
-                $.ajax({
-                    url: `/api/bp32/get/${id}`,
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            const record = response.data;
-                            currentEditId = record.id;
-
-                            console.log('Record data:', record);
-
-                            // 填充表单
-                            $('#fileNo').val(record.fileNo || '');
-                            $('#companyName').val(record.companyName || '');
-                            $('#yearEnd').val(record.yearEnd || '');
-                            $('#jobServices').val(record.jobServices || '');
-                            $('#coStatus').val(record.coStatus || '');
-                            $('#activeCoActivitySize').val(record.activeCoActivitySize || '');
-                            $('#yEtodo').val(record.yEtodo || '');
-                            $('#mthTodo').val(record.mthTodo || '');
-                            $('#docReceivedDate').val(record.docReceivedDate ? formatDateForInput(record.docReceivedDate) : '');
-                            $('#taxARdueDate').val(record.taxARdueDate ? formatDateForInput(record.taxARdueDate) : '');
-                            $('#staff').val(record.staff || '');
-                            $('#startDate').val(record.startDate ? formatDateForInput(record.startDate) : '');
-                            $('#endDate').val(record.endDate ? formatDateForInput(record.endDate) : '');
-                            $('#timeTaken').val(record.timeTaken || '');
-                            $('#datePassToAudit').val(record.datePassToAudit ? formatDateForInput(record.datePassToAudit) : '');
-                            $('#dateTaxSubmited').val(record.dateTaxSubmited ? formatDateForInput(record.dateTaxSubmited) : '');
-                            $('#completedBacklog').val(record.completedBacklog || '');
-
-                            // 布尔字段
-                            $('#singleEntry').prop('checked', record.singleEntry === "1");
-                            $('#taxComputation').prop('checked', record.taxComputation === "1");
-                            $('#sortingFiling').prop('checked', record.sortingFiling === "1");
-                            $('#keyinToExcel').prop('checked', record.keyinToExcel === "1");
-                            $('#reviewWorkingAcc').prop('checked', record.reviewWorkingAcc === "1");
-                            $('#draftFinancialStatement').prop('checked', record.draftFinancialStatement === "1");
-                            $('#draftTaxCompleted').prop('checked', record.draftTaxCompleted === "1");
-                            $('#reviewTax').prop('checked', record.reviewTax === "1");
-                            $('#finalTax').prop('checked', record.finalTax === "1");
-                            $('#taxComFinalSignByClient').prop('checked', record.taxComFinalSignByClient === "1");
-
-                            $('#amountTaxPay').val(record.amountTaxPay || '');
-                            $('#eFileDraft').prop('checked', record.eFileDraft === "1");
-                            $('#eFileFinal').prop('checked', record.eFileFinal === "1");
-                            $('#eFileviaSPC').prop('checked', record.eFileviaSPC === "1");
-                            $('#invoiceNo').val(record.invoiceNo || '');
-                            $('#amountRM').val(record.amountRM || '');
-                            $('#docDespatchDate').val(record.docDespatchDate ? formatDateForInput(record.docDespatchDate) : '');
-
-                            $('#modalTitle').text('Edit BP32 Record');
-                            $('#taskModal').modal('show');
-                        } else {
-                            showAlert('Error loading record: ' + response.message, 'danger');
+                        // 反选 Dropdown
+                        let foundId = "";
+                        for (const [key, val] of Object.entries(companyOptionsMap)) {
+                            if (val.companyName === d.companyName) {
+                                foundId = key;
+                                break;
+                            }
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Edit error:', error);
-                        showAlert('Error loading record: ' + error, 'danger');
+                        $('#companySelect').val(foundId);
+
+                        // 填充 Input
+                        $('#fileNo').val(d.fileNo);
+                        $('#companyName').val(d.companyName);
+                        $('#yearEnd').val(d.yearEnd);
+                        $('#jobServices').val(d.jobServices);
+                        $('#coStatus').val(d.coStatus);
+                        $('#activeCoActivitySize').val(d.activeCoActivitySize);
+                        $('#yEtodo').val(d.yEtodo);
+                        $('#mthTodo').val(d.mthTodo);
+                        
+                        // Dates
+                        $('#docReceivedDate').val(formatDateForInput(d.docReceivedDate));
+                        $('#taxARdueDate').val(formatDateForInput(d.taxARdueDate));
+                        $('#startDate').val(formatDateForInput(d.startDate));
+                        $('#endDate').val(formatDateForInput(d.endDate));
+                        $('#datePassToAudit').val(formatDateForInput(d.datePassToAudit));
+                        $('#dateTaxSubmited').val(formatDateForInput(d.dateTaxSubmited));
+                        $('#docDespatchDate').val(formatDateForInput(d.docDespatchDate));
+
+                        $('#staff').val(d.staff);
+                        $('#timeTaken').val(d.timeTaken);
+                        $('#completedBacklog').val(d.completedBacklog);
+                        $('#amountTaxPay').val(d.amountTaxPay);
+                        $('#invoiceNo').val(d.invoiceNo);
+                        $('#amountRM').val(d.amountRM);
+
+                        // Checks
+                        const check = (val) => (val == "1" || val == 1 || val === true);
+                        $('#singleEntry').prop('checked', check(d.singleEntry));
+                        $('#taxComputation').prop('checked', check(d.taxComputation));
+                        $('#sortingFiling').prop('checked', check(d.sortingFiling));
+                        $('#keyinToExcel').prop('checked', check(d.keyinToExcel));
+                        $('#reviewWorkingAcc').prop('checked', check(d.reviewWorkingAcc));
+                        $('#draftFinancialStatement').prop('checked', check(d.draftFinancialStatement));
+                        $('#draftTaxCompleted').prop('checked', check(d.draftTaxCompleted));
+                        $('#reviewTax').prop('checked', check(d.reviewTax));
+                        $('#finalTax').prop('checked', check(d.finalTax));
+                        $('#taxComFinalSignByClient').prop('checked', check(d.taxComFinalSignByClient));
+                        $('#eFileDraft').prop('checked', check(d.eFileDraft));
+                        $('#eFileFinal').prop('checked', check(d.eFileFinal));
+                        $('#eFileviaSPC').prop('checked', check(d.eFileviaSPC));
+
+                        $('#modalTitle').text('Edit BP32 Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Failed to load record', 'danger');
                     }
                 });
             }
 
-            // 删除记录
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                if (confirm('Are you sure?')) {
                     $.ajax({
                         url: `/api/bp32/delete/${id}`,
                         type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                dataTable.ajax.reload(null, false); // 保持当前分页位置
-                                showAlert('Record deleted successfully!', 'success');
+                        success: function(res) {
+                            if (res.success) {
+                                dataTable.ajax.reload(null, false);
+                                showAlert('Deleted', 'success');
                             } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
+                                showAlert('Delete failed', 'danger');
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Delete error:', error);
-                            showAlert('Error deleting record: ' + error, 'danger');
                         }
                     });
                 }
             }
 
-            // 重置表单
-            function resetForm() {
-                $('#taskForm')[0].reset();
-                currentEditId = null;
-                $('#modalTitle').text('Add New BP32 Record');
-                $('.datepicker').datepicker('update', '');
-                $('#recordId').val('');
+            // Bindings
+            $('#saveBtn').click(saveBP32Record);
+            $('#addNewBtn').click(function() { resetForm(); });
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
+            $('#taskModal').on('hidden.bs.modal', resetForm);
 
-                // 重置所有复选框
-                $('input[type="checkbox"]').prop('checked', false);
-            }
-
-            // 显示提示信息
-            function showAlert(message, type) {
-                const alertClass = `alert alert-${type} alert-dismissible fade show`;
-                const alertHtml = `
-                    <div class="${alertClass}" role="alert">
-                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle'} me-2"></i>
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                $('#alertContainer').html(alertHtml);
-
-                // 自动隐藏
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
-            }
-
-            // 模态框关闭时重置表单
-            $('#taskModal').on('hidden.bs.modal', function() {
-                resetForm();
-            });
-
-            // 添加新的记录按钮点击事件
-            $('#addNewBtn').click(function() {
-                resetForm();
-                $('#modalTitle').text('Add New BP32 Record');
-            });
-
-            // 表单提交事件
-            $('#taskForm').on('submit', function(e) {
-                e.preventDefault();
-                saveBP32Record();
-            });
+            // 🚀 Init Logic
+            initializeDatePickers();
+            loadCompanyOptions();
+            initializeDataTable(); // 确保这个函数已经定义并在这里调用
         });
     </script>
 }

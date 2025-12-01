@@ -1,153 +1,104 @@
 ﻿@{
-    ViewData["Title"] = "TX5TEMPLATE";
+    ViewData["Title"] = "TX5 - CP204 Tax Estimation";
 }
 
-<h1>TX5 CP204/CP204A TEMPLATE</h1>
+<h1>TX5 - CP204/CP204A Management</h1>
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
+        <div id="alertContainer"></div>
         <div class="card">
-
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-calculator me-2"></i> TX5 Records (Sdn Bhd & LLP)
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th colspan="4">Company Information</th>
-                            <th rowspan="3">Person In Charge</th>
-                            <th rowspan="3">Past Year Tax estimate (ETP)</th>
-                            <th colspan="5">CP 204</th>
-                            <th colspan="15">CP 204A</th>
-                        </tr>
-
-                        <tr>
-                            <th rowspan="2">Company Name</th>
-                            <th rowspan="2">Tax Reference No.</th>
-                            <th rowspan="2">Year End(YE)</th>
-                            <th rowspan="2">Company Type</th>
-
-                            <th colspan="5">Initial Estimation</th>
-                            <th colspan="5">1st Revision</th>
-                            <th colspan="5">2nd Revision</th>
-                        </tr>
-
-                        <tr>
-                            <th>1 month before Year end (YE)</th>
-                            <th>Reminder Date</th>
-                            <th>Client Respone</th>
-                            <th>Current ETP</th>
-                            <th>Date Submit to IRB</th>
-
-                            <th>6th month after YE</th>
-                            <th>Reminder date</th>
-                            <th>Client respone</th>
-                            <th>Revised ETP</th>
-                            <th>Date Submit to IRB</th>
-
-                            <th>9th month after YE</th>
-                            <th>Reminder date</th>
-                            <th>Client respone</th>
-                            <th>Revised ETP</th>
-                            <th>Date Submit to IRB</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>TECH SOLUTIONS SDN BHD</td>
-                            <td>1234567-X</td>
-                            <td>31/12/2024</td>
-                            <td>Sdn Bhd</td>
-                            <td>John Doe</td>
-                            <td>150,000.00</td>
-                            <td>30/11/2024</td>
-                            <td>15/11/2024</td>
-                            <td>Confirmed</td>
-                            <td>160,000.00</td>
-                            <td>25/11/2024</td>
-                            <td>30/06/2025</td>
-                            <td>15/06/2025</td>
-                            <td>Pending</td>
-                            <td>155,000.00</td>
-                            <td>28/06/2025</td>
-                            <td>30/09/2025</td>
-                            <td>15/09/2025</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>GLOBAL TRADING SDN BHD</td>
-                            <td>7654321-Y</td>
-                            <td>31/03/2024</td>
-                            <td>Sdn Bhd</td>
-                            <td>Jane Smith</td>
-                            <td>85,000.00</td>
-                            <td>28/02/2024</td>
-                            <td>15/02/2024</td>
-                            <td>Confirmed</td>
-                            <td>90,000.00</td>
-                            <td>25/02/2024</td>
-                            <td>30/09/2024</td>
-                            <td>15/09/2024</td>
-                            <td>Confirmed</td>
-                            <td>88,000.00</td>
-                            <td>28/09/2024</td>
-                            <td>31/12/2024</td>
-                            <td>15/12/2024</td>
-                            <td>Confirmed</td>
-                            <td>87,500.00</td>
-                            <td>28/12/2024</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
+                        <thead>
+                            <tr>
+                                <th colspan="6" class="text-center bg-light">Company Information</th>
+                                <th colspan="5" class="text-center bg-info">CP 204 (Initial)</th>
+                                <th colspan="5" class="text-center bg-warning">1st Revision (6th Mth)</th>
+                                <th colspan="5" class="text-center bg-warning">2nd Revision (9th Mth)</th>
+                                <th colspan="5" class="text-center bg-warning">3rd Revision (11th Mth)</th>
+                                <th rowspan="2" style="vertical-align: middle;">Actions</th>
+                            </tr>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tax Ref No.</th>
+                                <th>Year End</th>
+                                <th>Type</th>
+                                <th>PIC</th>
+                                <th>Past Year Tax</th>
+                                <th>Due Date</th>
+                                <th>Reminder</th>
+                                <th>Response</th>
+                                <th>Current ETP</th>
+                                <th>Submit Date</th>
+                                <th>Due Date</th>
+                                <th>Reminder</th>
+                                <th>Response</th>
+                                <th>Revised ETP</th>
+                                <th>Submit Date</th>
+                                <th>Due Date</th>
+                                <th>Reminder</th>
+                                <th>Response</th>
+                                <th>Revised ETP</th>
+                                <th>Submit Date</th>
+                                <th>Due Date</th>
+                                <th>Reminder</th>
+                                <th>Response</th>
+                                <th>Revised ETP</th>
+                                <th>Submit Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New CP204/CP204A Record</span>
+                    <span id="modalTitle">Add New CP204 Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
-                    <!-- Company Information -->
-                    <div class="form-info-label col-12">
-                        <label>Company Information</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12"><h6 class="border-bottom pb-2 text-primary">Company Information</h6></div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="companySelect">Company Name</label>
+                                <select id="companySelect" class="form-control">
+                                    <option value="">-- Loading... --</option>
+                                </select>
+                                <small class="text-muted fst-italic" id="companyTypeHint">Selected Type: -</small>
+                                <input type="hidden" id="companyName" name="companyName" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxReferenceNo">Tax Reference No.</label>
-                                <input type="text" id="taxReferenceNo" name="taxReferenceNo" class="form-control" placeholder="Enter tax reference number" />
+                                <input type="text" id="taxReferenceNo" name="taxReferenceNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -155,68 +106,57 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End (YE)</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyType">Company Type</label>
-                                <select id="companyType" name="companyType" class="form-control">
-                                    <option value="">Select Type</option>
-                                    <option value="Sdn Bhd">Sdn Bhd</option>
-                                    <option value="Bhd">Bhd</option>
-                                    <option value="LLP">LLP</option>
-                                    <option value="Enterprise">Enterprise</option>
-                                </select>
+                                <input type="text" id="companyType" name="companyType" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Person In Charge & Past Year Tax -->
-                    <div class="form-info-label col-12">
-                        <label>Person In Charge & Past Year Tax</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="personInCharge">Person In Charge</label>
-                                <input type="text" id="personInCharge" name="personInCharge" class="form-control" placeholder="Enter PIC name" />
+                                <input type="text" id="personInCharge" name="personInCharge" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="pastYearTaxEstimate">Past Year Tax estimate (ETP)</label>
-                                <input type="text" id="pastYearTaxEstimate" name="pastYearTaxEstimate" class="form-control" placeholder="Enter amount" />
+                                <label for="pastYearTaxEstimate">Past Year Tax Estimate (ETP)</label>
+                                <input type="text" id="pastYearTaxEstimate" name="pastYearTaxEstimate" class="form-control" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- CP 204 - Initial Estimation -->
-                    <div class="form-info-label col-12">
-                        <label>CP 204 - Initial Estimation</label>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-md-12"><h6 class="border-bottom pb-2 text-info">CP 204 - Initial Estimation</h6></div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204OneMonthBeforeYE">1 month before Year end (YE)</label>
-                                <input type="text" id="cp204OneMonthBeforeYE" name="cp204OneMonthBeforeYE" class="form-control" placeholder="Select date" />
+                                <label for="cp204OneMonthBeforeYE">Due Date</label>
+                                <input type="text" id="cp204OneMonthBeforeYE" name="cp204OneMonthBeforeYE" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs"><i class="fas fa-calculator"></i> 1 month before YE</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cp204ReminderDate">Reminder Date</label>
-                                <input type="text" id="cp204ReminderDate" name="cp204ReminderDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="cp204ReminderDate" name="cp204ReminderDate" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs text-danger fw-bold"><i class="fas fa-bell"></i> 3 months before YE</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204ClientResponse">Client Respone</label>
+                                <label for="cp204ClientResponse">Client Response</label>
                                 <select id="cp204ClientResponse" name="cp204ClientResponse" class="form-control">
-                                    <option value="">Select Response</option>
+                                    <option value="">Select...</option>
                                     <option value="Confirmed">Confirmed</option>
                                     <option value="Pending">Pending</option>
                                     <option value="Revised">Revised</option>
-                                    <option value="Not Responded">Not Responded</option>
                                 </select>
                             </div>
                         </div>
@@ -224,44 +164,44 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="cp204CurrentETP">Current ETP</label>
-                                <input type="text" id="cp204CurrentETP" name="cp204CurrentETP" class="form-control" placeholder="Enter amount" />
+                                <label for="cp204CurrentETP">Current ETP (RM)</label>
+                                <input type="text" id="cp204CurrentETP" name="cp204CurrentETP" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cp204DateSubmitIRB">Date Submit to IRB</label>
-                                <input type="text" id="cp204DateSubmitIRB" name="cp204DateSubmitIRB" class="form-control" placeholder="Select date" />
+                                <input type="text" id="cp204DateSubmitIRB" name="cp204DateSubmitIRB" class="form-control datepicker" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- CP 204A - 1st Revision -->
-                    <div class="form-info-label col-12">
-                        <label>CP 204A - 1st Revision</label>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-md-12"><h6 class="border-bottom pb-2 text-warning">CP 204A - 1st Revision</h6></div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a6thMonthAfterYE">6th month after YE</label>
-                                <input type="text" id="cp204a6thMonthAfterYE" name="cp204a6thMonthAfterYE" class="form-control" placeholder="Select date" />
+                                <label for="cp204a6thMonthAfterYE">Due Date</label>
+                                <input type="text" id="cp204a6thMonthAfterYE" name="cp204a6thMonthAfterYE" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs"><i class="fas fa-calculator"></i> 6th month of basis period</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a1stReminderDate">Reminder date</label>
-                                <input type="text" id="cp204a1stReminderDate" name="cp204a1stReminderDate" class="form-control" placeholder="Select date" />
+                                <label for="cp204a1stReminderDate">Reminder Date</label>
+                                <input type="text" id="cp204a1stReminderDate" name="cp204a1stReminderDate" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs text-danger fw-bold"><i class="fas fa-bell"></i> 4 months after YE</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a1stClientResponse">Client respone</label>
+                                <label for="cp204a1stClientResponse">Client Response</label>
                                 <select id="cp204a1stClientResponse" name="cp204a1stClientResponse" class="form-control">
-                                    <option value="">Select Response</option>
+                                    <option value="">Select...</option>
                                     <option value="Confirmed">Confirmed</option>
                                     <option value="Pending">Pending</option>
                                     <option value="Revised">Revised</option>
-                                    <option value="Not Responded">Not Responded</option>
                                 </select>
                             </div>
                         </div>
@@ -269,44 +209,44 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="cp204a1stRevisedETP">Revised ETP</label>
-                                <input type="text" id="cp204a1stRevisedETP" name="cp204a1stRevisedETP" class="form-control" placeholder="Enter amount" />
+                                <label for="cp204a1stRevisedETP">Revised ETP (RM)</label>
+                                <input type="text" id="cp204a1stRevisedETP" name="cp204a1stRevisedETP" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cp204a1stDateSubmitIRB">Date Submit to IRB</label>
-                                <input type="text" id="cp204a1stDateSubmitIRB" name="cp204a1stDateSubmitIRB" class="form-control" placeholder="Select date" />
+                                <input type="text" id="cp204a1stDateSubmitIRB" name="cp204a1stDateSubmitIRB" class="form-control datepicker" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- CP 204A - 2nd Revision -->
-                    <div class="form-info-label col-12">
-                        <label>CP 204A - 2nd Revision</label>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-md-12"><h6 class="border-bottom pb-2 text-warning">CP 204A - 2nd Revision</h6></div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a9thMonthAfterYE">9th month after YE</label>
-                                <input type="text" id="cp204a9thMonthAfterYE" name="cp204a9thMonthAfterYE" class="form-control" placeholder="Select date" />
+                                <label for="cp204a9thMonthAfterYE">Due Date</label>
+                                <input type="text" id="cp204a9thMonthAfterYE" name="cp204a9thMonthAfterYE" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs"><i class="fas fa-calculator"></i> 9th month of basis period</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a2ndReminderDate">Reminder date</label>
-                                <input type="text" id="cp204a2ndReminderDate" name="cp204a2ndReminderDate" class="form-control" placeholder="Select date" />
+                                <label for="cp204a2ndReminderDate">Reminder Date</label>
+                                <input type="text" id="cp204a2ndReminderDate" name="cp204a2ndReminderDate" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs text-danger fw-bold"><i class="fas fa-bell"></i> 7 months after YE</small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cp204a2ndClientResponse">Client respone</label>
+                                <label for="cp204a2ndClientResponse">Client Response</label>
                                 <select id="cp204a2ndClientResponse" name="cp204a2ndClientResponse" class="form-control">
-                                    <option value="">Select Response</option>
+                                    <option value="">Select...</option>
                                     <option value="Confirmed">Confirmed</option>
                                     <option value="Pending">Pending</option>
                                     <option value="Revised">Revised</option>
-                                    <option value="Not Responded">Not Responded</option>
                                 </select>
                             </div>
                         </div>
@@ -314,26 +254,68 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="cp204a2ndRevisedETP">Revised ETP</label>
-                                <input type="text" id="cp204a2ndRevisedETP" name="cp204a2ndRevisedETP" class="form-control" placeholder="Enter amount" />
+                                <label for="cp204a2ndRevisedETP">Revised ETP (RM)</label>
+                                <input type="text" id="cp204a2ndRevisedETP" name="cp204a2ndRevisedETP" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cp204a2ndDateSubmitIRB">Date Submit to IRB</label>
-                                <input type="text" id="cp204a2ndDateSubmitIRB" name="cp204a2ndDateSubmitIRB" class="form-control" placeholder="Select date" />
+                                <input type="text" id="cp204a2ndDateSubmitIRB" name="cp204a2ndDateSubmitIRB" class="form-control datepicker" />
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-md-12"><h6 class="border-bottom pb-2 text-warning">CP 204A - 3rd Revision</h6></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cp204a11thMonthAfterYE">Due Date</label>
+                                <input type="text" id="cp204a11thMonthAfterYE" name="cp204a11thMonthAfterYE" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs"><i class="fas fa-calculator"></i> 11th month of basis period</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cp204a3rdReminderDate">Reminder Date</label>
+                                <input type="text" id="cp204a3rdReminderDate" name="cp204a3rdReminderDate" class="form-control bg-light" readonly />
+                                <small class="text-muted text-xs text-danger fw-bold"><i class="fas fa-bell"></i> 9 months after YE</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cp204a3rdClientResponse">Client Response</label>
+                                <select id="cp204a3rdClientResponse" name="cp204a3rdClientResponse" class="form-control">
+                                    <option value="">Select...</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Revised">Revised</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cp204a3rdRevisedETP">Revised ETP (RM)</label>
+                                <input type="text" id="cp204a3rdRevisedETP" name="cp204a3rdRevisedETP" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cp204a3rdDateSubmitIRB">Date Submit to IRB</label>
+                                <input type="text" id="cp204a3rdDateSubmitIRB" name="cp204a3rdDateSubmitIRB" class="form-control datepicker" />
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i> Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fas fa-save me-2"></i> Save</button>
             </div>
         </div>
     </div>
@@ -342,35 +324,415 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
-            // 初始化日期选择器
-            $('input[type="text"]').filter(function() {
-                return $(this).attr('id') && $(this).attr('id').includes('Date') ||
-                       $(this).attr('id') && $(this).attr('id').includes('date');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true
-            });
+            
+            // === 🟢 1. Helper Functions ===
+            
+            function formatDdMMyyyy(d) {
+                if (!d || isNaN(d.getTime())) return "";
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                // 这里添加保存逻辑
-                console.log('Save button clicked');
-                $('#taskModal').modal('hide');
-            });
+            function formatDateCol(data) {
+                return data ? formatDate(data) : '';
+            }
 
-            // 初始化DataTable
-            $('#taskDatatable').DataTable({
-                responsive: true
-                ordering: true,
-                autoWidth: false,
-                pageLength: 10,
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                try {
+                    const date = new Date(dateString);
+                    return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('en-GB');
+                } catch (e) { return dateString; }
+            }
+
+            function formatDateForInput(dateString) {
+                if (!dateString) return '';
+                try {
+                    const date = new Date(dateString);
+                    return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+                } catch (e) { return ''; }
+            }
+
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+                if (monthName.includes('/') || monthName.includes('-')) return monthName;
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
+                if (idx === -1) return monthName;
+                const today = new Date();
+                let year = today.getFullYear();
+                if (idx < today.getMonth()) year += 1;
+                return formatDdMMyyyy(new Date(year, idx + 1, 0));
+            }
+
+            // 🟢 Safe month adder (Handles 31 Jan + 1 month -> 28/29 Feb)
+            function addMonths(date, months) {
+                var d = new Date(date.valueOf());
+                d.setMonth(d.getMonth() + months);
+                return d;
+            }
+
+            // 🟢 核心：自动计算截止日期和 Reminder Date
+            function calculateDeadlines(yeDateStr) {
+                if (!yeDateStr || yeDateStr.length < 10) return;
+                
+                const parts = yeDateStr.split('/');
+                if (parts.length !== 3) return;
+                
+                // JS Date: Month is 0-indexed
+                const yeDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                if (isNaN(yeDate.getTime())) return;
+
+                // --- 1. Initial Estimation ---
+                // Due: 1 month before YE
+                const initialDue = new Date(yeDate.valueOf());
+                initialDue.setMonth(initialDue.getMonth() - 1);
+                $('#cp204OneMonthBeforeYE').val(formatDdMMyyyy(initialDue));
+
+                // Reminder: 3 months BEFORE YE (YE - 3 months)
+                const initialRem = addMonths(yeDate, -3);
+                $('#cp204ReminderDate').val(formatDdMMyyyy(initialRem));
+
+                // --- Basis Period Start (YE + 1 Day) ---
+                const periodStart = new Date(yeDate.valueOf());
+                periodStart.setDate(periodStart.getDate() + 1);
+
+                // --- 2. 1st Revision (6th Month) ---
+                // Due: 6th Month of Basis Period
+                const dueRev1 = new Date(periodStart.valueOf());
+                dueRev1.setMonth(dueRev1.getMonth() + 5); 
+                // Set to end of that month
+                const endOfDueRev1 = new Date(dueRev1.getFullYear(), dueRev1.getMonth() + 1, 0); 
+                $('#cp204a6thMonthAfterYE').val(formatDdMMyyyy(endOfDueRev1));
+
+                // Reminder: 4 months AFTER YE (YE + 4 months)
+                const remRev1 = addMonths(yeDate, 4);
+                $('#cp204a1stReminderDate').val(formatDdMMyyyy(remRev1));
+
+                // --- 3. 2nd Revision (9th Month) ---
+                // Due: 9th Month of Basis Period
+                const dueRev2 = new Date(periodStart.valueOf());
+                dueRev2.setMonth(dueRev2.getMonth() + 8);
+                const endOfDueRev2 = new Date(dueRev2.getFullYear(), dueRev2.getMonth() + 1, 0);
+                $('#cp204a9thMonthAfterYE').val(formatDdMMyyyy(endOfDueRev2));
+
+                // Reminder: 7 months AFTER YE (YE + 7 months)
+                const remRev2 = addMonths(yeDate, 7);
+                $('#cp204a2ndReminderDate').val(formatDdMMyyyy(remRev2));
+
+                // --- 4. 3rd Revision (11th Month) ---
+                // Due: 11th Month of Basis Period
+                const dueRev3 = new Date(periodStart.valueOf());
+                dueRev3.setMonth(dueRev3.getMonth() + 10);
+                const endOfDueRev3 = new Date(dueRev3.getFullYear(), dueRev3.getMonth() + 1, 0);
+                $('#cp204a11thMonthAfterYE').val(formatDdMMyyyy(endOfDueRev3));
+
+                // Reminder: 9 months AFTER YE (YE + 9 months)
+                const remRev3 = addMonths(yeDate, 9);
+                $('#cp204a3rdReminderDate').val(formatDdMMyyyy(remRev3));
+            }
+
+            function initializeDatePickers() {
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+
+            function showAlert(msg, type) {
+                const html = `<div class="alert alert-${type} alert-dismissible fade show">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+                $('#alertContainer').html(html);
+                setTimeout(() => $('.alert').alert('close'), 3000);
+            }
+
+            function resetForm() {
+                $('#taskForm')[0].reset();
+                currentEditId = null;
+                $('#recordId').val('');
+                $('#companySelect').val('');
+                $('#modalTitle').text('Add New CP204 Record');
+                $('.datepicker').datepicker('update', '');
+                $('#companyTypeHint').text('Selected Type: -');
+                // Clear readonlies
+                $('.bg-light').val('');
+            }
+
+            // === 🟢 2. Main Logic ===
+            let dataTable;
+            let currentEditId = null;
+            let clientOptionsMap = {};
+
+            // Load Options
+            function loadClientOptions() {
+                $.ajax({
+                    url: '/api/auditdept/clients/get-list',
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.success && res.data) {
+                            clientOptionsMap = {};
+                            const $sel = $('#companySelect');
+                            $sel.empty().append('<option value="">-- Select Sdn Bhd or LLP --</option>');
+
+                            const filteredList = res.data.filter(c => c.clientType === 'SdnBhd' || c.clientType === 'LLP');
+
+                            filteredList.forEach(client => {
+                                clientOptionsMap[client.id] = client;
+                                const displayText = client.companyNo 
+                                    ? `${client.companyName} (${client.companyNo})`
+                                    : client.companyName;
+                                $sel.append(`<option value="${client.id}">${displayText}</option>`);
+                            });
+                        }
+                    },
+                    error: function(xhr) { console.error("Failed to load clients", xhr); }
+                });
+            }
+
+            // Dropdown Change
+            $('#companySelect').change(function() {
+                const selectedId = $(this).val();
+                if (!selectedId || !clientOptionsMap[selectedId]) {
+                    resetForm();
+                    return;
+                }
+
+                const c = clientOptionsMap[selectedId];
+                $('#companyName').val(c.companyName || '');
+                $('#taxReferenceNo').val(c.taxIdentificationNumber || c.tinNumber || c.taxRefNo || '');
+                $('#companyType').val(c.clientType || '');
+                $('#companyTypeHint').text(`Selected Type: ${c.clientType || 'Unknown'}`);
+                
+                const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
+                const yeDateString = yearEndMonthToDateString(rawYearEnd);
+                $('#yearEnd').val(yeDateString);
+
+                if (yeDateString) {
+                    calculateDeadlines(yeDateString);
                 }
             });
+
+            // Initialize DataTable
+            function initializeDataTable() {
+                if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                    dataTable.destroy();
+                }
+
+                dataTable = $('#taskDatatable').DataTable({
+                    "processing": true,
+                    "serverSide": false,
+                    "scrollX": true,
+                    "ajax": {
+                        "url": "/api/tx5/get-all",
+                        "type": "GET",
+                        "dataSrc": function(res) { return res.success ? res.data : []; },
+                        "error": function(xhr, error, thrown) { console.error('DataTable Error:', error); }
+                    },
+                    "columns": [
+                        { "data": "companyName", "defaultContent": "" },
+                        { "data": "taxReferenceNo", "defaultContent": "" },
+                        { "data": "yearEnd", "defaultContent": "" },
+                        { "data": "companyType", "defaultContent": "" },
+                        { "data": "personInCharge", "defaultContent": "" },
+                        { "data": "pastYearTaxEstimate", "defaultContent": "" },
+
+                        { "data": "cp204OneMonthBeforeYE", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204ReminderDate", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204ClientResponse", "defaultContent": "" },
+                        { "data": "cp204CurrentETP", "defaultContent": "" },
+                        { "data": "cp204DateSubmitIRB", "render": formatDateCol, "defaultContent": "" },
+
+                        { "data": "cp204a6thMonthAfterYE", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a1stReminderDate", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a1stClientResponse", "defaultContent": "" },
+                        { "data": "cp204a1stRevisedETP", "defaultContent": "" },
+                        { "data": "cp204a1stDateSubmitIRB", "render": formatDateCol, "defaultContent": "" },
+
+                        { "data": "cp204a9thMonthAfterYE", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a2ndReminderDate", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a2ndClientResponse", "defaultContent": "" },
+                        { "data": "cp204a2ndRevisedETP", "defaultContent": "" },
+                        { "data": "cp204a2ndDateSubmitIRB", "render": formatDateCol, "defaultContent": "" },
+
+                        { "data": "cp204a11thMonthAfterYE", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a3rdReminderDate", "render": formatDateCol, "defaultContent": "" },
+                        { "data": "cp204a3rdClientResponse", "defaultContent": "" },
+                        { "data": "cp204a3rdRevisedETP", "defaultContent": "" },
+                        { "data": "cp204a3rdDateSubmitIRB", "render": formatDateCol, "defaultContent": "" },
+
+                        {
+                            "data": "id",
+                            "render": function(data) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>`;
+                            },
+                            "orderable": false
+                        }
+                    ],
+                    "order": [[0, 'asc']]
+                });
+            }
+
+            function saveBP35Record() {
+                const formData = {
+                    id: currentEditId || 0,
+                    companyName: $('#companyName').val(),
+                    taxReferenceNo: $('#taxReferenceNo').val(),
+                    yearEnd: $('#yearEnd').val(),
+                    companyType: $('#companyType').val(),
+                    personInCharge: $('#personInCharge').val(),
+                    pastYearTaxEstimate: $('#pastYearTaxEstimate').val(),
+                    
+                    cp204OneMonthBeforeYE: $('#cp204OneMonthBeforeYE').val(),
+                    cp204ReminderDate: $('#cp204ReminderDate').val(),
+                    cp204ClientResponse: $('#cp204ClientResponse').val(),
+                    cp204CurrentETP: $('#cp204CurrentETP').val(),
+                    cp204DateSubmitIRB: $('#cp204DateSubmitIRB').val(),
+                    
+                    cp204a6thMonthAfterYE: $('#cp204a6thMonthAfterYE').val(),
+                    cp204a1stReminderDate: $('#cp204a1stReminderDate').val(),
+                    cp204a1stClientResponse: $('#cp204a1stClientResponse').val(),
+                    cp204a1stRevisedETP: $('#cp204a1stRevisedETP').val(),
+                    cp204a1stDateSubmitIRB: $('#cp204a1stDateSubmitIRB').val(),
+                    
+                    cp204a9thMonthAfterYE: $('#cp204a9thMonthAfterYE').val(),
+                    cp204a2ndReminderDate: $('#cp204a2ndReminderDate').val(),
+                    cp204a2ndClientResponse: $('#cp204a2ndClientResponse').val(),
+                    cp204a2ndRevisedETP: $('#cp204a2ndRevisedETP').val(),
+                    cp204a2ndDateSubmitIRB: $('#cp204a2ndDateSubmitIRB').val(),
+                    
+                    cp204a11thMonthAfterYE: $('#cp204a11thMonthAfterYE').val(),
+                    cp204a3rdReminderDate: $('#cp204a3rdReminderDate').val(),
+                    cp204a3rdClientResponse: $('#cp204a3rdClientResponse').val(),
+                    cp204a3rdRevisedETP: $('#cp204a3rdRevisedETP').val(),
+                    cp204a3rdDateSubmitIRB: $('#cp204a3rdDateSubmitIRB').val()
+                };
+
+                const url = currentEditId ? '/api/tx5/update' : '/api/tx5/create';
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                $('#saveBtn').prop('disabled', true).html('Saving...');
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        $('#saveBtn').prop('disabled', false).html('Save');
+                        if (response.success) {
+                            $('#taskModal').modal('hide');
+                            dataTable.ajax.reload(null, false);
+                            resetForm();
+                            showAlert('Success', 'success');
+                        } else {
+                            showAlert('Error: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr) {
+                        $('#saveBtn').prop('disabled', false).html('Save');
+                        showAlert('Error saving record', 'danger');
+                    }
+                });
+            }
+
+            function editRecord(id) {
+                $.get(`/api/tx5/get/${id}`, function(res) {
+                    if (res.success) {
+                        const d = res.data;
+                        currentEditId = d.id;
+                        $('#recordId').val(d.id);
+
+                        let foundId = "";
+                        for (const [key, val] of Object.entries(clientOptionsMap)) {
+                            if (val.companyName === d.companyName) {
+                                foundId = key;
+                                break;
+                            }
+                        }
+                        $('#companySelect').val(foundId);
+
+                        // Populate
+                        $('#companyName').val(d.companyName);
+                        $('#taxReferenceNo').val(d.taxReferenceNo);
+                        $('#yearEnd').val(d.yearEnd);
+                        $('#companyType').val(d.companyType);
+                        $('#personInCharge').val(d.personInCharge);
+                        $('#pastYearTaxEstimate').val(d.pastYearTaxEstimate);
+
+                        $('#cp204OneMonthBeforeYE').val(d.cp204OneMonthBeforeYE);
+                        $('#cp204ReminderDate').val(d.cp204ReminderDate);
+                        $('#cp204ClientResponse').val(d.cp204ClientResponse);
+                        $('#cp204CurrentETP').val(d.cp204CurrentETP);
+                        $('#cp204DateSubmitIRB').val(d.cp204DateSubmitIRB);
+
+                        $('#cp204a6thMonthAfterYE').val(d.cp204a6thMonthAfterYE);
+                        $('#cp204a1stReminderDate').val(d.cp204a1stReminderDate);
+                        $('#cp204a1stClientResponse').val(d.cp204a1stClientResponse);
+                        $('#cp204a1stRevisedETP').val(d.cp204a1stRevisedETP);
+                        $('#cp204a1stDateSubmitIRB').val(d.cp204a1stDateSubmitIRB);
+
+                        $('#cp204a9thMonthAfterYE').val(d.cp204a9thMonthAfterYE);
+                        $('#cp204a2ndReminderDate').val(d.cp204a2ndReminderDate);
+                        $('#cp204a2ndClientResponse').val(d.cp204a2ndClientResponse);
+                        $('#cp204a2ndRevisedETP').val(d.cp204a2ndRevisedETP);
+                        $('#cp204a2ndDateSubmitIRB').val(d.cp204a2ndDateSubmitIRB);
+
+                        $('#cp204a11thMonthAfterYE').val(d.cp204a11thMonthAfterYE);
+                        $('#cp204a3rdReminderDate').val(d.cp204a3rdReminderDate);
+                        $('#cp204a3rdClientResponse').val(d.cp204a3rdClientResponse);
+                        $('#cp204a3rdRevisedETP').val(d.cp204a3rdRevisedETP);
+                        $('#cp204a3rdDateSubmitIRB').val(d.cp204a3rdDateSubmitIRB);
+
+                        $('#modalTitle').text('Edit CP204 Record');
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading data', 'danger');
+                    }
+                });
+            }
+
+            function deleteRecord(id) {
+                if (confirm('Are you sure?')) {
+                    $.ajax({
+                        url: `/api/tx5/delete/${id}`,
+                        type: 'DELETE',
+                        success: function(res) {
+                            if(res.success) {
+                                dataTable.ajax.reload(null, false);
+                                showAlert('Deleted', 'success');
+                            } else {
+                                showAlert('Error deleting', 'danger');
+                            }
+                        }
+                    });
+                }
+            }
+
+            // === 🟢 3. Init ===
+            initializeDatePickers();
+            loadClientOptions();
+            initializeDataTable();
+
+            $('#saveBtn').click(saveBP35Record);
+            $('#addNewBtn').click(resetForm);
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
+            $('#taskModal').on('hidden.bs.modal', resetForm);
         });
     </script>
 }
