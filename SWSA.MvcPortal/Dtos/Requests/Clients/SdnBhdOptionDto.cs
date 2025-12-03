@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Entities.Clients
+﻿namespace SWSA.MvcPortal.Dtos.Requests.Clients
 {
     public class SdnBhdOptionDto
     {
