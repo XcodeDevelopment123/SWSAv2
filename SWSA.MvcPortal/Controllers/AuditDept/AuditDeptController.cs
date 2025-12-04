@@ -3030,7 +3030,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         #endregion
 
 
-        #region Link Client List
+        #region Link All Client List
         [AllowAnonymous]
         [HttpGet("api/auditdept/clients/get-list")]
         public async Task<IActionResult> GetClientList()

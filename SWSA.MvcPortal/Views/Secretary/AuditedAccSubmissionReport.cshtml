@@ -6,7 +6,6 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- /.card -->
         <div class="card">
 
             <div class="card-header">
@@ -19,7 +18,6 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
@@ -52,17 +50,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                     
+
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
+            </div>
         </div>
-        <!-- /.card -->
-    </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -77,7 +72,6 @@
                 <form id="taskForm">
                     <input type="hidden" id="editIndex" value="">
 
-                    <!-- Basic Information -->
                     <div class="form-info-label col-12">
                         <label>Basic Information</label>
                     </div>
@@ -85,22 +79,24 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
-                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
+                                <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
-                                <small class="text-muted">
-                                    This field should be linked from the Client List.
-                                </small>
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyNo">Company No</label>
-                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -108,13 +104,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -131,7 +127,6 @@
                         </div>
                     </div>
 
-                    <!-- Audit Fin Stmt (AFS) Due Date -->
                     <div class="form-info-label col-12">
                         <label>Audit Fin Stmt (AFS) Due Date</label>
                     </div>
@@ -152,7 +147,6 @@
                             <div class="form-group">
                                 <label for="mbrsReceivedDate">MBRS received date</label>
 
-                                <!-- 🔵 来自 AT3.1 的列表 -->
                                 <select id="mbrsSourceSelect" class="form-control mb-2">
                                     <option value="">-- Link from AT3.1 Audit Logbook --</option>
                                 </select>
@@ -160,7 +154,6 @@
                                     Select a record from AT3.1 to auto-fill MBRS received date.
                                 </small>
 
-                                <!-- 真实保存到 S14B 的日期（仍然可以手动改） -->
                                 <input type="text"
                                        id="mbrsReceivedDate"
                                        name="mbrsReceivedDate"
@@ -171,7 +164,6 @@
 
                     </div>
 
-                    <!-- Result -->
                     <div class="form-info-label col-12">
                         <label>Result</label>
                     </div>
@@ -195,7 +187,6 @@
                         </div>
                     </div>
 
-                    <!-- Completion Status -->
                     <div class="form-info-label col-12">
                         <label>Completion Status</label>
                     </div>
@@ -229,416 +220,470 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-    <!-- Datepicker CSS -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script>
-        let dataTable;
-        let dataTableInitialized = false;
+<script>
+    // ==========================================
+    // 🔴 全局变量 (放在最外面，确保到处都能用)
+    // ==========================================
+    let dataTable;
+    let dataTableInitialized = false;
+    let companyOptionsList = [];
+    let mbrsSourceOptions = [];
 
-        let mbrsSourceOptions = [];   // 存 AT3.1 的 list
-        // ---------- Load MBRS source list from AT3.1 ----------
-        function loadMbrsSourceOptions() {
-            $.ajax({
-                url: 'get-s14b-mbrs-source-options',   // 就是你刚才加的后端 API 路径
-                type: 'GET',
-                success: function (res) {
-                    if (res && res.success) {
-                        mbrsSourceOptions = res.data || [];
+    // ==========================================
+    // 🟢 工具函数 (计算逻辑)
+    // ==========================================
 
-                        const $sel = $('#mbrsSourceSelect');
-                        $sel.empty();
-                        $sel.append('<option value="">-- Link from AT3.1 Audit Logbook --</option>');
+    // 1. 获取对象属性 (忽略大小写)
+    function getVal(obj, name) {
+        if (!obj) return '';
+        if (obj[name] !== undefined && obj[name] !== null) return obj[name];
+        const camel = name.charAt(0).toLowerCase() + name.slice(1);
+        if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
+        const targetLower = name.toLowerCase();
+        for (const key in obj) {
+            if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+            if (key.toLowerCase() === targetLower) return obj[key];
+        }
+        return '';
+    }
 
-                        mbrsSourceOptions.forEach(function (x) {
-                            const id = getVal(x, 'SourceId');
-                            const coName = getVal(x, 'CompanyName');
-                            const date = getVal(x, 'MbrsReceivedDate');
+    // 2. 格式化 ISO 日期 -> dd/mm/yyyy
+    function formatIsoDate(isoString) {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return isoString;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
-                            const text = coName + (date ? ' (' + date + ')' : '');
-                            $sel.append(`<option value="${id}">${text}</option>`);
-                        });
-                    } else {
-                        console.error('Failed to load AT3.1 MBRS source list:', res?.message || 'Unknown error');
-                    }
-                },
-                error: function (xhr) {
-                    console.error('Failed to load AT3.1 MBRS source list:', xhr.statusText || 'Network error');
-                }
-            });
+    // 3. 计算 Year End (Month Name -> dd/mm/yyyy)
+    function calculateYearEndDate(monthName) {
+        if (!monthName) return '';
+        const months = {
+            "january": 0, "february": 1, "march": 2, "april": 3, "may": 4, "june": 5,
+            "july": 6, "august": 7, "september": 8, "october": 9, "november": 10, "december": 11
+        };
+        const monthIndex = months[monthName.toLowerCase().trim()];
+        if (monthIndex === undefined) return '';
+        
+        const currentYear = new Date().getFullYear();
+        const date = new Date(currentYear, monthIndex + 1, 0); // 下个月第0天 = 本月最后一天
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    // 4. 日期加月计算器 (dd/mm/yyyy + months)
+    function addMonths(dateStr, monthsToAdd) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('/'); // 假设格式是 dd/mm/yyyy
+        if (parts.length < 3) return '';
+
+        // 注意：JS月份是0-11
+        const originalDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        
+        // 复制日期进行计算
+        const newDate = new Date(originalDate);
+        newDate.setMonth(originalDate.getMonth() + monthsToAdd);
+
+        // 处理月底溢出 (例如 31 Jan + 1 month = 28 Feb)
+        if (newDate.getDate() !== originalDate.getDate()) {
+            newDate.setDate(0);
         }
 
-        // ---------- Modal alert + inline field errors ----------
-        function showModalAlert(msg, type) {
-            const map = {
-                success: 'alert-success',
-                error: 'alert-danger',
-                warning: 'alert-warning',
-                info: 'alert-info'
-            };
-            const $box = $('#modalAlert');
-            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
-                .addClass(map[type] || 'alert-info')
-                .html(msg);
+        const d = String(newDate.getDate()).padStart(2, '0');
+        const m = String(newDate.getMonth() + 1).padStart(2, '0');
+        const y = newDate.getFullYear();
+        return `${d}/${m}/${y}`;
+    }
 
-            const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
-                $box.attr('tabindex', -1).focus();
-            });
-        }
-        function hideModalAlert() {
-            $('#modalAlert').addClass('d-none').empty();
-        }
-        function clearFieldErrors() {
-            $('#taskForm .is-invalid').removeClass('is-invalid');
-            $('#taskForm .invalid-feedback').remove();
-        }
-        function setFieldError(selector, message) {
-            const $f = $(selector);
-            if (!$f.length) return;
-            $f.addClass('is-invalid');
-            if ($f.next('.invalid-feedback').length === 0) {
-                $f.after('<div class="invalid-feedback"></div>');
-            }
-            $f.next('.invalid-feedback').text(message);
+    // 5. 🟢 核心：触发 Due Date 计算
+    function calculateDueDates() {
+        console.log("正在计算 Due Dates..."); // 调试用：F12看控制台有没有这句话
+
+        // 获取当前输入框的值
+        const incorpDate = $('#incorpDate').val();
+        const yearEnd = $('#yearEnd').val();
+
+        console.log("Incorp Date:", incorpDate, "Year End:", yearEnd);
+
+        // 1. 计算 1st 18mths due date (Incorp Date + 17个月)
+        if (incorpDate) {
+            const result = addMonths(incorpDate, 17);
+            $('#first18MonthsDueDate').val(result);
+            console.log("算出 18mths:", result);
+        } else {
+            $('#first18MonthsDueDate').val('');
         }
 
-        // ---------- Page-level alert ----------
-        function showAlert(message, type) {
-            const cls = type === 'success' ? 'alert-success'
-                : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
-            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
-                                        ${message}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                  </div>`;
-            $('.card-header').after(html);
-            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        // 2. 计算 Circulation & AFS due date (Year End + 7个月)
+        if (yearEnd) {
+            const result = addMonths(yearEnd, 7);
+            $('#circulationAFSDueDate').val(result);
+            console.log("算出 Circulation:", result);
+        } else {
+            $('#circulationAFSDueDate').val('');
         }
+    }
 
-        // ---------- Helpers ----------
-        function formatDateForDisplay(s) {
-            if (!s) return '';
-            return s; // 先原样显示，有需要再改格式
-        }
-
-        function getVal(obj, name) {
-            if (!obj) return '';
-
-            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
-
-            const camel = name.charAt(0).toLowerCase() + name.slice(1);
-            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
-
-            const targetLower = name.toLowerCase();
-            for (const key in obj) {
-                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
-                if (key.toLowerCase() === targetLower) return obj[key];
-            }
-            return '';
-        }
-
-        function clearForm() {
-            $('#taskForm')[0].reset();
-            $('#editIndex').val('');
-            $('#modalTitle').text('Add New Audited Account Submission Record');
-            hideModalAlert();
-            clearFieldErrors();
-        }
-
-        // ---------- Init ----------
-        $(document).ready(function () {
-
-            loadMbrsSourceOptions();
-
-            // 🔵 当用户选择一个 AT3.1 记录时，自动填充 MBRS received date
-            $('#mbrsSourceSelect').on('change', function () {
-                const selectedId = $(this).val();
-                if (!selectedId) {
-                    return;
-                }
-
-                const item = mbrsSourceOptions.find(x =>
-                    String(getVal(x, 'SourceId')) === String(selectedId)
-                );
-
-                if (!item) {
-                    return;
-                }
-
-                const date = getVal(item, 'MbrsReceivedDate');
-                $('#mbrsReceivedDate').val(date || '');
-            });
-
-            // 所有和 date 相关的 text input 套 datepicker（包含 yearEnd）
-            $('input[type="text"]').filter(function () {
-                const id = $(this).attr('id') || '';
-                return id.includes('Date') || id.includes('date') || id.includes('yearEnd');
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            });
-
-            // DataTable：对应 S14B 所有列
-            dataTable = $('#taskDatatable').DataTable({
-                responsive: true,
-                ordering: true,
-                autoWidth: false,
-                pageLength: 10,
-                order: [[1, 'asc']], // 以 Company Name 排序
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries",
-                    emptyTable: "No records found",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    infoEmpty: "Showing 0 to 0 of 0 entries",
-                    paginate: {
-                        first: "First",
-                        last: "Last",
-                        next: "Next",
-                        previous: "Previous"
-                    }
-                },
-                columns: [
-                    { data: 0 },  // File No
-                    { data: 1 },  // Company Name
-                    { data: 2 },  // Company No
-                    { data: 3 },  // Incorp Date
-                    { data: 4 },  // Year End
-                    { data: 5 },  // Co Status
-                    { data: 6 },  // YrMthdueDate
-                    { data: 7 },  // CirculationAFSduedate
-                    { data: 8 },  // MBRSreceivedDate
-                    { data: 9 },  // OntimeLate
-                    { data: 10 }, // ReasonForLate
-                    { data: 11 }, // JobCompleted
-                    { data: 12, orderable: false, searchable: false }, // Edit
-                    { data: 13, orderable: false, searchable: false }  // Delete
-                ]
-            });
-            dataTableInitialized = true;
-
-            // 绑定按钮
-            $('#saveBtn').click(saveRecord);
-            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
-            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
-
-            $('#taskModal').on('hidden.bs.modal', clearForm);
-
-            $('[data-bs-target="#taskModal"]').on('click', function () {
-                clearForm();
-            });
-
-            // 首次载入
-            loadRecordsFromDatabase();
+    // ==========================================
+    // 🟢 主逻辑 (Document Ready)
+    // ==========================================
+    $(document).ready(function () {
+        
+        // 1. 初始化 Datepickers
+        $('input[type="text"]').filter(function () {
+            const id = $(this).attr('id') || '';
+            return id.includes('Date') || id.includes('date') || id.includes('yearEnd');
+        }).datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true
         });
 
-        // ---------- Load & Render ----------
-        function loadRecordsFromDatabase() {
-            $.ajax({
-                url: 'api/s14b/get-all',
-                type: 'GET',
-                success: function (res) {
-                    if (res && res.success) {
-                        populateTable(res.data || []);
-                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
-                        console.log('S14B sample keys:', Object.keys((res.data || [])[0] || {}));
-                    } else {
-                        showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
-                    }
-                },
-                error: function (xhr) {
-                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
-                }
-            });
-        }
+        // 2. 监听手动修改日期 -> 重新计算
+        $('#incorpDate, #yearEnd').on('change', function() {
+            calculateDueDates();
+        });
 
-        function populateTable(records) {
-            if (!dataTableInitialized) return;
-            dataTable.clear();
+        // 3. 加载下拉菜单数据
+        loadCompanyOptions();
+        loadMbrsSourceOptions();
 
-            if (records && records.length) {
-                records.forEach(function (r) {
-                    const id = getVal(r, 'Id');
+        // 4. 监听 Client 下拉菜单选择
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            
+            // 清空旧数据
+            $('#fileNo').val('');
+            $('#companyNo').val('');
+            $('#incorpDate').val('');
+            $('#yearEnd').val('');
+            $('#client').val('');
+            $('#clientId').val('');
+            $('#first18MonthsDueDate').val('');
+            $('#circulationAFSDueDate').val('');
 
-                    dataTable.row.add([
-                        getVal(r, 'FileNo'),                             // 0
-                        getVal(r, 'CompanyName'),                        // 1
-                        getVal(r, 'CompanyNo'),                          // 2
-                        formatDateForDisplay(getVal(r, 'IncorpDate')),   // 3
-                        formatDateForDisplay(getVal(r, 'YearEnd')),      // 4
-                        getVal(r, 'CompanyStatus'),                      // 5
-                        formatDateForDisplay(getVal(r, 'YrMthdueDate')),       // 6
-                        formatDateForDisplay(getVal(r, 'CirculationAFSduedate')), // 7
-                        formatDateForDisplay(getVal(r, 'MBRSreceivedDate')),    // 8
-                        getVal(r, 'OntimeLate'),                        // 9
-                        getVal(r, 'ReasonForLate'),                     // 10
-                        getVal(r, 'JobCompleted'),                      // 11
+            if (!selectedId) return;
 
-                        // Edit
-                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                 </button>`,
+            // 查找选中公司
+            const selectedClient = companyOptionsList.find(c => String(getVal(c, 'Id')) === String(selectedId));
 
-                        // Delete
-                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                 </button>`
-                    ]);
-                });
+            if (selectedClient) {
+                // 填入基本信息
+                $('#clientId').val(getVal(selectedClient, 'Id'));
+                $('#client').val(getVal(selectedClient, 'CompanyName'));
+                $('#fileNo').val(getVal(selectedClient, 'FileNo'));
+                $('#companyNo').val(getVal(selectedClient, 'CompanyNo'));
+
+                // 填入日期
+                const formattedIncorp = formatIsoDate(getVal(selectedClient, 'IncorporationDate'));
+                const formattedYearEnd = calculateYearEndDate(getVal(selectedClient, 'YearEndMonth'));
+
+                $('#incorpDate').val(formattedIncorp);
+                $('#yearEnd').val(formattedYearEnd);
+
+                // 更新 Datepicker UI 状态
+                $('#incorpDate').datepicker('update');
+                $('#yearEnd').datepicker('update');
+
+                // 🔥 重点：数据填完后，立即触发计算 🔥
+                calculateDueDates();
             }
+        });
 
-            dataTable.draw();
-        }
-
-        // ---------- Save (Create / Update) ----------
-        function saveRecord() {
-            hideModalAlert();
-            clearFieldErrors();
-
-            const formData = {
-                Id: ($('#editIndex').val() || '0').trim(),
-
-                FileNo: ($('#fileNo').val() || '').trim(),
-                CompanyName: ($('#companyName').val() || '').trim(),
-                CompanyNo: ($('#companyNo').val() || '').trim(),
-                IncorpDate: ($('#incorpDate').val() || '').trim(),
-                YearEnd: ($('#yearEnd').val() || '').trim(),
-                CompanyStatus: ($('#coStatus').val() || '').trim(),
-
-                YrMthdueDate: ($('#first18MonthsDueDate').val() || '').trim(),
-                CirculationAFSduedate: ($('#circulationAFSDueDate').val() || '').trim(),
-                MBRSreceivedDate: ($('#mbrsReceivedDate').val() || '').trim(),
-
-                OntimeLate: ($('#submissionStatus').val() || '').trim(),
-                ReasonForLate: ($('#reasonForLate').val() || '').trim(),
-
-                JobCompleted: ($('#jobStatus').val() || '').trim()
-            };
-
-            // 简单必填验证
-            let hasError = false;
-            if (!formData.FileNo) { setFieldError('#fileNo', 'Required'); hasError = true; }
-            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
-            if (!formData.CompanyNo) { setFieldError('#companyNo', 'Required'); hasError = true; }
-            if (!formData.IncorpDate) { setFieldError('#incorpDate', 'Required'); hasError = true; }
-            if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
-            if (!formData.CompanyStatus) { setFieldError('#coStatus', 'Please select a Status'); hasError = true; }
-            if (!formData.YrMthdueDate) { setFieldError('#first18MonthsDueDate', 'Required'); hasError = true; }
-            if (!formData.CirculationAFSduedate) { setFieldError('#circulationAFSDueDate', 'Required'); hasError = true; }
-            if (!formData.MBRSreceivedDate) { setFieldError('#mbrsReceivedDate', 'Required'); hasError = true; }
-
-
-            if (hasError) {
-                showModalAlert('Please fix the highlighted fields.', 'error');
-                $('#taskForm .is-invalid').first().focus();
-                return;
+        // 5. 监听 MBRS Source
+        $('#mbrsSourceSelect').on('change', function () {
+            const selectedId = $(this).val();
+            if (!selectedId) return;
+            const item = mbrsSourceOptions.find(x => String(getVal(x, 'SourceId')) === String(selectedId));
+            if (item) {
+                $('#mbrsReceivedDate').val(getVal(item, 'MbrsReceivedDate') || '');
             }
+        });
 
-            const isUpdate = Number(formData.Id) > 0;
-            const url = isUpdate ? 'api/s14b/update' : 'api/s14b/create';
-            const method = isUpdate ? 'PUT' : 'POST';
+        // 6. 初始化 DataTable
+        dataTable = $('#taskDatatable').DataTable({
+            responsive: true,
+            ordering: true,
+            autoWidth: false,
+            pageLength: 10,
+            order: [[1, 'asc']],
+            columns: [
+                { data: 0 }, { data: 1 }, { data: 2 }, { data: 3 }, { data: 4 }, { data: 5 },
+                { data: 6 }, { data: 7 }, { data: 8 }, { data: 9 }, { data: 10 }, { data: 11 },
+                { data: 12, orderable: false, searchable: false },
+                { data: 13, orderable: false, searchable: false }
+            ]
+        });
+        dataTableInitialized = true;
 
-            const $btn = $('#saveBtn');
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        // 7. 绑定按钮事件
+        $('#saveBtn').click(saveRecord);
+        $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+        $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
+        $('#taskModal').on('hidden.bs.modal', clearForm);
+        $('[data-bs-target="#taskModal"]').on('click', function () { clearForm(); });
 
-            $.ajax({
-                url: url,
-                type: method,
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function (res) {
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    if (res && res.success) {
-                        $('#taskModal').modal('hide');
-                        showAlert('Record saved successfully.', 'success');
-                        loadRecordsFromDatabase();
-                    } else {
-                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
-                        showModalAlert('Error saving record: ' + msg, 'error');
-                    }
-                },
-                error: function (xhr) {
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+        // 8. 首次加载表格数据
+        loadRecordsFromDatabase();
+    });
+
+    // ==========================================
+    // 🟢 AJAX 函数 (放在 Ready 外面更整洁)
+    // ==========================================
+
+    function loadCompanyOptions() {
+        $.ajax({
+            url: 'api/get/company-options',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.success) {
+                    companyOptionsList = res.data || [];
+                    const $sel = $('#clientSelect');
+                    $sel.empty();
+                    $sel.append('<option value="">-- Select client --</option>');
+                    companyOptionsList.forEach(function (c) {
+                        $sel.append(`<option value="${getVal(c, 'Id')}">${getVal(c, 'CompanyName')}</option>`);
+                    });
                 }
+            }
+        });
+    }
+
+    function loadMbrsSourceOptions() {
+        $.ajax({
+            url: 'get-s14b-mbrs-source-options',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.success) {
+                    mbrsSourceOptions = res.data || [];
+                    const $sel = $('#mbrsSourceSelect');
+                    $sel.empty();
+                    $sel.append('<option value="">-- Link from AT3.1 Audit Logbook --</option>');
+                    mbrsSourceOptions.forEach(function (x) {
+                        const text = getVal(x, 'CompanyName') + (getVal(x, 'MbrsReceivedDate') ? ' (' + getVal(x, 'MbrsReceivedDate') + ')' : '');
+                        $sel.append(`<option value="${getVal(x, 'SourceId')}">${text}</option>`);
+                    });
+                }
+            }
+        });
+    }
+
+    function loadRecordsFromDatabase() {
+        $.ajax({
+            url: 'api/s14b/get-all',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.success) {
+                    populateTable(res.data || []);
+                    showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
+                }
+            }
+        });
+    }
+
+    function populateTable(records) {
+        if (!dataTableInitialized) return;
+        dataTable.clear();
+        if (records && records.length) {
+            records.forEach(function (r) {
+                const id = getVal(r, 'Id');
+                dataTable.row.add([
+                    getVal(r, 'FileNo'),
+                    getVal(r, 'CompanyName'),
+                    getVal(r, 'CompanyNo'),
+                    formatDateForDisplay(getVal(r, 'IncorpDate')),
+                    formatDateForDisplay(getVal(r, 'YearEnd')),
+                    getVal(r, 'CompanyStatus'),
+                    formatDateForDisplay(getVal(r, 'YrMthdueDate')),
+                    formatDateForDisplay(getVal(r, 'CirculationAFSduedate')),
+                    formatDateForDisplay(getVal(r, 'MBRSreceivedDate')),
+                    getVal(r, 'OntimeLate'),
+                    getVal(r, 'ReasonForLate'),
+                    getVal(r, 'JobCompleted'),
+                    `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}"><i class="fas fa-edit"></i></button>`,
+                    `<button class="btn btn-sm btn-danger delete-btn" data-id="${id}"><i class="fas fa-trash"></i></button>`
+                ]);
             });
         }
+        dataTable.draw();
+    }
 
-        // ---------- Edit ----------
-        function editRecord(id) {
-            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
-            hideModalAlert();
-            clearFieldErrors();
+    function saveRecord() {
+        hideModalAlert();
+        clearFieldErrors();
 
-            $.ajax({
-                url: 'api/s14b/get/' + id,
-                type: 'GET',
-                success: function (res) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audited Account Submission Record');
-                    if (res && res.success) {
-                        const d = res.data || {};
+        const formData = {
+            Id: ($('#editIndex').val() || '0').trim(),
+            FileNo: ($('#fileNo').val() || '').trim(),
+            CompanyName: ($('#client').val() || '').trim(),
+            CompanyNo: ($('#companyNo').val() || '').trim(),
+            IncorpDate: ($('#incorpDate').val() || '').trim(),
+            YearEnd: ($('#yearEnd').val() || '').trim(),
+            CompanyStatus: ($('#coStatus').val() || '').trim(),
+            YrMthdueDate: ($('#first18MonthsDueDate').val() || '').trim(),
+            CirculationAFSduedate: ($('#circulationAFSDueDate').val() || '').trim(),
+            MBRSreceivedDate: ($('#mbrsReceivedDate').val() || '').trim(),
+            OntimeLate: ($('#submissionStatus').val() || '').trim(),
+            ReasonForLate: ($('#reasonForLate').val() || '').trim(),
+            JobCompleted: ($('#jobStatus').val() || '').trim()
+        };
 
-                        $('#editIndex').val(getVal(d, 'Id'));
+        let hasError = false;
+        if (!formData.FileNo) { setFieldError('#fileNo', 'Required'); hasError = true; }
+        if (!formData.CompanyName) { setFieldError('#clientSelect', 'Required'); hasError = true; }
+        if (!formData.CompanyNo) { setFieldError('#companyNo', 'Required'); hasError = true; }
+        if (!formData.IncorpDate) { setFieldError('#incorpDate', 'Required'); hasError = true; }
+        if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
+        if (!formData.YrMthdueDate) { setFieldError('#first18MonthsDueDate', 'Required'); hasError = true; }
+        if (!formData.CirculationAFSduedate) { setFieldError('#circulationAFSDueDate', 'Required'); hasError = true; }
 
-                        $('#fileNo').val(getVal(d, 'FileNo'));
-                        $('#companyName').val(getVal(d, 'CompanyName'));
-                        $('#companyNo').val(getVal(d, 'CompanyNo'));
-                        $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
-                        $('#yearEnd').val(formatDateForDisplay(getVal(d, 'YearEnd')));
-                        $('#coStatus').val(getVal(d, 'CompanyStatus'));
-
-                        $('#first18MonthsDueDate').val(formatDateForDisplay(getVal(d, 'YrMthdueDate')));
-                        $('#circulationAFSDueDate').val(formatDateForDisplay(getVal(d, 'CirculationAFSduedate')));
-                        $('#mbrsReceivedDate').val(formatDateForDisplay(getVal(d, 'MBRSreceivedDate')));
-
-                        $('#submissionStatus').val(getVal(d, 'OntimeLate'));
-                        $('#reasonForLate').val(getVal(d, 'ReasonForLate'));
-
-                        $('#jobStatus').val(getVal(d, 'JobCompleted'));
-
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
-                    }
-                },
-                error: function (xhr) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audited Account Submission Record');
-                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
-                }
-            });
+        if (hasError) {
+            showModalAlert('Please fix the highlighted fields.', 'error');
+            return;
         }
 
-        // ---------- Delete ----------
-        function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
+        const isUpdate = Number(formData.Id) > 0;
+        const url = isUpdate ? 'api/s14b/update' : 'api/s14b/create';
+        const method = isUpdate ? 'PUT' : 'POST';
+        const $btn = $('#saveBtn');
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
-            $.ajax({
-                url: 'api/s14b/delete/' + id,
-                type: 'DELETE',
-                success: function (res) {
-                    if (res && res.success) {
-                        showAlert('Record deleted successfully.', 'success');
-                        loadRecordsFromDatabase();
-                    } else {
-                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
-                    }
-                },
-                error: function (xhr) {
-                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (res) {
+                $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                if (res && res.success) {
+                    $('#taskModal').modal('hide');
+                    showAlert('Record saved successfully.', 'success');
+                    loadRecordsFromDatabase();
+                } else {
+                    const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                    showModalAlert('Error: ' + msg, 'error');
                 }
-            });
+            },
+            error: function (xhr) {
+                $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                showModalAlert('Error: ' + (xhr.statusText || 'Network error'), 'error');
+            }
+        });
+    }
+
+    function editRecord(id) {
+        $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+        hideModalAlert();
+        clearFieldErrors();
+        $.ajax({
+            url: 'api/s14b/get/' + id,
+            type: 'GET',
+            success: function (res) {
+                $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Record');
+                if (res && res.success) {
+                    const d = res.data || {};
+                    $('#editIndex').val(getVal(d, 'Id'));
+                    $('#fileNo').val(getVal(d, 'FileNo'));
+                    $('#companyNo').val(getVal(d, 'CompanyNo'));
+                    $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
+                    $('#yearEnd').val(formatDateForDisplay(getVal(d, 'YearEnd')));
+                    $('#coStatus').val(getVal(d, 'CompanyStatus'));
+                    $('#first18MonthsDueDate').val(formatDateForDisplay(getVal(d, 'YrMthdueDate')));
+                    $('#circulationAFSDueDate').val(formatDateForDisplay(getVal(d, 'CirculationAFSduedate')));
+                    $('#mbrsReceivedDate').val(formatDateForDisplay(getVal(d, 'MBRSreceivedDate')));
+                    $('#submissionStatus').val(getVal(d, 'OntimeLate'));
+                    $('#reasonForLate').val(getVal(d, 'ReasonForLate'));
+                    $('#jobStatus').val(getVal(d, 'JobCompleted'));
+                    
+                    const name = getVal(d, 'CompanyName');
+                    if(name){
+                         $('#client').val(name);
+                         $("#clientSelect option").filter(function() {
+                            return $(this).text() == name; 
+                         }).prop('selected', true);
+                    }
+                    $('#taskModal').modal('show');
+                } else {
+                    showAlert('Error loading: ' + (res?.message || 'Unknown'), 'error');
+                }
+            },
+            error: function (xhr) {
+                showAlert('Error loading: ' + xhr.statusText, 'error');
+            }
+        });
+    }
+
+    function deleteRecord(id) {
+        if (!confirm('Are you sure?')) return;
+        $.ajax({
+            url: 'api/s14b/delete/' + id,
+            type: 'DELETE',
+            success: function (res) {
+                if (res && res.success) {
+                    showAlert('Deleted.', 'success');
+                    loadRecordsFromDatabase();
+                } else {
+                    showAlert('Error: ' + res.message, 'error');
+                }
+            },
+            error: function (xhr) { showAlert('Error: ' + xhr.statusText, 'error'); }
+        });
+    }
+
+    // UI Helpers
+    function formatDateForDisplay(s) { return s || ''; }
+    function showModalAlert(msg, type) {
+        const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+        const $box = $('#modalAlert');
+        if ($box.length) {
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info').html(msg);
+            $('#taskModal .modal-body').stop(true).animate({ scrollTop: 0 }, 200);
+        } else if(type === 'error') { alert(msg); }
+    }
+    function hideModalAlert() { $('#modalAlert').addClass('d-none').empty(); }
+    function clearFieldErrors() {
+        $('#taskForm .is-invalid').removeClass('is-invalid');
+        $('#taskForm .invalid-feedback').remove();
+    }
+    function setFieldError(selector, message) {
+        const $f = $(selector);
+        if (!$f.length) return;
+        $f.addClass('is-invalid');
+        if ($f.next('.invalid-feedback').length === 0) {
+            $f.after('<div class="invalid-feedback"></div>');
         }
-    </script>
+        $f.next('.invalid-feedback').text(message);
+    }
+    function showAlert(message, type) {
+        const cls = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+        const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>`;
+        $('.card-header').after(html);
+        setTimeout(() => $('.alert').alert('close'), 4000);
+    }
+    function clearForm() {
+        $('#taskForm')[0].reset();
+        $('#editIndex').val('');
+        $('#modalTitle').text('Add New Audited Account Submission Record');
+        hideModalAlert();
+        clearFieldErrors();
+    }
+</script>
 }

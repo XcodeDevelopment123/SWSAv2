@@ -99,28 +99,30 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="ref">Ref</label>
-                                <input type="text" id="ref" name="ref" class="form-control" placeholder="Enter reference" />
+                                <input type="text" id="ref" name="ref" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="companyName">Company Name *</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
-                                <small class="text-muted">
-                                    This field should be linked from the Client List.
-                                </small>
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd & LLP Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="companyNo">Company No</label>
-                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Enter company number" />
+                                <input type="text" id="companyNo" name="companyNo" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="incorpDate">Incorp Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -128,7 +130,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control datepicker" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -300,334 +302,391 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- Include DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Include Datepicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            let dataTable;
-            let currentEditId = null;
+        // ==========================================
+        // 🔴 全局变量
+        // ==========================================
+        let dataTable;
+        let clientList = []; 
 
-            // 初始化 DataTable
+        // ==========================================
+        // 🟢 工具函数
+        // ==========================================
+
+        function getVal(obj, name) {
+            if (!obj) return '';
+            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
+            const camel = name.charAt(0).toLowerCase() + name.slice(1);
+            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
+            const targetLower = name.toLowerCase();
+            for (const key in obj) {
+                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+                if (key.toLowerCase() === targetLower) return obj[key];
+            }
+            return '';
+        }
+
+        function formatIsoDate(isoString) {
+            if (!isoString) return '';
+            const date = new Date(isoString);
+            if (isNaN(date.getTime())) return isoString;
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatJsDate(date) {
+            if (!date) return '';
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+        function calculateYearEndDate(monthName) {
+            if (!monthName) return '';
+            const months = {
+                "january": 0, "february": 1, "march": 2, "april": 3, "may": 4, "june": 5,
+                "july": 6, "august": 7, "september": 8, "october": 9, "november": 10, "december": 11
+            };
+            const cleanName = monthName.trim().toLowerCase();
+            const monthIndex = months[cleanName];
+            if (monthIndex === undefined) return ''; 
+            const currentYear = new Date().getFullYear();
+            const date = new Date(currentYear, monthIndex + 1, 0); 
+            return formatJsDate(date);
+        }
+
+        // ==========================================
+        // 🟢 主逻辑
+        // ==========================================
+
+        $(document).ready(function() {
+            
+            // 1. 加载 Client List
+            loadClientOptions();
+
+            // 2. 初始化 DataTable
             initializeDataTable();
 
-            // 初始化日期选择器
-            initializeDatePickers();
+            // 3. 初始化 Datepicker
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            });
 
-            // 保存按钮点击事件
+            // 4. 监听 Edit/Delete 点击事件 (🔥修复重点)
+            $(document).on('click', '.edit-btn', function(e) {
+                e.preventDefault();
+                // 使用 closest 确保点到图标也能找到按钮
+                const id = $(this).closest('button').data('id');
+                console.log('Edit Clicked, ID:', id); 
+                if (id) editRecord(id);
+            });
+
+            $(document).on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                const id = $(this).closest('button').data('id');
+                console.log('Delete Clicked, ID:', id);
+                if (id) deleteRecord(id);
+            });
+
+            // 5. 监听 Dropdown 选择 -> 自动填表
+            $('#clientSelect').on('change', function() {
+                const selectedId = $(this).val();
+                
+                $('#ref').val('');
+                $('#companyNo').val('');
+                $('#incorpDate').val('');
+                $('#yearEnd').val('');
+                $('#client').val('');   
+                $('#clientId').val(''); 
+
+                if (!selectedId) return;
+
+                const client = clientList.find(c => String(getVal(c, 'Id')) === String(selectedId));
+
+                if (client) {
+                    $('#clientId').val(getVal(client, 'Id'));
+                    $('#client').val(getVal(client, 'CompanyName')); 
+                    $('#ref').val(getVal(client, 'FileNo')); 
+                    $('#companyNo').val(getVal(client, 'CompanyNo') || getVal(client, 'RegistrationNumber'));
+                    $('#incorpDate').val(formatIsoDate(getVal(client, 'IncorporationDate')));
+                    $('#yearEnd').val(calculateYearEndDate(getVal(client, 'YearEndMonth')));
+                    $('.datepicker').datepicker('update');
+                }
+            });
+
+            // 6. 保存按钮
             $('#saveBtn').click(function() {
                 saveS16Record();
             });
 
-            // 初始化 DataTable
-            function initializeDataTable() {
-                dataTable = $('#taskDatatable').DataTable({
-                    "paging": true,
-                    "lengthChange": true,
-                    "searching": true,
-                    "ordering": true,
-                    "info": true,
-                    "autoWidth": false,
-                    "responsive": true,
-                    "ajax": {
-                        "url": "/secretary-dept/api/s16/get-all",
-                        "type": "GET",
-                        "dataSrc": function(response) {
-                            if (response.success) {
-                                return response.data;
-                            } else {
-                                console.error('Error loading data:', response.message);
-                                showAlert('Error loading data: ' + response.message, 'danger');
-                                return [];
-                            }
-                        }
-                    },
-                    "columns": [
-                        {
-                            "data": null,
-                            "render": function (data, type, row, meta) {
-                                return meta.row + 1; // No
-                            }
-                        },
-                        { "data": "ref" },
-                        { "data": "companyName" },
-                        { "data": "companyNo" },
-                        {
-                            "data": "incorpDate",
-                            "render": function (data) {
-                                if (!data) return "";
-                                const d = new Date(data);
-                                const day = String(d.getDate()).padStart(2, '0');
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const year = d.getFullYear();
-                                return `${day}/${month}/${year}`;
-                            }
-                        },
-                        { "data": "yearEnd" },
-                        { "data": "startDate" },
-                        { "data": "completeDate" },
-                        { "data": "doneBy" },
-                        { "data": "completedDate" },
-                        {
-                            "data": "penaltiesRM",
-                            "render": function (data) {
-                                return data
-                                    ? 'RM ' + parseFloat(data).toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })
-                                    : '-';
-                            }
-                        },
-                        {
-                            "data": "revisedPenalties",
-                            "render": function (data) {
-                                return data
-                                    ? 'RM ' + parseFloat(data).toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })
-                                    : '-';
-                            }
-                        },
-                        { "data": "appealDate" },
-                        { "data": "paymentDate" },
-                        { "data": "s_OffDocsendtoClient" },
-                        { "data": "ssMsubmitDate" },
-                        { "data": "ssMstrikeoffDate" },
-                        { "data": "remark" },
-                        { "data": "action" },
-                        { "data": "datePassToTaxDept" },
-                        { "data": "formCSubmitDate" },
-                        {
-                            "data": "jobCompleted",
-                            "render": function (data) {
-                                const statusClass =
-                                    data === 'Completed' ? 'badge bg-success' :
-                                        data === 'In Progress' ? 'badge bg-warning' :
-                                            data === 'Backlog' ? 'badge bg-danger' :
-                                                'badge bg-secondary';
-                                return data
-                                    ? `<span class="${statusClass}">${data}</span>`
-                                    : '<span class="badge bg-secondary">Unknown</span>';
-                            }
-                        },
-                        {
-                            "data": "id",
-                            "render": function (data, type, row) {
-                                return `
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>`;
-                            },
-                            "orderable": false
-                        }
-                    ]
-                    ,
-                    "language": {
-                        "emptyTable": "No records available",
-                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                        "infoEmpty": "Showing 0 to 0 of 0 entries",
-                        "infoFiltered": "(filtered from _MAX_ total entries)",
-                        "lengthMenu": "Show _MENU_ entries",
-                        "loadingRecords": "Loading...",
-                        "processing": "Processing...",
-                        "search": "Search:",
-                        "zeroRecords": "No matching records found"
-                    }
-                });
-            }
-
-            // 初始化日期选择器
-            function initializeDatePickers() {
-                $('.datepicker').datepicker({
-                    format: 'dd/mm/yyyy',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-            }
-
-            // 保存 S16 记录
-            function saveS16Record() {
-                // 基本验证
-                if (!$('#companyName').val()) {
-                    showAlert('Please enter company name', 'warning');
-                    return;
-                }
-
-                const formData = {
-                    ref: $('#ref').val(),
-                    companyName: $('#companyName').val(),
-                    companyNo: $('#companyNo').val(),
-                    incorpDate: $('#incorpDate').val(),
-                    yearEnd: $('#yearEnd').val(),
-                    startDate: $('#startDate').val(),
-                    completeDate: $('#completeDate').val(),
-                    doneBy: $('#doneBy').val(),
-                    completedDate: $('#completedDate').val(),
-                    penaltiesRM: $('#penaltiesRM').val(),
-                    revisedPenalties: $('#revisedPenalties').val(),
-                    appealDate: $('#appealDate').val(),
-                    paymentDate: $('#paymentDate').val(),
-                    s_OffDocsendtoClient: $('#s_OffDocsendtoClient').val(),
-                    ssmSubmitDate: $('#ssmSubmitDate').val(),
-                    ssmStrikeoffDate: $('#ssmStrikeoffDate').val(),
-                    remark: $('#remark').val(),
-                    action: $('#action').val(),
-                    datePassToTaxDept: $('#datePassToTaxDept').val(),
-                    formCSubmitDate: $('#formCSubmitDate').val(),
-                    jobCompleted: $('#jobCompleted').val()
-                };
-
-                const url = currentEditId ? '/secretary-dept/api/s16/update' : '/secretary-dept/api/s16/create';
-                const method = currentEditId ? 'PUT' : 'POST';
-
-                if (currentEditId) {
-                    formData.id = currentEditId;
-                }
-
-                // 显示加载状态
-                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
-
-                $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#taskModal').modal('hide');
-                            dataTable.ajax.reload();
-                            resetForm();
-                            showAlert('Record saved successfully!', 'success');
-                        } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Error saving record: ' + error, 'danger');
-                    },
-                    complete: function() {
-                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    }
-                });
-            }
-
-            // 编辑记录
-            $(document).on('click', '.edit-btn', function() {
-                const id = $(this).data('id');
-                editRecord(id);
-            });
-
-            // 删除记录
-            $(document).on('click', '.delete-btn', function() {
-                const id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 编辑记录
-            function editRecord(id) {
-                $.get(`/secretary-dept/api/s16/get/${id}`, function (response) {
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditId = record.id;
-
-                        $('#ref').val(record.ref || '');
-                        $('#companyName').val(record.companyName || '');
-                        $('#companyNo').val(record.companyNo || '');
-                        $('#incorpDate').val(record.incorpDate || '');
-                        $('#yearEnd').val(record.yearEnd || '');
-                        $('#startDate').val(record.startDate || '');
-                        $('#completeDate').val(record.completeDate || '');
-                        $('#doneBy').val(record.doneBy || '');
-                        $('#completedDate').val(record.completedDate || '');
-                        $('#penaltiesRM').val(record.penaltiesRM || '');
-                        $('#revisedPenalties').val(record.revisedPenalties || '');
-                        $('#appealDate').val(record.appealDate || '');
-                        $('#paymentDate').val(record.paymentDate || '');
-                        $('#s_OffDocsendtoClient').val(record.s_OffDocsendtoClient || '');
-                        $('#ssmSubmitDate').val(record.ssMsubmitDate || '');
-                        $('#ssmStrikeoffDate').val(record.ssMstrikeoffDate || '');
-                        $('#remark').val(record.remark || '');
-                        $('#action').val(record.action || '');
-                        $('#datePassToTaxDept').val(record.datePassToTaxDept || '');
-                        $('#formCSubmitDate').val(record.formCSubmitDate || '');
-                        $('#jobCompleted').val(record.jobCompleted || '');
-
-                        $('#modalTitle').text('Edit Strike Off Record');
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
-                    }
-                });
-            }
-
-
-            // 删除记录
-            function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-                    $.ajax({
-                        url: `/secretary-dept/api/s16/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                dataTable.ajax.reload();
-                                showAlert('Record deleted successfully!', 'success');
-                            } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            showAlert('Error deleting record: ' + error, 'danger');
-                        }
-                    });
-                }
-            }
-
-            // 重置表单
-            function resetForm() {
-                $('#taskForm')[0].reset();
-                currentEditId = null;
-                $('#modalTitle').text('Add New Strike Off Record');
-                $('.datepicker').datepicker('update', '');
-            }
-
-            // 显示提示信息
-            function showAlert(message, type) {
-                const alertClass = `alert alert-${type} alert-dismissible fade show`;
-                const alertHtml = `
-                    <div class="${alertClass}" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                $('#alertContainer').html(alertHtml);
-
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
-            }
-
-            // 模态框关闭时重置表单
+            // 7. 模态框重置
             $('#taskModal').on('hidden.bs.modal', function() {
                 resetForm();
             });
         });
 
+        // 🟢 DataTable 初始化
+        function initializeDataTable() {
+            dataTable = $('#taskDatatable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "ajax": {
+                    "url": "/secretary-dept/api/s16/get-all",
+                    "type": "GET",
+                    "dataSrc": function(response) {
+                        return response.success ? response.data : [];
+                    }
+                },
+                "columns": [
+                    { 
+                        "data": null, 
+                        "render": function (data, type, row, meta) { return meta.row + 1; } 
+                    },
+                    { "data": "ref" },
+                    { "data": "companyName" },
+                    { "data": "companyNo" },
+                    { 
+                        "data": "incorpDate",
+                        "render": function(data) { return formatIsoDate(data); }
+                    },
+                    { "data": "yearEnd" },
+                    { "data": "startDate" },
+                    { "data": "completeDate" },
+                    { "data": "doneBy" },
+                    { "data": "completedDate" },
+                    { "data": "penaltiesRM", "render": $.fn.dataTable.render.number(',', '.', 2, 'RM ') },
+                    { "data": "revisedPenalties", "render": $.fn.dataTable.render.number(',', '.', 2, 'RM ') },
+                    { "data": "appealDate" },
+                    { "data": "paymentDate" },
+                    { "data": "s_OffDocsendtoClient" },
+                    { "data": "ssMsubmitDate" },
+                    { "data": "ssMstrikeoffDate" },
+                    { "data": "remark" },
+                    { "data": "action" },
+                    { "data": "datePassToTaxDept" },
+                    { "data": "formCSubmitDate" },
+                    { 
+                        "data": "jobCompleted",
+                        "render": function (data) {
+                            const cls = data === 'Completed' ? 'success' : (data === 'Backlog' ? 'danger' : 'warning');
+                            return data ? `<span class="badge bg-${cls}">${data}</span>` : '';
+                        }
+                    },
+                    {
+                        "data": null, // 🔴 设为 null 以便访问整行数据
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            // 🟢 兼容 ID 大小写
+                            const id = row.id || row.Id; 
+                            
+                            if (!id) return '<span class="text-danger">Error: No ID</span>';
+
+                            return `
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>`;
+                        }
+                    }
+                ]
+            });
+        }
+
+        // 🟢 加载 Client List
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/auditdept/clients/get-list',
+                type: 'GET',
+                success: function(res) {
+                    if (res && res.success) {
+                        clientList = res.data || [];
+                        const $sel = $('#clientSelect');
+                        $sel.empty();
+                        $sel.append('<option value="">-- Select client --</option>');
+
+                        const filteredList = clientList.filter(c => {
+                            const type = getVal(c, 'ClientType') || getVal(c, 'Type'); 
+                            return type === 'SdnBhd' || type === 'LLP' || type === 1 || type === 2; 
+                        });
+
+                        filteredList.forEach(function(c) {
+                            const id = getVal(c, 'Id');
+                            const name = getVal(c, 'CompanyName');
+                            const type = getVal(c, 'ClientType') || getVal(c, 'Type');
+                            const displayText = `${name} (${type})`;
+                            $sel.append(`<option value="${id}">${displayText}</option>`);
+                        });
+                    }
+                }
+            });
+        }
+
+        // 🟢 保存逻辑
+        function saveS16Record() {
+            if (!$('#clientSelect').val() && !$('#recordId').val()) {
+                 showAlert('Please select a client.', 'warning');
+                 return;
+            }
+
+            const rawId = $('#recordId').val();
+            const idVal = rawId ? parseInt(rawId) : 0; 
+
+            const formData = {
+                id: idVal,
+                ref: $('#ref').val(),
+                companyName: $('#client').val(), 
+                companyNo: $('#companyNo').val(),
+                incorpDate: $('#incorpDate').val(),
+                yearEnd: $('#yearEnd').val(),
+                startDate: $('#startDate').val(),
+                completeDate: $('#completeDate').val(),
+                doneBy: $('#doneBy').val(),
+                completedDate: $('#completedDate').val(),
+                penaltiesRM: $('#penaltiesRM').val() ? parseFloat($('#penaltiesRM').val()) : null,
+                revisedPenalties: $('#revisedPenalties').val() ? parseFloat($('#revisedPenalties').val()) : null,
+                appealDate: $('#appealDate').val(),
+                paymentDate: $('#paymentDate').val(),
+                s_OffDocsendtoClient: $('#s_OffDocsendtoClient').val(),
+                ssMsubmitDate: $('#ssmSubmitDate').val(),
+                ssMstrikeoffDate: $('#ssmStrikeoffDate').val(),
+                remark: $('#remark').val(),
+                action: $('#action').val(),
+                datePassToTaxDept: $('#datePassToTaxDept').val(),
+                formCSubmitDate: $('#formCSubmitDate').val(),
+                jobCompleted: $('#jobCompleted').val()
+            };
+
+            const url = idVal > 0 ? '/secretary-dept/api/s16/update' : '/secretary-dept/api/s16/create';
+            const method = idVal > 0 ? 'PUT' : 'POST';
+
+            $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(res) {
+                    if (res.success) {
+                        $('#taskModal').modal('hide');
+                        dataTable.ajax.reload();
+                        showAlert('Saved successfully!', 'success');
+                    } else {
+                        let errorMsg = res.message || 'Unknown error';
+                        if(res.errors && Array.isArray(res.errors)) {
+                            errorMsg = res.errors.join('<br>');
+                        }
+                        showAlert('Error: ' + errorMsg, 'danger');
+                    }
+                },
+                error: function(xhr) { showAlert('Error: ' + xhr.statusText, 'danger'); },
+                complete: function() { $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save'); }
+            });
+        }
+
+        // 🟢 编辑逻辑
+        function editRecord(id) {
+            $.get(`/secretary-dept/api/s16/get/${id}`, function(res) {
+                if (res.success) {
+                    const d = res.data;
+                    $('#recordId').val(d.id || d.Id); // 兼容大小写
+                    $('#ref').val(d.ref);
+                    
+                    const name = d.companyName;
+                    $('#client').val(name); 
+                    
+                    const $option = $("#clientSelect option").filter(function() {
+                        return $(this).text().includes(name); 
+                    });
+                    if ($option.length > 0) {
+                        $option.prop('selected', true);
+                    }
+
+                    $('#companyNo').val(d.companyNo);
+                    $('#incorpDate').val(formatIsoDate(d.incorpDate));
+                    $('#yearEnd').val(d.yearEnd);
+                    $('#startDate').val(formatIsoDate(d.startDate));
+                    $('#completeDate').val(formatIsoDate(d.completeDate));
+                    $('#doneBy').val(d.doneBy);
+                    $('#completedDate').val(formatIsoDate(d.completedDate));
+                    $('#penaltiesRM').val(d.penaltiesRM);
+                    $('#revisedPenalties').val(d.revisedPenalties);
+                    $('#appealDate').val(formatIsoDate(d.appealDate));
+                    $('#paymentDate').val(formatIsoDate(d.paymentDate));
+                    $('#s_OffDocsendtoClient').val(formatIsoDate(d.s_OffDocsendtoClient));
+                    $('#ssmSubmitDate').val(formatIsoDate(d.ssMsubmitDate));
+                    $('#ssmStrikeoffDate').val(formatIsoDate(d.ssMstrikeoffDate));
+                    $('#remark').val(d.remark);
+                    $('#action').val(d.action);
+                    $('#datePassToTaxDept').val(formatIsoDate(d.datePassToTaxDept));
+                    $('#formCSubmitDate').val(formatIsoDate(d.formCSubmitDate));
+                    $('#jobCompleted').val(d.jobCompleted);
+
+                    $('#modalTitle').text('Edit Strike Off Record');
+                    $('#taskModal').modal('show');
+                } else {
+                    showAlert(res.message, 'danger');
+                }
+            });
+        }
+
+        // 🟢 删除逻辑
+        function deleteRecord(id) {
+            if (confirm('Delete this record?')) {
+                $.ajax({
+                    url: `/secretary-dept/api/s16/delete/${id}`,
+                    type: 'DELETE',
+                    success: function(res) {
+                        if (res.success) {
+                            dataTable.ajax.reload();
+                            showAlert('Deleted successfully', 'success');
+                        } else {
+                            showAlert(res.message, 'danger');
+                        }
+                    }
+                });
+            }
+        }
+
+        function resetForm() {
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#client').val('');
+            $('#clientId').val('');
+            $('#modalTitle').text('Add New Strike Off Record');
+            $('.datepicker').datepicker('update', '');
+        }
+
+        function showAlert(msg, type) {
+            const html = `<div class="alert alert-${type} alert-dismissible fade show">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+            $('#alertContainer').html(html);
+            setTimeout(() => $('.alert').alert('close'), 4000);
+        }
+        
         function refreshData() {
-            $('#taskDatatable').DataTable().ajax.reload();
-            showAlert('Data refreshed successfully!', 'info');
+            dataTable.ajax.reload();
+            showAlert('Data refreshed', 'info');
         }
     </script>
 }

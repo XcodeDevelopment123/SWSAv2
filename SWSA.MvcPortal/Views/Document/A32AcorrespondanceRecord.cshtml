@@ -19,73 +19,26 @@
                 </div>
             </div>
 
-            <!-- 状态显示区域 -->
             <div id="connectionStatus" class="mt-2 mx-3"></div>
 
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Case No#</th>
-                            <th colspan="2">Correspondence Received</th>
-                            <th rowspan="2">Client</th>
-                            <th rowspan="2">Year of Assessments</th>
-                            <th rowspan="2">Details</th>
-                            <th colspan="2">Action taken</th>
-                            <th rowspan="2">PIC</th>
-                            <th rowspan="2">Remark</th>
-                            <th rowspan="2">Done on</th>
-                            <th rowspan="2">Actions</th>
-                        </tr>
-                        <tr>
-                            <th>Date received</th>
-                            <th>Type of Incoming</th>
-                            <th>Date</th>
-                            <th>Brief descriptions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var record in Model)
-                            {
-                                <tr data-id="@record.Id">
-                                    <td>@record.CaseNo</td>
-                                    <td>@record.DateReceived</td>
-                                    <td>@record.TypeIncoming</td>
-                                    <td>@record.Client</td>
-                                    <td>@record.YearAssessment</td>
-                                    <td>@record.Details</td>
-                                    <td>@record.Date</td>
-                                    <td>@record.BriefDescritions</td>
-                                    <td>@record.Pic</td>
-                                    <td>@record.Remark</td>
-                                    <td>@record.DoneOn</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="@record.Id" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="@record.Id" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
+                        <thead>
                             <tr>
-                                <td colspan="12" class="text-center">No records found</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                                <th rowspan="2">Case No#</th>                  <th colspan="2">Correspondence Received</th>   <th rowspan="2">Client</th>                    <th rowspan="2">Year of Assessments</th>       <th rowspan="2">Details</th>                   <th colspan="2">Action taken</th>              <th rowspan="2">PIC</th>                       <th rowspan="2">Remark</th>                    <th rowspan="2">Done on</th>                   <th rowspan="2">Actions</th>                   </tr>
+                            <tr>
+                                <th>Date received</th>                         <th>Type of Incoming</th>                      <th>Date</th>                                  <th>Brief descriptions</th>                    </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -100,136 +53,58 @@
                 <form id="taskForm">
                     <input type="hidden" id="editIndex" value="">
 
-                    <!-- Case No -->
-                    <div class="form-info-label col-12">
-                        <label>Case Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="caseNo">Case No#</label>
-                                <input type="text" id="caseNo" name="caseNo" class="form-control" placeholder="Enter case number" />
-                            </div>
-                        </div>
-                    </div>
+                    <div class="form-info-label col-12"><label>Case Information</label></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group"><label for="caseNo">Case No#</label><input type="text" id="caseNo" name="caseNo" class="form-control" placeholder="Enter case number" /></div></div></div>
 
-                    <!-- Correspondence Received -->
-                    <div class="form-info-label col-12">
-                        <label>Correspondence Received</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Correspondence Received</label></div>
                     <div class="row">
+                        <div class="col-md-6"><div class="form-group"><label for="irbDateReceived">IRB Date received</label><input type="text" id="irbDateReceived" name="irbDateReceived" class="form-control datepicker" placeholder="Select date" /></div></div>
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="irbDateReceived">IRB Date received</label>
-                                <input type="text" id="irbDateReceived" name="irbDateReceived" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="typeOfIncoming">Type of Incoming</label>
+                            <div class="form-group"><label for="typeOfIncoming">Type of Incoming</label>
                                 <select id="typeOfIncoming" name="typeOfIncoming" class="form-control">
-                                    <option value="">Select Type</option>
-                                    <option value="Tax Assessment">Tax Assessment</option>
-                                    <option value="Audit Query">Audit Query</option>
-                                    <option value="Notice">Notice</option>
-                                    <option value="Letter">Letter</option>
-                                    <option value="Other">Other</option>
+                                    <option value="">Select Type</option><option value="Tax Assessment">Tax Assessment</option><option value="Audit Query">Audit Query</option><option value="Notice">Notice</option><option value="Letter">Letter</option><option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Client Information -->
-                    <div class="form-info-label col-12">
-                        <label>Client Information</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Client Information</label></div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="client">Client (Suppose Link From Client List)</label>
-                                <input type="text" id="client" name="client" class="form-control" placeholder="Enter client name" />
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required><option value="">-- Select client --</option></select>
+                                  <small class="text-muted">
+                                    Options are linked from the Sdn Bhd Client List.
+                                </small>
+                                <input type="hidden" id="client" name="client" /><input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="yearOfAssessments">Year of Assessments</label>
-                                <input type="text" id="yearOfAssessments" name="yearOfAssessments" class="form-control" placeholder="Enter year" />
-                            </div>
-                        </div>
+                        <div class="col-md-6"><div class="form-group"><label for="yearOfAssessments">Year of Assessments</label><input type="text" id="yearOfAssessments" name="yearOfAssessments" class="form-control" placeholder="Enter year" /></div></div>
                     </div>
 
-                    <!-- Details -->
-                    <div class="form-info-label col-12">
-                        <label>Details</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Details</label></div>
+                    <div class="row"><div class="col-md-12"><div class="form-group"><label for="details">Details</label><textarea id="details" name="details" class="form-control" placeholder="Enter details" rows="3"></textarea></div></div></div>
+
+                    <div class="form-info-label col-12"><label>Action Taken</label></div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="details">Details</label>
-                                <textarea id="details" name="details" class="form-control" placeholder="Enter details" rows="3"></textarea>
-                            </div>
-                        </div>
+                        <div class="col-md-6"><div class="form-group"><label for="actionDate">Date</label><input type="text" id="actionDate" name="actionDate" class="form-control datepicker" placeholder="Select date" /></div></div>
+                        <div class="col-md-6"><div class="form-group"><label for="briefDescriptions">Brief descriptions</label><input type="text" id="briefDescriptions" name="briefDescriptions" class="form-control" placeholder="Enter brief description" /></div></div>
                     </div>
 
-                    <!-- Action Taken -->
-                    <div class="form-info-label col-12">
-                        <label>Action Taken</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>PIC and Remark</label></div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="actionDate">Date</label>
-                                <input type="text" id="actionDate" name="actionDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="briefDescriptions">Brief descriptions</label>
-                                <input type="text" id="briefDescriptions" name="briefDescriptions" class="form-control" placeholder="Enter brief description" />
-                            </div>
-                        </div>
+                        <div class="col-md-6"><div class="form-group"><label for="pic">PIC</label><input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" /></div></div>
+                        <div class="col-md-6"><div class="form-group"><label for="remark">Remark</label><input type="text" id="remark" name="remark" class="form-control" placeholder="Enter remark" /></div></div>
                     </div>
 
-                    <!-- PIC and Remark -->
-                    <div class="form-info-label col-12">
-                        <label>PIC and Remark</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="remark">Remark</label>
-                                <input type="text" id="remark" name="remark" class="form-control" placeholder="Enter remark" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Completion -->
-                    <div class="form-info-label col-12">
-                        <label>Completion</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="doneOn">Done on</label>
-                                <input type="text" id="doneOn" name="doneOn" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
+                    <div class="form-info-label col-12"><label>Completion</label></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group"><label for="doneOn">Done on</label><input type="text" id="doneOn" name="doneOn" class="form-control datepicker" placeholder="Select date" /></div></div></div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fas fa-save me-2"></i>Save</button>
             </div>
         </div>
     </div>
@@ -238,115 +113,107 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        // 防止 DataTables 重复初始化
         let dataTableInitialized = false;
         let dataTable;
+        let clientOptionsMap = {};
+
+        // 1. 加载 Dropdown
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function (res) {
+                    if (!(res && res.success && Array.isArray(res.data))) return;
+                    clientOptionsMap = {};
+                    const $sel = $('#clientSelect');
+                    $sel.empty().append('<option value="">-- Select client --</option>');
+                    res.data.forEach(o => {
+                        const id = o.value || o.Value || o.id;
+                        const text = o.text || o.Text || o.companyName;
+                        if (id) {
+                            clientOptionsMap[id] = { id: id, text: text };
+                            $sel.append(`<option value="${id}">${text}</option>`);
+                        }
+                    });
+                },
+                error: function (xhr) { console.error('Failed to load client options', xhr); }
+            });
+        }
 
         $(document).ready(function() {
-            console.log('Page loaded, initializing...');
+            loadClientOptions();
 
-            // 先销毁已存在的 DataTable 实例
+            // 2. 初始化 DataTable
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 $('#taskDatatable').DataTable().destroy();
             }
 
-            // 初始化 DataTable - 现在有12列
             dataTable = $('#taskDatatable').DataTable({
-                "responsive": true,
+                "responsive": false, // 【修复2】暂时关闭 responsive，避免复杂表头计算错误
                 "autoWidth": false,
                 "pageLength": 10,
+                // 【修复3】显式定义 12 列，防止 Incorrect column count 错误
+                // 即使是 null，也要占位，告诉 DataTables 有 12 个坑
                 "columns": [
-                    { title: "Case No#" },              // 列1
-                    { title: "Date received" },         // 列2
-                    { title: "Type of Incoming" },      // 列3
-                    { title: "Client" },                // 列4
-                    { title: "Year of Assessments" },   // 列5
-                    { title: "Details" },               // 列6
-                    { title: "Date" },                  // 列7
-                    { title: "Brief descriptions" },    // 列8
-                    { title: "PIC" },                   // 列9
-                    { title: "Remark" },                // 列10
-                    { title: "Done on" },               // 列11
-                    { title: "Actions" }                // 列12
-                ],
-                "language": {
-                    "search": "Search:",
-                    "lengthMenu": "Show _MENU_ entries",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "infoEmpty": "Showing 0 to 0 of 0 entries",
-                    "paginate": {
-                        "first": "First",
-                        "last": "Last",
-                        "next": "Next",
-                        "previous": "Previous"
-                    }
-                }
+                    { width: "10%" }, // 0. Case No
+                    { width: "10%" }, // 1. Date Rec
+                    { width: "10%" }, // 2. Type
+                    { width: "15%" }, // 3. Client
+                    { width: "8%" },  // 4. Year
+                    { width: "15%" }, // 5. Details
+                    { width: "10%" }, // 6. Date Action
+                    { width: "15%" }, // 7. Brief Desc
+                    { width: "10%" }, // 8. PIC
+                    { width: "10%" }, // 9. Remark
+                    { width: "10%" }, // 10. Done On
+                    { width: "10%", orderable: false } // 11. Actions
+                ]
             });
             dataTableInitialized = true;
 
-            // 初始化日期选择器
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
+            $('.datepicker').datepicker({ format: 'dd/mm/yyyy', autoclose: true, todayHighlight: true });
+
+            // Dropdown Change Logic
+            $('#clientSelect').on('change', function () {
+                const id = $(this).val();
+                const selectedOption = clientOptionsMap[id];
+                if (selectedOption) {
+                    $('#client').val(selectedOption.text);
+                    $('#clientId').val(selectedOption.id);
+                } else {
+                    $('#client').val('');
+                    $('#clientId').val('');
+                }
             });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                console.log('Save button clicked!');
-                saveRecord();
-            });
+            $('#saveBtn').click(function() { saveRecord(); });
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
+            $('#taskModal').on('hidden.bs.modal', function() { clearForm(); });
 
-            // 编辑按钮事件
-            $(document).on('click', '.edit-btn', function() {
-                var id = $(this).data('id');
-                editRecord(id);
-            });
-
-            // 删除按钮事件
-            $(document).on('click', '.delete-btn', function() {
-                var id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 模态框关闭时清除表单
-            $('#taskModal').on('hidden.bs.modal', function() {
-                clearForm();
-            });
-
-            // 页面加载时自动加载数据
             loadRecordsFromDatabase();
         });
 
         function loadRecordsFromDatabase() {
-            showAlert('🔄 Loading records...', 'info');
-
             $.ajax({
                 url: '/documents/get-a32a-records',
                 type: 'GET',
                 success: function(response) {
-                    console.log('Load records response:', response);
                     if (response.success) {
-                        showAlert('✅ Loaded ' + response.data.length + ' records', 'success');
                         populateTable(response.data);
                     } else {
                         showAlert('❌ Error: ' + response.message, 'error');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
                     showAlert('❌ Failed to load records: ' + error, 'error');
                 }
             });
@@ -354,39 +221,29 @@
 
         function populateTable(records) {
             if (!dataTableInitialized) return;
-
             dataTable.clear();
-
             if (records && records.length > 0) {
-                records.forEach(function(record, index) {
+                records.forEach(function(record) {
+                    // 【修复4】确保这里推入的是一个包含 12 个元素的数组
                     dataTable.row.add([
-                        record.caseNo || '',                          // Case No# (1)
-                        formatDateForDisplay(record.dateReceived),    // Date received (2)
-                        record.typeIncoming,                          // Type of Incoming (3)
-                        record.client,                                // Client (4)
-                        record.yearAssessment,                        // Year of Assessments (5)
-                        record.details,                               // Details (6)
-                        formatDateForDisplay(record.date),            // Date (Action taken) (7)
-                        record.briefDescritions,                      // Brief descriptions (Action taken) (8)
-                        record.pic,                                   // PIC (9)
-                        record.remark,                                // Remark (10)
-                        formatDateForDisplay(record.doneOn),          // Done on (11)
-                        '<button class="btn btn-sm btn-warning edit-btn" data-id="' + record.id + '" title="Edit">' +
-                            '<i class="fas fa-edit"></i>' +
-                        '</button> ' +
-                        '<button class="btn btn-sm btn-danger delete-btn" data-id="' + record.id + '" title="Delete">' +
-                            '<i class="fas fa-trash"></i>' +
-                        '</button>'                                   // Actions (12)
+                        record.caseNo || '',                    
+                        formatDateForDisplay(record.dateReceived), 
+                        record.typeIncoming,                    
+                        record.client,                          
+                        record.yearAssessment,                  
+                        record.details,                         
+                        formatDateForDisplay(record.date),      
+                        record.briefDescritions,                
+                        record.pic,                             
+                        record.remark,                          
+                        formatDateForDisplay(record.doneOn),    
+                        '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-warning edit-btn" data-id="' + record.id + '" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                        '<button class="btn btn-sm btn-danger delete-btn" data-id="' + record.id + '" title="Delete"><i class="fas fa-trash"></i></button>' +
+                        '</div>'
                     ]);
                 });
-            } else {
-                // 处理空数据情况 - 现在有12个空列
-                dataTable.row.add([
-                    '', '', '', '', '', '', '', '', '', '', '',
-                    '<span class="text-muted">No actions available</span>'
-                ]);
             }
-
             dataTable.draw();
         }
 
@@ -394,16 +251,18 @@
             $('#editIndex').val('');
             $('#taskForm')[0].reset();
             $('#modalTitle').text('Add New Correspondence Record');
+            $('#clientSelect').val('');
+            $('#client').val('');
+            $('#clientId').val('');
         }
 
         function saveRecord() {
-            // 获取表单数据
             var formData = {
                 Id: $('#editIndex').val() || 0,
-                CaseNo: $('#caseNo').val(),                          // 添加 CaseNo
+                CaseNo: $('#caseNo').val(),
                 DateReceived: $('#irbDateReceived').val(),
                 TypeIncoming: $('#typeOfIncoming').val(),
-                Client: $('#client').val(),
+                Client: $('#client').val(), 
                 YearAssessment: $('#yearOfAssessments').val(),
                 Details: $('#details').val(),
                 Date: $('#actionDate').val(),
@@ -413,22 +272,15 @@
                 DoneOn: $('#doneOn').val()
             };
 
-            console.log('Form Data:', formData); // 调试信息
-
-            // 基本验证
-            if (!formData.DateReceived || !formData.TypeIncoming || !formData.Client) {
-                showAlert('Please fill in required fields: Date Received, Type of Incoming, and Client', 'error');
+            if (!formData.DateReceived || !formData.TypeIncoming || !$('#clientSelect').val()) {
+                showAlert('Please fill in required fields.', 'error');
                 return;
             }
 
             var url = formData.Id > 0 ? '/documents/update-a32a' : '/documents/create-a32a';
             var method = formData.Id > 0 ? 'PUT' : 'POST';
-
-            console.log('Sending to:', url, 'Method:', method); // 调试信息
-
-            // 显示加载状态
             var saveBtn = $('#saveBtn');
-            saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+            saveBtn.prop('disabled', true).html('Saving...');
 
             $.ajax({
                 url: url,
@@ -436,49 +288,43 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    console.log('Save response:', response); // 调试信息
-                    saveBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
+                    saveBtn.prop('disabled', false).html('Save');
                     if (response.success) {
                         $('#taskModal').modal('hide');
-                        showAlert('Record saved successfully!', 'success');
-                        loadRecordsFromDatabase(); // 重新加载数据
+                        showAlert('Saved successfully!', 'success');
+                        loadRecordsFromDatabase(); 
                     } else {
-                        var errorMessage = response.errors ? response.errors.join(', ') : response.message;
-                        showAlert('Error saving record: ' + errorMessage, 'error');
+                        showAlert('Error: ' + (response.message || 'Unknown error'), 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Save error details:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText,
-                        error: error
-                    });
-
-                    saveBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showAlert('Error saving record: ' + error, 'error');
+                error: function(xhr) {
+                    saveBtn.prop('disabled', false).html('Save');
+                    showAlert('Error: ' + xhr.responseText, 'error');
                 }
             });
         }
 
         function editRecord(id) {
-            // 显示加载状态
-            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
-
             $.ajax({
                 url: '/documents/get-a32a-record/' + id,
                 type: 'GET',
                 success: function(response) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Correspondence Record');
-
                     if (response.success) {
                         var data = response.data;
                         $('#editIndex').val(data.id);
-                        $('#caseNo').val(data.caseNo || '');                    // 填充 CaseNo
+                        $('#caseNo').val(data.caseNo || '');
                         $('#irbDateReceived').val(data.dateReceived);
                         $('#typeOfIncoming').val(data.typeIncoming);
-                        $('#client').val(data.client);
+                        
+                        const existingClientName = (data.client || '').trim();
+                        let matchedId = null;
+                        for (const [id, o] of Object.entries(clientOptionsMap)) {
+                            if (o.text === existingClientName) { matchedId = id; break; }
+                        }
+                        $('#client').val(existingClientName);
+                        $('#clientId').val(matchedId || '');
+                        $('#clientSelect').val(matchedId || '');
+
                         $('#yearOfAssessments').val(data.yearAssessment);
                         $('#details').val(data.details);
                         $('#actionDate').val(data.date);
@@ -486,70 +332,37 @@
                         $('#pic').val(data.pic);
                         $('#remark').val(data.remark);
                         $('#doneOn').val(data.doneOn);
-
                         $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + response.message, 'error');
                     }
-                },
-                error: function(xhr, status, error) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Correspondence Record');
-                    showAlert('Error loading record: ' + error, 'error');
-                    console.error('Edit error:', error);
                 }
             });
         }
 
         function deleteRecord(id) {
-            if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+            if (confirm('Delete this record?')) {
                 $.ajax({
                     url: '/documents/delete-a32a/' + id,
                     type: 'DELETE',
                     success: function(response) {
-                        if (response.success) {
-                            showAlert('Record deleted successfully!', 'success');
-                            loadRecordsFromDatabase(); // 重新加载数据
-                        } else {
-                            showAlert('Error deleting record: ' + response.message, 'error');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Error deleting record: ' + error, 'error');
-                        console.error('Delete error:', error);
+                        if (response.success) loadRecordsFromDatabase();
                     }
                 });
             }
         }
 
-        // 格式化日期显示
         function formatDateForDisplay(dateString) {
             if (!dateString) return '';
-            // 如果日期已经是 dd/mm/yyyy 格式，直接返回
-            if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-                return dateString;
-            }
+            if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) return dateString;
+            var isoMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateString);
+            if (isoMatch) return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
             return dateString;
         }
 
-        // 显示提示消息
         function showAlert(message, type) {
-            var alertClass = type === 'success' ? 'alert-success' :
-                           type === 'error' ? 'alert-danger' :
-                           type === 'warning' ? 'alert-warning' : 'alert-info';
-
-            var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
-                message +
-                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>';
-
-            // 在状态区域显示提示
-            $('#connectionStatus').html(alertHtml);
-
-            // 3秒后自动消失（错误消息保持更久）
-            var timeout = type === 'error' ? 5000 : 3000;
-            setTimeout(function() {
-                $('.alert').alert('close');
-            }, timeout);
+            var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            var html = `<div class="alert ${alertClass} alert-dismissible fade show">${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+            $('#connectionStatus').html(html);
+            setTimeout(function() { $('#connectionStatus .alert').fadeOut(function() { $(this).remove(); }); }, 3000);
         }
     </script>
 }

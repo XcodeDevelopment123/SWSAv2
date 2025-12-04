@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<SWSA.MvcPortal.Models.Clients.A32a>
+@{
     ViewData["Title"] = "A32BForm";
 }
 
@@ -18,41 +19,26 @@
                 </div>
             </div>
 
-            <!-- 状态显示区域 -->
             <div id="connectionStatus" class="mt-2 mx-3"></div>
 
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">CaseNo</th>
-                            <th rowspan="2">Date received</th>
-                            <th rowspan="2">Client</th>
-                            <th colspan="2">IRB</th>
-                            <th rowspan="2">Year of Assessment</th>
-                            <th rowspan="2">Date-IRB email/letter</th>
-                            <th rowspan="2">Details of correpondence</th>
-                            <th rowspan="2">PIC</th>
-                            <th colspan="2">Action Taken</th>
-                            <th rowspan="2">Actions</th>
-                        </tr>
-                        <tr>
-                            <th>Officer in charge</th>
-                            <th>Tel/Extension</th>
-                            <th>Date</th>
-                            <th>Note</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- DataTable 会动态填充数据 -->
-                    </tbody>
-                </table>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">CaseNo</th>                  <th rowspan="2">Date received</th>           <th rowspan="2">Client</th>                  <th colspan="2">IRB</th>                     <th rowspan="2">Year of Assessment</th>      <th rowspan="2">Date-IRB email/letter</th>   <th rowspan="2">Details of correpondence</th><th rowspan="2">PIC</th>                     <th colspan="2">Action Taken</th>            <th rowspan="2">Actions</th>                 </tr>
+                            <tr>
+                                <th>Officer in charge</th>                   <th>Tel/Extension</th>                       <th>Date</th>                                <th>Note</th>                                </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -65,12 +51,9 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="editIndex" value="0">
 
-                    <!-- Basic Information -->
-                    <div class="form-info-label col-12">
-                        <label>Basic Information</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Basic Information</label></div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -86,23 +69,21 @@
                         </div>
                     </div>
 
-                    <!-- Client Information -->
-                    <div class="form-info-label col-12">
-                        <label>Client Information</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Client Information</label></div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="client">Client (Suppose Link From Client List)</label>
-                                <input type="text" id="client" name="client" class="form-control" placeholder="Enter client name" />
+                                <label for="companySelect">Client (LLP & Enterprise)</label>
+                                <select id="companySelect" name="companySelect" class="form-control" required>
+                                    <option value="">-- Select company --</option>
+                                </select>
+                                <small class="text-muted">Options are filtered for LLP & Enterprise clients.</small>
+                                <input type="hidden" id="client" name="client" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- IRB Information -->
-                    <div class="form-info-label col-12">
-                        <label>IRB Information</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>IRB Information</label></div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -118,10 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Assessment Details -->
-                    <div class="form-info-label col-12">
-                        <label>Assessment Details</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Assessment Details</label></div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -137,10 +115,7 @@
                         </div>
                     </div>
 
-                    <!-- Correspondence Details -->
-                    <div class="form-info-label col-12">
-                        <label>Correspondence Details</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Correspondence Details</label></div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -150,10 +125,7 @@
                         </div>
                     </div>
 
-                    <!-- PIC Information -->
-                    <div class="form-info-label col-12">
-                        <label>PIC Information</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>PIC Information</label></div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -163,10 +135,7 @@
                         </div>
                     </div>
 
-                    <!-- Action Taken -->
-                    <div class="form-info-label col-12">
-                        <label>Action Taken</label>
-                    </div>
+                    <div class="form-info-label col-12"><label>Action Taken</label></div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -184,12 +153,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fas fa-save me-2"></i>Save</button>
             </div>
         </div>
     </div>
@@ -198,202 +163,185 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-        // 防止 DataTables 重复初始化
         let dataTableInitialized = false;
         let dataTable;
+        let clientOptionsMap = {};
+
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/auditdept/clients/get-list',
+                type: 'GET',
+                success: function (res) {
+                    if (!(res && res.success && Array.isArray(res.data))) return;
+                    clientOptionsMap = {};
+                    const $sel = $('#companySelect');
+                    $sel.empty().append('<option value="">-- Select company --</option>');
+
+                    res.data.forEach(o => {
+                        const type = o.clientType || o.ClientType;
+                        const name = o.companyName || o.CompanyName;
+                        const id = o.id || o.Id;
+
+                        if (type === 'LLP' || type === 'Enterprise') {
+                            const display = `${name} (${type})`;
+                            clientOptionsMap[id] = { id: id, text: name, type: type };
+                            $sel.append(`<option value="${id}">${display}</option>`);
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    showAlert('❌ Failed to load client list.', 'error');
+                }
+            });
+        }
 
         $(document).ready(function() {
-            console.log('A32B Page loaded, initializing...');
+            loadClientOptions();
 
-            // 先销毁已存在的 DataTable 实例
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 $('#taskDatatable').DataTable().destroy();
             }
 
-            // 初始化 DataTable
+            // 【修复2】DataTable 初始化配置
+            // responsive: false (防止复杂表头错误)
+            // 显式定义 12 列 (防止 Incorrect column count)
             dataTable = $('#taskDatatable').DataTable({
-                "responsive": true,
+                "responsive": false,
+                "scrollX": true,
                 "autoWidth": false,
                 "pageLength": 10,
                 "columns": [
-                    { title: "CaseNo" },                   // 列1
-                    { title: "Date received" },           // 列2
-                    { title: "Client" },                  // 列3
-                    { title: "Officer in charge" },       // 列4
-                    { title: "Tel/Extension" },           // 列5
-                    { title: "Year of Assessment" },      // 列6
-                    { title: "Date-IRB email/letter" },   // 列7
-                    { title: "Details of correspondence" },// 列8
-                    { title: "PIC" },                     // 列9
-                    { title: "Date" },                    // 列10
-                    { title: "Note" },                    // 列11
-                    { title: "Actions" }                  // 列12 - 新增操作列
+                    { width: "10%" }, // 0 CaseNo
+                    { width: "10%" }, // 1 Date received
+                    { width: "15%" }, // 2 Client
+                    { width: "10%" }, // 3 Officer
+                    { width: "10%" }, // 4 Tel
+                    { width: "10%" }, // 5 Year
+                    { width: "10%" }, // 6 Date-IRB
+                    { width: "15%" }, // 7 Details
+                    { width: "10%" }, // 8 PIC
+                    { width: "10%" }, // 9 Date Action
+                    { width: "15%" }, // 10 Note
+                    { width: "10%", orderable: false } // 11 Actions
                 ],
                 "language": {
                     "search": "Search:",
                     "lengthMenu": "Show _MENU_ entries",
                     "info": "Showing _START_ to _END_ of _TOTAL_ entries",
                     "infoEmpty": "Showing 0 to 0 of 0 entries",
-                    "paginate": {
-                        "first": "First",
-                        "last": "Last",
-                        "next": "Next",
-                        "previous": "Previous"
-                    }
+                    "emptyTable": "No records found",
+                    "paginate": { "first": "First", "last": "Last", "next": "Next", "previous": "Previous" }
                 }
             });
             dataTableInitialized = true;
 
-            // 初始化日期选择器
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
+            $('.datepicker').datepicker({ format: 'dd/mm/yyyy', autoclose: true, todayHighlight: true });
+
+            $('#companySelect').on('change', function () {
+                const id = $(this).val();
+                const selectedOption = clientOptionsMap[id];
+                $('#client').val(selectedOption ? selectedOption.text : '');
             });
 
-            // 为所有日期字段添加日期选择器
-            $('#dateReceived, #irbEmailDate, #actionDate').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            });
+            $('#saveBtn').click(function() { saveRecord(); });
+            $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
+            $('#taskModal').on('hidden.bs.modal', function() { clearForm(); });
 
-            // 保存按钮点击事件
-            $('#saveBtn').click(function() {
-                console.log('Save button clicked!');
-                saveRecord();
-            });
-
-            // 编辑按钮事件
-            $(document).on('click', '.edit-btn', function() {
-                var id = $(this).data('id');
-                editRecord(id);
-            });
-
-            // 删除按钮事件
-            $(document).on('click', '.delete-btn', function() {
-                var id = $(this).data('id');
-                deleteRecord(id);
-            });
-
-            // 模态框关闭时清除表单
-            $('#taskModal').on('hidden.bs.modal', function() {
-                clearForm();
-            });
-
-            // 页面加载时自动加载数据
             loadRecordsFromDatabase();
         });
 
         function loadRecordsFromDatabase() {
-            showAlert('🔄 Loading A32B records...', 'info');
-
             $.ajax({
                 url: '/documents/get-a32b-records',
                 type: 'GET',
                 success: function(response) {
-                    console.log('Load A32B records response:', response);
                     if (response.success) {
-                        showAlert('✅ Loaded ' + response.data.length + ' A32B records', 'success');
                         populateTable(response.data);
+                        showAlert('✅ Loaded ' + response.data.length + ' A32B records', 'success');
                     } else {
                         showAlert('❌ Error: ' + response.message, 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    showAlert('❌ Failed to load A32B records: ' + error, 'error');
-                }
+                error: function() { showAlert('❌ Failed to load A32B records.', 'error'); }
             });
         }
 
         function populateTable(records) {
             if (!dataTableInitialized) return;
-
             dataTable.clear();
-
             if (records && records.length > 0) {
-                records.forEach(function(record, index) {
+                records.forEach(function(record) {
+                    // 【修复3】确保这里的数据项严格等于 12 个
                     dataTable.row.add([
-                        record.caseNo || '',                          // CaseNo (1)
-                        formatDateForDisplay(record.dateReceived),    // Date received (2)
-                        record.client,                                // Client (3)
-                        record.officerInCharge,                       // Officer in charge (4)
-                        record.telExtension,                          // Tel/Extension (5)
-                        record.yearAssessment,                        // Year of Assessment (6)
-                        formatDateForDisplay(record.dateIRBemailLetter), // Date-IRB email/letter (7)
-                        record.detailsCorrepondence,                  // Details of correspondence (8)
-                        record.pic,                                   // PIC (9)
-                        formatDateForDisplay(record.date),            // Date (Action taken) (10)
-                        record.note,                                  // Note (Action taken) (11)
-                        '<button class="btn btn-sm btn-warning edit-btn" data-id="' + record.id + '" title="Edit">' +
-                            '<i class="fas fa-edit"></i>' +
-                        '</button> ' +
-                        '<button class="btn btn-sm btn-danger delete-btn" data-id="' + record.id + '" title="Delete">' +
-                            '<i class="fas fa-trash"></i>' +
-                        '</button>'                                   // Actions (12)
+                        record.caseNo || '',                    
+                        formatDateForDisplay(record.dateReceived), 
+                        record.client, 
+                        record.officerInCharge || '',
+                        record.telExtension || '',
+                        record.yearAssessment || '',
+                        formatDateForDisplay(record.dateIRBemailLetter), 
+                        record.detailsCorrepondence || '',
+                        record.pic || '',
+                        formatDateForDisplay(record.date),      
+                        record.note || '',
+                        '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-warning edit-btn" data-id="' + record.id + '" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                        '<button class="btn btn-sm btn-danger delete-btn" data-id="' + record.id + '" title="Delete"><i class="fas fa-trash"></i></button>' +
+                        '</div>'
                     ]);
                 });
-            } else {
-                // 处理空数据情况
-                dataTable.row.add([
-                    '', '', '', '', '', '', '', '', '', '', '',
-                    '<span class="text-muted">No actions available</span>'
-                ]);
             }
-
             dataTable.draw();
         }
 
         function clearForm() {
-            $('#editIndex').val('');
+            $('#editIndex').val('0'); // 重置为 0，确保下次是 Create
             $('#taskForm')[0].reset();
             $('#modalTitle').text('Add New Tax Audit Record');
+            $('#companySelect').val('');
+            $('#client').val('');
         }
 
+        // 【修复1】Save Record：补全 AJAX 并处理 Id 逻辑
         function saveRecord() {
-            // 获取表单数据 - 根据实际数据库字段名
+            var clientName = $('#client').val();
+            // 确保 Id 是数字，如果空字符串则为 0
+            var idVal = $('#editIndex').val();
+            var id = (idVal && idVal !== '') ? parseInt(idVal) : 0;
+
             var formData = {
-                Id: $('#editIndex').val() || 0,
+                Id: id,
                 CaseNo: $('#caseNo').val(),
                 DateReceived: $('#dateReceived').val(),
-                Client: $('#client').val(),
-                OfficerInCharge: $('#irbOfficer').val(),        // 映射到 OfficerInCharge
-                TelExtension: $('#irbContact').val(),           // 映射到 TelExtension
+                Client: clientName, 
+                OfficerInCharge: $('#irbOfficer').val(),
+                TelExtension: $('#irbContact').val(),
                 YearAssessment: $('#yearOfAssessment').val(),
-                DateIRBemailLetter: $('#irbEmailDate').val(),   // 映射到 DateIRBemailLetter
-                DetailsCorrepondence: $('#details').val(),      // 映射到 DetailsCorrepondence
+                DateIRBemailLetter: $('#irbEmailDate').val(),
+                DetailsCorrepondence: $('#details').val(),
                 PIC: $('#pic').val(),
-                Date: $('#actionDate').val(),                   // 映射到 Date
-                Note: $('#actionNote').val()                    // 映射到 Note
+                Date: $('#actionDate').val(),
+                Note: $('#actionNote').val()
             };
 
-            console.log('A32B Form Data:', formData);
-
-            // 基本验证
             if (!formData.DateReceived || !formData.Client) {
-                showAlert('Please fill in required fields: Date Received and Client', 'error');
+                showAlert('Please select Date Received and Client.', 'error');
                 return;
             }
 
-            var url = formData.Id > 0 ? '/documents/update-a32b' : '/documents/create-a32b';
-            var method = formData.Id > 0 ? 'PUT' : 'POST';
+            var isUpdate = id > 0;
+            var url = isUpdate ? '/documents/update-a32b' : '/documents/create-a32b';
+            var method = isUpdate ? 'PUT' : 'POST';
 
-            console.log('Sending to:', url, 'Method:', method);
-
-            // 显示加载状态
             var saveBtn = $('#saveBtn');
             saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
@@ -403,120 +351,103 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    console.log('Save response:', response);
                     saveBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
                     if (response.success) {
                         $('#taskModal').modal('hide');
-                        showAlert('A32B record saved successfully!', 'success');
-                        loadRecordsFromDatabase(); // 重新加载数据
+                        showAlert('Record saved successfully!', 'success');
+                        loadRecordsFromDatabase(); 
                     } else {
-                        var errorMessage = response.errors ? response.errors.join(', ') : response.message;
-                        showAlert('Error saving A32B record: ' + errorMessage, 'error');
+                        showAlert('Error saving record: ' + (response.message || 'Unknown error'), 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Save error details:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText,
-                        error: error
-                    });
-
+                error: function(xhr) {
                     saveBtn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showAlert('Error saving A32B record: ' + error, 'error');
+                    showAlert('❌ Failed to save record.', 'error');
                 }
             });
         }
 
         function editRecord(id) {
-            // 显示加载状态
             $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
-
+            
             $.ajax({
                 url: '/documents/get-a32b-record/' + id,
                 type: 'GET',
                 success: function(response) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Tax Audit Record');
-
                     if (response.success) {
                         var data = response.data;
+                        $('#modalTitle').text('Edit Tax Audit Record');
+                        
+                        // 1. 设置 ID，确保 Save 时知道是 Update
                         $('#editIndex').val(data.id);
+
+                        // 2. 填充普通字段
                         $('#caseNo').val(data.caseNo || '');
-                        $('#dateReceived').val(data.dateReceived);
-                        $('#client').val(data.client);
-                        $('#irbOfficer').val(data.officerInCharge);          // 映射回来
-                        $('#irbContact').val(data.telExtension);             // 映射回来
+                        $('#dateReceived').val(formatDateForDisplay(data.dateReceived));
+                        $('#irbOfficer').val(data.officerInCharge);
+                        $('#irbContact').val(data.telExtension);
                         $('#yearOfAssessment').val(data.yearAssessment);
-                        $('#irbEmailDate').val(data.dateIRBemailLetter);     // 映射回来
-                        $('#details').val(data.detailsCorrepondence);        // 映射回来
+                        $('#irbEmailDate').val(formatDateForDisplay(data.dateIRBemailLetter));
+                        $('#details').val(data.detailsCorrepondence);
                         $('#pic').val(data.pic);
-                        $('#actionDate').val(data.date);                     // 映射回来
-                        $('#actionNote').val(data.note);                     // 映射回来
+                        $('#actionDate').val(formatDateForDisplay(data.date));
+                        $('#actionNote').val(data.note);
+
+                        // 3. 处理 Dropdown 反选
+                        const existingClientName = (data.client || '').trim();
+                        let matchedId = null;
+                        for (const [key, o] of Object.entries(clientOptionsMap)) {
+                            if (o.text === existingClientName) {
+                                matchedId = key;
+                                break;
+                            }
+                        }
+                        $('#client').val(existingClientName);
+                        $('#companySelect').val(matchedId || '');
 
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Error loading A32B record: ' + response.message, 'error');
+                        showAlert('Error loading record', 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Tax Audit Record');
-                    showAlert('Error loading A32B record: ' + error, 'error');
-                    console.error('Edit error:', error);
-                }
+                error: function() { showAlert('Error loading record', 'error'); }
             });
         }
 
         function deleteRecord(id) {
-            if (confirm('Are you sure you want to delete this A32B record? This action cannot be undone.')) {
+            if (confirm('Delete this record?')) {
                 $.ajax({
                     url: '/documents/delete-a32b/' + id,
                     type: 'DELETE',
                     success: function(response) {
                         if (response.success) {
-                            showAlert('A32B record deleted successfully!', 'success');
-                            loadRecordsFromDatabase(); // 重新加载数据
+                            showAlert('Record deleted successfully!', 'success');
+                            loadRecordsFromDatabase();
                         } else {
-                            showAlert('Error deleting A32B record: ' + response.message, 'error');
+                            showAlert('Error: ' + response.message, 'error');
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Error deleting A32B record: ' + error, 'error');
-                        console.error('Delete error:', error);
                     }
                 });
             }
         }
 
-        // 格式化日期显示
         function formatDateForDisplay(dateString) {
             if (!dateString) return '';
             // 如果日期已经是 dd/mm/yyyy 格式，直接返回
-            if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-                return dateString;
-            }
+            if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) return dateString;
+            
+            // 尝试解析 ISO 格式 (yyyy-MM-dd)
+            var isoMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateString);
+            if (isoMatch) return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
+            
             return dateString;
         }
 
-        // 显示提示消息
         function showAlert(message, type) {
-            var alertClass = type === 'success' ? 'alert-success' :
-                           type === 'error' ? 'alert-danger' :
-                           type === 'warning' ? 'alert-warning' : 'alert-info';
-
-            var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
-                message +
-                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>';
-
-            // 在状态区域显示提示
-            $('#connectionStatus').html(alertHtml);
-
-            // 3秒后自动消失（错误消息保持更久）
-            var timeout = type === 'error' ? 5000 : 3000;
-            setTimeout(function() {
-                $('.alert').alert('close');
-            }, timeout);
+            var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            var html = `<div class="alert ${alertClass} alert-dismissible fade show">${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+            $('#connectionStatus').html(html);
+            setTimeout(function() { $('#connectionStatus .alert').fadeOut(function() { $(this).remove(); }); }, 3000);
         }
     </script>
 }
