@@ -20,57 +20,53 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th colspan="9"></th>
-                            <th colspan="4">Audit WIP(days)</th>
-                            <th colspan="6">Audit work WIP%</th>
-                            <th colspan="7">Review</th>
-                            <th rowspan="3">Action</th>
+                            <th colspan="7" class="text-center">Basic Information</th>
+
+                            <th colspan="2" class="text-center">Billing</th>
+
+                            <th colspan="4" class="text-center">Audit WIP (Days)</th>
+
+                            <th colspan="6" class="text-center">Audit Work WIP %</th>
+
+                            <th colspan="7" class="text-center">Review (Kuching & KK)</th>
+
+                            <th rowspan="2" style="vertical-align: middle; min-width: 80px;">Action</th>
                         </tr>
 
                         <tr>
-                            <th rowspan="3">No</th>
-                            <th rowspan="3">Company Name</th>
-                            <th rowspan="3">Activity</th>
-
-                            <th colspan="2">Schedule to do</th>
-                            <th rowspan="3">PIC</th>
-                            <th rowspan="3">Status</th>
-                            <th colspan="2">Billing</th>
-
-                            <th rowspan="2">a. Start Date</th>
-                            <th rowspan="2">b. As at</th>
-                            <th rowspan="2">c. No of Days</th>
-                            <th rowspan="2">Result Over/Under</th>
-
-                            <th colspan="2">A. prog tracker%</th>
-                            <th colspan="3">B. Task%</th>
-                            <th colspan="1">A+B+C</th>
-
-                            <th colspan="3">Kuching 1st Review</th>
-                            <th colspan="4">2nd Review KK</th>
-                        </tr>
-
-                        <tr>
+                            <th>No</th>
+                            <th>Company Name</th>
+                            <th>Activity</th>
                             <th>Year to do</th>
                             <th>Quarter to do</th>
+                            <th>PIC</th>
+                            <th>Status</th>
+
                             <th>Audit Fee</th>
                             <th>Date billed</th>
-                            <th>a. Acc setup(J) 20%</th>
-                            <th>b. Ac summary(J) 20%</th>
-                            <th>c. Audit Planning(PIC) 20%</th>
-                            <th>d. Audit Execution 20%</th>
-                            <th>e. Audit Completion(PIC) 20%</th>
-                            <th>Total 100%</th>
-                            <th>Date Sent</th>
-                            <th>End Date</th>
-                            <th>A. Result Over/Under</th>
-                            <th>Date Sent</th>
-                            <th>End Date</th>
-                            <th>B. Result Over/Under</th>
+
+                            <th>Start Date</th>
+                            <th>As at</th>
+                            <th>No of Days</th>
+                            <th>Result O/U</th>
+
+                            <th>Acc setup</th>
+                            <th>Ac summary</th>
+                            <th>Planning</th>
+                            <th>Execution</th>
+                            <th>Completion</th>
+                            <th>Total %</th>
+
+                            <th>KCH Date</th>
+                            <th>KCH End</th>
+                            <th>KCH Res</th>
+                            <th>KK Date</th>
+                            <th>KK End</th>
+                            <th>KK Res</th>
                             <th>Final</th>
                         </tr>
                     </thead>
@@ -103,17 +99,16 @@
                     <div class="form-info-label col-12">
                         <label>Basic Information</label>
                     </div>
-                    <div class="row">
+                    <div class="row">                  
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="number">No</label>
-                                <input type="text" id="number" name="number" class="form-control" placeholder="Enter number" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -323,45 +318,33 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-    <!-- Datepicker CSS -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
         let dataTable;
         let dataTableInitialized = false;
+        // [新增] 用于存储 Client 数据的 Map，方便 Edit 时候回填
+        let clientNameMap = {};
+        let clientDataMap = {};
 
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
-            // 先创建 alert 容器如果不存在
             if ($('#modalAlert').length === 0) {
                 $('#taskModal .modal-body').prepend('<div id="modalAlert" class="alert d-none"></div>');
             }
-
-            const map = {
-                success: 'alert-success',
-                error: 'alert-danger',
-                warning: 'alert-warning',
-                info: 'alert-info'
-            };
+            const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
             const $box = $('#modalAlert');
             $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
                 .addClass(map[type] || 'alert-info')
                 .html(msg);
-
-            const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
-                $box.attr('tabindex', -1).focus();
-            });
+            $('#taskModal .modal-body').stop(true).animate({ scrollTop: 0 }, 200);
         }
 
         function hideModalAlert() {
@@ -385,49 +368,34 @@
 
         // ---------- Page-level alert ----------
         function showAlert(message, type) {
-            const cls = type === 'success' ? 'alert-success'
-                : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const cls = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
             const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
-                                        ${message}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                  </div>`;
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                          </div>`;
             $('.card-header').after(html);
-            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+            setTimeout(() => $('.alert').alert('close'), 3000);
         }
 
         // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
             try {
-                // 如果是日期对象或字符串，尝试格式化
-                if (s instanceof Date) {
-                    return s.toLocaleDateString('en-GB');
-                }
-                if (typeof s === 'string') {
-                    const date = new Date(s);
-                    if (!isNaN(date.getTime())) {
-                        return date.toLocaleDateString('en-GB');
-                    }
-                }
-                return s;
-            } catch (e) {
-                return s;
-            }
+                const date = new Date(s);
+                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+            } catch (e) { return s; }
         }
 
         function getVal(obj, name) {
             if (!obj) return '';
-
+            // 尝试直接获取
             if (obj[name] !== undefined && obj[name] !== null) return obj[name];
-
+            // 尝试首字母小写
             const camel = name.charAt(0).toLowerCase() + name.slice(1);
             if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
-
+            // 尝试全小写匹配
             const targetLower = name.toLowerCase();
             for (const key in obj) {
-                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
                 if (key.toLowerCase() === targetLower) return obj[key];
             }
             return '';
@@ -436,6 +404,9 @@
         function clearForm() {
             $('#taskForm')[0].reset();
             $('#editIndex').val('');
+            $('#clientSelect').val(''); // 重置下拉框
+            $('#companyName').val('');  // 重置隐藏域
+            $('#clientId').val('');     // 重置隐藏域
             $('#modalTitle').text('Add New AEX WIP Record');
             hideModalAlert();
             clearFieldErrors();
@@ -443,304 +414,262 @@
 
         function formatCurrency(amount) {
             if (!amount && amount !== 0) return '';
-            try {
-                return 'RM ' + parseFloat(amount).toLocaleString('en-MY', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            } catch (e) {
-                return amount || '';
-            }
+            return 'RM ' + parseFloat(amount).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function formatPercentage(value) {
             if (!value && value !== 0) return '';
-            try {
-                return parseFloat(value) + '%';
-            } catch (e) {
-                return value || '';
-            }
+            return parseFloat(value) + '%';
+        }
+
+        // ---------- [新增] 加载 Client Dropdown ----------
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
+
+                        clientNameMap = {};
+                        clientDataMap = {};
+
+                        // 假设 API 返回的数据结构包含 id 和 companyName
+                        response.data.forEach(client => {
+                            // 兼容大小写
+                            const cName = client.companyName || client.CompanyName;
+                            const cId = client.id || client.Id;
+
+                            if(cName) {
+                                clientNameMap[cName.trim()] = cId;
+                            }
+                            clientDataMap[cId] = client;
+
+                            select.append(`<option value="${cId}">${cName}</option>`);
+                        });
+                        console.log("Client options loaded.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading client options:', error);
+                }
+            });
         }
 
         // ---------- Init ----------
         $(document).ready(function () {
-            console.log('Document ready, initializing AEX52...');
+            console.log('Document ready...');
 
-            // 初始化日期选择器
-            try {
-                $('input[type="text"]').filter(function () {
-                    const id = $(this).attr('id') || '';
-                    return id.includes('Date') || id.includes('date');
-                }).datepicker({
-                    format: 'dd/mm/yyyy',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-                console.log('Datepicker initialized');
-            } catch (e) {
-                console.error('Datepicker init error:', e);
-            }
+            // [新增] 页面加载时获取 Dropdown 数据
+            loadClientOptions();
 
-            // 初始化 DataTable - 简化配置
-            try {
-                dataTable = $('#taskDatatable').DataTable({
-                    responsive: true,
-                    ordering: true,
-                    autoWidth: true,
-                    pageLength: 10,
-                    order: [[1, 'asc']], // 以 Company Name 排序
-                    language: {
-                        search: "Search:",
-                        lengthMenu: "Show _MENU_ entries",
-                        emptyTable: "No records found",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        infoEmpty: "Showing 0 to 0 of 0 entries",
-                        paginate: {
-                            first: "First",
-                            last: "Last",
-                            next: "Next",
-                            previous: "Previous"
-                        }
-                    },
-                    columnDefs: [
-                        {
-                            targets: '_all',
-                            defaultContent: '' // 防止 undefined 错误
-                        }
-                    ]
-                });
-                dataTableInitialized = true;
-                console.log('DataTable initialized successfully');
-            } catch (error) {
-                console.error('DataTable initialization error:', error);
-                $('#taskDatatable').addClass('table table-bordered table-striped');
-                dataTableInitialized = false;
-            }
+            // [新增] Dropdown 变动时，回填隐藏的 input
+            $('#clientSelect').on('change', function() {
+                const selectedId = $(this).val();
+                const clientData = clientDataMap[selectedId];
 
-            // 绑定按钮事件
+                if (clientData) {
+                    const cName = clientData.companyName || clientData.CompanyName;
+                    const cId = clientData.id || clientData.Id;
+
+                    $('#companyName').val(cName);
+                    $('#clientId').val(cId);
+                    // 你的 HTML 里还有一个 id="client"
+                    $('#client').val(cName);
+                } else {
+                    $('#companyName').val('');
+                    $('#clientId').val('');
+                    $('#client').val('');
+                }
+            });
+
+            // Datepicker
+            $('input[type="text"]').filter(function () {
+                const id = $(this).attr('id') || '';
+                return id.toLowerCase().includes('date');
+            }).datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            });
+
+        // 在 $(document).ready 内部，找到初始化 DataTable 的部分，替换为：
+
+                try {
+                    if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                        $('#taskDatatable').DataTable().destroy();
+                    }
+
+                    dataTable = $('#taskDatatable').DataTable({
+                        "responsive": false, // 关闭响应式，使用 scrollX
+                        "scrollX": true,     // 开启横向滚动
+                        "autoWidth": false,  // 禁止自动计算宽度，防止报错
+                        "paging": true,
+                        "ordering": true,
+                        "pageLength": 10,
+                        "stateSave": false,  // 关键：禁止保存状态，防止加载旧的列配置导致报错
+                        "order": [[1, 'asc']],
+                        "language": {
+                            "search": "Search:",
+                            "lengthMenu": "Show _MENU_ entries",
+                            "emptyTable": "No records found",
+                            "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                            "paginate": { "first": "First", "last": "Last", "next": "Next", "previous": "Previous" }
+                        },
+                        // 显式定义列宽，防止表头挤在一起
+                        "columnDefs": [
+                            { "width": "50px", "targets": 0 },  // No
+                            { "width": "200px", "targets": 1 }, // Company Name
+                            { "width": "100px", "targets": 2 }, // Activity
+                            { "width": "80px", "targets": 26 }  // Action
+                        ]
+                    });
+                    dataTableInitialized = true;
+                    console.log('DataTable initialized successfully');
+
+                    // 强制调整表头对齐
+                    setTimeout(function(){
+                        dataTable.columns.adjust().draw();
+                    }, 200);
+
+                } catch (error) {
+                    console.error('DataTable initialization error:', error);
+                    dataTableInitialized = false;
+                }
+
+            // Buttons
             $('#saveBtn').click(saveRecord);
-
-            // 使用事件委托绑定动态按钮
-            $(document).on('click', '.edit-btn', function () {
-                const id = $(this).data('id');
-                console.log('Edit clicked for ID:', id);
-                editRecord(id);
-            });
-
-            $(document).on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                console.log('Delete clicked for ID:', id);
-                deleteRecord(id);
-            });
-
+            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', clearForm);
+            $('[data-bs-target="#taskModal"]').on('click', function () { clearForm(); });
 
-            // 新建按钮点击事件
-            $('[data-bs-target="#taskModal"]').on('click', function () {
-                console.log('New Task button clicked');
-                clearForm();
-            });
-
-            // 首次载入数据
-            console.log('Loading initial data...');
             loadRecordsFromDatabase();
         });
 
         // ---------- Load & Render ----------
         function loadRecordsFromDatabase() {
-            console.log('Loading AEX52 records from database...');
-
             $.ajax({
                 url: '/api/auditdept/aex52/get-all',
                 type: 'GET',
                 success: function (res) {
-                    console.log('API response:', res);
                     if (res && res.success) {
                         populateTable(res.data || []);
-                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
                     } else {
-                        const errorMsg = res?.message || 'Unknown error';
-                        console.error('API error:', errorMsg);
-                        showAlert('Failed to load: ' + errorMsg, 'error');
+                        showAlert('Failed to load data', 'error');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('AJAX error:', error);
-                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
-                }
+                error: function (xhr) { showAlert('Network error', 'error'); }
             });
         }
 
         function populateTable(records) {
-            console.log('Populating table with records:', records);
-
-            if (!dataTableInitialized) {
-                console.log('DataTable not initialized, using manual table population');
-                manualPopulateTable(records);
-                return;
-            }
-
-            // 清除现有数据
+            if (!dataTableInitialized) return;
             dataTable.clear();
-
             if (records && records.length) {
                 records.forEach(function (r, index) {
                     const id = getVal(r, 'Id');
-                    console.log('Processing record:', r);
-
-                    // 构建数据行 - 根据表格结构
                     const rowData = [
-                        index + 1, // No
-                        getVal(r, 'CompanyName'),                                // Company Name
-                        getVal(r, 'Activity'),                                   // Activity
-                        getVal(r, 'Yeartodo'),                                   // Year to do
-                        getVal(r, 'Quartertodo'),                                // Quarter to do
-                        getVal(r, 'PIC'),                                        // PIC
-                        getVal(r, 'Status'),                                     // Status
-                        formatCurrency(getVal(r, 'AuditFee')),                   // Audit Fee
-                        formatDateForDisplay(getVal(r, 'DateBilled')),           // Date billed
-                        formatDateForDisplay(getVal(r, 'StartDate')),            // Start Date
-                        formatDateForDisplay(getVal(r, 'EndDate')),              // As at (使用 EndDate)
-                        getVal(r, 'NoofDays') || '',                             // No of Days
-                        getVal(r, 'ResultOverUnder'),                            // Result Over/Under
-                        formatPercentage(getVal(r, 'AccSetup')),                 // Acc setup 20%
-                        formatPercentage(getVal(r, 'AccSummary')),               // Ac summary 20%
-                        formatPercentage(getVal(r, 'AuditPlanning')),            // Audit Planning 20%
-                        formatPercentage(getVal(r, 'AuditExecution')),           // Audit Execution 20%
-                        formatPercentage(getVal(r, 'AuditCompletion')),          // Audit Completion 20%
-                        formatPercentage(getVal(r, 'TotalPercent')),             // Total 100%
-                        formatDateForDisplay(getVal(r, 'ReviewDateSent')),       // Kuching Review Date Sent
-                        formatDateForDisplay(getVal(r, 'ReviewEndDate')),        // Kuching Review End Date
-                        getVal(r, 'ReviewResultOverUnder'),                      // Kuching Review Result
-                        formatDateForDisplay(getVal(r, 'KKDateSent')),           // KK Review Date Sent
-                        formatDateForDisplay(getVal(r, 'KKEndDate')),            // KK Review End Date
-                        getVal(r, 'KKResultOverUnder'),                          // KK Review Result
-                        getVal(r, 'Final'),                                      // Final
-                        // Edit & Delete buttons
-                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                            <i class="fas fa-edit"></i>
-                         </button>
-                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                            <i class="fas fa-trash"></i>
-                         </button>`
+                        index + 1,
+                        getVal(r, 'CompanyName'),
+                        getVal(r, 'Activity'),
+                        getVal(r, 'Yeartodo'),
+                        getVal(r, 'Quartertodo'),
+                        getVal(r, 'PIC'),
+                        getVal(r, 'Status'),
+                        formatCurrency(getVal(r, 'AuditFee')),
+                        formatDateForDisplay(getVal(r, 'DateBilled')),
+                        formatDateForDisplay(getVal(r, 'StartDate')),
+                        formatDateForDisplay(getVal(r, 'EndDate')),
+                        getVal(r, 'NoofDays'),
+                        getVal(r, 'ResultOverUnder'),
+                        formatPercentage(getVal(r, 'AccSetup')),
+                        formatPercentage(getVal(r, 'AccSummary')),
+                        formatPercentage(getVal(r, 'AuditPlanning')),
+                        formatPercentage(getVal(r, 'AuditExecution')),
+                        formatPercentage(getVal(r, 'AuditCompletion')),
+                        formatPercentage(getVal(r, 'TotalPercent')),
+                        formatDateForDisplay(getVal(r, 'ReviewDateSent')),
+                        formatDateForDisplay(getVal(r, 'ReviewEndDate')),
+                        getVal(r, 'ReviewResultOverUnder'),
+                        formatDateForDisplay(getVal(r, 'KKDateSent')),
+                        formatDateForDisplay(getVal(r, 'KKEndDate')),
+                        getVal(r, 'KKResultOverUnder'),
+                        getVal(r, 'Final'),
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
+                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}"><i class="fas fa-trash"></i></button>`
                     ];
-
-                    console.log('Adding row data:', rowData);
                     dataTable.row.add(rowData);
                 });
             }
-
             dataTable.draw();
-            console.log('Table populated successfully');
         }
 
-        // 降级方案：手动填充表格
-        function manualPopulateTable(records) {
-            const tbody = $('#taskDatatable tbody');
-            tbody.empty();
-
-            if (records && records.length) {
-                records.forEach(function (r, index) {
-                    const id = getVal(r, 'Id');
-                    const row = `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${getVal(r, 'CompanyName') || ''}</td>
-                            <td>${getVal(r, 'Activity') || ''}</td>
-                            <td>${getVal(r, 'Yeartodo') || ''}</td>
-                            <td>${getVal(r, 'Quartertodo') || ''}</td>
-                            <td>${getVal(r, 'PIC') || ''}</td>
-                            <td>${getVal(r, 'Status') || ''}</td>
-                            <td>${formatCurrency(getVal(r, 'AuditFee'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateBilled'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'StartDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'EndDate'))}</td>
-                            <td>${getVal(r, 'NoofDays') || ''}</td>
-                            <td>${getVal(r, 'ResultOverUnder') || ''}</td>
-                            <td>${formatPercentage(getVal(r, 'AccSetup'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AccSummary'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditPlanning'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditExecution'))}</td>
-                            <td>${formatPercentage(getVal(r, 'AuditCompletion'))}</td>
-                            <td>${formatPercentage(getVal(r, 'TotalPercent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'ReviewDateSent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'ReviewEndDate'))}</td>
-                            <td>${getVal(r, 'ReviewResultOverUnder') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'KKDateSent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'KKEndDate'))}</td>
-                            <td>${getVal(r, 'KKResultOverUnder') || ''}</td>
-                            <td>${getVal(r, 'Final') || ''}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.append(row);
-                });
-            } else {
-                tbody.html('<tr><td colspan="27" class="text-center">No records found</td></tr>');
-            }
-        }
-
-        // ---------- Save (Create / Update) ----------
+        // ---------- Save ----------
         function saveRecord() {
-            console.log('Save button clicked');
-            hideModalAlert();
-            clearFieldErrors();
+                    console.log('Save button clicked');
+                    hideModalAlert();
+                    clearFieldErrors();
 
-            const formData = {
-                Id: ($('#editIndex').val() || '0').trim(),
+                    // [关键修复] 直接获取 Dropdown 选中的文本作为 CompanyName
+                    // 如果 dropdown 有值，就取 text；否则取 hidden input 里的值作为保底
+                    let selectedText = $('#clientSelect option:selected').text();
+                    const selectedVal = $('#clientSelect').val();
 
-                CompanyName: ($('#companyName').val() || '').trim(),
-                Activity: ($('#activity').val() || '').trim(),
-                Yeartodo: ($('#yearToDo').val() || '').trim(),
-                Quartertodo: ($('#quarterToDo').val() || '').trim(),
-                PIC: ($('#pic').val() || '').trim(),
-                Status: ($('#status').val() || '').trim(),
-                AuditFee: ($('#auditFee').val() || '').trim(),
-                DateBilled: ($('#dateBilled').val() || '').trim(),
-                StartDate: ($('#startDate').val() || '').trim(),
-                EndDate: ($('#asAtDate').val() || '').trim(), // 注意：这里使用 asAtDate 对应 EndDate
-                NoofDays: ($('#noOfDays').val() || '').trim(),
-                ResultOverUnder: ($('#resultOverUnder').val() || '').trim(),
-                AccSetup: ($('#accSetupPercent').val() || '').trim(),
-                AccSummary: ($('#acSummaryPercent').val() || '').trim(),
-                AuditPlanning: ($('#auditPlanningPercent').val() || '').trim(),
-                AuditExecution: ($('#auditExecutionPercent').val() || '').trim(),
-                AuditCompletion: ($('#auditCompletionPercent').val() || '').trim(),
-                TotalPercent: ($('#totalPercent').val() || '').trim(),
-                ReviewDateSent: ($('#kuchingDateSent').val() || '').trim(),
-                ReviewEndDate: ($('#kuchingEndDate').val() || '').trim(),
-                ReviewResultOverUnder: ($('#kuchingResult').val() || '').trim(),
-                KKDateSent: ($('#kkDateSent').val() || '').trim(),
-                KKEndDate: ($('#kkEndDate').val() || '').trim(),
-                KKResultOverUnder: ($('#kkResult').val() || '').trim(),
-                Final: ($('#finalResult').val() || '').trim()
-            };
+                    // 如果选的是 "-- Select client --" 或者空，就置空
+                    if (!selectedVal) {
+                        selectedText = "";
+                    }
 
-            console.log('Form data:', formData);
+                    const formData = {
+                        Id: ($('#editIndex').val() || '0').trim(),
 
-            // 简单必填验证
-            let hasError = false;
-            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
-            if (!formData.Activity) { setFieldError('#activity', 'Required'); hasError = true; }
+                        // 优先使用 Dropdown 显示的名字，确保所见即所得
+                        CompanyName: selectedText.trim() || ($('#companyName').val() || '').trim(),
 
-            if (hasError) {
-                showModalAlert('Please fix the highlighted fields.', 'error');
-                $('#taskForm .is-invalid').first().focus();
+                        Activity: ($('#activity').val() || '').trim(),
+                        Yeartodo: ($('#yearToDo').val() || '').trim(),
+                        Quartertodo: ($('#quarterToDo').val() || '').trim(),
+                        PIC: ($('#pic').val() || '').trim(),
+                        Status: ($('#status').val() || '').trim(),
+                        AuditFee: ($('#auditFee').val() || '').trim(),
+                        DateBilled: ($('#dateBilled').val() || '').trim(),
+                        StartDate: ($('#startDate').val() || '').trim(),
+                        EndDate: ($('#asAtDate').val() || '').trim(),
+                        NoofDays: ($('#noOfDays').val() || '').trim(),
+                        ResultOverUnder: ($('#resultOverUnder').val() || '').trim(),
+                        AccSetup: ($('#accSetupPercent').val() || '').trim(),
+                        AccSummary: ($('#acSummaryPercent').val() || '').trim(),
+                        AuditPlanning: ($('#auditPlanningPercent').val() || '').trim(),
+                        AuditExecution: ($('#auditExecutionPercent').val() || '').trim(),
+                        AuditCompletion: ($('#auditCompletionPercent').val() || '').trim(),
+                        TotalPercent: ($('#totalPercent').val() || '').trim(),
+                        ReviewDateSent: ($('#kuchingDateSent').val() || '').trim(),
+                        ReviewEndDate: ($('#kuchingEndDate').val() || '').trim(),
+                        ReviewResultOverUnder: ($('#kuchingResult').val() || '').trim(),
+                        KKDateSent: ($('#kkDateSent').val() || '').trim(),
+                        KKEndDate: ($('#kkEndDate').val() || '').trim(),
+                        KKResultOverUnder: ($('#kkResult').val() || '').trim(),
+                        Final: ($('#finalResult').val() || '').trim()
+                    };
+
+                    // [验证] 必须选择 Client
+                    if (!selectedVal && !formData.CompanyName) {
+                         setFieldError('#clientSelect', 'Please select a client');
+                         showModalAlert('Please select a client.', 'error');
+                         return;
+                    }
+            if (!formData.Activity) {
+                setFieldError('#activity', 'Required');
+                showModalAlert('Activity is required.', 'error');
                 return;
             }
 
-            const isUpdate = Number(formData.Id) > 0;
+           const isUpdate = Number(formData.Id) > 0;
             const url = isUpdate ? '/api/auditdept/aex52/update' : '/api/auditdept/aex52/create';
             const method = isUpdate ? 'PUT' : 'POST';
-
-            console.log('Saving via:', url, method);
 
             const $btn = $('#saveBtn');
             $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
@@ -751,7 +680,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function (res) {
-                    console.log('Save response:', res);
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     if (res && res.success) {
                         $('#taskModal').modal('hide');
@@ -763,7 +691,6 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error('Save error:', error);
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
@@ -772,24 +699,34 @@
 
         // ---------- Edit ----------
         function editRecord(id) {
-            console.log('Editing record ID:', id);
-            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
-            hideModalAlert();
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin"></i> Loading...');
             clearFieldErrors();
 
             $.ajax({
                 url: '/api/auditdept/aex52/get/' + id,
                 type: 'GET',
                 success: function (res) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit AEX WIP Record');
+                    $('#modalTitle').html('<i class="fas fa-edit"></i> Edit AEX WIP Record');
                     if (res && res.success) {
                         const d = res.data || {};
-                        console.log('Edit data loaded:', d);
-
                         $('#editIndex').val(getVal(d, 'Id'));
 
-                        // 填充表单字段
-                        $('#companyName').val(getVal(d, 'CompanyName'));
+                        // 1. 获取后端存的名字
+                        const cName = getVal(d, 'CompanyName');
+                        $('#companyName').val(cName); // 填入 hidden 用于保底
+
+                        // 2. [关键] 尝试在 Dropdown 中自动选中这个公司
+                        // 需要用到之前定义的 clientNameMap
+                        if (cName && clientNameMap[cName.trim()]) {
+                            // 如果找到了对应的 ID，直接赋值给 Select
+                            $('#clientSelect').val(clientNameMap[cName.trim()]);
+                        } else {
+                            // 如果没找到（比如名字改了），至少在控制台报个警
+                            console.warn('Could not match company name to ID:', cName);
+                            $('#clientSelect').val('');
+                        }
+
+                        // 填充其他字段
                         $('#activity').val(getVal(d, 'Activity'));
                         $('#yearToDo').val(getVal(d, 'Yeartodo'));
                         $('#quarterToDo').val(getVal(d, 'Quartertodo'));
@@ -798,7 +735,7 @@
                         $('#auditFee').val(getVal(d, 'AuditFee'));
                         $('#dateBilled').val(formatDateForDisplay(getVal(d, 'DateBilled')));
                         $('#startDate').val(formatDateForDisplay(getVal(d, 'StartDate')));
-                        $('#asAtDate').val(formatDateForDisplay(getVal(d, 'EndDate'))); // 注意：EndDate 对应 asAtDate
+                        $('#asAtDate').val(formatDateForDisplay(getVal(d, 'EndDate')));
                         $('#noOfDays').val(getVal(d, 'NoofDays'));
                         $('#resultOverUnder').val(getVal(d, 'ResultOverUnder'));
                         $('#accSetupPercent').val(getVal(d, 'AccSetup'));
@@ -817,34 +754,28 @@
 
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
+                        showAlert('Error loading record', 'error');
                     }
                 },
-                error: function (xhr, status, error) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit AEX WIP Record');
-                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
-                }
+                error: function () { showAlert('Network error', 'error'); }
             });
         }
 
         // ---------- Delete ----------
         function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-
+            if (!confirm('Are you sure?')) return;
             $.ajax({
                 url: '/api/auditdept/aex52/delete/' + id,
                 type: 'DELETE',
                 success: function (res) {
                     if (res && res.success) {
-                        showAlert('Record deleted successfully.', 'success');
+                        showAlert('Deleted successfully', 'success');
                         loadRecordsFromDatabase();
                     } else {
-                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+                        showAlert('Delete failed', 'error');
                     }
                 },
-                error: function (xhr) {
-                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
-                }
+                error: function () { showAlert('Network error', 'error'); }
             });
         }
     </script>

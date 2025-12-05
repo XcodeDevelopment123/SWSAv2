@@ -86,8 +86,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="companyName" class="form-label">Company Name (Suppose Link From Client List)<span class="text-danger">*</span></label>
-                            <input type="text" id="companyName" class="form-control" placeholder="Enter company name" required />
+                            <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                            <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                <option value="">-- Select client --</option>
+                            </select>
+                            <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                            <input type="hidden" id="client" name="client" />
+                            <input type="hidden" id="clientId" name="clientId" />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="yeToDo" class="form-label">YE to do</label>
@@ -196,197 +201,205 @@
 </div>
 
 @section Scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
         let isEditMode = false;
         let allRecords = [];
 
+        // 1. 定义全局 Map 用于反向查找
+        let clientNameMap = {};    // Key: CompanyName, Value: ID
+        let clientDataMap = {};    // Key: ID, Value: Data object
+
         $(document).ready(function() {
             console.log('Document ready, starting initialization...');
 
-            // Load data immediately
+            // 0. 确保页面有 hidden input
+            if ($('#companyName').length === 0) {
+                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
+            }
+
+            // 1. 先加载 Dropdown (构建 Map)
+            loadClientOptions();
+
+            // 2. 加载表格数据
             loadTableData();
 
-            // Add new button click
-            $('#addNewBtn').on('click', function() {
-                openModal(false);
-            });
-
-            // Save button click
-            $('#saveBtn').on('click', function() {
-                saveRecord();
-            });
-
-            // Reset form when modal is hidden
-            $('#taskModal').on('hidden.bs.modal', function() {
-                resetForm();
-            });
+            // 3. 绑定按钮事件
+            $('#addNewBtn').on('click', function() { openModal(false); });
+            $('#saveBtn').on('click', function() { saveRecord(); });
+            $('#taskModal').on('hidden.bs.modal', function() { resetForm(); });
         });
 
-        function loadTableData() {
-            console.log('Starting to load table data...');
-            $('#loadingMessage').show();
-            $('#tableContainer').hide();
-
+        // ---------------------------------------------------------
+        //  1. 加载 Dropdown 并构建查找表
+        // ---------------------------------------------------------
+        function loadClientOptions() {
             $.ajax({
-                url: '/api/auditdept/at33/get-all',
+                url: '/api/get/company-options',
                 type: 'GET',
                 success: function(response) {
-                    console.log('=== API Response Details ===');
-                    console.log('Full response:', response);
-                    console.log('Response success:', response.success);
-                    console.log('Response data:', response.data);
-                    console.log('Data type:', typeof response.data);
-                    console.log('Data length:', response.data ? response.data.length : 0);
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
 
-                    $('#loadingMessage').hide();
+                        // 重置 Map
+                        clientNameMap = {};
+                        clientDataMap = {};
 
-                    if (response.success && response.data) {
-                        if (response.data.length > 0) {
-                            console.log('First record structure:', response.data[0]);
-                            console.log('First record keys:', Object.keys(response.data[0]));
-                            console.log('First record MBRSgenerated value:', response.data[0].MBRSgenerated);
-                            console.log('First record MBRSgenerated type:', typeof response.data[0].MBRSgenerated);
-                        }
-                        allRecords = response.data;
-                        console.log('Total records to display:', allRecords.length);
-                        populateTable(allRecords);
-                        $('#tableContainer').show();
-                    } else {
-                        console.error('Response not successful or no data:', response.message);
-                        showAlert('Error loading data: ' + (response.message || 'No data available'), 'warning');
-                        populateTable([]);
+                        response.data.forEach(client => {
+                            // 存入 Map：Key=公司名(去空格), Value=ID
+                            if(client.companyName) {
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+                            clientDataMap[client.id] = client;
+
+                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
+                        });
+                        console.log('Client options loaded and maps built.');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Ajax error:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        error: error,
-                        responseText: xhr.responseText
-                    });
-                    $('#loadingMessage').hide();
-                    showAlert('Error loading data: ' + error, 'danger');
-                    populateTable([]);
                 }
             });
         }
 
+        // Dropdown 改变时，同步隐藏字段
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            const clientData = clientDataMap[selectedId];
+
+            if (clientData) {
+                $('#companyName').val(clientData.companyName);
+                $('#clientId').val(clientData.id);
+                $('#client').val(clientData.companyName);
+            } else {
+                $('#companyName').val('');
+                $('#clientId').val('');
+                $('#client').val('');
+            }
+        });
+
+        // ---------------------------------------------------------
+        //  2. 表格加载逻辑 (保持你原有的风格)
+        // ---------------------------------------------------------
+        function loadTableData() {
+                    console.log('Starting to load table data...');
+
+                    // 1. 在隐藏表格前，先销毁现有的 DataTable 实例
+                    // 这样才能彻底清除旧数据缓存，允许我们手动修改 HTML
+                    if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                        $('#taskDatatable').DataTable().destroy();
+                    }
+
+                    $('#loadingMessage').show();
+                    $('#tableContainer').hide();
+
+                    $.ajax({
+                        url: '/api/auditdept/at33/get-all',
+                        type: 'GET',
+                        cache: false, // 2. 禁止浏览器缓存，确保拿到最新数据
+                        success: function(response) {
+                            $('#loadingMessage').hide();
+
+                            if (response.success && response.data) {
+                                allRecords = response.data;
+
+                                // 3. 手动填充 HTML
+                                populateTable(allRecords);
+
+                                $('#tableContainer').show();
+
+                                // 4. 数据填充完毕后，重新初始化 DataTable
+                                $('#taskDatatable').DataTable({
+                                    "responsive": true,
+                                    "autoWidth": false,
+                                    "order": [[0, 'asc']], // 默认按第一列排序
+                                    "destroy": true // 确保没有残留实例
+                                });
+
+                            } else {
+                                showAlert('Error loading data: ' + (response.message || 'No data available'), 'warning');
+                                populateTable([]);
+                                $('#tableContainer').show();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            $('#loadingMessage').hide();
+                            console.error('Ajax error:', error);
+                            showAlert('Error loading data: ' + error, 'danger');
+                        }
+                    });
+                }
+
         function populateTable(data) {
-            console.log('Populating table with data:', data);
             const tbody = $('#tableBody');
             tbody.empty();
 
             if (data && data.length > 0) {
                 data.forEach((record, index) => {
-                    console.log(`Processing record ${index}:`, record);
-
                     const row = `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${escapeHtml(record.CompanyName || 'N/A')}</td>
-                            <td>${escapeHtml(record.YEtodo || 'N/A')}</td>
-                            <td>${escapeHtml(record.PIC || 'N/A')}</td>
-                            <td>${escapeHtml(record.Active || 'N/A')}</td>
-                            <td>${escapeHtml(record.AEX || 'N/A')}</td>
-                            <td>${formatDateForDisplay(record.DateSent)}</td>
-                            <td>${formatDateForDisplay(record.DateReviewed)}</td>
-                            <td>${formatDateForDisplay(record.DateSentToKK)}</td>
-                            <td>${formatDateForDisplay(record.DateReceivedAFS)}</td>
-                            <td>${formatDateForDisplay(record.DateofAFS)}</td>
-                            <td>${formatDateForDisplay(record.DateofDirectorsRept)}</td>
-                            <td>${escapeHtml(record.MBRSgenerated || 'N/A')}</td>
-                            <td>${escapeHtml(record.Remark || 'N/A')}</td>
+                            <td>${escapeHtml(record.CompanyName || record.companyName || '')}</td>
+                            <td>${escapeHtml(record.YEtodo || record.yEtodo || '')}</td>
+                            <td>${escapeHtml(record.PIC || record.pic || '')}</td>
+                            <td>${escapeHtml(record.Active || record.active || '')}</td>
+                            <td>${escapeHtml(record.AEX || record.aex || '')}</td>
+                            <td>${formatDateForDisplay(record.DateSent || record.dateSent)}</td>
+                            <td>${formatDateForDisplay(record.DateReviewed || record.dateReviewed)}</td>
+                            <td>${formatDateForDisplay(record.DateSentToKK || record.dateSentToKK)}</td>
+                            <td>${formatDateForDisplay(record.DateReceivedAFS || record.dateReceivedAFS)}</td>
+                            <td>${formatDateForDisplay(record.DateofAFS || record.dateofAFS)}</td>
+                            <td>${formatDateForDisplay(record.DateofDirectorsRept || record.dateofDirectorsRept)}</td>
+                            <td>${escapeHtml(record.MBRSgenerated || record.mbrsgenerated || '')}</td>
+                            <td>${escapeHtml(record.Remark || record.remark || '')}</td>
                             <td style="white-space: nowrap;">
-                                <button class="btn btn-sm btn-info me-1" onclick="editRecord(${record.Id})" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${record.Id})" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button class="btn btn-sm btn-info me-1" onclick="editRecord(${record.Id || record.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${record.Id || record.id})" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
                     tbody.append(row);
                 });
-                console.log(`Successfully added ${data.length} rows to table`);
-            } else {
-                const noDataRow = '<tr><td colspan="15" class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>No records found. Click "New Record" to add data.</td></tr>';
-                tbody.append(noDataRow);
-                console.log('No data available, showing empty message');
-            }
-        }
-        
-        function formatDateForDisplay(dateString) {
-            if (!dateString) return 'N/A';
-            try {
-                const date = new Date(dateString);
-                if (isNaN(date.getTime())) return 'N/A';
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
-                return `${day}/${month}/${year}`;
-            } catch (e) {
-                console.error('Date format error:', e);
-                return 'N/A';
             }
         }
 
-        function formatDateForInput(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                if (isNaN(date.getTime())) return '';
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            } catch (e) {
-                console.error('Date format error:', e);
-                return '';
-            }
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.toString().replace(/[&<>"']/g, m => map[m]);
-        }
-
-        function openModal(editMode, recordId = null) {
-            isEditMode = editMode;
-            $('#modalTitle').text(editMode ? 'Edit AFS Record' : 'Add New AFS Record');
-
-            if (editMode && recordId) {
-                loadRecordForEdit(recordId);
-            } else {
-                // 重置表单
-                resetForm();
-            }
-
-            $('#taskModal').modal('show');
-        }
-
-        function loadRecordForEdit(id) {
-            console.log('Loading record for edit:', id);
+        // ---------------------------------------------------------
+        //  3. Edit Logic (核心：反向查找回显)
+        // ---------------------------------------------------------
+        function editRecord(id) {
+            console.log('Editing record:', id);
 
             $.ajax({
                 url: `/api/auditdept/at33/get/${id}`,
                 type: 'GET',
                 success: function(response) {
-                    console.log('Edit record response:', response);
-
                     if (response.success) {
                         const record = response.data;
-                        console.log('Record data loaded:', record);
-
+                        isEditMode = true;
+                        $('#modalTitle').text('Edit AFS Record');
                         $('#recordId').val(record.id);
+
+                        // === 关键 Dropdown 回显逻辑 ===
                         $('#companyName').val(record.companyName || '');
+
+                        // A. 优先尝试用 ID 匹配
+                        if (record.clientId && clientDataMap[record.clientId]) {
+                            $('#clientSelect').val(record.clientId);
+                        }
+                        // B. 如果没 ID，用名字反向查找
+                        else if (record.companyName) {
+                            const foundId = clientNameMap[record.companyName.trim()];
+                            if (foundId) {
+                                $('#clientSelect').val(foundId);
+                                $('#clientId').val(foundId); // 补全 ID
+                            }
+                        }
+                        // === 逻辑结束 ===
+
+                        // 填充其他字段
                         $('#yeToDo').val(record.yEtodo || '');
                         $('#pic').val(record.pic || '');
                         $('#active').val(record.active || '');
@@ -400,28 +413,30 @@
                         $('#mbrsGenerated').val(record.mbrsgenerated || '');
                         $('#remark').val(record.remark || '');
 
-                        console.log('Form populated with MBRS generated:', record.mbrsgenerated);
+                        $('#taskModal').modal('show');
                     } else {
                         showAlert('Error loading record: ' + response.message, 'danger');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error loading record:', error);
-                    showAlert('Error loading record: ' + error, 'danger');
+                error: function(xhr) {
+                    showAlert('Error loading record', 'danger');
                 }
             });
         }
 
+        // ---------------------------------------------------------
+        //  4. Save Logic
+        // ---------------------------------------------------------
         function saveRecord() {
-            // Validate required fields
-            const companyName = $('#companyName').val().trim();
+            // 确保从隐藏字段取名字 (Dropdown change 事件会更新它)
+            // 如果是 Edit 回显，也会预先填入这个字段
+            const companyName = $('#companyName').val();
+
             if (!companyName) {
-                showAlert('Please enter Company Name', 'warning');
-                $('#companyName').focus();
+                showAlert('Company Name is required (Please select a client)', 'warning');
                 return;
             }
 
-            // 收集表单数据
             const formData = {
                 companyName: companyName,
                 yEtodo: $('#yeToDo').val() || null,
@@ -438,17 +453,13 @@
                 remark: $('#remark').val() || null
             };
 
-            // 如果是编辑模式，添加 ID
             if (isEditMode) {
                 formData.id = parseInt($('#recordId').val());
             }
 
-            console.log('Saving record data:', formData);
-
             const url = isEditMode ? '/api/auditdept/at33/update' : '/api/auditdept/at33/create';
             const method = isEditMode ? 'PUT' : 'POST';
 
-            // 显示保存中状态
             $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
             $.ajax({
@@ -457,109 +468,95 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    console.log('Save response:', response);
                     $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-
                     if (response.success) {
-                        showAlert(response.message || 'Record saved successfully!', 'success');
+                        showAlert('Saved successfully!', 'success');
                         $('#taskModal').modal('hide');
-
-                        // 延迟一下再重新加载数据，确保数据库已更新
-                        setTimeout(() => {
-                            console.log('Reloading table data after save...');
-                            loadTableData();
-                        }, 500);
-
+                        loadTableData();
                     } else {
-                        showAlert('Error: ' + (response.message || 'Unknown error occurred'), 'danger');
+                        showAlert('Error: ' + response.message, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Save error details:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText,
-                        error: error
-                    });
                     $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showAlert('Error saving record: ' + error, 'danger');
+                    showAlert('Error saving: ' + error, 'danger');
                 }
             });
         }
 
-        function editRecord(id) {
-            console.log('Editing record:', id);
-            openModal(true, id);
-        }
-
-        function deleteRecord(id) {
-            if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-                console.log('Deleting record:', id);
-                $.ajax({
-                    url: `/api/auditdept/at33/delete/${id}`,
-                    type: 'DELETE',
-                    success: function(response) {
-                        console.log('Delete response:', response);
-                        if (response.success) {
-                            showAlert(response.message || 'Record deleted successfully!', 'success');
-                            loadTableData();
-                        } else {
-                            showAlert('Error: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Delete error:', error);
-                        showAlert('Error deleting record: ' + error, 'danger');
-                    }
-                });
-            }
+        // ---------------------------------------------------------
+        //  Helpers
+        // ---------------------------------------------------------
+        function openModal(editMode) {
+            isEditMode = editMode;
+            $('#modalTitle').text(editMode ? 'Edit AFS Record' : 'Add New AFS Record');
+            if (!editMode) { resetForm(); }
+            $('#taskModal').modal('show');
         }
 
         function resetForm() {
             $('#taskForm')[0].reset();
             $('#recordId').val('');
+            $('#clientSelect').val('');
+            $('#companyName').val(''); // 清空隐藏字段
             isEditMode = false;
         }
 
-        function showAlert(message, type) {
-            const alertId = 'alert-' + Date.now();
-            const alertHtml = `
-                <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    <strong>${type === 'success' ? 'Success!' : type === 'danger' ? 'Error!' : 'Warning!'}</strong> ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            // Remove old alerts
-            $('.alert').remove();
-
-            // Add new alert at the top of card body
-            $('.card-body').prepend(alertHtml);
-
-            // Auto remove after 5 seconds
-            setTimeout(function() {
-                $('#' + alertId).alert('close');
-            }, 5000);
-        }
-
-        // 添加手动测试函数
-        function testAPI() {
-            console.log('Testing API endpoint...');
-            fetch('/api/auditdept/at33/get-all')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Direct API test result:', data);
-                    if (data.success && data.data) {
-                        console.log('Records found:', data.data.length);
-                        if (data.data.length > 0) {
-                            console.log('Sample record:', data.data[0]);
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $.ajax({
+                    url: `/api/auditdept/at33/delete/${id}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            showAlert('Deleted successfully!', 'success');
+                            loadTableData();
+                        } else {
+                            showAlert('Error: ' + response.message, 'danger');
                         }
                     }
-                })
-                .catch(error => console.error('API test error:', error));
+                });
+            }
         }
 
-        // 在控制台可以调用 testAPI() 来测试
-        window.testAPI = testAPI;
+        function formatDateForDisplay(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '';
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                return `${day}/${month}/${date.getFullYear()}`;
+            } catch (e) { return ''; }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '';
+                return date.toISOString().split('T')[0];
+            } catch (e) { return ''; }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(message, type) {
+            const alertHtml = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                                <strong>${type === 'success' ? 'Success' : 'Notice'}:</strong> ${message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                               </div>`;
+            $('.alert').remove();
+            $('.card-body').prepend(alertHtml);
+            setTimeout(() => { $('.alert').alert('close'); }, 5000);
+        }
     </script>
 }

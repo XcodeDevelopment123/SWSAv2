@@ -75,13 +75,18 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter grouping" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                               <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                     </div>
@@ -112,7 +117,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="date" id="yearEnd" name="yearEnd" class="form-control" />
+                                <input type="date" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -278,7 +283,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -288,22 +292,287 @@
         let dataTable = null;
         let currentData = [];
 
+        // 1. 数据映射表
+        let clientOptionsMap = {}; // ID -> Client Data (用于自动填 Grouping/YearEnd)
+        let clientNameMap = {};    // Company Name -> ID (用于 Edit 时的反向查找)
+
         $(document).ready(function() {
             console.log('Document ready, initializing...');
+
+            // 确保页面上有 companyName 这个 input
+            if ($('#companyName').length === 0) {
+                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
+            }
+
+            // 先加载 Dropdown，再加载数据
+            loadClientOptions();
             loadData();
         });
 
-        function initializeDataTable() {
-            console.log('Initializing DataTable...');
+        // ---------------------------------------------------------
+        //  1. Load Client Options (构建反向查找表)
+        // ---------------------------------------------------------
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
 
-            // 如果 DataTable 已经存在，先销毁
+                        // 重置映射表
+                        clientOptionsMap = {};
+                        clientNameMap = {};
+
+                        response.data.forEach(client => {
+                            // 1. ID -> Data 映射 (用于 Dropdown Change 事件)
+                            clientOptionsMap[client.id] = client;
+
+                            // 2. Name -> ID 映射 (用于 Edit 时只有名字的情况)
+                            if (client.companyName) {
+                                // 使用 trim() 去除可能的空格，确保匹配准确
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+
+                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
+                        });
+                    }
+                }
+            });
+        }
+
+        // ---------------------------------------------------------
+        //  2. Dropdown Change Event (自动填充逻辑)
+        // ---------------------------------------------------------
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            const clientData = clientOptionsMap[selectedId];
+
+            if (clientData) {
+                // A. 自动填入 Grouping
+                $('#grouping').val(clientData.grouping || '');
+
+                // B. 自动填入 Company Name (隐藏字段，用于 Save)
+                $('#companyName').val(clientData.companyName);
+                $('#client').val(clientData.companyName);
+                $('#clientId').val(clientData.id);
+
+                // C. 自动计算 Year End Date
+                if (clientData.yearEndMonth) {
+                    const yearEndDate = calculateYearEndDateForInput(clientData.yearEndMonth);
+                    $('#yearEnd').val(yearEndDate);
+                }
+            } else {
+                // 清空逻辑
+                $('#grouping').val('');
+                $('#yearEnd').val('');
+                $('#companyName').val('');
+                $('#client').val('');
+                $('#clientId').val('');
+            }
+        });
+
+        // ---------------------------------------------------------
+        //  3. Edit Record (核心：反向查找逻辑)
+        // ---------------------------------------------------------
+        function editRecord(id) {
+            $.ajax({
+                url: '/api/auditdept/at21/get/' + id,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const record = response.data;
+                        currentEditingId = record.id;
+                        $('#modalTitle').text('Edit Audit Master Schedule Record');
+                        $('#recordId').val(record.id);
+
+                        // === 关键逻辑开始：设置 Dropdown ===
+
+                        // 1. 先把名字填入隐藏字段，防止用户不改动直接保存时名字丢失
+                        $('#companyName').val(record.companyName || '');
+
+                        // 2. 尝试选中 Dropdown
+                        // 情况 A: 记录里有 ClientID，直接用
+                        if (record.clientId && clientOptionsMap[record.clientId]) {
+                            $('#clientSelect').val(record.clientId);
+                        }
+                        // 情况 B: 记录里没 ID (或 ID 对不上)，但有名字 -> 反向查找
+                        else if (record.companyName) {
+                            const cleanName = record.companyName.trim();
+                            const foundId = clientNameMap[cleanName]; // 在 Name->ID 表里找
+
+                            if (foundId) {
+                                $('#clientSelect').val(foundId); // 找到了！选中它
+                                // 同时把 ID 补全到隐藏字段，保证数据完整性
+                                $('#clientId').val(foundId);
+                            } else {
+                                console.warn('Edit Error: Client name found but not in dropdown list:', record.companyName);
+                                // 可选：如果找不到，保留为 "Select client" 或者不做处理
+                            }
+                        }
+                        // === 关键逻辑结束 ===
+
+                        // 填充其他字段
+                        $('#grouping').val(record.grouping || '');
+                        $('#quartertoAudit').val(record.quartertoAudit || '');
+                        $('#activity').val(record.activity || '');
+                        $('#yearEnd').val(formatDateForInput(record.yearEnd));
+                        $('#yearToDo').val(record.yearTodo || '');
+                        $('#companyStatus').val(record.companyStatus || '');
+                        $('#auditStatus').val(record.auditStatus || '');
+                        $('#movetoAEX').val(record.movetoAEX || '');
+                        $('#movetoBacklog').val(record.movetoBacklog || '');
+                        $('#first18mthdue').val(formatDateForInput(record.first18mthdue));
+                        $('#aFSdueDate').val(formatDateForInput(record.afSdueDate));
+                        $('#coSec').val(record.coSec || '');
+                        $('#auditStaff').val(record.auditStaff || '');
+                        $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
+                        $('#estRev').val(record.estRev || '');
+                        $('#acctngWk').val(record.acctngWk || '');
+                        $('#jobCompleted').val(record.jobCompleted || '');
+                        $('#remark').val(record.remark || '');
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error loading record: ' + error, 'danger');
+                }
+            });
+        }
+
+        // ---------------------------------------------------------
+        //  4. Save & Other Logic (保持不变)
+        // ---------------------------------------------------------
+        function saveRecord() {
+            const formData = {
+                grouping: $('#grouping').val(),
+                // 这里的 companyName 由 Dropdown change 事件或 Edit 回显填充
+                companyName: $('#companyName').val(),
+                quartertoAudit: $('#quartertoAudit').val(),
+                activity: $('#activity').val(),
+                yearEnd: $('#yearEnd').val() || null,
+                yearToDo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditStatus: $('#auditStatus').val(),
+                movetoAEX: $('#movetoAEX').val(),
+                movetoBacklog: $('#movetoBacklog').val(),
+                first18mthdue: $('#first18mthdue').val() || null,
+                aFSdueDate: $('#aFSdueDate').val() || null,
+                coSec: $('#coSec').val(),
+                auditStaff: $('#auditStaff').val(),
+                dateDocIn: $('#dateDocIn').val() || null,
+                estRev: $('#estRev').val(),
+                acctngWk: $('#acctngWk').val(),
+                jobCompleted: $('#jobCompleted').val(),
+                remark: $('#remark').val()
+            };
+
+            if (currentEditingId) {
+                formData.id = currentEditingId;
+            }
+
+            if (!formData.companyName) {
+                showAlert('Company Name is required (Please select a client)', 'warning');
+                return;
+            }
+
+            const url = currentEditingId ? '/api/auditdept/at21/update' : '/api/auditdept/at21/create';
+            const method = currentEditingId ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        const message = `Record ${currentEditingId ? 'updated' : 'created'} successfully!`;
+                        showAlert(message, 'success');
+                        $('#taskModal').modal('hide');
+                        loadData();
+                    } else {
+                        showAlert('Error saving record: ' + response.message, 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error saving record: ' + error, 'danger');
+                }
+            });
+        }
+
+        // --- Helper Functions ---
+
+        function formatJsDateForInput(date) {
+            if (!date) return '';
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function calculateYearEndDateForInput(monthName) {
+            if (!monthName) return '';
+            const months = {
+                "january": 0, "february": 1, "march": 2, "april": 3, "may": 4, "june": 5,
+                "july": 6, "august": 7, "september": 8, "october": 9, "november": 10, "december": 11
+            };
+            const cleanName = monthName.trim().toLowerCase();
+            const monthIndex = months[cleanName];
+            if (monthIndex === undefined) return '';
+            const currentYear = new Date().getFullYear();
+            const date = new Date(currentYear, monthIndex + 1, 0);
+            return formatJsDateForInput(date);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+            } catch (e) { return ''; }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+            } catch (e) { return ''; }
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(message, type) {
+            const alertClass = `alert alert-${type} alert-dismissible fade show`;
+            const alertHtml = `
+                <div class="${alertClass}" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            $('.alert').remove();
+            $('.card-body').prepend(alertHtml);
+            setTimeout(() => { $('.alert').alert('close'); }, 5000);
+        }
+
+        // DataTable Logic (Standard)
+        function initializeDataTable() {
             if (dataTable) {
-                console.log('Destroying existing DataTable...');
                 dataTable.destroy();
                 $('#taskDatatable').empty();
             }
-
-            // 重新创建表格结构
             const tableHtml = `
                 <thead>
                     <tr>
@@ -329,46 +598,23 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                </tbody>
+                <tbody id="tableBody"></tbody>
             `;
             $('#taskDatatable').html(tableHtml);
-
-            // 重新填充数据
             populateTableBody(currentData);
 
-            // 初始化 DataTable
             dataTable = $('#taskDatatable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                // "scrollX": true,
-                "language": {
-                    "emptyTable": "No audit master schedule records found",
-                    "loadingRecords": "Loading...",
-                    "zeroRecords": "No matching records found"
-                }
+                "paging": true, "lengthChange": true, "searching": true, "ordering": true,
+                "info": true, "autoWidth": false, "responsive": true,
+                "language": { "emptyTable": "No records found", "zeroRecords": "No matching records found" }
             });
-
-            console.log('DataTable initialized successfully');
         }
 
         function populateTableBody(data) {
-            console.log('Populating table body with data:', data);
-
             const tbody = $('#tableBody');
             tbody.empty();
-
             if (data && data.length > 0) {
-                console.log(`Adding ${data.length} records to table`);
-
-                data.forEach(function(item, index) {
-                    console.log(`Adding record ${index + 1}:`, item);
-
+                data.forEach(function(item) {
                     const row = `
                         <tr>
                             <td>${escapeHtml(item.grouping || '')}</td>
@@ -391,296 +637,48 @@
                             <td>${escapeHtml(item.jobCompleted || '')}</td>
                             <td>${escapeHtml(item.remark || '')}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})"><i class="fas fa-trash"></i></button>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                     tbody.append(row);
                 });
-
-                console.log('Successfully added all records to table');
-            } else {
-                console.log('No data available, showing empty message');
             }
         }
 
         function loadData() {
-            console.log('Loading data from API...');
-
-            // 显示加载状态
             const tbody = $('#tableBody');
-            tbody.html('<tr><td colspan="20" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> Loading data...</td></tr>');
-
+            tbody.html('<tr><td colspan="20" class="text-center">Loading...</td></tr>');
             $.ajax({
-                url: '/api/auditdept/at21/get-all',
-                type: 'GET',
+                url: '/api/auditdept/at21/get-all', type: 'GET',
                 success: function(response) {
-                    console.log('API Response received:', response);
-
                     if (response.success) {
-                        console.log('Data loaded successfully:', response.data);
                         currentData = response.data || [];
-                        console.log(`Loaded ${currentData.length} records`);
-
-
-                        // 重新初始化表格
                         initializeDataTable();
-
-                        if (currentData.length > 0) {
-                            showAlert('Data loaded successfully!', 'success');
-                        }
                     } else {
-                        console.error('API returned error:', response);
-                        showAlert('Error loading data: ' + response.message, 'danger');
-                        currentData = [];
-                        initializeDataTable();
+                        currentData = []; initializeDataTable();
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    console.log('XHR status:', xhr.status);
-                    console.log('XHR response:', xhr.responseText);
-                    showAlert('Error loading data: ' + error, 'danger');
-                    currentData = [];
-                    initializeDataTable();
-                }
-            });
-        }
-
-        function openCreateModal() {
-            console.log('Opening create modal');
-            currentEditingId = null;
-            $('#modalTitle').text('Add New Audit Master Schedule Record');
-            $('#taskForm')[0].reset();
-            $('#recordId').val('');
-            $('#taskModal').modal('show');
-        }
-
-        function editRecord(id) {
-            console.log('Editing record with ID:', id);
-
-            $.ajax({
-                url: '/api/auditdept/at21/get/' + id,
-                type: 'GET',
-                success: function(response) {
-                    console.log('Edit API response:', response);
-
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditingId = record.id;
-
-                        console.log('Loading record data:', record);
-
-                        $('#modalTitle').text('Edit Audit Master Schedule Record');
-                        $('#recordId').val(record.id);
-
-                        // 填充表单字段
-                        $('#grouping').val(record.grouping || '');
-                        $('#companyName').val(record.companyName || '');
-                        $('#quartertoAudit').val(record.quartertoAudit || '');
-                        $('#activity').val(record.activity || '');
-                        $('#yearEnd').val(formatDateForInput(record.yearEnd));
-                        $('#yearToDo').val(record.yearTodo || '');
-                        $('#companyStatus').val(record.companyStatus || '');
-                        $('#auditStatus').val(record.auditStatus || '');
-                        $('#movetoAEX').val(record.movetoAEX || '');
-                        $('#movetoBacklog').val(record.movetoBacklog || '');
-                        $('#first18mthdue').val(formatDateForInput(record.first18mthdue));
-                        $('#aFSdueDate').val(formatDateForInput(record.afSdueDate));
-                        $('#coSec').val(record.coSec || '');
-                        $('#auditStaff').val(record.auditStaff || '');
-                        $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
-                        $('#estRev').val(record.estRev || '');
-                        $('#acctngWk').val(record.acctngWk || '');
-                        $('#jobCompleted').val(record.jobCompleted || '');
-                        $('#remark').val(record.remark || '');
-
-                        $('#taskModal').modal('show');
-                    } else {
-                        console.error('Error loading record:', response.message);
-                        showAlert('Error loading record: ' + response.message, 'danger');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading record:', error);
-                    showAlert('Error loading record: ' + error, 'danger');
-                }
-            });
-        }
-
-        function saveRecord() {
-            console.log('Saving record...');
-
-            const formData = {
-                grouping: $('#grouping').val(),          // Grouping
-                companyName: $('#companyName').val(),    // CompanyName
-                quartertoAudit: $('#quartertoAudit').val(), // QuartertoAudit
-                activity: $('#activity').val(),          // Activity
-                yearEnd: $('#yearEnd').val() || null,    // YearEnd
-                yearToDo: $('#yearToDo').val(),          // YearToDo
-                companyStatus: $('#companyStatus').val(),// CompanyStatus
-                auditStatus: $('#auditStatus').val(),    // AuditStatus
-                movetoAEX: $('#movetoAEX').val(),        // MovetoAEX
-                movetoBacklog: $('#movetoBacklog').val(),// MovetoBacklog
-                first18mthdue: $('#first18mthdue').val() || null, // First18mthdue
-                aFSdueDate: $('#aFSdueDate').val() || null,       // AFSDueDate
-                coSec: $('#coSec').val(),                // CoSec
-                auditStaff: $('#auditStaff').val(),      // AuditStaff
-                dateDocIn: $('#dateDocIn').val() || null,// DateDocIn
-                estRev: $('#estRev').val(),              // EstRev
-                acctngWk: $('#acctngWk').val(),          // AcctngWk
-                jobCompleted: $('#jobCompleted').val(),  // JobCompleted
-                remark: $('#remark').val()               // Remark
-            };
-
-            // Add ID for update
-            if (currentEditingId) {
-                formData.id = currentEditingId;
-            }
-
-            console.log('Form data to save:', formData);
-
-            // Basic validation
-            if (!formData.companyName) {
-                showAlert('Company Name is required', 'warning');
-                return;
-            }
-
-            const url = currentEditingId ? '/api/auditdept/at21/update' : '/api/auditdept/at21/create';
-            const method = currentEditingId ? 'PUT' : 'POST';
-
-            console.log(`Making ${method} request to: ${url}`);
-
-            $.ajax({
-                url: url,
-                type: method,
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    console.log('Save response:', response);
-
-                    if (response.success) {
-                        const message = `Record ${currentEditingId ? 'updated' : 'created'} successfully!`;
-                        console.log(message);
-                        showAlert(message, 'success');
-                        $('#taskModal').modal('hide');
-
-                        // 重新加载数据
-                        console.log('Reloading data after save...');
-                        loadData();
-                    } else {
-                        console.error('Save failed:', response.message);
-                        showAlert('Error saving record: ' + response.message, 'danger');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Save error:', error);
-                    console.log('XHR status:', xhr.status);
-                    console.log('XHR response:', xhr.responseText);
-                    showAlert('Error saving record: ' + error, 'danger');
-                }
+                error: function() { currentData = []; initializeDataTable(); }
             });
         }
 
         function deleteRecord(id) {
-            console.log('Deleting record with ID:', id);
-
-            if (confirm('Are you sure you want to delete this record?')) {
+            if (confirm('Delete this record?')) {
                 $.ajax({
-                    url: '/api/auditdept/at21/delete/' + id,
-                    type: 'DELETE',
-                    success: function(response) {
-                        console.log('Delete response:', response);
-
-                        if (response.success) {
-                            console.log('Record deleted successfully');
-                            showAlert('Record deleted successfully!', 'success');
-                            loadData();
-                        } else {
-                            console.error('Delete failed:', response.message);
-                            showAlert('Error deleting record: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Delete error:', error);
-                        showAlert('Error deleting record: ' + error, 'danger');
-                    }
+                    url: '/api/auditdept/at21/delete/' + id, type: 'DELETE',
+                    success: function(res) { if(res.success) { loadData(); showAlert('Deleted', 'success'); } }
                 });
             }
         }
 
-        // Utility functions
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
-            } catch (e) {
-                console.warn('Date formatting error:', e);
-                return '';
-            }
+        function openCreateModal() {
+            currentEditingId = null;
+            $('#modalTitle').text('Add New Audit Master Schedule Record');
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#clientSelect').val('');
+            $('#taskModal').modal('show');
         }
-
-        function formatDateForInput(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
-            } catch (e) {
-                console.warn('Date input formatting error:', e);
-                return '';
-            }
-        }
-
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .toString()
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function showAlert(message, type) {
-            console.log(`Showing alert: ${type} - ${message}`);
-
-            const alertClass = `alert alert-${type} alert-dismissible fade show`;
-            const alertHtml = `
-                <div class="${alertClass}" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            // Remove existing alerts
-            $('.alert').remove();
-
-            // Prepend alert to card body
-            $('.card-body').prepend(alertHtml);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 5000);
-        }
-
-        // 添加调试函数
-        function debugTable() {
-            console.log('=== DEBUG TABLE INFO ===');
-            console.log('DataTable instance:', dataTable);
-            console.log('Current data:', currentData);
-            console.log('Table body children:', $('#tableBody').children().length);
-            console.log('Table HTML:', $('#taskDatatable').html());
-        }
-
-        // 在控制台中可以调用 debugTable() 来调试
-        window.debugTable = debugTable;
     </script>
 }

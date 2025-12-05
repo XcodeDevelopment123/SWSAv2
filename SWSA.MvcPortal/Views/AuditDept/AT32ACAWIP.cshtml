@@ -90,8 +90,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -320,13 +325,11 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <style>
-        /* 确保表格整体滚动 */
         .dataTables_wrapper {
             position: relative;
         }
@@ -348,7 +351,6 @@
             max-height: 500px !important;
         }
 
-        /* 响应式调整 */
         @@media (max-width: 768px) {
             .dataTables_scrollBody {
                 max-height: 400px !important;
@@ -360,223 +362,172 @@
         let currentEditingId = null;
         let dataTable = null;
 
+        // 全局 Map：用于 Name -> ID 的反向查找，解决 Edit 回显问题
+        let clientNameMap = {};
+        let clientDataMap = {}; // ID -> Data (备用)
+
         $(document).ready(function() {
             console.log('Document ready, initializing AT32...');
-            initializeDataTable();
-        });
 
-        function initializeDataTable() {
-            console.log('Initializing DataTable...');
-
-            // 如果 DataTable 已经存在，先销毁
-            if (dataTable) {
-                dataTable.destroy();
+            // 确保页面有 hidden input 用于存储 companyName
+            if ($('#companyName').length === 0) {
+                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
             }
 
-            // 初始化 DataTable - 恢复到原来的配置
+            // 1. 先加载 Dropdown 选项
+            loadClientOptions();
+
+            // 2. 初始化表格
+            initializeDataTable();
+
+            // 3. 绑定自动计算事件
+            bindAutoCalculations();
+        });
+
+        // ---------------------------------------------------------
+        //  1. 加载 Dropdown 并构建查找表
+        // ---------------------------------------------------------
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
+
+                        // 重置 Map
+                        clientNameMap = {};
+                        clientDataMap = {};
+
+                        response.data.forEach(client => {
+                            // 存入 Map：Key=公司名(去空格), Value=ID
+                            if(client.companyName) {
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+                            clientDataMap[client.id] = client;
+
+                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Dropdown 改变时，同步隐藏的 companyName 字段
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            const clientData = clientDataMap[selectedId];
+
+            if (clientData) {
+                // 只要同步名字，不填其他字段
+                $('#companyName').val(clientData.companyName);
+                $('#clientId').val(clientData.id);
+                $('#client').val(clientData.companyName);
+            } else {
+                $('#companyName').val('');
+                $('#clientId').val('');
+                $('#client').val('');
+            }
+        });
+
+        // ---------------------------------------------------------
+        //  2. DataTable 初始化 (保持你的配置)
+        // ---------------------------------------------------------
+        function initializeDataTable() {
+            if (dataTable) { dataTable.destroy(); }
+
             dataTable = $('#taskDatatable').DataTable({
                 "ajax": {
                     "url": "/api/auditdept/at32/get-all",
                     "type": "GET",
                     "dataSrc": function(response) {
-                        console.log('DataTable AJAX response:', response);
-                        if (response.success) {
-                            return response.data;
-                        } else {
-                            console.error('API error:', response.message);
-                            showAlert('Error loading data: ' + response.message, 'danger');
-                            return [];
-                        }
+                        return response.success ? response.data : [];
                     },
                     "error": function(xhr, error, thrown) {
-                        console.error('DataTable AJAX error:', error);
-                        console.log('XHR status:', xhr.status);
-                        console.log('XHR response:', xhr.responseText);
-                        showAlert('Error loading data: ' + error, 'danger');
+                        console.error('API Error:', error);
                     }
                 },
                 "columns": [
-                    {
-                        "data": null,
-                        "render": function(data, type, row, meta) {
-                            return meta.row + 1;
-                        }
-                    },
+                    { "data": null, "render": function(data, type, row, meta) { return meta.row + 1; } },
                     { "data": "companyName" },
                     { "data": "activity" },
                     { "data": "yeartoDo" },
                     { "data": "quartertodo" },
                     { "data": "pic" },
                     { "data": "status" },
-                    {
-                        "data": "auditFee",
-                        "render": function(data) {
-                            return formatNumber(data);
-                        }
-                    },
-                    {
-                        "data": "dateBilled",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
-                    {
-                        "data": "startDate",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
-                    {
-                        "data": "endDate",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
+                    { "data": "auditFee", "render": function(data) { return formatNumber(data); } },
+                    { "data": "dateBilled", "render": function(data) { return formatDate(data); } },
+                    { "data": "startDate", "render": function(data) { return formatDate(data); } },
+                    { "data": "endDate", "render": function(data) { return formatDate(data); } },
                     { "data": "noOfDays" },
                     { "data": "totalFieldwkDays" },
                     { "data": "finalResultOverUnder" },
-                    {
-                        "data": "accSetup",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "assummary",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "auditPlanning",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "auditExecution",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "auditCompleion",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "totalPercent",
-                        "render": function(data) {
-                            return formatPercentage(data);
-                        }
-                    },
-                    {
-                        "data": "reviewDateSent",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
-                    {
-                        "data": "reviewEndDate",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
+                    { "data": "accSetup", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "assummary", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "auditPlanning", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "auditExecution", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "auditCompleion", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "totalPercent", "render": function(data) { return formatPercentage(data); } },
+                    { "data": "reviewDateSent", "render": function(data) { return formatDate(data); } },
+                    { "data": "reviewEndDate", "render": function(data) { return formatDate(data); } },
                     { "data": "reviewOfDays" },
-                    {
-                        "data": "kKdateSent",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
-                    {
-                        "data": "kKendDate",
-                        "render": function(data) {
-                            return formatDate(data);
-                        }
-                    },
+                    { "data": "kKdateSent", "render": function(data) { return formatDate(data); } },
+                    { "data": "kKendDate", "render": function(data) { return formatDate(data); } },
                     { "data": "kKofDate" },
                     { "data": "totalReviewDays" },
                     {
                         "data": "id",
-                        "render": function(data, type, row) {
+                        "render": function(data) {
                             return `
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${data})" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${data})" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${data})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${data})" title="Delete"><i class="fas fa-trash"></i></button>
                             `;
                         },
-                        "orderable": false,
-                        "searchable": false
+                        "orderable": false
                     }
                 ],
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "scrollX": true,
-                "scrollY": "500px",
-                "scrollCollapse": true,
-                "language": {
-                    "emptyTable": "No AT32 audit records found",
-                    "loadingRecords": "Loading AT32 records...",
-                    "zeroRecords": "No matching records found",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                    "infoEmpty": "Showing 0 to 0 of 0 entries",
-                    "infoFiltered": "(filtered from _MAX_ total entries)"
-                },
-                "initComplete": function(settings, json) {
-                    console.log('DataTable initialization complete');
-                }
+                "paging": true, "lengthChange": true, "searching": true, "ordering": true,
+                "info": true, "autoWidth": false, "responsive": true,
+                "scrollX": true, "scrollY": "500px", "scrollCollapse": true,
+                "language": { "emptyTable": "No records found", "loadingRecords": "Loading..." }
             });
-
-            console.log('DataTable initialized successfully');
         }
 
-        // 其他函数保持不变...
-        function reloadData() {
-            console.log('Reloading AT32 data...');
-            if (dataTable) {
-                dataTable.ajax.reload(null, false);
-            }
-        }
-
-        function openCreateModal() {
-            console.log('Opening create modal for AT32');
-            currentEditingId = null;
-            $('#modalTitle').text('Add New AT32 Audit Record');
-            $('#taskForm')[0].reset();
-            $('#recordId').val('');
-            $('#taskModal').modal('show');
-        }
-
+        // ---------------------------------------------------------
+        //  3. Edit Logic (核心：反向查找回显)
+        // ---------------------------------------------------------
         function editRecord(id) {
-            console.log('Editing AT32 record with ID:', id);
-
             $.ajax({
                 url: '/api/auditdept/at32/get/' + id,
                 type: 'GET',
                 success: function(response) {
-                    console.log('AT32 Edit API response:', response);
-
                     if (response.success) {
                         const record = response.data;
                         currentEditingId = record.id;
-
-                        console.log('Loading AT32 record data:', record);
-
                         $('#modalTitle').text('Edit AT32 Audit Record');
                         $('#recordId').val(record.id);
 
-                        // 填充表单字段
+                        // === Dropdown 回显逻辑 ===
                         $('#companyName').val(record.companyName || '');
+
+                        // 优先用 ClientID，如果没有，用名字反查 ID
+                        if (record.clientId && clientDataMap[record.clientId]) {
+                            $('#clientSelect').val(record.clientId);
+                        }
+                        else if (record.companyName) {
+                            const foundId = clientNameMap[record.companyName.trim()];
+                            if (foundId) {
+                                $('#clientSelect').val(foundId);
+                                $('#clientId').val(foundId); // 补全 ID
+                            } else {
+                                console.warn('Name not found in dropdown:', record.companyName);
+                            }
+                        }
+                        // === 结束 Dropdown 逻辑 ===
+
+                        // 填充其他字段
                         $('#activity').val(record.activity || '');
                         $('#yeartoDo').val(record.yeartoDo || '');
                         $('#quartertodo').val(record.quartertodo || '');
@@ -593,7 +544,7 @@
                         $('#assummary').val(record.assummary || '');
                         $('#auditPlanning').val(record.auditPlanning || '');
                         $('#auditExecution').val(record.auditExecution || '');
-                        $('#auditCompleion').val(record.auditCompleion || '');
+                        $('#auditCompleion').val(record.auditCompleion || ''); // 注意你的 HTML ID拼写是 Compleion
                         $('#totalPercent').val(record.totalPercent || '');
                         $('#reviewDateSent').val(formatDateForInput(record.reviewDateSent));
                         $('#reviewEndDate').val(formatDateForInput(record.reviewEndDate));
@@ -605,21 +556,20 @@
 
                         $('#taskModal').modal('show');
                     } else {
-                        console.error('Error loading AT32 record:', response.message);
-                        showAlert('Error loading AT32 record: ' + response.message, 'danger');
+                        showAlert('Error: ' + response.message, 'danger');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading AT32 record:', error);
-                    showAlert('Error loading AT32 record: ' + error, 'danger');
                 }
             });
         }
 
+        // ---------------------------------------------------------
+        //  4. Save Logic
+        // ---------------------------------------------------------
         function saveRecord() {
-            console.log('Saving AT32 record...');
-
+            // 构造 Payload
             const formData = {
+                id: currentEditingId ? currentEditingId : 0,
+                // 这里确保从 hidden input 拿名字，hidden input 会被 dropdown 更新
                 companyName: $('#companyName').val(),
                 activity: $('#activity').val(),
                 yeartoDo: $('#yeartoDo').val(),
@@ -648,14 +598,6 @@
                 totalReviewDays: $('#totalReviewDays').val() || null
             };
 
-            // Add ID for update
-            if (currentEditingId) {
-                formData.id = currentEditingId;
-            }
-
-            console.log('AT32 Form data to save:', formData);
-
-            // Basic validation
             if (!formData.companyName) {
                 showAlert('Company Name is required', 'warning');
                 return;
@@ -664,76 +606,85 @@
             const url = currentEditingId ? '/api/auditdept/at32/update' : '/api/auditdept/at32/create';
             const method = currentEditingId ? 'PUT' : 'POST';
 
-            console.log(`Making ${method} request to: ${url}`);
-
             $.ajax({
                 url: url,
                 type: method,
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    console.log('AT32 Save response:', response);
-
                     if (response.success) {
-                        const message = `AT32 Record ${currentEditingId ? 'updated' : 'created'} successfully!`;
-                        console.log(message);
-                        showAlert(message, 'success');
+                        showAlert('Saved successfully!', 'success');
                         $('#taskModal').modal('hide');
-
-                        // 重新加载数据
-                        console.log('Reloading AT32 data after save...');
-                        reloadData();
+                        reloadDataTable();
                     } else {
-                        console.error('AT32 Save failed:', response.message);
-                        showAlert('Error saving AT32 record: ' + response.message, 'danger');
+                        showAlert('Error: ' + response.message, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AT32 Save error:', error);
-                    console.log('XHR status:', xhr.status);
-                    console.log('XHR response:', xhr.responseText);
-                    showAlert('Error saving AT32 record: ' + error, 'danger');
+                    showAlert('Error saving: ' + error, 'danger');
                 }
             });
         }
 
-        function deleteRecord(id) {
-            console.log('Deleting AT32 record with ID:', id);
+        // ---------------------------------------------------------
+        //  Helpers & Events
+        // ---------------------------------------------------------
 
-            if (confirm('Are you sure you want to delete this AT32 record?')) {
+        function bindAutoCalculations() {
+            // 自动计算总百分比
+            $('#accSetup, #assummary, #auditPlanning, #auditExecution, #auditCompleion').on('input change', function() {
+                var total = (parseFloat($('#accSetup').val()) || 0) +
+                            (parseFloat($('#assummary').val()) || 0) +
+                            (parseFloat($('#auditPlanning').val()) || 0) +
+                            (parseFloat($('#auditExecution').val()) || 0) +
+                            (parseFloat($('#auditCompleion').val()) || 0);
+                $('#totalPercent').val(total.toFixed(1));
+            });
+
+            // 自动计算总审核天数
+            $('#reviewOfDays, #kKofDate').on('input change', function() {
+                var total = (parseInt($('#reviewOfDays').val()) || 0) +
+                            (parseInt($('#kKofDate').val()) || 0);
+                $('#totalReviewDays').val(total);
+            });
+        }
+
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
                 $.ajax({
                     url: '/api/auditdept/at32/delete/' + id,
                     type: 'DELETE',
                     success: function(response) {
-                        console.log('AT32 Delete response:', response);
-
                         if (response.success) {
-                            console.log('AT32 Record deleted successfully');
-                            showAlert('AT32 Record deleted successfully!', 'success');
-                            reloadData();
+                            showAlert('Deleted successfully!', 'success');
+                            reloadDataTable();
                         } else {
-                            console.error('AT32 Delete failed:', response.message);
-                            showAlert('Error deleting AT32 record: ' + response.message, 'danger');
+                            showAlert('Error: ' + response.message, 'danger');
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AT32 Delete error:', error);
-                        showAlert('Error deleting AT32 record: ' + error, 'danger');
                     }
                 });
             }
         }
 
-        // Utility functions
+        function reloadDataTable() {
+            if (dataTable) dataTable.ajax.reload(null, false);
+        }
+
+        function openCreateModal() {
+            currentEditingId = null;
+            $('#modalTitle').text('Add New AT32 Audit Record');
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#clientSelect').val('');
+            $('#taskModal').modal('show');
+        }
+
         function formatDate(dateString) {
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
                 return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
-            } catch (e) {
-                console.warn('Date formatting error:', e);
-                return '';
-            }
+            } catch (e) { return ''; }
         }
 
         function formatDateForInput(dateString) {
@@ -741,19 +692,13 @@
             try {
                 const date = new Date(dateString);
                 return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
-            } catch (e) {
-                console.warn('Date input formatting error:', e);
-                return '';
-            }
+            } catch (e) { return ''; }
         }
 
         function formatNumber(value) {
             if (value === null || value === undefined || value === '') return '';
             const num = parseFloat(value);
-            return isNaN(num) ? '' : num.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+            return isNaN(num) ? '' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function formatPercentage(value) {
@@ -763,43 +708,10 @@
         }
 
         function showAlert(message, type) {
-            console.log(`Showing alert: ${type} - ${message}`);
-
-            const alertClass = `alert alert-${type} alert-dismissible fade show`;
-            const alertHtml = `
-                <div class="${alertClass}" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
-            // Remove existing alerts
+            const alertHtml = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
             $('.alert').remove();
-
-            // Prepend alert to card body
             $('.card-body').prepend(alertHtml);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 5000);
+            setTimeout(() => { $('.alert').alert('close'); }, 5000);
         }
-
-        // 自动计算总百分比
-        $('#accSetup, #assummary, #auditPlanning, #auditExecution, #auditCompleion').change(function() {
-            var total = parseFloat($('#accSetup').val() || 0) +
-                       parseFloat($('#assummary').val() || 0) +
-                       parseFloat($('#auditPlanning').val() || 0) +
-                       parseFloat($('#auditExecution').val() || 0) +
-                       parseFloat($('#auditCompleion').val() || 0);
-            $('#totalPercent').val(total.toFixed(1));
-        });
-
-        // 自动计算总审核天数
-        $('#reviewOfDays, #kKofDate').change(function() {
-            var total = parseInt($('#reviewOfDays').val() || 0) +
-                       parseInt($('#kKofDate').val() || 0);
-            $('#totalReviewDays').val(total);
-        });
     </script>
 }

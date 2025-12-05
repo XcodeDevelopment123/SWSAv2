@@ -1,4 +1,4 @@
-﻿@{
+﻿    @{
     ViewData["Title"] = "AT31AuditMasterLogBook";
 }
 
@@ -113,8 +113,13 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -382,7 +387,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -390,18 +394,87 @@
     <script>
         let currentEditingId = null;
         let dataTable = null;
+        // 1. 创建一个全局 Map，用于 Name -> ID 的反向查找，解决 Edit 回显问题
+        let clientNameMap = {};
+        let clientDataMap = {}; // ID -> Data
 
         $(document).ready(function() {
-            // 先加载数据，然后再初始化 DataTable
+            // 确保页面有 hidden input 用于存储 companyName (因为 saveRecord 需要这个字段)
+            if ($('#companyName').length === 0) {
+                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
+            }
+
+            // 2. 先加载 Dropdown，加载完后再加载表格数据
+            loadClientOptions();
             loadData();
         });
 
+        // ---------------------------------------------------------
+        //  加载 Dropdown (只做选择，不自动填其他)
+        // ---------------------------------------------------------
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
+
+                        // 重置 Map
+                        clientNameMap = {};
+                        clientDataMap = {};
+
+                        response.data.forEach(client => {
+                            // 存入 Map：Key=公司名, Value=ID
+                            // 这样 Edit 的时候，即使只有公司名，也能找到对应的 ID
+                            if(client.companyName) {
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+                            clientDataMap[client.id] = client;
+
+                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
+                        });
+                    }
+                }
+            });
+        }
+
+        // ---------------------------------------------------------
+        //  Dropdown Change 事件
+        // ---------------------------------------------------------
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            const clientData = clientDataMap[selectedId];
+
+            if (clientData) {
+                // 既然你说 "他没有字段供给自动填的部分"
+                // 这里我们 **只** 填入 CompanyName 给隐藏字段 (为了 saveRecord 能拿到名字)
+                $('#companyName').val(clientData.companyName);
+
+                // 也可以记录 ID
+                $('#clientId').val(clientData.id);
+                $('#client').val(clientData.companyName);
+            } else {
+                $('#companyName').val('');
+                $('#clientId').val('');
+                $('#client').val('');
+            }
+        });
+
+        // ---------------------------------------------------------
+        //  原有的 DataTable 和 CRUD 逻辑
+        // ---------------------------------------------------------
+
         function initializeDataTable() {
-            // 如果 DataTable 已经存在，先销毁
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 dataTable.destroy();
                 $('#taskDatatable').empty();
             }
+
+            // 重新构建表头 (因为你的 HTML 里表头是写死的，这里不需要 JS 动态生成表头结构，只需要配置 DataTable)
+            // 注意：如果你的 populateTable 是动态插入 tbody，这里只需要初始化功能
 
             dataTable = $('#taskDatatable').DataTable({
                 "paging": true,
@@ -416,45 +489,39 @@
                     "emptyTable": "No audit master log book records found",
                     "loadingRecords": "Loading...",
                     "zeroRecords": "No matching records found"
-                },
-                "initComplete": function(settings, json) {
-                    console.log('DataTable initialized successfully');
                 }
             });
+            console.log('DataTable initialized successfully');
         }
 
         function loadData() {
-            console.log('Loading data...');
-
-            // 显示加载状态
             const tbody = $('#tableBody');
+            // 如果 DataTable 存在，先销毁以便更新 tbody
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().destroy();
+            }
+
             tbody.html('<tr><td colspan="32" class="text-center">Loading data...</td></tr>');
 
             $.ajax({
                 url: '/api/auditdept/at31/get-all',
                 type: 'GET',
                 success: function(response) {
-                    console.log('API response:', response);
-
                     if (response.success && response.data) {
                         populateTable(response.data);
                     } else {
-                        console.error('API response error:', response);
-                        showAlert('Error loading data: ' + (response.message || 'Unknown error'), 'danger');
                         tbody.html('<tr><td colspan="32" class="text-center">No data available</td></tr>');
+                        initializeDataTable();
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX error:', error);
-                    showAlert('Error loading data: ' + error, 'danger');
                     tbody.html('<tr><td colspan="32" class="text-center">Error loading data</td></tr>');
+                    showAlert('Error loading data: ' + error, 'danger');
                 }
             });
         }
 
         function populateTable(data) {
-            console.log('Populating table with data:', data);
-
             const tbody = $('#tableBody');
             tbody.empty();
 
@@ -494,31 +561,16 @@
                             <td>${escapeHtml(item.binded || '')}</td>
                             <td>${formatDate(item.despatchDateToClient)}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
                     tbody.append(row);
                 });
-
-                // 数据填充完成后初始化 DataTable
-                setTimeout(() => {
-                    initializeDataTable();
-                }, 100);
-
-            } else {
-                tbody.html('<tr><td colspan="32" class="text-center">No audit master log book records found</td></tr>');
-
-                // 即使没有数据也要初始化 DataTable
-                setTimeout(() => {
-                    initializeDataTable();
-                }, 100);
             }
+            // 重新初始化 DataTable
+            initializeDataTable();
         }
 
         function openCreateModal() {
@@ -526,9 +578,16 @@
             $('#modalTitle').text('Add New Audit Master Log Book Record');
             $('#taskForm')[0].reset();
             $('#recordId').val('');
+
+            // 重置 dropdown
+            $('#clientSelect').val('');
+
             $('#taskModal').modal('show');
         }
 
+        // ---------------------------------------------------------
+        //  Edit Record (关键修改：正确回显 Dropdown)
+        // ---------------------------------------------------------
         function editRecord(id) {
             $.ajax({
                 url: '/api/auditdept/at31/get/' + id,
@@ -537,12 +596,34 @@
                     if (response.success) {
                         const record = response.data;
                         currentEditingId = record.id;
-
                         $('#modalTitle').text('Edit Audit Master Log Book Record');
                         $('#recordId').val(record.id);
 
-                        // 填充表单字段
+                        // === 重点逻辑开始 ===
+                        // 目标：让 Dropdown 选中正确的 Client
+
+                        // 1. 先把名字填入 hidden input
                         $('#companyName').val(record.companyName || '');
+
+                        // 2. 尝试设置 Dropdown 的值
+                        // 如果后端返回了 ClientID (假设字段叫 clientId)，直接用
+                        if (record.clientId) {
+                            $('#clientSelect').val(record.clientId);
+                        }
+                        // 如果后端没返回 ClientID，只有 companyName，我们用 Map 反向查找 ID
+                        else if (record.companyName) {
+                            const foundId = clientNameMap[record.companyName.trim()];
+                            if (foundId) {
+                                $('#clientSelect').val(foundId);
+                            } else {
+                                // 如果找不到（比如名字改了，或者不在列表里），这就没办法了
+                                // 可以选择保留为空，或者显示一个警告
+                                console.warn('Could not find client ID for name:', record.companyName);
+                            }
+                        }
+                        // === 重点逻辑结束 ===
+
+                        // 填充其他字段 (保持原样)
                         $('#activity').val(record.activity || '');
                         $('#yeToDo').val(record.yEtoDo || '');
                         $('#quarterToDo').val(record.quartertoDo || '');
@@ -585,6 +666,8 @@
         }
 
         function saveRecord() {
+            // 注意：这里 companyName 取值要从 hidden input 取 (由 dropdown 填充)
+            // 如果 dropdown 没选，hidden input 可能为空，这符合验证逻辑
             const formData = {
                 companyName: $('#companyName').val(),
                 activity: $('#activity').val(),
@@ -618,14 +701,12 @@
                 despatchDateToClient: $('#despatchDateToClient').val() || null
             };
 
-            // Add ID for update
             if (currentEditingId) {
                 formData.id = currentEditingId;
             }
 
-            // Basic validation
             if (!formData.companyName) {
-                showAlert('Company Name is required', 'warning');
+                showAlert('Company Name is required (Please select a client)', 'warning');
                 return;
             }
 
@@ -652,6 +733,8 @@
             });
         }
 
+        // ... (deleteRecord 和其他 Utility functions 保持原样) ...
+
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
                 $.ajax({
@@ -672,15 +755,12 @@
             }
         }
 
-        // Utility functions
         function formatDate(dateString) {
             if (!dateString) return '';
             try {
                 const date = new Date(dateString);
                 return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
-            } catch (e) {
-                return '';
-            }
+            } catch (e) { return ''; }
         }
 
         function formatDateForInput(dateString) {
@@ -688,18 +768,13 @@
             try {
                 const date = new Date(dateString);
                 return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
-            } catch (e) {
-                return '';
-            }
+            } catch (e) { return ''; }
         }
 
         function formatNumber(value) {
             if (value === null || value === undefined || value === '') return '';
             const num = parseFloat(value);
-            return isNaN(num) ? '' : num.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+            return isNaN(num) ? '' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function formatPercentage(value) {
@@ -710,30 +785,15 @@
 
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
-            return unsafe
-                .toString()
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return unsafe.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         function showAlert(message, type) {
             const alertClass = `alert alert-${type} alert-dismissible fade show`;
-            const alertHtml = `
-                <div class="${alertClass}" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-
+            const alertHtml = `<div class="${alertClass}" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
             $('.alert').remove();
             $('.card-body').prepend(alertHtml);
-
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 5000);
+            setTimeout(() => { $('.alert').alert('close'); }, 5000);
         }
     </script>
 }

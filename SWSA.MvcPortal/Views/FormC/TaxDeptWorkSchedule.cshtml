@@ -83,8 +83,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="companyName" class="form-label">Company Name (Suppose Link From Client List)<span class="text-danger"></span></label>
-                            <input type="text" id="companyName" class="form-control" placeholder="Enter company name" required />
+                            <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                            <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                <option value="">-- Select client --</option>
+                            </select>
+                            <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                            <input type="hidden" id="client" name="client" />
+                            <input type="hidden" id="clientId" name="clientId" />
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="yeToDo" class="form-label">YE to do</label>
@@ -167,7 +172,10 @@
         $(document).ready(function() {
             console.log('Document ready, starting initialization...');
 
-            // Load data immediately
+            // 1. Load Client Dropdown Options immediately
+            loadClientOptions();
+
+            // Load table data
             loadTableData();
 
             // Add new button click
@@ -184,7 +192,48 @@
             $('#taskModal').on('hidden.bs.modal', function() {
                 resetForm();
             });
+
+            // 2. Client Dropdown Change Listener (Update Hidden Fields)
+            $('#clientSelect').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var clientName = selectedOption.text();
+                var clientId = $(this).val();
+
+                if(clientId) {
+                    $('#client').val(clientName); // Update hidden name
+                    $('#clientId').val(clientId); // Update hidden ID
+                } else {
+                    $('#client').val('');
+                    $('#clientId').val('');
+                }
+            });
         });
+
+        // --- NEW FUNCTION: Load Client Options ---
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        var options = '<option value="">-- Select client --</option>';
+                        $.each(response.data, function(index, item) {
+                            // 假设后端返回的对象包含 id 和 companyName (或者 name)
+                            // 请根据实际 API 返回的字段名调整 item.id / item.companyName
+                            var val = item.id || item.Id;
+                            var text = item.companyName || item.name || item.Name;
+                            options += `<option value="${val}">${text}</option>`;
+                        });
+                        $('#clientSelect').html(options);
+                    } else {
+                        console.error('Failed to load company options');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading company options:', error);
+                }
+            });
+        }
 
         function loadTableData() {
             console.log('Starting to load table data...');
@@ -195,54 +244,32 @@
                 url: '/api/auditdept/at34/get-all',
                 type: 'GET',
                 success: function(response) {
-                    console.log('Ajax success, response:', response);
                     $('#loadingMessage').hide();
-
                     if (response.success) {
                         allRecords = response.data || [];
-                        console.log('Records loaded:', allRecords.length);
                         populateTable(allRecords);
                         $('#tableContainer').show();
                     } else {
-                        console.error('Response not successful:', response.message);
                         showAlert('Error loading data: ' + response.message, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Ajax error:', {
-                        status: status,
-                        error: error,
-                        responseText: xhr.responseText
-                    });
                     $('#loadingMessage').hide();
-                    showAlert('Error loading data: ' + error + '. Please check console for details.', 'danger');
+                    showAlert('Error loading data: ' + error, 'danger');
                 }
             });
         }
 
         function populateTable(data) {
-            console.log('Populating table with', data.length, 'records');
             const tbody = $('#tableBody');
             tbody.empty();
 
             if (data && data.length > 0) {
                 data.forEach((record, index) => {
-                    // 调试：打印第一条记录的所有字段
-                    if (index === 0) {
-                        console.log('First record fields:', record);
-                        console.log('dateReceived value:', record.dateReceived);
-                        console.log('commofOathsDate value:', record.commofOathsDate);
-                    }
-
-                    // 统一格式化所有日期为 DD-MM-YYYY
                     const dateSentDisplay = formatDateToDDMMYYYY(record.dateSent);
                     const first18mthDateDisplay = formatDateToDDMMYYYY(record.first18mthDate);
                     const dateReceivedDisplay = formatDateToDDMMYYYY(record.dateReceived);
                     const commofOathsDateDisplay = formatDateToDDMMYYYY(record.commofOathsDate);
-
-                    console.log(`Record ${index + 1}:`);
-                    console.log('  dateReceived:', record.dateReceived, '->', dateReceivedDisplay);
-                    console.log('  commofOathsDate:', record.commofOathsDate, '->', commofOathsDateDisplay);
 
                     const row = `
                         <tr>
@@ -272,102 +299,48 @@
             } else {
                 tbody.append('<tr><td colspan="12" class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>No records found. Click "New Record" to add data.</td></tr>');
             }
-            console.log('Table populated successfully');
         }
 
         function formatDateToDDMMYYYY(dateString) {
             if (!dateString) return '';
-
-            console.log('Formatting to DD-MM-YYYY:', dateString);
-
             try {
-                // 如果已经是 DD/MM/YYYY 格式，转换为 DD-MM-YYYY
-                if (typeof dateString === 'string' && dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-                    const formatted = dateString.replace(/\//g, '-');
-                    console.log('Converted DD/MM/YYYY to DD-MM-YYYY:', dateString, '->', formatted);
-                    return formatted;
-                }
-
-                // 如果是 YYYY-MM-DD 格式
+                if (typeof dateString === 'string' && dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) return dateString.replace(/\//g, '-');
                 if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
                     const parts = dateString.split('-');
-                    const year = parts[0];
-                    const month = parts[1];
-                    const day = parts[2];
-                    const formatted = `${day}-${month}-${year}`;
-                    console.log('Converted YYYY-MM-DD to DD-MM-YYYY:', dateString, '->', formatted);
-                    return formatted;
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
                 }
-
-                // 如果是 ISO 格式 (包含 T)
                 if (dateString.includes('T')) {
                     const date = new Date(dateString);
-                    if (isNaN(date.getTime())) {
-                        console.warn('Invalid ISO date:', dateString);
-                        return '';
-                    }
+                    if (isNaN(date.getTime())) return '';
                     const day = String(date.getDate()).padStart(2, '0');
                     const month = String(date.getMonth() + 1).padStart(2, '0');
                     const year = date.getFullYear();
-                    const formatted = `${day}-${month}-${year}`;
-                    console.log('Converted ISO to DD-MM-YYYY:', dateString, '->', formatted);
-                    return formatted;
+                    return `${day}-${month}-${year}`;
                 }
-
-                // 如果已经是 DD-MM-YYYY 格式，直接返回
-                if (typeof dateString === 'string' && dateString.match(/^\d{2}-\d{2}-\d{4}$/)) {
-                    return dateString;
-                }
-
-                console.log('Returning original value:', dateString);
                 return dateString;
-
             } catch (e) {
-                console.error('Date formatting error for:', dateString, e);
                 return dateString || '';
             }
         }
 
         function formatDateForInput(dateString) {
             if (!dateString) return '';
-
-            console.log('Formatting date for input:', dateString);
-
             try {
-                // 如果已经是 YYYY-MM-DD 格式，直接返回
-                if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                    return dateString;
-                }
-
-                // 如果是 DD/MM/YYYY 或 DD-MM-YYYY 格式
+                if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) return dateString;
                 if (typeof dateString === 'string' && (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/) || dateString.match(/^\d{2}-\d{2}-\d{4}$/))) {
                     const separator = dateString.includes('/') ? '/' : '-';
                     const parts = dateString.split(separator);
-                    const day = parts[0];
-                    const month = parts[1];
-                    const year = parts[2];
-                    const formatted = `${year}-${month}-${day}`;
-                    console.log('Converted to YYYY-MM-DD:', dateString, '->', formatted);
-                    return formatted;
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
                 }
-
                 return dateString;
-
             } catch (e) {
-                console.error('Date format error for input:', dateString, e);
                 return '';
             }
         }
 
         function escapeHtml(text) {
             if (!text) return '';
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.toString().replace(/[&<>"']/g, m => map[m]);
         }
 
@@ -394,7 +367,24 @@
                         console.log('Loading record for edit:', record);
 
                         $('#recordId').val(record.id);
-                        $('#companyName').val(record.companyName || '');
+
+                        // --- CHANGED: Set Dropdown Logic ---
+                        // 1. 尝试直接通过 Company Name 匹配 Dropdown Text
+                        // 2. 如果你的 Record 里有 clientId，也可以用 clientId 匹配：$('#clientSelect').val(record.clientId);
+
+                        if (record.companyName) {
+                            // 遍历 dropdown 选项，找到文本(Text)和 companyName 一样的选项并选中
+                            $("#clientSelect option").filter(function() {
+                                return $(this).text().trim() === record.companyName.trim();
+                            }).prop('selected', true);
+
+                            // 触发 change 事件以更新 hidden fields
+                            $('#clientSelect').trigger('change');
+                        }
+
+                        // 如果没有匹配到（比如新加的公司不在列表里），你可能需要手动处理或者保持默认
+                        // ------------------------------------
+
                         $('#yeToDo').val(record.yEtodo || '');
                         $('#pic').val(record.pic || '');
                         $('#active').val(record.active || '');
@@ -405,9 +395,6 @@
                         $('#dateReceived').val(formatDateForInput(record.dateReceived));
                         $('#commOfOathsDate').val(formatDateForInput(record.commofOathsDate));
 
-                        console.log('Form values set:');
-                        console.log('dateReceived input:', $('#dateReceived').val());
-                        console.log('commOfOathsDate input:', $('#commOfOathsDate').val());
                     } else {
                         showAlert('Error loading record: ' + response.message, 'danger');
                     }
@@ -419,14 +406,19 @@
         }
 
         function saveRecord() {
-            // Validate required fields
-            if (!$('#companyName').val().trim()) {
-                showAlert('Please enter Company Name', 'warning');
+            // --- CHANGED: Validation Logic ---
+            // 检查下拉框是否有选值
+            if (!$('#clientSelect').val()) {
+                showAlert('Please select a Client', 'warning');
                 return;
             }
 
+            // --- CHANGED: Get Company Name from Dropdown ---
+            // 因为 input#companyName 已经不在了，我们需要从 dropdown 获取 Text
+            const selectedCompanyName = $('#clientSelect option:selected').text();
+
             const formData = {
-                companyName: $('#companyName').val(),
+                companyName: selectedCompanyName, // 使用选中的公司名
                 yEtodo: $('#yeToDo').val() || null,
                 pic: $('#pic').val() || null,
                 active: $('#active').val() || null,
@@ -453,7 +445,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    console.log('Save response:', response);
                     if (response.success) {
                         showAlert(response.message, 'success');
                         $('#taskModal').modal('hide');
@@ -463,20 +454,17 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Save error:', xhr.responseText);
                     showAlert('Error saving record: ' + error, 'danger');
                 }
             });
         }
 
         function editRecord(id) {
-            console.log('Editing record:', id);
             openModal(true, id);
         }
 
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
-                console.log('Deleting record:', id);
                 $.ajax({
                     url: `/api/auditdept/at34/delete/${id}`,
                     type: 'DELETE',
@@ -498,6 +486,9 @@
         function resetForm() {
             $('#taskForm')[0].reset();
             $('#recordId').val('');
+            $('#clientSelect').val(''); // Reset dropdown
+            $('#client').val('');
+            $('#clientId').val('');
             isEditMode = false;
         }
 
@@ -509,18 +500,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;
-
-            // Remove old alerts
-            $('.alert').remove();
-
-            // Add new alert at the top of card body
             $('.card-body').prepend(alertHtml);
-
-            // Auto remove after 5 seconds
             setTimeout(function() {
-                $('#' + alertId).fadeOut('slow', function() {
-                    $(this).remove();
-                });
+                $('#' + alertId).fadeOut('slow', function() { $(this).remove(); });
             }, 5000);
         }
     </script>

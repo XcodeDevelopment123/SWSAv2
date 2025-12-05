@@ -5,6 +5,7 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
 {
     public class AEX51Model
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Company Name")]

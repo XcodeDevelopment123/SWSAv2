@@ -11,73 +11,79 @@
 
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>AEX Logbook Records
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="openCreateModal()">
                         <i class="fas fa-plus me-2"></i>New Task
                     </button>
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th colspan="13"></th>
-                            <th colspan="8">1.Audit WIP(link to AEX 5.2)</th>
-                            <th colspan="1">2. Audit Report</th>
-                            <th colspan="3">3. Directors' Signing pages(AT3.4)</th>
-                            <th colspan="2">Tax Dept</th>
-                            <th colspan="2">Sec Dept</th>
-                            <th colspan="2">Post Audit Work</th>
-                            <th rowspan="3">Action</th>
+                            <th colspan="13" class="text-center">Basic Info & Billing</th>
+
+                            <th colspan="5" class="text-center">1. Audit WIP (link to AEX 5.2)</th>
+
+                            <th colspan="2" class="text-center">2. Audit Report</th>
+
+                            <th colspan="5" class="text-center">3. Directors' Signing & Client</th>
+
+                            <th colspan="2" class="text-center">Tax Dept</th>
+
+                            <th colspan="2" class="text-center">Sec Dept</th>
+
+                            <th colspan="2" class="text-center">Post Audit Work</th>
+
+                            <th rowspan="2" style="vertical-align: middle; width: 80px;">Action</th>
                         </tr>
 
                         <tr>
-                            <th rowspan="3">No</th>
-                            <th rowspan="3">Company Name</th>
-                            <th rowspan="3">Activity</th>
-                            <th rowspan="3">YE to do</th>
-                            <th rowspan="3">Quarter to do</th>
-                            <th rowspan="3">PIC</th>
-                            <th rowspan="3">18 mths due</th>
-                            <th rowspan="3">Status</th>
-                            <th rowspan="3">Doc.Inward Date</th>
-                            <th colspan="2">Est current year result '000</th>
-                            <th colspan="2">Billing</th>
+                            <th>No</th>
+                            <th>Company Name</th>
+                            <th>Activity</th>
+                            <th>YE to do</th>
+                            <th>Quarter to do</th>
+                            <th>PIC</th>
+                            <th>18 mths due</th>
+                            <th>Status</th>
+                            <th>Doc.Inward Date</th>
 
-                            <th rowspan="2">Start Date</th>
-                            <th rowspan="2">Day Done</th>
-                            <th rowspan="2">%Done</th>
-                            <th rowspan="2">Result Over/Under</th>
-                            <th rowspan="2">Completed?</th>
-                            <th colspan="1">KCH Review (1st)</th>
-                            <th colspan="1">KK Review (2nd)</th>
-                            <th rowspan="2">Review Result</th>
-                            <th rowspan="2">Date receive from KK</th>
-                            <th rowspan="2">Who to meet client & date</th>
-                            <th rowspan="2">Date sent to client</th>
-                            <th rowspan="2">Date Received Back</th>
-                            <th rowspan="2">Tax Due Date</th>
-                            <th rowspan="2">Pass to Tax Dept</th>
-                            <th rowspan="2">SSM Due Date</th>
-                            <th rowspan="2">Date pass to Sec Dept(MBRS)</th>
-                            <th rowspan="2">Binded</th>
-                            <th rowspan="2">Despatch Date to Client</th>
-                        </tr>
-
-                        <tr>
                             <th>Revenue</th>
                             <th>Profit/(loss)</th>
                             <th>Audit Fee</th>
                             <th>Date billed</th>
-                            <th>Date sent</th>
-                            <th>Date sent to KK</th>
+
+                            <th>Start Date</th>
+                            <th>Day Done</th>
+                            <th>%Done</th>
+                            <th>Result Over/Under</th>
+                            <th>Completed?</th>
+
+                            <th>KCH Review (1st)</th>
+                            <th>KK Review (2nd)</th>
+
+                            <th>Review Result</th>
+                            <th>Date receive from KK</th>
+                            <th>Who to meet client & date</th>
+                            <th>Date sent to client</th>
+                            <th>Date Received Back</th>
+
+                            <th>Tax Due Date</th>
+                            <th>Pass to Tax Dept</th>
+
+                            <th>SSM Due Date</th>
+                            <th>Date pass to Sec Dept</th>
+
+                            <th>Binded</th>
+                            <th>Despatch Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-
+                    <tbody id="tableBody">
+                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -100,7 +106,7 @@
             </div>
             <div class="modal-body">
                 <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
+                    <input type="hidden" id="recordId" value="">
 
                     <!-- Basic Information -->
                     <div class="form-info-label col-12">
@@ -109,14 +115,14 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="number">No</label>
-                                <input type="text" id="number" name="number" class="form-control" placeholder="Enter number" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                               <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="client" name="client" />
+                                <input type="hidden" id="clientId" name="clientId" />
+                                <input type="hidden" id="companyName" name="companyName" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -154,7 +160,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="eighteenMonthsDue">18 mths due</label>
-                                <input type="text" id="eighteenMonthsDue" name="eighteenMonthsDue" class="form-control" placeholder="Select date" />
+                                <input type="date" id="eighteenMonthsDue" name="eighteenMonthsDue" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -174,7 +180,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="docInwardDate">Doc.Inward Date</label>
-                                <input type="text" id="docInwardDate" name="docInwardDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="docInwardDate" name="docInwardDate" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -187,25 +193,25 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="revenue">Revenue ('000)</label>
-                                <input type="text" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" />
+                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="profitLoss">Profit/(loss) ('000)</label>
-                                <input type="text" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" />
+                                <input type="number" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="auditFee">Audit Fee</label>
-                                <input type="text" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" />
+                                <input type="number" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" step="0.01" />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="dateBilled">Date billed</label>
-                                <input type="text" id="dateBilled" name="dateBilled" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateBilled" name="dateBilled" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -218,7 +224,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="startDate">Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="startDate" name="startDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -230,7 +236,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="percentDone">%Done</label>
-                                <input type="text" id="percentDone" name="percentDone" class="form-control" placeholder="Enter percentage" />
+                                <input type="number" id="percentDone" name="percentDone" class="form-control" placeholder="Enter percentage" step="0.1" min="0" max="100" />
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -259,13 +265,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="kchReviewDate">KCH Review (1st) - Date sent</label>
-                                <input type="text" id="kchReviewDate" name="kchReviewDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="kchReviewDate" name="kchReviewDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="kkReviewDate">KK Review (2nd) - Date sent to KK</label>
-                                <input type="text" id="kkReviewDate" name="kkReviewDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="kkReviewDate" name="kkReviewDate" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -284,7 +290,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateReceiveFromKK">Date receive from KK</label>
-                                <input type="text" id="dateReceiveFromKK" name="dateReceiveFromKK" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateReceiveFromKK" name="dateReceiveFromKK" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -298,13 +304,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateSentToClient">Date sent to client</label>
-                                <input type="text" id="dateSentToClient" name="dateSentToClient" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateSentToClient" name="dateSentToClient" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateReceivedBack">Date Received Back</label>
-                                <input type="text" id="dateReceivedBack" name="dateReceivedBack" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateReceivedBack" name="dateReceivedBack" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -317,13 +323,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="taxDueDate" name="taxDueDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="passToTaxDept">Pass to Tax Dept</label>
-                                <input type="text" id="passToTaxDept" name="passToTaxDept" class="form-control" placeholder="Select date" />
+                                <input type="date" id="passToTaxDept" name="passToTaxDept" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -336,13 +342,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ssmDueDate">SSM Due Date</label>
-                                <input type="text" id="ssmDueDate" name="ssmDueDate" class="form-control" placeholder="Select date" />
+                                <input type="date" id="ssmDueDate" name="ssmDueDate" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="datePassToSecDept">Date pass to Sec Dept(MBRS)</label>
-                                <input type="text" id="datePassToSecDept" name="datePassToSecDept" class="form-control" placeholder="Select date" />
+                                <input type="date" id="datePassToSecDept" name="datePassToSecDept" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -365,7 +371,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="despatchDateToClient">Despatch Date to Client</label>
-                                <input type="text" id="despatchDateToClient" name="despatchDateToClient" class="form-control" placeholder="Select date" />
+                                <input type="date" id="despatchDateToClient" name="despatchDateToClient" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -375,7 +381,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
+                <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveRecord()">
                     <i class="fas fa-save me-2"></i>Save
                 </button>
             </div>
@@ -385,362 +391,201 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-    <!-- Datepicker CSS -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        let dataTable;
-        let dataTableInitialized = false;
+        let currentEditingId = null;
+        let dataTable = null;
+        let clientNameMap = {};
+        let clientDataMap = {};
 
-        // ---------- Modal alert + inline field errors ----------
-        function showModalAlert(msg, type) {
-            // 先创建 alert 容器如果不存在
-            if ($('#modalAlert').length === 0) {
-                $('#taskModal .modal-body').prepend('<div id="modalAlert" class="alert d-none"></div>');
+        $(document).ready(function() {
+            // 确保有 hidden input
+            if ($('#companyName').length === 0) {
+                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
             }
 
-            const map = {
-                success: 'alert-success',
-                error: 'alert-danger',
-                warning: 'alert-warning',
-                info: 'alert-info'
-            };
-            const $box = $('#modalAlert');
-            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
-                .addClass(map[type] || 'alert-info')
-                .html(msg);
-
-            const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
-                $box.attr('tabindex', -1).focus();
-            });
-        }
-
-        function hideModalAlert() {
-            $('#modalAlert').addClass('d-none').empty();
-        }
-
-        function clearFieldErrors() {
-            $('#taskForm .is-invalid').removeClass('is-invalid');
-            $('#taskForm .invalid-feedback').remove();
-        }
-
-        function setFieldError(selector, message) {
-            const $f = $(selector);
-            if (!$f.length) return;
-            $f.addClass('is-invalid');
-            if ($f.next('.invalid-feedback').length === 0) {
-                $f.after('<div class="invalid-feedback"></div>');
-            }
-            $f.next('.invalid-feedback').text(message);
-        }
-
-        // ---------- Page-level alert ----------
-        function showAlert(message, type) {
-            const cls = type === 'success' ? 'alert-success'
-                : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
-            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
-                                        ${message}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                  </div>`;
-            $('.card-header').after(html);
-            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
-        }
-
-        // ---------- Helpers ----------
-        function formatDateForDisplay(s) {
-            if (!s) return '';
-            try {
-                // 如果是日期对象或字符串，尝试格式化
-                if (s instanceof Date) {
-                    return s.toLocaleDateString('en-GB');
-                }
-                if (typeof s === 'string') {
-                    const date = new Date(s);
-                    if (!isNaN(date.getTime())) {
-                        return date.toLocaleDateString('en-GB');
-                    }
-                }
-                return s;
-            } catch (e) {
-                return s;
-            }
-        }
-
-        function getVal(obj, name) {
-            if (!obj) return '';
-
-            if (obj[name] !== undefined && obj[name] !== null) return obj[name];
-
-            const camel = name.charAt(0).toLowerCase() + name.slice(1);
-            if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
-
-            const targetLower = name.toLowerCase();
-            for (const key in obj) {
-                if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
-                if (key.toLowerCase() === targetLower) return obj[key];
-            }
-            return '';
-        }
-
-        function clearForm() {
-            $('#taskForm')[0].reset();
-            $('#editIndex').val('');
-            $('#modalTitle').text('Add New AEX Logbook Record');
-            hideModalAlert();
-            clearFieldErrors();
-        }
-
-        function formatCurrency(amount) {
-            if (!amount && amount !== 0) return '';
-            try {
-                return 'RM ' + parseFloat(amount).toLocaleString('en-MY', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            } catch (e) {
-                return amount || '';
-            }
-        }
-
-        // ---------- Init ----------
-        $(document).ready(function () {
-            console.log('Document ready, initializing...');
-
-            // 初始化日期选择器
-            try {
-                $('input[type="text"]').filter(function () {
-                    const id = $(this).attr('id') || '';
-                    return id.includes('Date') || id.includes('date') || id.includes('Due');
-                }).datepicker({
-                    format: 'dd/mm/yyyy',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-                console.log('Datepicker initialized');
-            } catch (e) {
-                console.error('Datepicker init error:', e);
-            }
-
-            // 初始化 DataTable - 简化配置
-            try {
-                dataTable = $('#taskDatatable').DataTable({
-                    responsive: true,
-                    ordering: true,
-                    autoWidth: true, // 改为 true 让表格自动调整宽度
-                    pageLength: 10,
-                    order: [[1, 'asc']], // 以 Company Name 排序
-                    language: {
-                        search: "Search:",
-                        lengthMenu: "Show _MENU_ entries",
-                        emptyTable: "No records found",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        infoEmpty: "Showing 0 to 0 of 0 entries",
-                        paginate: {
-                            first: "First",
-                            last: "Last",
-                            next: "Next",
-                            previous: "Previous"
-                        }
-                    },
-                    // 移除复杂的列配置，让 DataTable 自动处理
-                    columnDefs: [
-                        {
-                            targets: '_all',
-                            defaultContent: '' // 防止 undefined 错误
-                        }
-                    ]
-                });
-                dataTableInitialized = true;
-                console.log('DataTable initialized successfully');
-            } catch (error) {
-                console.error('DataTable initialization error:', error);
-                // 如果 DataTable 初始化失败，使用简单的表格显示
-                $('#taskDatatable').addClass('table table-bordered table-striped');
-                dataTableInitialized = false;
-            }
-
-            // 绑定按钮事件
-            $('#saveBtn').click(saveRecord);
-
-            // 使用事件委托绑定动态按钮
-            $(document).on('click', '.edit-btn', function () {
-                const id = $(this).data('id');
-                console.log('Edit clicked for ID:', id);
-                editRecord(id);
-            });
-
-            $(document).on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                console.log('Delete clicked for ID:', id);
-                deleteRecord(id);
-            });
-
-            $('#taskModal').on('hidden.bs.modal', clearForm);
-
-            // 新建按钮点击事件
-            $('[data-bs-target="#taskModal"]').on('click', function () {
-                console.log('New Task button clicked');
-                clearForm();
-            });
-
-            // 首次载入数据
-            console.log('Loading initial data...');
-            loadRecordsFromDatabase();
+            // 加载 Dropdown 和数据
+            loadClientOptions();
+            loadData();
         });
 
-        // ---------- Load & Render ----------
-        function loadRecordsFromDatabase() {
-            console.log('Loading records from database...');
+        // ---------------------------------------------------------
+        //  加载 Client Dropdown
+        // ---------------------------------------------------------
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select client --</option>');
+
+                        clientNameMap = {};
+                        clientDataMap = {};
+
+                        response.data.forEach(client => {
+                            if(client.companyName) {
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+                            clientDataMap[client.id] = client;
+
+                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading client options:', error);
+                }
+            });
+        }
+
+        // ---------------------------------------------------------
+        //  Dropdown Change 事件
+        // ---------------------------------------------------------
+        $('#clientSelect').on('change', function() {
+            const selectedId = $(this).val();
+            const clientData = clientDataMap[selectedId];
+
+            if (clientData) {
+                $('#companyName').val(clientData.companyName);
+                $('#clientId').val(clientData.id);
+                $('#client').val(clientData.companyName);
+            } else {
+                $('#companyName').val('');
+                $('#clientId').val('');
+                $('#client').val('');
+            }
+        });
+
+        // ---------------------------------------------------------
+        //  DataTable 初始化 (已修复)
+        // ---------------------------------------------------------
+        function initializeDataTable() {
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().destroy();
+            }
+
+            setTimeout(function() {
+                try {
+                    dataTable = $('#taskDatatable').DataTable({
+                        "paging": true,
+                        "lengthChange": true,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": false,
+                        "scrollX": true,
+                        "destroy": true,
+                        "stateSave": false, // 禁止缓存，防止列不对齐
+                        "language": {
+                            "emptyTable": "No records found",
+                            "loadingRecords": "Loading...",
+                            "zeroRecords": "No matching records found"
+                        },
+                        "columnDefs": [
+                            { "width": "50px", "targets": 0 }, // No
+                            { "width": "200px", "targets": 1 }, // Company Name
+                            { "width": "80px", "targets": 31 } // Action
+                        ]
+                    });
+                    console.log('DataTable initialized successfully');
+                    // 强制对齐表头
+                    dataTable.columns.adjust().draw();
+                } catch (error) {
+                    console.error('DataTable initialization error:', error);
+                }
+            }, 100);
+        }
+
+        // ---------------------------------------------------------
+        //  加载数据
+        // ---------------------------------------------------------
+        function loadData() {
+            const tbody = $('#tableBody');
+
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().clear().destroy();
+            }
+
+            tbody.html('<tr><td colspan="32" class="text-center">Loading data...</td></tr>');
 
             $.ajax({
                 url: '/api/auditdept/aex51/get-all',
                 type: 'GET',
-                success: function (res) {
-                    console.log('API response:', res);
-                    if (res && res.success) {
-                        populateTable(res.data || []);
-                        showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
+                success: function(response) {
+                    console.log('API Response:', response);
+
+                    if (response.success && response.data && response.data.length > 0) {
+                        populateTable(response.data);
                     } else {
-                        const errorMsg = res?.message || 'Unknown error';
-                        console.error('API error:', errorMsg);
-                        showAlert('Failed to load: ' + errorMsg, 'error');
+                        tbody.html(''); // 清空 Loading
+                        initializeDataTable();
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('AJAX error:', error);
-                    showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', xhr.responseText);
+                    tbody.html('<tr><td colspan="32" class="text-center">Error loading data</td></tr>');
+                    showAlert('Error loading data: ' + error, 'danger');
                 }
             });
         }
 
-        function populateTable(records) {
-            console.log('Populating table with records:', records);
-
-            if (!dataTableInitialized) {
-                console.log('DataTable not initialized, using manual table population');
-                // 手动填充表格的降级方案
-                manualPopulateTable(records);
-                return;
-            }
-
-            // 清除现有数据
-            dataTable.clear();
-
-            if (records && records.length) {
-                records.forEach(function (r, index) {
-                    const id = getVal(r, 'Id');
-                    console.log('Processing record:', r);
-
-                    // 构建数据行 - 确保列数匹配表格结构
-                    const rowData = [
-                        index + 1, // No
-                        getVal(r, 'CompanyName'),                                // Company Name
-                        getVal(r, 'Activity'),                                   // Activity
-                        getVal(r, 'YEtodo'),                                     // YE to do
-                        getVal(r, 'Quartertodo'),                                // Quarter to do
-                        getVal(r, 'PIC'),                                        // PIC
-                        formatDateForDisplay(getVal(r, 'First18mthDue')),        // 18 mths due
-                        getVal(r, 'Status'),                                     // Status
-                        formatDateForDisplay(getVal(r, 'DocInwardsDate')),       // Doc.Inward Date
-                        formatCurrency(getVal(r, 'Revenue')),                    // Revenue
-                        formatCurrency(getVal(r, 'Profit')),                     // Profit
-                        formatCurrency(getVal(r, 'AuditFee')),                   // Audit Fee
-                        formatDateForDisplay(getVal(r, 'DateBilled')),           // Date billed
-                        formatDateForDisplay(getVal(r, 'StartDate')),            // Start Date
-                        getVal(r, 'DayDone') || '',                              // Day Done
-                        getVal(r, 'DonePercent') || '',                          // %Done
-                        getVal(r, 'ResultOverUnder'),                            // Result Over/Under
-                        getVal(r, 'Completed'),                                  // Completed?
-                        formatDateForDisplay(getVal(r, 'DateSent')),             // KCH Review
-                        formatDateForDisplay(getVal(r, 'DateSenttoKK')),         // KK Review
-                        getVal(r, 'ReviewResult'),                               // Review Result
-                        formatDateForDisplay(getVal(r, 'DateReceivedfrKK')),     // Date receive from KK
-                        getVal(r, 'WhomeetClientDate'),                          // Who to meet client
-                        formatDateForDisplay(getVal(r, 'DateSentClient')),       // Date sent to client
-                        formatDateForDisplay(getVal(r, 'DateReceivedBack')),     // Date Received Back
-                        formatDateForDisplay(getVal(r, 'TaxDueDate')),           // Tax Due Date
-                        formatDateForDisplay(getVal(r, 'PasstoTaxDept')),        // Pass to Tax Dept
-                        formatDateForDisplay(getVal(r, 'SSMdueDate')),           // SSM Due Date
-                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),    // Date pass to Sec Dept
-                        getVal(r, 'Binded'),                                     // Binded
-                        formatDateForDisplay(getVal(r, 'DespatachDateClient')),  // Despatch Date
-                        // Edit & Delete buttons
-                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                            <i class="fas fa-edit"></i>
-                         </button>
-                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                            <i class="fas fa-trash"></i>
-                         </button>`
-                    ];
-
-                    console.log('Adding row data:', rowData);
-                    dataTable.row.add(rowData);
-                });
-            }
-
-            dataTable.draw();
-            console.log('Table populated successfully');
-        }
-
-        // 降级方案：手动填充表格
-        function manualPopulateTable(records) {
-            const tbody = $('#taskDatatable tbody');
+        // ---------------------------------------------------------
+        //  填充表格
+        // ---------------------------------------------------------
+        function populateTable(data) {
+            const tbody = $('#tableBody');
             tbody.empty();
 
-            if (records && records.length) {
-                records.forEach(function (r, index) {
-                    const id = getVal(r, 'Id');
+            if (data && data.length > 0) {
+                data.forEach(function(item, index) {
+                    const itemId = item.id || 0;
+
                     const row = `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${getVal(r, 'CompanyName') || ''}</td>
-                            <td>${getVal(r, 'Activity') || ''}</td>
-                            <td>${getVal(r, 'YEtodo') || ''}</td>
-                            <td>${getVal(r, 'Quartertodo') || ''}</td>
-                            <td>${getVal(r, 'PIC') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'First18mthDue'))}</td>
-                            <td>${getVal(r, 'Status') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DocInwardsDate'))}</td>
-                            <td>${formatCurrency(getVal(r, 'Revenue'))}</td>
-                            <td>${formatCurrency(getVal(r, 'Profit'))}</td>
-                            <td>${formatCurrency(getVal(r, 'AuditFee'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateBilled'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'StartDate'))}</td>
-                            <td>${getVal(r, 'DayDone') || ''}</td>
-                            <td>${getVal(r, 'DonePercent') || ''}</td>
-                            <td>${getVal(r, 'ResultOverUnder') || ''}</td>
-                            <td>${getVal(r, 'Completed') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSent'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSenttoKK'))}</td>
-                            <td>${getVal(r, 'ReviewResult') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedfrKK'))}</td>
-                            <td>${getVal(r, 'WhomeetClientDate') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateSentClient'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DateReceivedBack'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'TaxDueDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'PasstoTaxDept'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'SSMdueDate'))}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DatePassToSecDept'))}</td>
-                            <td>${getVal(r, 'Binded') || ''}</td>
-                            <td>${formatDateForDisplay(getVal(r, 'DespatachDateClient'))}</td>
+                            <td>${escapeHtml(item.companyName || '')}</td>
+                            <td>${escapeHtml(item.activity || '')}</td>
+                            <td>${escapeHtml(item.yEtodo || '')}</td>
+                            <td>${escapeHtml(item.quartertodo || '')}</td>
+                            <td>${escapeHtml(item.pic || '')}</td>
+                            <td>${formatDate(item.first18mthDue)}</td>
+                            <td>${escapeHtml(item.status || '')}</td>
+                            <td>${formatDate(item.docInwardsDate)}</td>
+                            <td>${formatNumber(item.revenue)}</td>
+                            <td>${formatNumber(item.profit)}</td>
+                            <td>${formatNumber(item.auditFee)}</td>
+                            <td>${formatDate(item.dateBilled)}</td>
+                            <td>${formatDate(item.startDate)}</td>
+                            <td>${item.dayDone || ''}</td>
+                            <td>${formatPercentage(item.donePercent)}</td>
+                            <td>${escapeHtml(item.resultOverUnder || '')}</td>
+                            <td>${escapeHtml(item.completed || '')}</td>
+                            <td>${formatDate(item.dateSent)}</td>
+                            <td>${formatDate(item.dateSenttoKK)}</td>
+                            <td>${escapeHtml(item.reviewResult || '')}</td>
+                            <td>${formatDate(item.dateReceivedfrKK)}</td>
+                            <td>${escapeHtml(item.whomeetClientDate || '')}</td>
+                            <td>${formatDate(item.dateSentClient)}</td>
+                            <td>${formatDate(item.dateReceivedBack)}</td>
+                            <td>${formatDate(item.taxDueDate)}</td>
+                            <td>${formatDate(item.passtoTaxDept)}</td>
+                            <td>${formatDate(item.ssMdueDate)}</td>
+                            <td>${formatDate(item.datePassToSecDept)}</td>
+                            <td>${escapeHtml(item.binded || '')}</td>
+                            <td>${formatDate(item.despatachDateClient)}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${itemId})" title="Edit" ${itemId === 0 ? 'disabled' : ''}>
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${itemId})" title="Delete" ${itemId === 0 ? 'disabled' : ''}>
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -748,180 +593,244 @@
                     `;
                     tbody.append(row);
                 });
-            } else {
-                tbody.html('<tr><td colspan="32" class="text-center">No records found</td></tr>');
             }
+
+            initializeDataTable();
         }
 
-        // ---------- Save (Create / Update) ----------
-        function saveRecord() {
-            console.log('Save button clicked');
-            hideModalAlert();
-            clearFieldErrors();
+        // ---------------------------------------------------------
+        //  打开新建 Modal
+        // ---------------------------------------------------------
+        function openCreateModal() {
+            currentEditingId = null;
+            $('#modalTitle').text('Add New AEX Logbook Record');
+            $('#taskForm')[0].reset();
+            $('#recordId').val('');
+            $('#clientSelect').val('');
+            $('#companyName').val('');
+            $('#taskModal').modal('show');
+        }
 
-            const formData = {
-                Id: ($('#editIndex').val() || '0').trim(),
-
-                CompanyName: ($('#companyName').val() || '').trim(),
-                Activity: ($('#activity').val() || '').trim(),
-                YEtodo: ($('#yeToDo').val() || '').trim(),
-                Quartertodo: ($('#quarterToDo').val() || '').trim(),
-                PIC: ($('#pic').val() || '').trim(),
-                First18mthDue: ($('#eighteenMonthsDue').val() || '').trim(),
-                Status: ($('#status').val() || '').trim(),
-                DocInwardsDate: ($('#docInwardDate').val() || '').trim(),
-                Revenue: ($('#revenue').val() || '').trim(),
-                Profit: ($('#profitLoss').val() || '').trim(),
-                AuditFee: ($('#auditFee').val() || '').trim(),
-                DateBilled: ($('#dateBilled').val() || '').trim(),
-                StartDate: ($('#startDate').val() || '').trim(),
-                EndDate: ($('#endDate').val() || '').trim(),
-                DonePercent: ($('#percentDone').val() || '').trim(),
-                ResultOverUnder: ($('#resultOverUnder').val() || '').trim(),
-                Completed: ($('#completed').val() || '').trim(),
-                DateSent: ($('#kchReviewDate').val() || '').trim(),
-                DateSenttoKK: ($('#kkReviewDate').val() || '').trim(),
-                ReviewResult: ($('#reviewResult').val() || '').trim(),
-                DateReceivedfrKK: ($('#dateReceiveFromKK').val() || '').trim(),
-                WhomeetClientDate: ($('#whoToMeetClient').val() || '').trim(),
-                DateSentClient: ($('#dateSentToClient').val() || '').trim(),
-                DateReceivedBack: ($('#dateReceivedBack').val() || '').trim(),
-                TaxDueDate: ($('#taxDueDate').val() || '').trim(),
-                PasstoTaxDept: ($('#passToTaxDept').val() || '').trim(),
-                SSMdueDate: ($('#ssmDueDate').val() || '').trim(),
-                DatePassToSecDept: ($('#datePassToSecDept').val() || '').trim(),
-                Binded: ($('#binded').val() || '').trim(),
-                DespatachDateClient: ($('#despatchDateToClient').val() || '').trim()
-            };
-
-            console.log('Form data:', formData);
-
-            // 简单必填验证
-            let hasError = false;
-            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
-            if (!formData.Activity) { setFieldError('#activity', 'Required'); hasError = true; }
-
-            if (hasError) {
-                showModalAlert('Please fix the highlighted fields.', 'error');
-                $('#taskForm .is-invalid').first().focus();
+        // ---------------------------------------------------------
+        //  编辑记录
+        // ---------------------------------------------------------
+        function editRecord(id) {
+            if (!id || id === 0) {
+                showAlert('Invalid record ID', 'danger');
                 return;
             }
 
-            const isUpdate = Number(formData.Id) > 0;
-            const url = isUpdate ? '/api/auditdept/aex51/update' : '/api/auditdept/aex51/create';
-            const method = isUpdate ? 'PUT' : 'POST';
+            $.ajax({
+                url: '/api/auditdept/aex51/get/' + id,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        const record = response.data;
+                        currentEditingId = record.id || 0;
 
-            console.log('Saving via:', url, method);
+                        $('#modalTitle').text('Edit AEX Logbook Record');
+                        $('#recordId').val(currentEditingId);
 
-            const $btn = $('#saveBtn');
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+                        const companyName = record.companyName || '';
+                        $('#companyName').val(companyName);
+
+                        if (companyName) {
+                            const foundId = clientNameMap[companyName.trim()];
+                            if (foundId) {
+                                $('#clientSelect').val(foundId);
+                            }
+                        }
+
+                        $('#activity').val(record.activity || '');
+                        $('#yeToDo').val(record.yEtodo || '');
+                        $('#quarterToDo').val(record.quartertodo || '');
+                        $('#pic').val(record.pic || '');
+                        $('#eighteenMonthsDue').val(formatDateForInput(record.first18mthDue));
+                        $('#status').val(record.status || '');
+                        $('#docInwardDate').val(formatDateForInput(record.docInwardsDate));
+                        $('#revenue').val(record.revenue || '');
+                        $('#profitLoss').val(record.profit || '');
+                        $('#auditFee').val(record.auditFee || '');
+                        $('#dateBilled').val(formatDateForInput(record.dateBilled));
+                        $('#startDate').val(formatDateForInput(record.startDate));
+                        $('#dayDone').val(record.dayDone || '');
+                        $('#percentDone').val(record.donePercent || '');
+                        $('#resultOverUnder').val(record.resultOverUnder || '');
+                        $('#completed').val(record.completed || '');
+                        $('#kchReviewDate').val(formatDateForInput(record.dateSent));
+                        $('#kkReviewDate').val(formatDateForInput(record.dateSenttoKK));
+                        $('#reviewResult').val(record.reviewResult || '');
+                        $('#dateReceiveFromKK').val(formatDateForInput(record.dateReceivedfrKK));
+                        $('#whoToMeetClient').val(record.whomeetClientDate || '');
+                        $('#dateSentToClient').val(formatDateForInput(record.dateSentClient));
+                        $('#dateReceivedBack').val(formatDateForInput(record.dateReceivedBack));
+                        $('#taxDueDate').val(formatDateForInput(record.taxDueDate));
+                        $('#passToTaxDept').val(formatDateForInput(record.passtoTaxDept));
+                        $('#ssmDueDate').val(formatDateForInput(record.ssMdueDate));
+                        $('#datePassToSecDept').val(formatDateForInput(record.datePassToSecDept));
+                        $('#binded').val(record.binded || '');
+                        $('#despatchDateToClient').val(formatDateForInput(record.despatachDateClient));
+
+                        $('#taskModal').modal('show');
+                    } else {
+                        showAlert('Error loading record: ' + (response.message || 'Not found'), 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Error loading record: ' + (xhr.responseJSON?.message || error), 'danger');
+                }
+            });
+        }
+
+        // ---------------------------------------------------------
+        //  保存记录
+        // ---------------------------------------------------------
+        function saveRecord() {
+            const formData = {
+                CompanyName: $('#companyName').val(),
+                Activity: $('#activity').val(),
+                YEtodo: $('#yeToDo').val(),
+                Quartertodo: $('#quarterToDo').val(),
+                PIC: $('#pic').val(),
+                First18mthDue: $('#eighteenMonthsDue').val() || null,
+                Status: $('#status').val(),
+                DocInwardsDate: $('#docInwardDate').val() || null,
+                Revenue: $('#revenue').val() || null,
+                Profit: $('#profitLoss').val() || null,
+                AuditFee: $('#auditFee').val() || null,
+                DateBilled: $('#dateBilled').val() || null,
+                StartDate: $('#startDate').val() || null,
+                DayDone: $('#dayDone').val() || null,
+                DonePercent: $('#percentDone').val() || null,
+                ResultOverUnder: $('#resultOverUnder').val(),
+                Completed: $('#completed').val(),
+                DateSent: $('#kchReviewDate').val() || null,
+                DateSenttoKK: $('#kkReviewDate').val() || null,
+                ReviewResult: $('#reviewResult').val(),
+                DateReceivedfrKK: $('#dateReceiveFromKK').val() || null,
+                WhomeetClientDate: $('#whoToMeetClient').val(),
+                DateSentClient: $('#dateSentToClient').val() || null,
+                DateReceivedBack: $('#dateReceivedBack').val() || null,
+                TaxDueDate: $('#taxDueDate').val() || null,
+                PasstoTaxDept: $('#passToTaxDept').val() || null,
+                SSMdueDate: $('#ssmDueDate').val() || null,
+                DatePassToSecDept: $('#datePassToSecDept').val() || null,
+                Binded: $('#binded').val(),
+                DespatachDateClient: $('#despatchDateToClient').val() || null
+            };
+
+            if (currentEditingId) {
+                formData.Id = currentEditingId;
+            }
+
+            if (!formData.CompanyName) {
+                showAlert('Company Name is required', 'warning');
+                return;
+            }
+
+            const url = currentEditingId ? '/api/auditdept/aex51/update' : '/api/auditdept/aex51/create';
+            const method = currentEditingId ? 'PUT' : 'POST';
 
             $.ajax({
                 url: url,
                 type: method,
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
-                success: function (res) {
-                    console.log('Save response:', res);
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    if (res && res.success) {
+                success: function(response) {
+                    if (response.success) {
+                        showAlert(`Record ${currentEditingId ? 'updated' : 'created'} successfully!`, 'success');
                         $('#taskModal').modal('hide');
-                        showAlert('Record saved successfully.', 'success');
-                        loadRecordsFromDatabase();
+                        setTimeout(function() {
+                            loadData();
+                        }, 500);
                     } else {
-                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
-                        showModalAlert('Error saving record: ' + msg, 'error');
+                        showAlert('Error saving record: ' + response.message, 'danger');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('Save error:', error);
-                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+                error: function(xhr, status, error) {
+                    showAlert('Error saving record: ' + (xhr.responseJSON?.message || error), 'danger');
                 }
             });
         }
 
-        // ---------- Edit ----------
-        function editRecord(id) {
-            console.log('Editing record ID:', id);
-            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
-            hideModalAlert();
-            clearFieldErrors();
-
-            $.ajax({
-                url: '/api/auditdept/aex51/get/' + id,
-                type: 'GET',
-                success: function (res) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit AEX Logbook Record');
-                    if (res && res.success) {
-                        const d = res.data || {};
-                        console.log('Edit data loaded:', d);
-
-                        $('#editIndex').val(getVal(d, 'Id'));
-
-                        // 填充表单字段
-                        $('#companyName').val(getVal(d, 'CompanyName'));
-                        $('#activity').val(getVal(d, 'Activity'));
-                        $('#yeToDo').val(getVal(d, 'YEtodo'));
-                        $('#quarterToDo').val(getVal(d, 'Quartertodo'));
-                        $('#pic').val(getVal(d, 'PIC'));
-                        $('#eighteenMonthsDue').val(formatDateForDisplay(getVal(d, 'First18mthDue')));
-                        $('#status').val(getVal(d, 'Status'));
-                        $('#docInwardDate').val(formatDateForDisplay(getVal(d, 'DocInwardsDate')));
-                        $('#revenue').val(getVal(d, 'Revenue'));
-                        $('#profitLoss').val(getVal(d, 'Profit'));
-                        $('#auditFee').val(getVal(d, 'AuditFee'));
-                        $('#dateBilled').val(formatDateForDisplay(getVal(d, 'DateBilled')));
-                        $('#startDate').val(formatDateForDisplay(getVal(d, 'StartDate')));
-                        $('#endDate').val(formatDateForDisplay(getVal(d, 'EndDate')));
-                        $('#percentDone').val(getVal(d, 'DonePercent'));
-                        $('#resultOverUnder').val(getVal(d, 'ResultOverUnder'));
-                        $('#completed').val(getVal(d, 'Completed'));
-                        $('#kchReviewDate').val(formatDateForDisplay(getVal(d, 'DateSent')));
-                        $('#kkReviewDate').val(formatDateForDisplay(getVal(d, 'DateSenttoKK')));
-                        $('#reviewResult').val(getVal(d, 'ReviewResult'));
-                        $('#dateReceiveFromKK').val(formatDateForDisplay(getVal(d, 'DateReceivedfrKK')));
-                        $('#whoToMeetClient').val(getVal(d, 'WhomeetClientDate'));
-                        $('#dateSentToClient').val(formatDateForDisplay(getVal(d, 'DateSentClient')));
-                        $('#dateReceivedBack').val(formatDateForDisplay(getVal(d, 'DateReceivedBack')));
-                        $('#taxDueDate').val(formatDateForDisplay(getVal(d, 'TaxDueDate')));
-                        $('#passToTaxDept').val(formatDateForDisplay(getVal(d, 'PasstoTaxDept')));
-                        $('#ssmDueDate').val(formatDateForDisplay(getVal(d, 'SSMdueDate')));
-                        $('#datePassToSecDept').val(formatDateForDisplay(getVal(d, 'DatePassToSecDept')));
-                        $('#binded').val(getVal(d, 'Binded'));
-                        $('#despatchDateToClient').val(formatDateForDisplay(getVal(d, 'DespatachDateClient')));
-
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit AEX Logbook Record');
-                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
-                }
-            });
-        }
-
-        // ---------- Delete ----------
+        // ---------------------------------------------------------
+        //  删除记录
+        // ---------------------------------------------------------
         function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-
-            $.ajax({
-                url: '/api/auditdept/aex51/delete/' + id,
-                type: 'DELETE',
-                success: function (res) {
-                    if (res && res.success) {
-                        showAlert('Record deleted successfully.', 'success');
-                        loadRecordsFromDatabase();
-                    } else {
-                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
+            if (confirm('Are you sure you want to delete this record?')) {
+                $.ajax({
+                    url: '/api/auditdept/aex51/delete/' + id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.success) {
+                            showAlert('Record deleted successfully!', 'success');
+                            setTimeout(function() {
+                                loadData();
+                            }, 500);
+                        } else {
+                            showAlert('Error deleting record: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('Error deleting record: ' + (xhr.responseJSON?.message || error), 'danger');
                     }
-                },
-                error: function (xhr) {
-                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
-                }
-            });
+                });
+            }
+        }
+
+        // ---------------------------------------------------------
+        //  工具函数
+        // ---------------------------------------------------------
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
+            } catch (e) { return ''; }
+        }
+
+        function formatDateForInput(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+            } catch (e) { return ''; }
+        }
+
+        function formatNumber(value) {
+            if (value === null || value === undefined || value === '') return '';
+            const num = parseFloat(value);
+            return isNaN(num) ? '' : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatPercentage(value) {
+            if (value === null || value === undefined || value === '') return '';
+            const num = parseFloat(value);
+            return isNaN(num) ? '' : num.toFixed(1) + '%';
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(message, type) {
+            const alertClass = `alert alert-${type} alert-dismissible fade show`;
+            const alertHtml = `
+                <div class="${alertClass}" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
+            $('.alert').remove();
+            $('.card-body').prepend(alertHtml);
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
         }
     </script>
 }

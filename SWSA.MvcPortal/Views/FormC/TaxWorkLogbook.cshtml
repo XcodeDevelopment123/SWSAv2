@@ -6,10 +6,8 @@
 
 <div class="row">
     <div class="col-md-12">
-        <!-- Alert Container -->
         <div id="alertContainer"></div>
 
-        <!-- /.card -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -21,7 +19,6 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
@@ -67,17 +64,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -92,15 +85,18 @@
                 <form id="taskForm">
                     <input type="hidden" id="recordId" value="">
 
-                    <!-- Basic Information -->
                     <div class="form-info-label col-12">
                         <label>Basic Information</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required>
+                                    <option value="">-- Select client --</option>
+                                </select>
+                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
+                                <input type="hidden" id="companyName" name="companyName" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -129,12 +125,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year Ended</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Enter year ended (e.g., 31 Mar 2024)" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control datepicker" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
 
-                    <!-- PIC Information -->
                     <div class="form-info-label col-12">
                         <label>PIC Information</label>
                     </div>
@@ -153,7 +148,6 @@
                         </div>
                     </div>
 
-                    <!-- Tax Due Date -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -163,7 +157,6 @@
                         </div>
                     </div>
 
-                    <!-- Tax WIP -->
                     <div class="form-info-label col-12">
                         <label>Tax WIP</label>
                     </div>
@@ -201,7 +194,6 @@
                         </div>
                     </div>
 
-                    <!-- Tax Work Process -->
                     <div class="form-info-label col-12">
                         <label>Tax Work Process</label>
                     </div>
@@ -235,7 +227,6 @@
                         </div>
                     </div>
 
-                    <!-- Review by MC -->
                     <div class="form-info-label col-12">
                         <label>Review by MC</label>
                     </div>
@@ -254,7 +245,6 @@
                         </div>
                     </div>
 
-                    <!-- Draft to Client -->
                     <div class="form-info-label col-12">
                         <label>Draft to Client</label>
                     </div>
@@ -273,7 +263,6 @@
                         </div>
                     </div>
 
-                    <!-- Tax Submission -->
                     <div class="form-info-label col-12">
                         <label>Tax Submission</label>
                     </div>
@@ -292,7 +281,6 @@
                         </div>
                     </div>
 
-                    <!-- Billing -->
                     <div class="form-info-label col-12">
                         <label>Billing</label>
                     </div>
@@ -311,7 +299,6 @@
                         </div>
                     </div>
 
-                    <!-- Binding -->
                     <div class="form-info-label col-12">
                         <label>Binding</label>
                     </div>
@@ -346,12 +333,10 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <!-- Include DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-    <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
@@ -360,18 +345,101 @@
             let dataTable;
             let currentEditId = null;
 
-            // 初始化 DataTable
+            // Load Companies for Dropdown first
+            loadCompanyOptions();
+
+            // Initialize DataTable
             initializeDataTable();
 
-            // 初始化日期选择器
+            // Initialize Datepickers
             initializeDatePickers();
 
-            // 保存按钮点击事件
+            // Save Button Logic
             $('#saveBtn').click(function() {
                 saveTX3Record();
             });
 
-            // 初始化 DataTable
+            // ---------- 1. DROPDOWN & DATE LOGIC (From Sample) ----------
+
+            // Load company options from API
+            function loadCompanyOptions() {
+                $.ajax({
+                    url: "/api/get/company-options", // 使用 Sample 中的 API 路径
+                    type: "GET",
+                    success: function (res) {
+                        const $sel = $("#clientSelect");
+                        $sel.empty().append('<option value="">-- Select client --</option>');
+
+                        if (!(res && res.success && res.data)) return;
+
+                        res.data.forEach(o => {
+                            const name = o.companyName || o.name || "-";
+                            // Store yearEndMonth in data attribute for auto-fill
+                            const yeMonth = o.yearEndMonth || "";
+
+                            $sel.append(`
+                                <option value="${name}"
+                                        data-yearendmonth="${yeMonth}">
+                                    ${name}
+                                </option>
+                            `);
+                        });
+                    }
+                });
+            }
+
+            // Monitor Dropdown Change to Auto-Fill Year End
+            $('#clientSelect').on('change', function () {
+                const $opt = $(this).find('option:selected');
+                const companyName = $(this).val();
+
+                // 1. Fill Hidden Company Name Input (for Saving)
+                $('#companyName').val(companyName);
+
+                // 2. Auto Fill Year End Date
+                const yeMonth = $opt.data('yearendmonth') || '';   // e.g. "December"
+                const yeDate = yearEndMonthToDateString(yeMonth); // Convert to dd/MM/yyyy
+
+                // Only update Year End if it's empty or we are creating new
+                // Remove if() check if you want it to always overwrite
+                $('#yearEnd').val(yeDate).trigger('change');
+            });
+
+            // Helper: Convert Month Name to Date String
+            function yearEndMonthToDateString(monthName) {
+                if (!monthName) return '';
+
+                const months = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+                const idx = months.indexOf(monthName);
+                if (idx === -1) return monthName; // Unknown format
+
+                const today = new Date();
+                let year = today.getFullYear();
+
+                // If this month has passed this year, assume next year (optional logic from sample)
+                if (idx < today.getMonth()) {
+                    year += 1;
+                }
+
+                // Last day of the month
+                const dt = new Date(year, idx + 1, 0);
+                return formatDdMMyyyy(dt);
+            }
+
+            // Helper: Format Date object to dd/MM/yyyy
+            function formatDdMMyyyy(dt) {
+                const dd = String(dt.getDate()).padStart(2, '0');
+                const mm = String(dt.getMonth() + 1).padStart(2, '0');
+                const yyyy = dt.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+
+            // ---------- 2. DATATABLE LOGIC ----------
+
             function initializeDataTable() {
                 dataTable = $('#taskDatatable').DataTable({
                     "paging": true,
@@ -386,13 +454,8 @@
                         "type": "GET",
                         "dataSrc": function(response) {
                             if (response.success) {
-                                console.log('API Response:', response.data); // 调试信息
-                                if (response.data.length > 0) {
-                                    console.log('First record structure:', response.data[0]);
-                                }
                                 return response.data;
                             } else {
-                                console.error('Error loading data:', response.message);
                                 showAlert('Error loading data: ' + response.message, 'danger');
                                 return [];
                             }
@@ -401,159 +464,55 @@
                     "columns": [
                         {
                             "data": null,
-                            "render": function(data, type, row, meta) {
-                                return meta.row + 1;
-                            }
+                            "render": function(data, type, row, meta) { return meta.row + 1; }
                         },
                         { "data": "companyName" },
                         {
                             "data": "active",
-                            "render": function(data, type, row) {
-                                return data || 'No';
-                            }
+                            "render": function(data) { return data || 'No'; }
                         },
                         {
                             "data": null,
                             "render": function(data, type, row) {
-                                // 处理 AEX/OT 字段，兼容不同的大小写
                                 return row.aexOT || row.AEXOT || row.aexot || '-';
                             }
                         },
-                        {
-                            "data": "rakc",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "btm",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "yearEnd",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "taxDueDate",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "startDate",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "endDate",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "noOfDays",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "completed",
-                            "render": function(data, type, row) {
-                                return data || 'No';
-                            }
-                        },
-                        {
-                            "data": "pnLAnalysis",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "caTaxCompu",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "draftForm",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
+                        { "data": "rakc", "render": function(data) { return data || '-'; } },
+                        { "data": "btm", "render": function(data) { return data || '-'; } },
+                        { "data": "yearEnd", "render": function(data) { return data || '-'; } },
+                        { "data": "taxDueDate", "render": function(data) { return data || '-'; } },
+                        // ... (Other Tax WIP columns same as before) ...
+                        { "data": "startDate", "render": function(data) { return data || '-'; } },
+                        { "data": "endDate", "render": function(data) { return data || '-'; } },
+                        { "data": "noOfDays", "render": function(data) { return data || '-'; } },
+                        { "data": "completed", "render": function(data) { return data || 'No'; } },
+                        { "data": "pnLAnalysis", "render": function(data) { return data || '-'; } },
+                        { "data": "caTaxCompu", "render": function(data) { return data || '-'; } },
+                        { "data": "draftForm", "render": function(data) { return data || '-'; } },
                         {
                             "data": "taxPayable",
-                            "render": function(data, type, row) {
+                            "render": function(data) {
                                 return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
                             }
                         },
-                        {
-                            "data": "taxCompCA",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "formC",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "sent",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "received",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "taxPaymentDate",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "formCSubmited",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "invDate",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
+                        { "data": "taxCompCA", "render": function(data) { return data || '-'; } },
+                        { "data": "formC", "render": function(data) { return data || '-'; } },
+                        { "data": "sent", "render": function(data) { return data || '-'; } },
+                        { "data": "received", "render": function(data) { return data || '-'; } },
+                        { "data": "taxPaymentDate", "render": function(data) { return data || '-'; } },
+                        { "data": "formCSubmited", "render": function(data) { return data || '-'; } },
+                        { "data": "invDate", "render": function(data) { return data || '-'; } },
                         {
                             "data": "fees",
-                            "render": function(data, type, row) {
+                            "render": function(data) {
                                 return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
                             }
                         },
-                        {
-                            "data": "printing",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
-                        {
-                            "data": "despatch",
-                            "render": function(data, type, row) {
-                                return data || '-';
-                            }
-                        },
+                        { "data": "printing", "render": function(data) { return data || '-'; } },
+                        { "data": "despatch", "render": function(data) { return data || '-'; } },
                         {
                             "data": "id",
-                            "render": function(data, type, row) {
+                            "render": function(data) {
                                 return `
                                     <div class="btn-group">
                                         <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit">
@@ -569,20 +528,11 @@
                         }
                     ],
                     "language": {
-                        "emptyTable": "No records available",
-                        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                        "infoEmpty": "Showing 0 to 0 of 0 entries",
-                        "infoFiltered": "(filtered from _MAX_ total entries)",
-                        "lengthMenu": "Show _MENU_ entries",
-                        "loadingRecords": "Loading...",
-                        "processing": "Processing...",
-                        "search": "Search:",
-                        "zeroRecords": "No matching records found"
+                        "emptyTable": "No records available"
                     }
                 });
             }
 
-            // 初始化日期选择器
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
                     format: 'dd/mm/yyyy',
@@ -591,16 +541,19 @@
                 });
             }
 
-            // 保存 TX3 记录
+            // ---------- 3. SAVE / EDIT / DELETE LOGIC ----------
+
             function saveTX3Record() {
-                // 基本验证
-                if (!$('#companyName').val()) {
-                    showAlert('Please enter company name', 'warning');
+                // Read from hidden field (populated by dropdown) OR direct from dropdown
+                const coName = $('#companyName').val() || $('#clientSelect').val();
+
+                if (!coName) {
+                    showAlert('Please select a client', 'warning');
                     return;
                 }
 
                 const formData = {
-                    companyName: $('#companyName').val(),
+                    companyName: coName, // Changed to use the logic above
                     active: $('#active').val(),
                     aexOT: $('#aexOt').val(),
                     rakc: $('#rakc').val(),
@@ -627,8 +580,6 @@
                     despatch: $('#despatch').val()
                 };
 
-                console.log('Form data to save:', formData); // 调试信息
-
                 const url = currentEditId ? '/api/tx3/update' : '/api/tx3/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
@@ -636,7 +587,6 @@
                     formData.id = currentEditId;
                 }
 
-                // 显示加载状态
                 $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
                 $.ajax({
@@ -645,7 +595,6 @@
                     contentType: 'application/json',
                     data: JSON.stringify(formData),
                     success: function(response) {
-                        console.log('Save response:', response); // 调试信息
                         if (response.success) {
                             $('#taskModal').modal('hide');
                             dataTable.ajax.reload();
@@ -656,41 +605,37 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Save error:', error); // 调试信息
                         showAlert('Error saving record: ' + error, 'danger');
                     },
                     complete: function() {
-                        // 恢复保存按钮状态
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     }
                 });
             }
 
-            // 编辑记录
             $(document).on('click', '.edit-btn', function() {
                 const id = $(this).data('id');
                 editRecord(id);
             });
 
-            // 删除记录
             $(document).on('click', '.delete-btn', function() {
                 const id = $(this).data('id');
                 deleteRecord(id);
             });
 
-            // 编辑记录
             function editRecord(id) {
                 $.get(`/api/tx3/get/${id}`, function(response) {
                     if (response.success) {
                         const record = response.data;
                         currentEditId = record.id;
 
-                        console.log('Editing record:', record); // 调试信息
-
-                        // 填充表单
+                        // 1. Set Company Dropdown value
+                        $('#clientSelect').val(record.companyName);
+                        // 2. Set Hidden input
                         $('#companyName').val(record.companyName);
+
                         $('#active').val(record.active);
-                        $('#aexOt').val(record.aexOT || record.AEXOT); // 兼容大小写
+                        $('#aexOt').val(record.aexOT || record.AEXOT);
                         $('#rakc').val(record.rakc);
                         $('#btm').val(record.btm);
                         $('#yearEnd').val(record.yearEnd);
@@ -722,9 +667,8 @@
                 });
             }
 
-            // 删除记录
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                if (confirm('Are you sure you want to delete this record?')) {
                     $.ajax({
                         url: `/api/tx3/delete/${id}`,
                         type: 'DELETE',
@@ -735,23 +679,19 @@
                             } else {
                                 showAlert('Error deleting record: ' + response.message, 'danger');
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            showAlert('Error deleting record: ' + error, 'danger');
                         }
                     });
                 }
             }
 
-            // 重置表单
             function resetForm() {
                 $('#taskForm')[0].reset();
                 currentEditId = null;
+                $('#clientSelect').val(''); // Reset dropdown
                 $('#modalTitle').text('Add New Tax Work Logbook Record');
                 $('.datepicker').datepicker('update', '');
             }
 
-            // 显示提示信息
             function showAlert(message, type) {
                 const alertClass = `alert alert-${type} alert-dismissible fade show`;
                 const alertHtml = `
@@ -761,22 +701,11 @@
                     </div>
                 `;
                 $('#alertContainer').html(alertHtml);
-
-                // 自动隐藏
-                setTimeout(() => {
-                    $('.alert').alert('close');
-                }, 5000);
+                setTimeout(() => { $('.alert').alert('close'); }, 5000);
             }
 
-            // 模态框关闭时重置表单
             $('#taskModal').on('hidden.bs.modal', function() {
                 resetForm();
-            });
-
-            // 添加刷新按钮功能（可选）
-            $(document).on('click', '#refreshBtn', function() {
-                dataTable.ajax.reload();
-                showAlert('Data refreshed successfully!', 'info');
             });
         });
     </script>
