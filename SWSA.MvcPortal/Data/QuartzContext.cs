@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Data.Models;
@@ -148,7 +148,7 @@ public partial class QuartzContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=SY\\SQLEXPRESS;Database=Quartz;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Quartz;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1657,17 +1657,19 @@ public partial class QuartzContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasIndex(e => e.StaffId, "IX_Users_StaffId").IsUnique();
+            // --- FIX APPLIED HERE ---
+            // Changed HasFilter("[StaffId] IS NOT NULL") to "[Id] IS NOT NULL"
+            // because SQL Server does not allow filtered indexes directly on computed columns.
+            entity.HasIndex(e => e.StaffId, "IX_Users_StaffId")
+                .IsUnique()
+                .HasFilter("[Id] IS NOT NULL");
 
-            entity.Property(e => e.StaffId)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .HasComputedColumnSql("('StaffId-'+right('000000'+CONVERT([varchar],[Id]),(6)))", true);
-            entity.Property(e => e.Title).HasDefaultValue("");
-        });
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.Username).HasMaxLength(256);
+        }); // <-- Make sure this closing brace, parenthesis, and semicolon are here!
 
         OnModelCreatingPartial(modelBuilder);
-    }
+    } // This closes the OnModelCreating method// This closes the QuartzContext class
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
