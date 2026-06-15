@@ -10,5 +10,13 @@ public enum CompanyType
     LLP,
     Partnership,
     [Display(Name = "Sole Proprietorships")]
-    SoleProprietorships
+    SoleProprietorships,
+    [Display(Name = "Bhd")]
+    Bhd,
+    [Display(Name = "Enterprise")]
+    Enterprise,
+    [Display(Name = "Advocate")]
+    Advocate,
+    [Display(Name = "Resign")]
+    Resign
 }

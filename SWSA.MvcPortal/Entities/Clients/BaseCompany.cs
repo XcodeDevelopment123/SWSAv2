@@ -26,6 +26,34 @@ public abstract class BaseCompany : BaseClient
 
     [SystemAuditLog("Employer Number")]
     public string? EmployerNumber { get; set; } // E Number
+
+    [SystemAuditLog("Company Status")]
+    public CompanyStatus? CompanyStatus { get; set; }
+
+    [SystemAuditLog("Company Status Reason")]
+    public string? CompanyStatusReason { get; set; }
+
+    [SystemAuditLog("Credit Rating")]
+    public CreditRating? CreditRating { get; set; }
+
+    [SystemAuditLog("Client Rating")]
+    public string? ClientRating { get; set; }
+
+    [SystemAuditLog("Business Nature")]
+    public string? BusinessNature { get; set; }
+
+    [SystemAuditLog("Service Selected")]
+    public string? ServiceSelected { get; set; }
+
+    [SystemAuditLog("Principal Activity")]
+    public string? PrincipalActivity { get; set; }
+
+    [SystemAuditLog("Foreign Owned")]
+    public bool? ForeignOwned { get; set; }
+
+    [SystemAuditLog("Appointment Engagement")]
+    public string? AppointmentEngagementData { get; set; }
+
     public virtual ICollection<CompanyOwner> Owners { get; set; } = [];
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = [];
 

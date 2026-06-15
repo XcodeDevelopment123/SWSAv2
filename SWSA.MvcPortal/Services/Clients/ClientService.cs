@@ -249,6 +249,20 @@ public class ClientService(
         entity.UpdateAdminInfo(groupName, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
         entity.SyncMsicCode(req.MsicCodeIds);
 
+        if (req.CompanyType.HasValue)
+            entity.CompanyType = req.CompanyType.Value;
+        if (req.CompanyStatus.HasValue)
+            entity.CompanyStatus = req.CompanyStatus.Value;
+        entity.CompanyStatusReason = req.CompanyStatusReason;
+        if (req.CreditRating.HasValue)
+            entity.CreditRating = req.CreditRating.Value;
+        entity.ClientRating = req.ClientRating;
+        entity.BusinessNature = req.BusinessNature;
+        entity.ServiceSelected = req.ServiceSelected;
+        entity.PrincipalActivity = req.PrincipalActivity;
+        entity.ForeignOwned = req.ForeignOwned;
+        entity.AppointmentEngagementData = req.AppointmentEngagementData;
+
         var currentMsicCodesId = entity.MsicCodes.Select(m => m.MsicCodeId).ToList();
         var validIds = await _msicCodeds
                  .Where(m => currentMsicCodesId.Contains(m.Id))

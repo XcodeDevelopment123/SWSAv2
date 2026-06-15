@@ -21,7 +21,7 @@
     const $filterForm = $("#filterForm");
     const filterFormInputs = {
         grouping: $filterForm.find('select[name="grouping"]'),
-        referral: $filterForm.find('input[name="referral"]'),
+        referral: $filterForm.find('select[name="referral"]'),
         fileNo: $filterForm.find('input[name="fileNo"]'),
         name: $filterForm.find('input[name="companyName"]'),
         companyNumber: $filterForm.find('input[name="companyNumber"]'),
@@ -49,8 +49,7 @@
                 required: false
             },
             referral: {
-                required: false,
-                minlength: 2
+                required: false
             },
             fileNo: {
                 required: false,
@@ -75,9 +74,6 @@
             }
         },
         messages: {
-            referral: {
-                minlength: "Referral must be at least 2 characters long."
-            },
             fileNo: {
                 minlength: "File No must be at least 3 characters long."
             },
@@ -226,16 +222,20 @@
             case "Enterprise":
             case "LLP":
             case "SdnBhd": req.includeGroups = true;
+                req.includeReferrals = true;
                 break;
             case "Individual":
                 req.includeGroups = true;
                 req.includeProfessions = true;
+                req.includeReferrals = true;
                 break;
             default: break;
         }
 
         return req;
     }
+
+    var referralCompanyMap = {};
 
     function updateSelectOption(res) {
 
@@ -257,6 +257,38 @@
             });
 
             filterFormInputs.grouping.append(html);
+        }
+
+        if (res.referrals && res.referrals.length > 0) {
+            let html = '';
+            $.each(res.referrals, function (i, item) {
+                if (item && item.trim() !== "")
+                    html += `<option value="${item}">${item}</option>`
+            });
+
+            filterFormInputs.referral.append(html);
+
+            filterFormInputs.referral.on('change', function () {
+                const selected = $(this).val();
+                if (selected && referralCompanyMap[selected]) {
+                    const info = referralCompanyMap[selected];
+                    if (filterFormInputs.companyNumber && filterFormInputs.companyNumber.length) {
+                        filterFormInputs.companyNumber.val(info.companyNumber || '');
+                    }
+                    if (info.incorporationDate) {
+                        if (filterFormInputs.incorpDateFrom && filterFormInputs.incorpDateFrom.length) {
+                            filterFormInputs.incorpDateFrom.val(info.incorporationDate);
+                        }
+                        if (filterFormInputs.incorpDateTo && filterFormInputs.incorpDateTo.length) {
+                            filterFormInputs.incorpDateTo.val(info.incorporationDate);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (res.referralCompanyInfoMap) {
+            referralCompanyMap = res.referralCompanyInfoMap;
         }
     }
 })

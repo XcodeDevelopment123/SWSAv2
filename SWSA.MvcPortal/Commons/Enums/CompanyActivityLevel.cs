@@ -15,5 +15,7 @@ public enum CompanyActivityLevel
     [Display(Name = "4")]
     Four = 4,
     [Display(Name = "5")]
-    Five = 5
+    Five = 5,
+    [Display(Name = "6")]
+    Six = 6
 }
