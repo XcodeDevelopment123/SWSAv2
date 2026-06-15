@@ -2,7 +2,7 @@
     ViewData["Title"] = "A31BDocControl";
 }
 
-<h1>A31B Doc Control</h1>
+<h1>C1.2 Acc Dept Inbound / Outbound</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -17,30 +17,29 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body table-responsive" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                            <th rowspan="2">Client</th>
-                            <th rowspan="2">Year End</th>
-                            <th rowspan="2">Co Status</th>
-                            <th colspan="3">Receipt of Documents</th>
-                            <th colspan="2">Acknowledgement</th>
-                            <th rowspan="2">Remark</th>
-                            <th colspan="5">Return of Documents</th>
-                            <th rowspan="2">Actions</th>
+
+                            <th colspan="7">Receipt of Documents</th>
+                            <th colspan="6">Return of Documents</th>
+
                         </tr>
                         <tr>
-                            <th>Date Doc fr Acc dept</th>
+                            <th>Client</th>
+                            <th>Year End</th>
                             <th>Date Received</th>
                             <th># of bags/box</th>
                             <th>By Whom</th>
                             <th>Upload letter</th>
+                            <th>Remark</th>
                             <th>Date</th>
                             <th># of bags/box</th>
                             <th>By Whom</th>
                             <th>Upload letter</th>
                             <th>Remark</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="recordsTableBody">
@@ -59,7 +58,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New A31B Doc Control Record</span>
+                    <span id="modalTitle">Add Account Dept</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -105,12 +104,12 @@
                         <label>Receipt of Documents</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                       @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateDocFr">Date Doc fr Acc dept</label>
                                 <input type="text" id="dateDocFr" name="dateDocFr" class="form-control datepicker" placeholder="Select date" />
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateReceived">Date Received</label>
@@ -263,7 +262,7 @@
             $('#taskModal').on('hidden.bs.modal', function () {
                 $('#taskForm')[0].reset();
                 $('#editId').val('');
-                $('#modalTitle').text('Add New A31B Doc Control Record');
+                $('#modalTitle').text('Add Account Dept');
             });
         });
 
