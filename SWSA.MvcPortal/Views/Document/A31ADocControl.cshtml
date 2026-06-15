@@ -1,8 +1,8 @@
-﻿@{
+@{
 	ViewData["Title"] = "A31ADocControl";
 }
 
-<h1>A31A Doc Control</h1>
+<h1>C1.1 Audit Dept inbound / Outbound</h1>
 
 <div class="row">
 	<div class="col-md-12">
@@ -17,29 +17,29 @@
 					</button>
 				</div>
 			</div>
-			<div class="card-body" style="overflow:auto">
-				<table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+			<div class="card-body table-responsive">
+				<table id="taskDatatable" class="table table-bordered table-striped">
 					<thead>
 						<tr>
-							<th rowspan="2">Client</th>
-							<th rowspan="2">Year End</th>
-							<th colspan="2">Receipt of Documents</th>
-							<th colspan="2">Acknowledgement</th>
-							<th rowspan="2">Remark</th>
-							<th colspan="6">Document Outward Control</th>
-							<th rowspan="2">Actions</th>
+						
+							<th colspan="8">Receipt of Documents</th>
+							<th colspan="5">Document Outward Control</th>
+							
 						</tr>
 						<tr>
+							<th>Client</th>
+							<th>Active/AEX</th>
+							<th>Year End</th>
 							<th>Date Received</th>
 							<th># of bags/box</th>
 							<th>By Whom</th>
 							<th>Upload letter</th>
-							<th>Date send to Audit Dept</th>
-							<th>Date</th>
+							<th>Remark</th>
 							<th># of bags/box</th>
 							<th>By Whom</th>
 							<th>Upload letter</th>
-							<th>Remark</th>
+                            <th>Remark</th>
+                            <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody id="recordsTableBody">
@@ -58,7 +58,7 @@
 			<div class="modal-header">
 				<h5 class="modal-title" id="taskModalLabel">
 					<i class="fas fa-edit me-2"></i>
-					<span id="modalTitle">Add New A31A Doc Control Record</span>
+					<span id="modalTitle">Add Inbound / Outbound</span>
 				</h5>
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
@@ -73,7 +73,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="clientId">Client (Suppose Link From Client List)</label>
+								<label for="clientId">Client (Link From Client List)</label>
 								<select id="clientId" name="clientId" class="form-control" required>
 									<option value="">Select Client</option>
 									<!-- Clients will be loaded dynamically -->
@@ -115,7 +115,9 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="ackByWhom">By Whom</label>
-								<input type="text" id="ackByWhom" name="ackByWhom" class="form-control" placeholder="Enter name" />
+								<select type="text" id="ackByWhom" name="ackByWhom" class="form-control" placeholder="Enter name">
+									<option value="">Select</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -147,7 +149,7 @@
 					<div class="form-info-label col-12">
 						<label>Document Outward Control</label>
 					</div>
-					<div class="row">
+					@* <div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label for="dateSendToAuditDept">Date send to Audit Dept</label>
@@ -161,7 +163,7 @@
 							</div>
 						</div>
 					</div>
-
+ *@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
