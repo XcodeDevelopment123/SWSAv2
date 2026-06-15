@@ -4617,7 +4617,7 @@ namespace SWSA.MvcPortal.Migrations.Quartz
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "StaffId" }, "IX_Users_StaffId")
+                    b.HasIndex(new[] { "StaffId" }, "IX_Users_StaffId");
 
                     b.ToTable("Users");
                 });
