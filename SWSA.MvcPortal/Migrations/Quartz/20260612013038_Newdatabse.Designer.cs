@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Data;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Data;
 namespace SWSA.MvcPortal.Migrations.Quartz
 {
     [DbContext(typeof(QuartzContext))]
-    partial class QuartzContextModelSnapshot : ModelSnapshot
+    [Migration("20260612013038_Newdatabse")]
+    partial class Newdatabse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4573,8 +4576,7 @@ namespace SWSA.MvcPortal.Migrations.Quartz
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -4604,22 +4606,26 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasColumnType("int");
 
                     b.Property<string>("StaffId")
-                        .HasColumnType("nvarchar(450)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)")
+                        .HasComputedColumnSql("('StaffId-'+right('000000'+CONVERT([varchar],[Id]),(6)))", true);
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "StaffId" }, "IX_Users_StaffId")
-                        .IsUnique()
-                        .HasFilter("[Id] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

@@ -9,372 +9,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - SWSA</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SWSA</title>
 
-	<!-- Google Font: Source Sans Pro -->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	<!-- Font Awesome Icons -->
-	<link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
-	<!-- Ionicons -->
-	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-	<!-- Theme style -->
-	<link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
-	<link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
-	<!-- Flatpickr -->
-	<link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
-	<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
-	<!-- overlayScrollbars -->
-	<link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/SWSA.MvcPortal.styles.css" asp-append-version="true" />
-	<!-- Select2 -->
-	<link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
-	<link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
+    <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SWSA.MvcPortal.styles.css" asp-append-version="true" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 
 
 @{
-					        /*
-					        var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
-					        var currentAction = new ActionInfo(ViewData["action"]!.ToString());
-					        var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
+                                     /*
+                                     var currentController = new ControllerInfo(ViewData["controller"]!.ToString());
+                                     var currentAction = new ActionInfo(ViewData["action"]!.ToString());
+                                     var currentClientType = new ActionInfo(ViewData["client-type"]?.ToString() ?? "");
 
-					        var url = Url.ActionContext.HttpContext.Request.Path.ToString();
-					        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-					        var submissionNav = new List<string> { };
-					        */
+                                     var url = Url.ActionContext.HttpContext.Request.Path.ToString();
+                                     var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+                                     var submissionNav = new List<string> { };
+                                     */
 
-					        // 临时使用默认值
-					        var currentController = new ControllerInfo("Home");
-					        var currentAction = new ActionInfo("Index");
-					        var currentClientType = new ActionInfo("");
-					        var url = Context.Request.Path.ToString();
-					        var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
-					        var submissionNav = new List<string> { };
+                                     // 临时使用默认值
+                                     var currentController = new ControllerInfo("Home");
+                                     var currentAction = new ActionInfo("Index");
+                                     var currentClientType = new ActionInfo("");
+                                     var url = Context.Request.Path.ToString();
+                                     var companyNav = new List<string> { ControllerNames.Company, ControllerNames.CompanyStaff };
+                                     var submissionNav = new List<string> { };
 }
 
 <body class="hold-transition sidebar-mini layout-fixed">
 
-	<div class="wrapper">
+    <div class="wrapper">
 
-		<!-- Preloader -->
-		<div class="preloader flex-column justify-content-center align-items-center">
-			<img class="animation__shake" src="~/assets/imgs/logo.png" alt="SWSA Logo" height="500" width="500">
-		</div>
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="~/assets/imgs/logo.png" alt="SWSA Logo" height="500" width="500">
+        </div>
 
-		<!-- Navbar -->
-		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
-			<!-- Left navbar links -->
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-				</li>
-				<li class="nav-item d-none d-sm-inline-block">
-					<a href="/home" class="nav-link">Home</a>
-				</li>
-			</ul>
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/home" class="nav-link">Home</a>
+                </li>
+            </ul>
 
-			<!-- Right navbar links -->
-			<ul class="navbar-nav ml-auto">
-				<!-- Messages Dropdown Menu -->
-				<li class="nav-item dropdown">
-					<a class="nav-link" data-toggle="dropdown" href="#">
-						<i class="far fa-comments"></i>
-						<span class="badge badge-danger navbar-badge">3</span>
-					</a>
-					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-						<a href="#" class="dropdown-item">
-							<!-- Message Start -->
-							<div class="media">
-								<img src="~/admin-lte/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-								<div class="media-body">
-									<h3 class="dropdown-item-title">
-										Brad Diesel
-										<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-									</h3>
-									<p class="text-sm">Call me whenever you can...</p>
-									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-								</div>
-							</div>
-							<!-- Message End -->
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<!-- Message Start -->
-							<div class="media">
-								<img src="~/admin-lte/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-								<div class="media-body">
-									<h3 class="dropdown-item-title">
-										John Pierce
-										<span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-									</h3>
-									<p class="text-sm">I got your message bro</p>
-									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-								</div>
-							</div>
-							<!-- Message End -->
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<!-- Message Start -->
-							<div class="media">
-								<img src="~/admin-lte/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-								<div class="media-body">
-									<h3 class="dropdown-item-title">
-										Nora Silvester
-										<span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-									</h3>
-									<p class="text-sm">The subject goes here</p>
-									<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-								</div>
-							</div>
-							<!-- Message End -->
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-					</div>
-				</li>
-				<!-- Notifications Dropdown Menu -->
-				<li class="nav-item dropdown">
-					<a class="nav-link" data-toggle="dropdown" href="#">
-						<i class="far fa-bell"></i>
-						<span class="badge badge-warning navbar-badge">15</span>
-					</a>
-					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-						<span class="dropdown-item dropdown-header">15 Notifications</span>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-envelope mr-2"></i> 4 new messages
-							<span class="float-right text-muted text-sm">3 mins</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-users mr-2"></i> 8 friend requests
-							<span class="float-right text-muted text-sm">12 hours</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-file mr-2"></i> 3 new reports
-							<span class="float-right text-muted text-sm">2 days</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-widget="fullscreen" href="#" role="button">
-						<i class="fas fa-expand-arrows-alt"></i>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-						<i class="fas fa-th-large"></i>
-					</a>
-				</li>
-			</ul>
-		</nav>
-		<!-- /.navbar -->
-		<!-- Main Sidebar Container -->
-		<aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-comments"></i>
+                        <span class="badge badge-danger navbar-badge">3</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            <div class="media">
+                                <img src="~/admin-lte/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            <div class="media">
+                                <img src="~/admin-lte/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        John Pierce
+                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">I got your message bro</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <!-- Message Start -->
+                            <div class="media">
+                                <img src="~/admin-lte/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Nora Silvester
+                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">The subject goes here</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                            <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-warning navbar-badge">15</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> 4 new messages
+                            <span class="float-right text-muted text-sm">3 mins</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> 8 friend requests
+                            <span class="float-right text-muted text-sm">12 hours</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> 3 new reports
+                            <span class="float-right text-muted text-sm">2 days</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
 
-			<!-- Sidebar -->
-			<div class="sidebar">
-				<!-- Sidebar user panel (optional) -->
-				<div class="user-panel mt-3 pb-3 mb-3 d-flex">
-					<div class="image">
-						<img src="~/admin-lte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-					</div>
-					<div class="info">
-						<a href="/users/@UserContext.StaffId/overview" class="d-block">@(UserContext.Name ?? AppSettings.NotAvailable)</a>
-					</div>
-				</div>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="~/admin-lte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="/users/@UserContext.StaffId/overview" class="d-block">@(UserContext.Name ?? AppSettings.NotAvailable)</a>
+                    </div>
+                </div>
 
-				<!-- SidebarSearch Form -->
-				<div class="form-inline">
-					<div class="input-group" data-widget="sidebar-search">
-						<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-						<div class="input-group-append">
-							<button class="btn btn-sidebar">
-								<i class="fas fa-search fa-fw"></i>
-							</button>
-						</div>
-					</div>
-				</div>
+                <!-- SidebarSearch Form -->
+                <div class="form-inline">
+                    <div class="input-group" data-widget="sidebar-search">
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-sidebar">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-				<!-- Sidebar Menu -->
-				<nav class="mt-2">
-					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-						with font-awesome or any other icon font library -->
-						<li class="nav-item  @(currentController.Is(ControllerNames.Dashboard) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Dashboard) ? "active" : "")">
-								<i class="nav-icon fas fa-tachometer-alt"></i>
-								<p>
-									Dashboard
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style=@(currentController.Is(ControllerNames.Dashboard) ? @"display:block" : "display:none")>
-								<li class="nav-item">
-									<a href="/dashboard/overall" class="nav-link @(currentController.Is(ControllerNames.Dashboard) && currentAction.Is("Overall") ? "active" : "")">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Overall</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Secretary</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Account</p>
-									</a>
-								</li>
-							</ul>
-						</li>
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                        with font-awesome or any other icon font library -->
+                        <li class="nav-item  @(currentController.Is(ControllerNames.Dashboard) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is(ControllerNames.Dashboard) ? "active" : "")">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Dashboard
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style=@(currentController.Is(ControllerNames.Dashboard) ? @"display:block" : "display:none")>
+                                <li class="nav-item">
+                                    <a href="/dashboard/overall" class="nav-link @(currentController.Is(ControllerNames.Dashboard) && currentAction.Is("Overall") ? "active" : "")">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Overall</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Secretary</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Account</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-						<li class="nav-item @(currentController.Is(ControllerNames.Group) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Group) ? "active" : "")">
-								<span class="nav-icon"></span>
-								<p>
-									Group
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Group) ? @"display:block" : "display:none")">
+                        <li class="nav-item @(currentController.Is(ControllerNames.Group) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is(ControllerNames.Group) ? "active" : "")">
+                                <span class="nav-icon"></span>
+                                <p>
+                                    Client Status Report
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Group) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/Group/GroupList"
-									   class="nav-link @(currentController.Is(ControllerNames.Group) && currentAction.Is("GroupList") ? "active" : "")">
-										<span class="nav-icon ">1.1</span>
-										<p>
-											Group List
-										</p>
-									</a>
-								</li>								
-							</ul>
-						</li>
+                                <li class="nav-item">
+                                    <a href="/Group/GroupList"
+                                       class="nav-link @(currentController.Is(ControllerNames.Group) && currentAction.Is("GroupList") ? "active" : "")">
 
-						<li class="nav-item @(currentController.Is(ControllerNames.Client) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Client) ? "active" : "")">
-								<span class="nav-icon">1</span>
-								<p>
-									Clients
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Client) ? @"display:block" : "display:none")">
+                                        <p>
+                                            Client Status Report List
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-								<li class="nav-item">
-									<a href="/clients/sdnbhd"
-									   class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("SdnBhdList") ? "active" : "")">
-										<span class="nav-icon ">1.1</span>
-										<p>
-											Sdn Bhd
-										</p>
-									</a>
-								</li>
+                        <li class="nav-item @(currentController.Is(ControllerNames.Client) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is(ControllerNames.Client) ? "active" : "")">
+                                <span class="nav-icon">A.</span>
+                                <p>
+                                    Master Clients List
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Client) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/clients/llp"
-									   class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("LLPList") ? "active" : "")">
-										<span class="nav-icon ">1.2</span>
-										<p>
-											LLP
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/clients/sdnbhd"
+                                       class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("SdnBhdList") ? "active" : "")">
+                                        <span class="nav-icon ">A1.</span>
+                                        <p>
+                                            Sdn Bhd Clients
+                                        </p>
+                                    </a>
+                                </li>
 
-								<li class="nav-item">
-									<a href="/clients/enterprise"
-									   class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("EnterpriseList") ? "active" : "")">
-										<span class="nav-icon ">1.3</span>
-										<p>
-											Enterprise
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/clients/llp"
+                                       class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("LLPList") ? "active" : "")">
+                                        <span class="nav-icon ">A2.</span>
+                                        <p>
+                                            LLP Clients
+                                        </p>
+                                    </a>
+                                </li>
 
-								<li class="nav-item">
-									<a href="/clients/individual"
-									   class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("IndividualList") ? "active" : "")">
-										<span class="nav-icon ">1.4</span>
-										<p>
-											Individual
-										</p>
-									</a>
-								</li>
-							</ul>
-						</li>
+                                <li class="nav-item">
+                                    <a href="/clients/enterprise"
+                                       class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("EnterpriseList") ? "active" : "")">
+                                        <span class="nav-icon ">A3.</span>
+                                        <p>
+                                            Enterprise Clients
+                                        </p>
+                                    </a>
+                                </li>
 
-						<li class="nav-item @(currentController.Is(ControllerNames.NewClient) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewClient) ? "active" : "")">
-								<span class="nav-icon">2</span>
-								<p>
-									New Client
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
+                                <li class="nav-item">
+                                    <a href="/clients/individual"
+                                       class="nav-link @(currentController.Is(ControllerNames.Client) && currentAction.Is("IndividualList") ? "active" : "")">
+                                        <span class="nav-icon ">A4.</span>
+                                        <p>
+                                            Individual Clients
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item @(currentController.Is(ControllerNames.NewClient) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is(ControllerNames.NewClient) ? "active" : "")">
+                                <span class="nav-icon">B.</span>
+                                <p>
+                                    New Client Profile
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            @* <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
 								<li class="nav-item @(currentController.Is(ControllerNames.NewClient) ? "menu-is-opening menu-open" : "")">
 									<a href="#" class="nav-link @(currentController.Is(ControllerNames.NewClient) ? "active" : "")">
-										<span class="nav-icon">2.1</span>
+										<span class="nav-icon">B1.</span>
 										<p>
 											New Client Profile
 											<i class="right fas fa-angle-left"></i>
 										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
+									</a> *@
+                            <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.NewClient) ? @"display:block" : "display:none")">
 
 
-										<li class="nav-item">
-											<a href="/clients/create/sdnbhd"
-											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.SdnBhd.ToString()) ? "active" : "")">
-												<span class="nav-icon ">2.1.1</span>
-												<p>
-													Sdn Bhd
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/clients/create/sdnbhd"
+                                       class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.SdnBhd.ToString()) ? "active" : "")">
+                                        <span class="nav-icon ">B1.</span>
+                                        <p>
+                                            Sdn Bhd Profile
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/clients/create/llp"
-											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.LLP.ToString()) ? "active" : "")">
-												<span class="nav-icon ">2.1.2</span>
-												<p>
-													LLP
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/clients/create/llp"
+                                       class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.LLP.ToString()) ? "active" : "")">
+                                        <span class="nav-icon ">B2.</span>
+                                        <p>
+                                            LLP Profile
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/clients/create/enterprise"
-											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Enterprise.ToString()) ? "active" : "")">
-												<span class="nav-icon ">2.1.3</span>
-												<p>
-													Enterprise
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/clients/create/enterprise"
+                                       class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Enterprise.ToString()) ? "active" : "")">
+                                        <span class="nav-icon ">B3.</span>
+                                        <p>
+                                            Enterprise Profile
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/clients/create/individual"
-											   class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Individual.ToString()) ? "active" : "")">
-												<span class="nav-icon ">2.1.4</span>
-												<p>
-													Individual
-												</p>
-											</a>
-										</li>
-									</ul>
-								</li>
-								@* <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                <li class="nav-item">
+                                    <a href="/clients/create/individual"
+                                       class="nav-link @(currentController.Is(ControllerNames.NewClient) && currentClientType.Is(ClientType.Individual.ToString()) ? "active" : "")">
+                                        <span class="nav-icon ">B4.</span>
+                                        <p>
+                                            Individual Profile
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                            @* </li> *@
+                            @* <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
 									<a href="#" class="nav-link @(false ? "active" : "")">
 										<span class="nav-icon">2.2</span>
 										<p>
@@ -386,29 +386,29 @@
 									</ul>
 								</li> *@
 
-							</ul>
-						</li>
+                            @* </ul> *@
+                        </li>
 
-						<li class="nav-item @(currentController.Is(ControllerNames.Document) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document) ? "active" : "")">
-								<span class="nav-icon">3</span>
-								<p>
-									Form/Template
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document) ? @"display:block" : "display:none")">
-								<li class="nav-item @(currentController.Is(ControllerNames.Document) ? "menu-is-opening menu-open" : "")">
-									<a href="#" class="nav-link @(currentController.Is(ControllerNames.Document) ? "active" : "")">
-										<span class="nav-icon">3.1</span>
-										<p>
-											Document Control
-											<i class="right fas fa-angle-left"></i>
-										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document) ? @"display:block" : "display:none")">
+                        <li class="nav-item @(currentController.Is(ControllerNames.Document) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is(ControllerNames.Document) ? "active" : "")">
+                                <span class="nav-icon">C.</span>
+                                <p>
+                                    Document Control
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document) ? @"display:block" : "display:none")">
+                                <li class="nav-item @(currentController.Is(ControllerNames.Document) ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(currentController.Is(ControllerNames.Document) ? "active" : "")">
+                                        <span class="nav-icon">C1.</span>
+                                        <p>
+                                            Inbound / Outbound docs
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(currentController.Is(ControllerNames.Document) ? @"display:block" : "display:none")">
 
-										@* <li class="nav-item">
+                                        @* <li class="nav-item">
 											<a href="/documents/audit-dept"
 											   class="nav-link @(currentController.Is(ControllerNames.Document) && currentAction.Is("AuditDepartment") ? "active" : "")">
 												<span class="nav-icon ">3.1.1</span>
@@ -427,56 +427,57 @@
 											</a>
 										</li> *@
 
-										<li class="nav-item">
-											<a href="/documents/doct-audA31A" class="nav-link ">
-												<span class="nav-icon ">A3.1A</span>
-												<p>
-													Document Control Audit Dept
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/documents/doct-audA31A" class="nav-link ">
+                                                <span class="nav-icon ">C1.1</span>
+                                                <p>
+                                                    Audit Dept Inbound / Outbound
+                                                </p>
+                                            </a>
+                                        </li>
 
-										<li class="nav-item">
-											<a href="/documents/doct-audA31B" class="nav-link ">
-												<span class="nav-icon ">A3.1B</span>
-												<p>
-													Document Control Audit Dept
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/documents/doct-audA31B" class="nav-link ">
+                                                <span class="nav-icon ">C1.2</span>
+                                                <p>
+                                                    Acc Dept Inbound / Outbound
+                                                </p>
+                                            </a>
+                                        </li>
 
-									</ul>
-								</li>
-								<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    </ul>
+                                </li>
+                                @* <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
 									<a href="#" class="nav-link @(false ? "active" : "")">
-										<span class="nav-icon">3.2</span>
+										<span class="nav-icon">C2.</span>
 										<p>
 											Account dept
 											<i class="right fas fa-angle-left"></i>
 										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+									</a> *@
+                                @* <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")"> *@
 
-										<li class="nav-item">
-											<a href="/documents/doct-accA32A" class="nav-link ">
-												<span class="nav-icon ">A3.2A</span>
-												<p>
-													In-Coming Correspondance Records
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/documents/doct-accA32A" class="nav-link ">
+                                        <span class="nav-icon ">C2.</span>
+                                        <p>
+                                            Acc Dept Correspondence
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
+                                @* 	<li class="nav-item">
 											<a href="/documents/doct-accA32B" class="nav-link ">
 												<span class="nav-icon ">A3.2B</span>
 												<p>
 													Account Dept Form B&P, LLP Tax audit
 												</p>
 											</a>
-										</li>
+										</li> *@
 
-									</ul>
-								</li>
+                                @* 	</ul> 
+								 </li> *@
+                                @* 
 								<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
 									<a href="#" class="nav-link @(false ? "active" : "")">
 										<span class="nav-icon">3.3</span>
@@ -485,16 +486,24 @@
 											<i class="right fas fa-angle-left"></i>
 										</p>
 									</a>
-									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")"> *@
 
-										<li class="nav-item">
+                                <li class="nav-item">
+                                    <a href="/documents/doct-taxA33A" class="nav-link ">
+                                        <span class="nav-icon ">C3.</span>
+                                        <p>
+                                            Tax Dept Correspondence
+                                        </p>
+                                    </a>
+                                </li>
+                                @* <li class="nav-item">
 											<a href="/FormC/FormC" class="nav-link ">
 												<span class="nav-icon ">3.3.3</span>
 												<p>
 													Form C
 												</p>
 											</a>
-										</li>
+										</li> 
 
 										<li class="nav-item">
 											<a href="/documents/doct-taxA33A" class="nav-link ">
@@ -521,490 +530,732 @@
 													CP204 Tax Estimation Management
 												</p>
 											</a>
-										</li>
-									</ul>
-								</li>
+										</li> *@
+                            </ul>
+                        </li>
 
-							</ul>
-						</li>
+                        @* 	</ul>
+						</li> *@
 
-						<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                        @* 	<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
 							<a href="#" class="nav-link @(false ? "active" : "")">
 								<span class="nav-icon">4</span>
 								<p>
 									Schedule/Report
 									<i class="right fas fa-angle-left"></i>
 								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
-								<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
-									<a href="#" class="nav-link @(false ? "active" : "")">
-										<span class="nav-icon">4.1</span>
-										<p>
-											Secretary Dept
-											<i class="right fas fa-angle-left"></i>
-										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+							</a> 
 
-										<li class="nav-item">
-											<a href="/secretary-dept/landing" class="nav-link ">
-												<span class="nav-icon ">4.1.1</span>
-												<p>
-													Task Template
-												</p>
-											</a>
-										</li>
+							<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">*@
+                        <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(false ? "active" : "")">
+                                <span class="nav-icon">D.</span>
+                                <p>
+                                    Secretary Dept
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
 
-										<li class="nav-item">
+                                <li class="nav-item">
+                                    <a href="/secretary-dept/landing" class="nav-link ">
+                                        <span class="nav-icon ">D1.</span>
+                                        <p>
+                                            Task Template
+                                        </p>
+                                    </a>
+                                </li>
+
+                                @* <li class="nav-item">
 											<a href="/secretary-dept/strike-off-template" class="nav-link ">
 												<span class="nav-icon ">4.1.2</span>
 												<p>
 													Strike off Template
 												</p>
 											</a>
-										</li>
+										</li> *@
 
-										<li class="nav-item">
-											<a href="/secretary-dept/mastersec" class="nav-link ">
-												<span class="nav-icon ">4.1.3</span>
-												<p>
-													Sdh bhd master sec - Schedule
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    @* 4.1.3 *@
+                                    <a href="/secretary-dept/mastersec" class="nav-link ">
+                                        <span class="nav-icon ">D2.</span>
+                                        <p>
+                                            Sdh Bhd Master Schedule
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/LLPMastersecSchedule/LLPMastersecSchedule" class="nav-link ">
-												<span class="nav-icon ">4.1.4</span>
-												<p>
-													LLP Master Schedule List
-												</p>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a href="/secretary-dept/ARSubmisionReport" class="nav-link ">
-												<span class="nav-icon ">4.1.5</span>
-												<p>
-													Annual return submision report
-												</p>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a href="/secretary-dept/AASR" class="nav-link ">
-												<span class="nav-icon ">4.1.6</span>
-												<p>
-													Sdn bhd aduit acc submission report
-												</p>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a href="/secretary-dept/LLPSR" class="nav-link ">
-												<span class="nav-icon ">4.1.7</span>
-												<p>
-													LLP submission report
-												</p>
-											</a>
-										</li>
-										<li class="nav-item">
+                                <li class="nav-item">
+                                    @* 4.1.4 *@
+                                    <a href="/LLPMastersecSchedule/LLPMastersecSchedule" class="nav-link ">
+                                        <span class="nav-icon ">D3.</span>
+                                        <p>
+                                            LLP Master Schedule
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    @* 4.1.5 *@
+                                    <a href="/secretary-dept/ARSubmisionReport" class="nav-link ">
+                                        <span class="nav-icon ">D4.</span>
+                                        <p>
+                                            Annual Return Submision
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    @* 4.1.6 *@
+                                    <a href="/secretary-dept/AASR" class="nav-link ">
+                                        <span class="nav-icon ">D5.</span>
+                                        <p>
+                                            Sdn Bhd AFS / UFS Submission
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    @* 4.1.7 *@
+                                    <a href="/secretary-dept/LLPSR" class="nav-link ">
+                                        <span class="nav-icon ">D6.</span>
+                                        <p>
+                                            LLP Submission
+                                        </p>
+                                    </a>
+                                </li>
+                                @* <li class="nav-item">
 											<a href="/secretary-dept/StrikeOffSchedule" class="nav-link ">
 												<span class="nav-icon ">4.1.8</span>
 												<p>
 													Strike Off Schedule
 												</p>
 											</a>
-										</li>
+										</li> *@
 
-									</ul>
-								</li>
-								<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
-									<a href="#" class="nav-link @(false ? "active" : "")">
-										<span class="nav-icon">4.2</span>
-										<p>
-											Audit Dept
-											<i class="right fas fa-angle-left"></i>
-										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                            </ul>
+                        </li>
 
-										<li class="nav-item">
-											<a href="/AuditDept/AuditTemplate" class="nav-link ">
-												<span class="nav-icon ">4.2.1</span>
-												<p>
-													Audit Template
-												</p>
-											</a>
-										</li>
+                        <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                            @*4.2*@
+                            <a href="#" class="nav-link @(false ? "active" : "")">
+                                <span class="nav-icon">E.</span>
+                                <p>
+                                    Audit Dept
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">E1.</span>
+                                        <p>
+                                            Task Template
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AuditTemplate" class="nav-link ">
+                                                @* 4.2.1 *@
+                                                <span class="nav-icon ">E1.1</span>
+                                                <p>
+                                                    Audit Template
+                                                </p>
+                                            </a>
+                                        </li>
 
-										<li class="nav-item">
+                                        @* 	<li class="nav-item">
 											<a href="/AuditDept/AuditBacklog" class="nav-link ">
 												<span class="nav-icon ">4.2.2</span>
 												<p>
 													Audit Backlog
 												</p>
 											</a>
-										</li>
+										</li> *@
 
-										<li class="nav-item">
-											<a href="/AuditDept/AuditAexTemplate" class="nav-link ">
-												<span class="nav-icon ">4.2.3</span>
-												<p>
-													Audit AEX Template
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AuditAexTemplate" class="nav-link ">
+                                                <span class="nav-icon ">E1.2</span>@* 4.2.3 *@
+                                                <p>
+                                                    AEX Template
+                                                </p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
 
-										<li class="nav-item">
+                                @* <li class="nav-item">
 											<a href="/AuditDept/AuditAexBacklog" class="nav-link ">
 												<span class="nav-icon ">4.2.4</span>
 												<p>
 													Audit Aex Backlog
 												</p>
 											</a>
-										</li>
+										</li> *@
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    @*4.2.4*@
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">E2.</span>
+                                        <p>
+                                            Master Schedule
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AT21AuditMasterSchedule" class="nav-link ">
+                                                <span class="nav-icon ">E2.1</span>@* 4.2.5 *@
+                                                <p>
+                                                    Active Audit Work Schedule
+                                                </p>
+                                            </a>
+                                        </li>
 
-										<li class="nav-item">
-											<a href="/AuditDept/AT21AuditMasterSchedule" class="nav-link ">
-												<span class="nav-icon ">4.2.5</span>
-												<p>
-													AT2.1 Audit Master Schedule
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AEX41S" class="nav-link ">
+                                                <span class="nav-icon ">E.2.2</span>
+                                                <p>
+                                                    AEX Audit Work Schedule
+                                                </p>
+                                            </a>
+                                        </li>
 
-										<li class="nav-item">
+                                        @* <li class="nav-item">
 											<a href="/AuditDept/AT31AuditMasterLogBook" class="nav-link ">
 												<span class="nav-icon ">4.2.6</span>
 												<p>
 													AT3.1 Audit Master Log Book
 												</p>
 											</a>
-										</li>
-
-										<li class="nav-item">
+										</li> *@
+                                    </ul>
+                                </li>
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    @*4.2*@
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">E3.</span>
+                                        <p>
+                                            Audit Backlog
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        @* <li class="nav-item">
 											<a href="/AuditDept/AT32ACAWIP" class="nav-link ">
 												<span class="nav-icon ">4.2.7</span>
 												<p>
 													AT3.2 Active Companies Audit Work-In-Progress
 												</p>
 											</a>
-										</li>
+										</li> *@
 
-										<li class="nav-item">
-											<a href="/AuditDept/AT33AAAFSA" class="nav-link ">
-												<span class="nav-icon ">4.2.8</span>
-												<p>
-													AT3.3 Active & AEX Audited Financial Statement AFS
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AuditBacklog" class="nav-link ">
+                                                <span class="nav-icon ">E3.1</span>
+                                                <p>
+                                                    Active Audit Backlog
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* 
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AT33AAAFSA" class="nav-link ">
+                                                <span class="nav-icon ">4.2.8</span>
+                                                <p>
+                                                    AT3.3 Active & AEX Audited Financial Statement AFS
+                                                </p>
+                                            </a>
+                                        </li>
+ *@
+                                        <li class="nav-item">
+                                            <a href="/AuditDept/AuditAexBacklog" class="nav-link ">
+                                                <span class="nav-icon ">E3.2</span>
+                                                <p>
+                                                    AEX Audit Backlog
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AuditDept/AT34AADSP" class="nav-link ">
+                                                <span class="nav-icon ">4.2.9</span>
+                                                <p>
+                                                    AT3.4 Active Audit Directors Signing Pages
+                                                </p>
+                                            </a>
+                                        </li> *@
+                                    </ul>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/AuditDept/AT34AADSP" class="nav-link ">
-												<span class="nav-icon ">4.2.9</span>
-												<p>
-													AT3.4 Active Audit Directors Signing Pages
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/AuditDept/AT34AADSP" class="nav-link ">
+                                        <span class="nav-icon ">E4.</span>
+                                        <p>
+                                            Directors Report
+                                        </p>
+                                    </a>
+                                </li>
+                                @*  <li class="nav-item">
+                                    <a href="/AuditDept/AEX41S" class="nav-link ">
+                                        <span class="nav-icon ">4.2.10</span>
+                                        <p>
+                                            AEX 4.1 AEX Scheduling For Current Year
+                                        </p>
+                                    </a>
+                                </li> *@
 
-										<li class="nav-item">
-											<a href="/AuditDept/AEX41S" class="nav-link ">
-												<span class="nav-icon ">4.2.10</span>
-												<p>
-													AEX 4.1 AEX Scheduling For Current Year
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/AuditDept/AT33AAAFSA" class="nav-link ">
+                                        <span class="nav-icon ">E5.</span>
+                                        <p>
+                                            AFS / MFS
+                                        </p>
+                                    </a>
+                                </li>
+                                @*  <li class="nav-item">
+                                    <a href="/AuditDept/AEX51LB" class="nav-link ">
+                                        <span class="nav-icon ">4.2.11</span>
+                                        <p>
+                                            AEX 5.1 AEX Logbook
+                                        </p>
+                                    </a>
+                                </li> *@
 
-										<li class="nav-item">
-											<a href="/AuditDept/AEX51LB" class="nav-link ">
-												<span class="nav-icon ">4.2.11</span>
-												<p>
-													AEX 5.1 AEX Logbook
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link ">
+                                        <span class="nav-icon ">4.2.12</span>
+                                        <p>
+                                            AEX 5.2 AEX WIP
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/AuditDept/AT31AuditMasterLogBook" class="nav-link ">
+                                        <span class="nav-icon ">E6.</span>
+                                        <p>
+                                            Active Audit Logbook
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/AuditDept/AEX51LB" class="nav-link ">
+                                        <span class="nav-icon ">E7.</span>
+                                        <p>
+                                            AEX 5.2 AEX WIP
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-										<li class="nav-item">
-											<a href="/AuditDept/AEX52WIP" class="nav-link ">
-												<span class="nav-icon ">4.2.12</span>
-												<p>
-													AEX 5.2 AEX WIP
-												</p>
-											</a>
-										</li>
-									</ul>
-								</li>
+                        <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(false ? "active" : "")">
+                                <span class="nav-icon">F.</span>
+                                <p>
+                                    Account Dept
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">F1.</span>
+                                        <p>
+                                            Master Schedule
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/SdnBhdMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">F1.1</span>
+                                                <p>
+                                                    Sdn Bnd Work List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*<li class="nav-item">
+                                            <a href="/AccountDept/SdnBhdMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">4.3.1</span>
+                                                <p>
+                                                    Sdn Bnd Master Scheduling List
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-								<li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
-									<a href="#" class="nav-link @(false ? "active" : "")">
-										<span class="nav-icon">4.3</span>
-										<p>
-											Account Dept
-											<i class="right fas fa-angle-left"></i>
-										</p>
-									</a>
-									<ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/LLPMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">F1.2</span>
+                                                <p>
+                                                    LLP Work List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*   <li class="nav-item">
+                                            <a href="/AccountDept/LLPMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">4.3.2</span>
+                                                <p>
+                                                    LLP Master Scheduling List
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/SdnBhdMasterScheduleList" class="nav-link ">
-												<span class="nav-icon ">4.3.1</span>
-												<p>
-													Sdn Bnd Master Scheduling List
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/FormBnPMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">F1.3</span>
+                                                <p>
+                                                    Form B&P Work List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*  <li class="nav-item">
+                                            <a href="/AccountDept/FormBnPMasterScheduleList" class="nav-link ">
+                                                <span class="nav-icon ">4.3.3</span>
+                                                <p>
+                                                    Form B&P Master Scheduling List
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/LLPMasterScheduleList" class="nav-link ">
-												<span class="nav-icon ">4.3.2</span>
-												<p>
-													LLP Master Scheduling List
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/ClientAccAuditMasterSchedulingList" class="nav-link ">
+                                                <span class="nav-icon ">F1.4</span>
+                                                <p>
+                                                    Advocate Client Acc Work List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AccountDept/ClientAccAuditMasterSchedulingList" class="nav-link ">
+                                                <span class="nav-icon ">4.3.4</span>
+                                                <p>
+                                                    Client Acc Audit Master Scheduling List
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/FormBnPMasterScheduleList" class="nav-link ">
-												<span class="nav-icon ">4.3.3</span>
-												<p>
-													Form B&P Master Scheduling List
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/IndividuaFormBEMasterSchedulingList" class="nav-link ">
+                                                <span class="nav-icon ">F1.5</span>
+                                                <p>
+                                                    Individua Form BE Work List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* 
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/IndividuaFormBEMasterSchedulingList" class="nav-link ">
+                                                <span class="nav-icon ">4.3.5</span>
+                                                <p>
+                                                    Individua Form BE Master Scheduling List
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/ClientAccAuditMasterSchedulingList" class="nav-link ">
-												<span class="nav-icon ">4.3.4</span>
-												<p>
-													Client Acc Audit Master Scheduling List
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/FormEMasterSchedule" class="nav-link ">
+                                                <span class="nav-icon ">F1.6</span>
+                                                <p>
+                                                    Form E List
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AccountDept/FormEMasterSchedule" class="nav-link ">
+                                                <span class="nav-icon ">4.3.6</span>
+                                                <p>
+                                                    Form E Master Schedule
+                                                </p>
+                                            </a>
+                                        </li> *@
+                                    </ul>
+                                </li>
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">F2.</span>
+                                        <p>
+                                            Backlog Account
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/SdnBhdBacklog" class="nav-link ">
+                                                <span class="nav-icon ">F2.1</span>
+                                                <p>
+                                                    Sdn Bhd Backlog
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AccountDept/SdnBhdBacklog" class="nav-link ">
+                                                <span class="nav-icon ">4.3.7</span>
+                                                <p>
+                                                    ACC Sdn Bhd Backlog
+                                                </p>
+                                            </a>
+                                        </li>
+ *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/IndividuaFormBEMasterSchedulingList" class="nav-link ">
-												<span class="nav-icon ">4.3.5</span>
-												<p>
-													Individua Form BE Master Scheduling List
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/LLPBacklog" class="nav-link ">
+                                                <span class="nav-icon ">F2.2</span>
+                                                <p>
+                                                    LPP BackLog
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AccountDept/LLPBacklog" class="nav-link ">
+                                                <span class="nav-icon ">4.3.8</span>
+                                                <p>
+                                                    ACC LLP Back log
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/FormEMasterSchedule" class="nav-link ">
-												<span class="nav-icon ">4.3.6</span>
-												<p>
-													Form E Master Schedule
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/FormBnPBacklog" class="nav-link ">
+                                                <span class="nav-icon ">F2.3</span>
+                                                <p>
+                                                    Form B&P Backlog
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*  <li class="nav-item">
+                                            <a href="/AccountDept/FormBnPBacklog" class="nav-link ">
+                                                <span class="nav-icon ">4.3.9</span>
+                                                <p>
+                                                    ACC Form B & P Backlog
+                                                </p>
+                                            </a>
+                                        </li> *@
+                                    </ul>
+                                </li>
+                                <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(false ? "active" : "")">
+                                        <span class="nav-icon">F3.</span>
+                                        <p>
+                                            Work Progress Control
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/BP32" class="nav-link ">
+                                                <span class="nav-icon ">F3.1</span>
+                                                <p>
+                                                    Accounts WIP
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/AccountDept/BP32" class="nav-link ">
+                                                <span class="nav-icon ">4.3.10</span>
+                                                <p>
+                                                    BP 3.2 Acc master log
+                                                </p>
+                                            </a>
+                                        </li>
+ *@
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/BP33" class="nav-link ">
+                                                <span class="nav-icon ">F3.2</span>
+                                                <p>
+                                                    Form E WIP
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*  <li class="nav-item">
+                                            <a href="/AccountDept/BP33" class="nav-link ">
+                                                <span class="nav-icon ">4.3.11</span>
+                                                <p>
+                                                    BP 3.3 Form E Work Progress Schedule
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/SdnBhdBacklog" class="nav-link ">
-												<span class="nav-icon ">4.3.7</span>
-												<p>
-													ACC Sdn Bhd Backlog
-												</p>
-											</a>
-										</li>
+                                        <li class="nav-item">
+                                            <a href="/AccountDept/BP34" class="nav-link ">
+                                                <span class="nav-icon ">F3.3</span>
+                                                <p>
+                                                    Form BE WIP
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @*                                         <li class="nav-item">
+                                            <a href="/AccountDept/BP34" class="nav-link ">
+                                                <span class="nav-icon ">4.3.12</span>
+                                                <p>
+                                                    BP 3.4 Form BE Work Progress Schedule
+                                                </p>
+                                            </a>
+                                        </li> *@
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        @*	</ul>
+						 </li> *@
 
-										<li class="nav-item">
-											<a href="/AccountDept/LLPBacklog" class="nav-link ">
-												<span class="nav-icon ">4.3.8</span>
-												<p>
-													ACC LLP Back log
-												</p>
-											</a>
-										</li>
+                        @{
+                            var templateController = new List<string> { "TaxStrikeOffTemplate", "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
+                        }
+                        <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
+                                <span class="nav-icon">5</span>
+                                <p>
+                                    Templates
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(templateController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
-										<li class="nav-item">
-											<a href="/AccountDept/FormBnPBacklog" class="nav-link ">
-												<span class="nav-icon ">4.3.9</span>
-												<p>
-													ACC Form B & P Backlog
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/secretary-dept/strike-off-template" class="nav-link  @(currentAction.Is("StrikeOffTemplate") ? "active" : "") ">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                            Strike Off Template
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/templates/tax-strike-off" class="nav-link  @(currentAction.Is("TaxStrikeOffTemplate") ? "active" : "") ">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                            Tax Strike Off Template
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/templates/audit" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                            Audit Template
+                                        </p>
+                                    </a>
+                                </li>
 
-										<li class="nav-item">
-											<a href="/AccountDept/BP32" class="nav-link ">
-												<span class="nav-icon ">4.3.10</span>
-												<p>
-													BP 3.2 Acc master log
-												</p>
-											</a>
-										</li>
+                                <li class="nav-item">
+                                    <a href="/templates/aex" class="nav-link @(currentController == "AEXTemplate" ? "active" : "")">
+                                        <span class="nav-icon"></span>
+                                        <p>
+                                            AEX Template
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-										<li class="nav-item">
-											<a href="/AccountDept/BP33" class="nav-link ">
-												<span class="nav-icon ">4.3.11</span>
-												<p>
-													BP 3.3 Form E Work Progress Schedule
-												</p>
-											</a>
-										</li>
+                        <li class="nav-item @(currentController.Is("Secretary") ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController.Is("Secretary") ? "active" : "")">
+                                <span class="nav-icon">6</span>
+                                <p>
+                                    Secretary
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController.Is("Secretary") ? @"display:block" : "display:none")">
 
-										<li class="nav-item">
-											<a href="/AccountDept/BP34" class="nav-link ">
-												<span class="nav-icon ">4.3.12</span>
-												<p>
-													BP 3.4 Form BE Work Progress Schedule
-												</p>
-											</a>
-										</li>
-
-									</ul>
-								</li>
-							</ul>
-						</li>
-
-						@{
-							var templateController = new List<string> { "TaxStrikeOffTemplate", "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
-						}
-						<li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
-								<span class="nav-icon">5</span>
-								<p>
-									Templates
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(templateController.Contains(currentController.Name) ? @"display:block" : "display:none")">
-
-								<li class="nav-item">
-									<a href="/secretary-dept/strike-off-template" class="nav-link  @(currentAction.Is("StrikeOffTemplate") ? "active" : "") ">
-										<span class="nav-icon"></span>
-										<p>
-											Strike Off Template
-										</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/templates/tax-strike-off" class="nav-link  @(currentAction.Is("TaxStrikeOffTemplate") ? "active" : "") ">
-										<span class="nav-icon"></span>
-										<p>
-											Tax Strike Off Template
-										</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="/templates/audit" class="nav-link @(currentController == "AuditTemplate" ? "active" : "")">
-										<span class="nav-icon"></span>
-										<p>
-											Audit Template
-										</p>
-									</a>
-								</li>
-
-								<li class="nav-item">
-									<a href="/templates/aex" class="nav-link @(currentController == "AEXTemplate" ? "active" : "")">
-										<span class="nav-icon"></span>
-										<p>
-											AEX Template
-										</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-
-						<li class="nav-item @(currentController.Is("Secretary") ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController.Is("Secretary") ? "active" : "")">
-								<span class="nav-icon">6</span>
-								<p>
-									Secretary
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController.Is("Secretary") ? @"display:block" : "display:none")">
-
-								<li class="nav-item">
-									<a href="/secretary-dept/landing" class="nav-link @(currentAction.Is("Landing") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Landing
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/secretary-dept/landing" class="nav-link @(currentAction.Is("Landing") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Landing
+                                        </p>
+                                    </a>
+                                </li>
 
 
-							</ul>
-						</li>
-						@{
-							var backlogController = new List<string> { "AuditLogSchedule", "AEXBacklog" };
-						}
-						<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
-								<span class="nav-icon">7</span>
-								<p>
-									Backlogs
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
+                            </ul>
+                        </li>
+                        @{
+                            var backlogController = new List<string> { "AuditLogSchedule", "AEXBacklog" };
+                        }
+                        <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
+                                <span class="nav-icon">7</span>
+                                <p>
+                                    Backlogs
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
 
-							<ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/backlogs/audit-master" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Audit Master Schedule
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/backlogs/audit-master" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Audit Master Schedule
+                                        </p>
+                                    </a>
+                                </li>
 
-								<li class="nav-item">
-									<a href="/backlogs/aex" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											AEX Backlos
-										</p>
-									</a>
-								</li>
-							</ul>
-						</li>
+                                <li class="nav-item">
+                                    <a href="/backlogs/aex" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            AEX Backlos
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-						<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
-								<span class="nav-icon">8</span>
-								<p>
-									Others
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
+                        <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
+                                <span class="nav-icon">G.</span>
+                                <p>
+                                    Tax Dept
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
 
-							<ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
+                            <ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/FormC/TaxDeptWorkSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Tax Dept Work Schedule
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/FormC/FormC" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">G1.</span>
+                                        <p>
+                                            Form C control
+                                        </p>
+                                    </a>
+                                </li>
+                                @*  <li class="nav-item">
+                                    <a href="/FormC/TaxDeptWorkSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Tax Dept Work Schedule
+                                        </p>
+                                    </a>
+                                </li> *@
 
-								<li class="nav-item">
-									<a href="/FormC/TaxWorkLogbook" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Tax Work Logbook
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/FormC/TX5TEMPLATE" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon ">G2.</span>
+                                        <p>
+                                            CP 204 tax estimation
+                                        </p>
+                                    </a>
+                                </li>
+                                @* <li class="nav-item">
+                                    <a href="/FormC/TaxWorkLogbook" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Tax Work Logbook
+                                        </p>
+                                    </a>
+                                </li> *@
 
-								<li class="nav-item">
-									<a href="/FormC/StrikeOffTaxWork" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
-										<span class="nav-icon "></span>
-										<p>
-											Strike Off Tax Work
-										</p>
-									</a>
+                                <li class="nav-item">
+                                    <a href="/FormC/StrikeOffTaxWork" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon "></span>
+                                        <p>
+                                            Strike Off Tax Work
+                                        </p>
+                                    </a>
 
-								</li>
+                                </li>
 
-								@* <li class="nav-item">
+                                @* <li class="nav-item">
 									<a href="/FormC/TX5TEMPLATE" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
 										<span class="nav-icon "></span>
 										<p>
@@ -1013,329 +1264,398 @@
 									</a>
 								</li> *@
 
-							</ul>
-						</li>
-						<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
-								<span class="nav-icon">9</span>
-								<p>
-									Reminder
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
+                            </ul>
+                        </li>
+                        <li class="nav-item @(false ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(false ? "active" : "")">
+                                <span class="nav-icon">H.</span>
+                                <p>
+                                    Strike-Off
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(false ? @"display:block" : "display:none")">
 
-							<ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
+                                <li class="nav-item">
+                                    <a href="/secretary-dept/StrikeOffSchedule" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon ">H1.</span>
+                                        <p>
+                                            Strike-Off sec Work
+                                        </p>
+                                    </a>
 
-								<li class="nav-item">
-									<a href="/Reminder/SdnBhd18monthReminder" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B1.1</span>
-										<p>
-											Sdn Bhd first 18 months Reminder
-										</p>
-									</a>
-								</li>
+                                </li>
 
-								<li class="nav-item">
-									<a href="/Reminder/AuditReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B2</span>
-										<p>
-											Audit Reminder Schedule
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/FormC/StrikeOffTaxWork" class="nav-link @(currentAction.Is("AEXBacklogList") ? "active" : "")">
+                                        <span class="nav-icon ">H2.</span>
+                                        <p>
+                                            Strike-Off tax Work
+                                        </p>
+                                    </a>
 
-								<li class="nav-item">
-									<a href="/Reminder/SdnBhdAccDocReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B3.1</span>
-										<p>
-											Sdn Bhd Acc Doc Reminder Schedule
-										</p>
-									</a>
-								</li>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
+                                <span class="nav-icon">I.</span>
+                                <p>
+                                    Reminder
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
 
-								<li class="nav-item">
-									<a href="/Reminder/LLPAccDocReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B3.2</span>
-										<p>
-											LLP Acc Doc Reminder Schedule
-										</p>
-									</a>
-								</li>
+                            <ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
-								<li class="nav-item">
-									<a href="/Reminder/FormBnPReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B3.4</span>
-										<p>
-											Form B&P Reminder Schedule
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/Reminder/SdnBhd18monthReminder" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">I1.</span>
+                                        <p>
+                                            Sec Dept - First 18 Months Reminder
+                                        </p>
+                                    </a>
+                                </li>
+                                @* <li class="nav-item">
+                                    <a href="/Reminder/SdnBhd18monthReminder" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">B1.1</span>
+                                        <p>
+                                            Sdn Bhd first 18 months Reminder
+                                        </p>
+                                    </a>
+                                </li> *@
 
-								<li class="nav-item">
-									<a href="/Reminder/FormEReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B3.5</span>
-										<p>
-											Form E Reminder Schedule
-										</p>
-									</a>
-								</li>
+                                <li class="nav-item">
+                                    <a href="/Reminder/AuditReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">I2.</span>
+                                        <p>
+                                            Audit Dept Reminder
+                                        </p>
+                                    </a>
+                                </li>
+                                @*  <li class="nav-item">
+                                    <a href="/Reminder/AuditReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">B2</span>
+                                        <p>
+                                            Audit Reminder Schedule
+                                        </p>
+                                    </a>
+                                </li>
+ *@
+                                <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                                    <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
+                                        <span class="nav-icon">I3.</span>
+                                        <p>
+                                            Account Dept Reminder
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
 
-								<li class="nav-item">
-									<a href="/Reminder/FormBEindividualTaxReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
-										<span class="nav-icon ">B3.6</span>
-										<p>
-											Form BE Individual Tax Reminder Schedule
-										</p>
-									</a>
-								</li>
-							</ul>
+                                    <ul class="nav nav-treeview" style="@(backlogController.Contains(currentController.Name) ? @"display:block" : "display:none")">
 
-						</li>
+                                        <li class="nav-item">
+                                            <a href="/Reminder/SdnBhdAccDocReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                                <span class="nav-icon ">I3.1</span>
+                                                <p>
+                                                    Sdn Bhd Acc Reminder
+                                                </p>
+                                            </a>
+                                        </li>
+                                        @* <li class="nav-item">
+                                            <a href="/Reminder/SdnBhdAccDocReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                                <span class="nav-icon ">B3.1</span>
+                                                <p>
+                                                    Sdn Bhd Acc Doc Reminder Schedule
+                                                </p>
+                                            </a>
+                                        </li> *@
 
-						<li class="nav-header">Users & Systems</li>
+                                        <li class="nav-item">
+                                            <a href="/Reminder/LLPAccDocReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                                <span class="nav-icon ">I3.2</span>
+                                                <p>
+                                                    LLP Acc Reminder
+                                                </p>
+                                            </a>
+                                        </li>
 
-						<li class="nav-item @(currentController == ControllerNames.User ? "menu-is-opening menu-open" : "")">
-							<a href="#" class="nav-link @(currentController == ControllerNames.User ? "active" : "")">
-								<i class="fas fa-users nav-icon"></i>
-								<p>
-									Users
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
+                                        <li class="nav-item">
+                                            <a href="/Reminder/FormBnPReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                                <span class="nav-icon ">I3.3</span>
+                                                <p>
+                                                    Form B&P Reminder
+                                                </p>
+                                            </a>
+                                        </li>
 
-								<li class="nav-item">
-									<a href="/users" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("List") ? "active" : "")">
-										<i class="nav-icon fas fa-list"></i>
-										<p>
-											List
-										</p>
-									</a>
-								</li>
-								@if (UserContext.IsSuperAdmin)
-								{
-									<li class="nav-item">
-										<a href="/users/create" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("Create") ? "active" : "")">
-											<i class="nav-icon fas fa-plus"></i>
-											<p>
-												New User
-											</p>
-										</a>
-									</li>
-								}
-							</ul>
-						</li>
+                                        
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/Reminder/FormEReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">I3.4</span>
+                                        <p>
+                                            Form E Reminder
+                                        </p>
+                                    </a>
+                                </li>
 
-						@if (false)
-						{
-							<li class="nav-item">
-								<a href="/notifications/logs" class="nav-link @(currentController == ControllerNames.Notification ? "active" : "")">
-									<i class="nav-icon fas fa-bell"></i>
-									<p>
-										System Notification
-									</p>
-								</a>
-							</li>
-						}
-						<li class="nav-item">
-							<a href="/sys-audit-logs" class="nav-link @(currentController == ControllerNames.SystemAuditLog ? "active" : "")">
-								<i class="nav-icon fas fa-history"></i>
-								<p>
-									System Audit Log
-								</p>
-							</a>
-						</li>
+                                <li class="nav-item">
+                                    <a href="/Reminder/FormBEindividualTaxReminderSchedule" class="nav-link @(currentAction.Is("AuditLogMasterSchedule") ? "active" : "")">
+                                        <span class="nav-icon ">I3.5</span>
+                                        <p>
+                                            Form BE Reminder
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
 
-						@if (UserContext.IsSuperAdmin && false)
-						{
-							<li class="nav-item @(currentController == ControllerNames.SchedulerJob ? "menu-is-opening menu-open" : "")">
-								<a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
-									<i class="nav-icon fas fa-clock"></i>                                    <p>
-										Scheduled Task
-										<i class="right fas fa-angle-left"></i>
-									</p>
-								</a>
-								<ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
+                        </li>
 
-									<li class="nav-item">
-										<a href="/scheduler-jobs" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("List") ? "active" : "")">
-											<i class="nav-icon fas fa-list"></i>
-											<p>
-												List
-											</p>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="/scheduler-jobs/create" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("Create") ? "active" : "")">
-											<i class="nav-icon fas fa-plus"></i>
-											<p>
-												Add new task
-											</p>
-										</a>
-									</li>
-								</ul>
-							</li>
+                        <li class="nav-header">Users & Systems</li>
 
-						}
+                        <li class="nav-item @(currentController == ControllerNames.User ? "menu-is-opening menu-open" : "")">
+                            <a href="#" class="nav-link @(currentController == ControllerNames.User ? "active" : "")">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>
+                                    Users
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview" style="@(currentController == ControllerNames.User ? @"display:block" : "display:none")">
 
+                                <li class="nav-item">
+                                    <a href="/users" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("List") ? "active" : "")">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>
+                                            List
+                                        </p>
+                                    </a>
+                                </li>
+                                @if (UserContext.IsSuperAdmin)
+                                {
+                                    <li class="nav-item">
+                                        <a href="/users/create" class="nav-link @(currentController == ControllerNames.User && currentAction.Is("Create") ? "active" : "")">
+                                            <i class="nav-icon fas fa-plus"></i>
+                                            <p>
+                                                New User
+                                            </p>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
 
+                        @if (false)
+                        {
+                            <li class="nav-item">
+                                <a href="/notifications/logs" class="nav-link @(currentController == ControllerNames.Notification ? "active" : "")">
+                                    <i class="nav-icon fas fa-bell"></i>
+                                    <p>
+                                        System Notification
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a href="/sys-audit-logs" class="nav-link @(currentController == ControllerNames.SystemAuditLog ? "active" : "")">
+                                <i class="nav-icon fas fa-history"></i>
+                                <p>
+                                    System Audit Log
+                                </p>
+                            </a>
+                        </li>
 
+                        @if (UserContext.IsSuperAdmin && false)
+                        {
+                            <li class="nav-item @(currentController == ControllerNames.SchedulerJob ? "menu-is-opening menu-open" : "")">
+                                <a href="#" class="nav-link @(currentController == ControllerNames.SchedulerJob ? "active" : "")">
+                                    <i class="nav-icon fas fa-clock"></i>                                    <p>
+                                        Scheduled Task
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="@(currentController == ControllerNames.SchedulerJob ? @"display:block" : "display:none")">
 
-						<li class="nav-item">
-							<a href="/auth/logout" class="nav-link">
-								<i class="nav-icon fas fa-sign-out-alt"></i>
-								<p class="text">Logout</p>
-							</a>
-						</li>
+                                    <li class="nav-item">
+                                        <a href="/scheduler-jobs" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("List") ? "active" : "")">
+                                            <i class="nav-icon fas fa-list"></i>
+                                            <p>
+                                                List
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/scheduler-jobs/create" class="nav-link @(currentController == ControllerNames.SchedulerJob && currentAction.Is("Create") ? "active" : "")">
+                                            <i class="nav-icon fas fa-plus"></i>
+                                            <p>
+                                                Add new task
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-						</li>
-				</nav>
-				<!-- /.sidebar-menu -->
-			</div>
-			<!-- /.sidebar -->
-		</aside>
-
-		<!-- Content Wrapper. Contains page content -->
-		<div class="content-wrapper">
-
-			<!-- Main content -->
-			<section class="content">
-				<div class="container-fluid">
-
-					@RenderBody()
-
-				</div><!-- /.container-fluid -->
-			</section>
-			<!-- /.content -->
-		</div>
-		<!-- /.content-wrapper -->
-
-
-		<footer class="main-footer">
-			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-			All rights reserved.
-			<div class="float-right d-none d-sm-inline-block">
-				<b>Version</b> 3.2.0
-			</div>
-		</footer>
-
-		<!-- Control Sidebar -->
-		<aside class="control-sidebar control-sidebar-dark">
-			<!-- Control sidebar content goes here -->
-		</aside>
-		<!-- /.control-sidebar -->
-	</div>
-	<!-- ./wrapper -->
+                        }
 
 
-	<div id="globalLoadingOverlay" class="overlay d-none">
-		<i class="fas fa-2x fa-sync-alt fa-spin"></i>
-	</div>
 
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<!-- AdminLTE App -->
-	<script src="~/admin-lte/dist/js/adminlte.min.js"></script>
-	<!-- daterangepicker -->
-	<script src="~/admin-lte/plugins/moment/moment.min.js"></script>
-	<script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
-	<!-- jQuery UI 1.11.4 -->
-	<script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
-	<!-- Select2 -->
-	<script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
-	<!-- Flatpickr -->
-	<script src="~/lib/flatpickr/flatpickr.min.js"></script>
-	<script src="~/lib/flatpickr/plugins/weekSelect/weekselect.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
 
-	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-	<script>
-		$.widget.bridge('uibutton', $.ui.button)
-	</script>
-	<!-- overlayScrollbars -->
-	<script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-	<!-- AdminLTE for demo purposes -->
-	<script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
+                        <li class="nav-item">
+                            <a href="/auth/logout" class="nav-link">
+                                <i class="nav-icon fas fa-sign-out-alt"></i>
+                                <p class="text">Logout</p>
+                            </a>
+                        </li>
 
-	<script src="~/js/commons/sweet-alert-service.js" asp-append-version="true"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-	@await RenderSectionAsync("Scripts", required: false)
-	<script>
-		$(document).ready(function() {
-			// 基于当前 URL 自动展开菜单
-			var currentUrl = window.location.pathname.toLowerCase();
+                        </li>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
 
-			$('.nav-sidebar .nav-link').each(function() {
-				var linkUrl = $(this).attr('href');
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
 
-				if (!linkUrl || linkUrl === '#') return;
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
 
-				linkUrl = linkUrl.toLowerCase();
+                    @RenderBody()
 
-				if (currentUrl === linkUrl || currentUrl.indexOf(linkUrl) === 0) {
-					$(this).addClass('active');
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
 
-					// 展开所有父级菜单
-					$(this).parents('.nav-item').each(function() {
-						if ($(this).hasClass('has-treeview')) {
-							$(this).addClass('menu-open');
-							$(this).children('.nav-treeview').show();
-						}
-					});
 
-					return false;
-				}
-			});
-		});
-	</script>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 3.2.0
+            </div>
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+
+    <div id="globalLoadingOverlay" class="overlay d-none">
+        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/admin-lte/plugins/moment/moment.min.js"></script>
+    <script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/admin-lte/plugins/select2/js/select2.full.min.js"></script>
+    <!-- Flatpickr -->
+    <script src="~/lib/flatpickr/flatpickr.min.js"></script>
+    <script src="~/lib/flatpickr/plugins/weekSelect/weekselect.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- overlayScrollbars -->
+    <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/admin-lte/dist/js/demo.js" asp-append-version="true"></script>
+
+    <script src="~/js/commons/sweet-alert-service.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(document).ready(function() {
+            // 基于当前 URL 自动展开菜单
+            var currentUrl = window.location.pathname.toLowerCase();
+
+            $('.nav-sidebar .nav-link').each(function() {
+                var linkUrl = $(this).attr('href');
+
+                if (!linkUrl || linkUrl === '#') return;
+
+                linkUrl = linkUrl.toLowerCase();
+
+                if (currentUrl === linkUrl || currentUrl.indexOf(linkUrl) === 0) {
+                    $(this).addClass('active');
+
+                    // 展开所有父级菜单
+                    $(this).parents('.nav-item').each(function() {
+                        if ($(this).hasClass('has-treeview')) {
+                            $(this).addClass('menu-open');
+                            $(this).children('.nav-treeview').show();
+                        }
+                    });
+
+                    return false;
+                }
+            });
+        });
+    </script>
 
 </body>
 
 <script>
-	$(document).ready(function() {
-		// 1. 设置 body 类以保持侧边栏展开
-		$('body').addClass('sidebar-expand').removeClass('sidebar-collapse');
+    $(document).ready(function() {
+        // 1. 设置 body 类以保持侧边栏展开
+        $('body').addClass('sidebar-expand').removeClass('sidebar-collapse');
 
-		// 2. 展开所有菜单项
-		$('.nav-sidebar .nav-item').each(function() {
-			if ($(this).hasClass('has-treeview')) {
-				$(this).addClass('menu-open');
-				$(this).find('.nav-treeview').first().css('display', 'block');
-			}
-		});
+        // 2. 展开所有菜单项
+        $('.nav-sidebar .nav-item').each(function() {
+            if ($(this).hasClass('has-treeview')) {
+                $(this).addClass('menu-open');
+                $(this).find('.nav-treeview').first().css('display', 'block');
+            }
+        });
 
-		// 3. 基于当前 URL 高亮活动菜单
-		var currentUrl = window.location.pathname.toLowerCase();
+        // 3. 基于当前 URL 高亮活动菜单
+        var currentUrl = window.location.pathname.toLowerCase();
 
-		$('.nav-sidebar .nav-link').each(function() {
-			var linkUrl = $(this).attr('href');
+        $('.nav-sidebar .nav-link').each(function() {
+            var linkUrl = $(this).attr('href');
 
-			if (!linkUrl || linkUrl === '#') return;
+            if (!linkUrl || linkUrl === '#') return;
 
-			linkUrl = linkUrl.toLowerCase();
+            linkUrl = linkUrl.toLowerCase();
 
-			if (currentUrl === linkUrl || currentUrl.indexOf(linkUrl) === 0) {
-				$(this).addClass('active');
+            if (currentUrl === linkUrl || currentUrl.indexOf(linkUrl) === 0) {
+                $(this).addClass('active');
 
-				// 确保所有父级菜单都展开
-				$(this).parents('.nav-item').each(function() {
-					$(this).addClass('menu-open');
-					$(this).find('.nav-treeview').first().css('display', 'block');
-				});
+                // 确保所有父级菜单都展开
+                $(this).parents('.nav-item').each(function() {
+                    $(this).addClass('menu-open');
+                    $(this).find('.nav-treeview').first().css('display', 'block');
+                });
 
-				return false;
-			}
-		});
+                return false;
+            }
+        });
 
-		// 4. 禁用树形视图的折叠功能
-		if (typeof $.fn.tree !== 'undefined') {
-			$('[data-widget="treeview"]').tree({
-				animationSpeed: 0,
-				accordion: false
-			});
-		}
-	});
+        // 4. 禁用树形视图的折叠功能
+        if (typeof $.fn.tree !== 'undefined') {
+            $('[data-widget="treeview"]').tree({
+                animationSpeed: 0,
+                accordion: false
+            });
+        }
+    });
 </script>
 
 

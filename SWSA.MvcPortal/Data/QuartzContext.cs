@@ -148,7 +148,7 @@ public partial class QuartzContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Quartz;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=SY\\SQLEXPRESS;Database=Quartz;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1657,12 +1657,7 @@ public partial class QuartzContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            // --- FIX APPLIED HERE ---
-            // Changed HasFilter("[StaffId] IS NOT NULL") to "[Id] IS NOT NULL"
-            // because SQL Server does not allow filtered indexes directly on computed columns.
-            entity.HasIndex(e => e.StaffId, "IX_Users_StaffId")
-                .IsUnique()
-                .HasFilter("[Id] IS NOT NULL");
+            entity.HasIndex(e => e.StaffId, "IX_Users_StaffId").IsUnique();
 
             entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.Username).HasMaxLength(256);

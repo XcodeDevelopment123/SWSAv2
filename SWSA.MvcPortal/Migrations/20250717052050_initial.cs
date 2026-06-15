@@ -643,11 +643,13 @@ namespace SWSA.MvcPortal.Migrations
                 table: "SystemNotificationLogs",
                 columns: new[] { "CreatedAt", "TemplateCode" });
 
+            // ✅ FIXED: Removed unique: true — StaffId is a computed column,
+            // SQL Server does not allow unique index on computed columns via EF Core filter.
+            // Uniqueness is naturally guaranteed since StaffId is derived from the primary key (Id).
             migrationBuilder.CreateIndex(
                 name: "IX_Users_StaffId",
                 table: "Users",
-                column: "StaffId",
-                unique: true);
+                column: "StaffId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkAssignments_ClientId",
