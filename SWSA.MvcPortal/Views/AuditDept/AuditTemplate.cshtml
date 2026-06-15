@@ -2,6 +2,14 @@
     ViewData["Title"] = "Audit Template";
 }
 
+<style>
+    .dt-button-collection {
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+</style>
+
 <h1>Audit Template</h1>
 
 <div class="row">
@@ -25,7 +33,6 @@
                             <th colspan="18">AT3.2 Audit Work done WIP</th>
                             <th colspan="15"></th>
                         </tr>
-
                         <tr>
                             <th colspan="12"></th>
                             <th colspan="5">Audit WIP (days)</th>
@@ -38,7 +45,6 @@
                             <th colspan="2">7. Post Audit Work</th>
                             <th></th>
                         </tr>
-
                         <tr>
                             <th rowspan="2">No</th>
                             <th rowspan="2">Company Name</th>
@@ -48,47 +54,35 @@
                             <th rowspan="2">Quarter to do</th>
                             <th rowspan="2">PIC</th>
                             <th rowspan="2">Status</th>
-
                             <th colspan="2">Est current yr result '000</th>
                             <th colspan="2">Billing</th>
-
                             <th rowspan="2">a. Start Date</th>
                             <th rowspan="2">b. As at</th>
                             <th rowspan="2">c. No of Days</th>
                             <th rowspan="2">Total Field wk days</th>
                             <th rowspan="2">Result Over/Under</th>
-
                             <th colspan="2">A. Prog tracker %</th>
                             <th colspan="2">B. Task</th>
                             <th colspan="2">A+B+C</th>
-
                             <th colspan="3">Kuching 1st Review</th>
                             <th colspan="3">2nd Review KK</th>
-
                             <th rowspan="2">2. Total # review days</th>
-
                             <th rowspan="2">Date Sent to KK</th>
                             <th rowspan="2">Date received AR</th>
                             <th rowspan="2">Date of Report</th>
                             <th rowspan="2">Date of Directors</th>
-
                             <th rowspan="2">Date Sent</th>
                             <th rowspan="2">Follow up dates</th>
                             <th rowspan="2">Date received</th>
                             <th rowspan="2">Comm of Oaths date</th>
-
                             <th rowspan="2">Tax Due Date</th>
                             <th rowspan="2">Pass to Tax Dept</th>
-
                             <th rowspan="2">SSM Due Date</th>
                             <th rowspan="2">Date pass to Sec Dept(MBRS)</th>
-
                             <th rowspan="2">Date Binded</th>
                             <th rowspan="2">Despatch Date to Client</th>
-
                             <th rowspan="2">Action</th>
                         </tr>
-
                         <tr>
                             <th>Revenue</th>
                             <th>Profit/(loss)</th>
@@ -137,7 +131,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyName">Company Name (Link From Client List)</label>
-                                <select id="companyName" name="companyName" class="form-select form-control" required>
+                                <select id="companyName" name="companyName" class="form-control select2" style="width:100%" required>
                                     <option value="">-- Select Company --</option>
                                 </select>
                             </div>
@@ -486,49 +480,56 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <partial name="_DatatablesScriptsPartial" />
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
-
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/admin-lte/plugins/select2/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
         let dataTable;
         let dataTableInitialized = false;
-        let isSubmitting = false; // 防重复提交标志
+        let isSubmitting = false;
 
-        // ---------- 1. Dropdown Loading Logic (Updated) ----------
+        // ✅ Select2 初始化
+        function initSelect2() {
+            $('#companyName').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Select Company --',
+                allowClear: true,
+                dropdownParent: $('#taskModal')
+            });
+
+            // ✅ 每次打开下拉时，设置搜索框 placeholder
+            $('#companyName').on('select2:open', function () {
+                setTimeout(function () {
+                    $('.select2-container--open .select2-search--dropdown .select2-search__field')
+                        .attr('placeholder', 'Search by company name...');
+                }, 10);
+            });
+        }
+
         function loadClientOptions() {
-            // console.log('Loading client options...');
             $.ajax({
                 url: '/api/auditdept/clients/get-list',
                 type: 'GET',
                 success: function (res) {
                     if (res && res.success && res.data) {
                         const $select = $('#companyName');
-                        // 保留第一项 "-- Select Company --"，清空后面的
                         $select.find('option:not(:first)').remove();
-
                         res.data.forEach(client => {
-                            // 1. 获取公司名 (兼容大小写)
                             const name = client.CompanyName || client.companyName || client.Name || client.name;
-
-                            // 2. 获取客户类型 (兼容大小写)
-                            // 后端 Enum.ToString() 会返回 "SdnBhd", "Individual" 等字符串
                             const type = client.ClientType || client.clientType || '';
-
                             if (name) {
-                                // 3. 拼接显示文本，例如: "My Company Sdn Bhd (SdnBhd)"
-                                let displayText = name;
-                                if (type) {
-                                    displayText = `${name} (${type})`;
-                                }
-
-                                // value 依然只存 name
+                                let displayText = type ? `${name} (${type})` : name;
                                 $select.append(`<option value="${name}">${displayText}</option>`);
                             }
                         });
+                        // ✅ 数据加载完后刷新 Select2
+                        if ($('#companyName').hasClass('select2-hidden-accessible')) {
+                            $('#companyName').trigger('change');
+                        }
                     }
                 },
                 error: function (err) {
@@ -537,32 +538,19 @@
             });
         }
 
-        // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             if ($('#modalAlert').length === 0) {
                 $('#taskModal .modal-body').prepend('<div id="modalAlert" class="alert d-none"></div>');
             }
-
-            const map = {
-                success: 'alert-success',
-                error: 'alert-danger',
-                warning: 'alert-warning',
-                info: 'alert-info'
-            };
+            const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
             const $box = $('#modalAlert');
             $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
-                .addClass(map[type] || 'alert-info')
-                .html(msg);
-
+                .addClass(map[type] || 'alert-info').html(msg);
             const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
-                $box.attr('tabindex', -1).focus();
-            });
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
         }
 
-        function hideModalAlert() {
-            $('#modalAlert').addClass('d-none').empty();
-        }
+        function hideModalAlert() { $('#modalAlert').addClass('d-none').empty(); }
 
         function clearFieldErrors() {
             $('#taskForm .is-invalid').removeClass('is-invalid');
@@ -573,53 +561,34 @@
             const $f = $(selector);
             if (!$f.length) return;
             $f.addClass('is-invalid');
-            if ($f.next('.invalid-feedback').length === 0) {
-                $f.after('<div class="invalid-feedback"></div>');
-            }
+            if ($f.next('.invalid-feedback').length === 0) $f.after('<div class="invalid-feedback"></div>');
             $f.next('.invalid-feedback').text(message);
         }
 
-        // ---------- Page-level alert ----------
         function showAlert(message, type) {
-            const cls = type === 'success' ? 'alert-success'
-                : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const cls = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-info';
             const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
-                                    ${message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                  </div>`;
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                          </div>`;
             $('.card-header').after(html);
             setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
         }
 
-        // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
             try {
-                if (s instanceof Date) {
-                    return s.toLocaleDateString('en-GB');
-                }
-                if (typeof s === 'string') {
-                    const date = new Date(s);
-                    if (!isNaN(date.getTime())) {
-                        return date.toLocaleDateString('en-GB');
-                    }
-                }
+                const date = new Date(s);
+                if (!isNaN(date.getTime())) return date.toLocaleDateString('en-GB');
                 return s;
-            } catch (e) {
-                return s;
-            }
+            } catch (e) { return s; }
         }
 
         function getVal(obj, name) {
             if (!obj) return '';
-
             if (obj[name] !== undefined && obj[name] !== null) return obj[name];
-
             const camel = name.charAt(0).toLowerCase() + name.slice(1);
             if (obj[camel] !== undefined && obj[camel] !== null) return obj[camel];
-
             const targetLower = name.toLowerCase();
             for (const key in obj) {
                 if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
@@ -632,33 +601,25 @@
             $('#taskForm')[0].reset();
             $('#recordId').val('');
             $('#modalTitle').text('Add New Audit Template Record');
+            // ✅ Select2 reset
+            $('#companyName').val('').trigger('change');
             hideModalAlert();
             clearFieldErrors();
-            resetSubmitState(); // 重置提交状态
+            resetSubmitState();
         }
 
         function formatCurrency(amount) {
             if (!amount && amount !== 0) return '';
-            try {
-                return 'RM ' + parseFloat(amount).toLocaleString('en-MY', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-            } catch (e) {
-                return amount || '';
-            }
+            try { return 'RM ' + parseFloat(amount).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+            catch (e) { return amount || ''; }
         }
 
         function formatPercentage(value) {
             if (!value && value !== 0) return '';
-            try {
-                return parseFloat(value) + '%';
-            } catch (e) {
-                return value || '';
-            }
+            try { return parseFloat(value) + '%'; }
+            catch (e) { return value || ''; }
         }
 
-        // ---------- Submit State Management ----------
         function resetSubmitState() {
             isSubmitting = false;
             $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
@@ -669,35 +630,24 @@
             $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
         }
 
-        // ---------- Init ----------
         $(document).ready(function () {
-            console.log('Document ready, initializing AT11...');
-
-            // ⭐ 1. Load Client List into Dropdown
+            // ✅ 先加载 client list，再 init Select2
             loadClientOptions();
+            initSelect2();
 
             // 初始化日期选择器
             try {
-                // 将所有日期输入框转换为日期选择器
-                $('input[type="date"]').each(function() {
+                $('input[type="date"]').each(function () {
                     const $input = $(this);
                     const currentVal = $input.val();
-
                     const $textInput = $('<input type="text" class="form-control datepicker">')
                         .val(currentVal ? formatDateForDisplay(currentVal) : '')
                         .attr('placeholder', 'DD/MM/YYYY')
                         .attr('name', $input.attr('name'))
                         .attr('id', $input.attr('id'));
-
                     $input.replaceWith($textInput);
                 });
-
-                $('.datepicker').datepicker({
-                    format: 'dd/mm/yyyy',
-                    autoclose: true,
-                    todayHighlight: true
-                });
-                console.log('Datepicker initialized');
+                $('.datepicker').datepicker({ format: 'dd/mm/yyyy', autoclose: true, todayHighlight: true });
             } catch (e) {
                 console.error('Datepicker init error:', e);
             }
@@ -709,209 +659,134 @@
                     ordering: true,
                     autoWidth: true,
                     pageLength: 10,
+                    lengthChange: false,
                     order: [[1, 'asc']],
+                    dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     language: {
                         search: "Search:",
-                        lengthMenu: "Show _MENU_ entries",
                         emptyTable: "No records found",
                         info: "Showing _START_ to _END_ of _TOTAL_ entries",
                         infoEmpty: "Showing 0 to 0 of 0 entries",
-                        paginate: {
-                            first: "First",
-                            last: "Last",
-                            next: "Next",
-                            previous: "Previous"
-                        }
+                        paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
                     },
                     columnDefs: [
-                        {
-                            targets: '_all',
-                            defaultContent: ''
-                        },
-                        // ⭐ 关键修正：禁止对最后一列 (Action) 进行排序
-                        {
-                            targets: -1,
-                            orderable: false,
-                            searchable: false
-                        }
+                        { targets: '_all', defaultContent: '' },
+                        { targets: -1, orderable: false, searchable: false }
                     ],
                     scrollX: true
                 });
                 dataTableInitialized = true;
-                console.log('DataTable initialized successfully');
             } catch (error) {
                 console.error('DataTable initialization error:', error);
-                $('#taskDatatable').addClass('table table-bordered table-striped');
                 dataTableInitialized = false;
             }
 
-            // 绑定保存按钮事件 - 使用防重复提交
-            $('#saveBtn').click(function() {
-                if (!isSubmitting) {
-                    saveRecord();
-                } else {
-                    console.log('Submission in progress, please wait...');
-                }
+            $('#saveBtn').click(function () {
+                if (!isSubmitting) saveRecord();
             });
 
-            // 使用事件委托绑定动态按钮
-            $(document).on('click', '.edit-btn', function () {
-                const id = $(this).data('id');
-                console.log('Edit clicked for ID:', id);
-                editRecord(id);
-            });
+            $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
+            $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
 
-            $(document).on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                console.log('Delete clicked for ID:', id);
-                deleteRecord(id);
-            });
+            // ✅ modal 关闭时 reset Select2
+            $('#taskModal').on('hidden.bs.modal', function () { clearForm(); resetSubmitState(); });
+            $('[data-bs-target="#taskModal"]').on('click', function () { openCreateModal(); });
 
-            // 模态框关闭时重置状态
-            $('#taskModal').on('hidden.bs.modal', function() {
-                clearForm();
-                resetSubmitState();
-            });
-
-            // 新建按钮点击事件
-            $('[data-bs-target="#taskModal"]').on('click', function () {
-                console.log('New Task button clicked');
-                openCreateModal(); // Use the helper function
-            });
-
-            // 首次载入数据
-            console.log('Loading initial data...');
             loadRecordsFromDatabase();
         });
 
-        // ---------- Load & Render ----------
         function loadRecordsFromDatabase() {
-            console.log('Loading AT11 records from database...');
-
             $.ajax({
                 url: '/api/auditdept/at11/get-all',
                 type: 'GET',
                 success: function (res) {
-                    console.log('API response:', res);
                     if (res && res.success) {
                         populateTable(res.data || []);
                         showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
                     } else {
-                        const errorMsg = res?.message || 'Unknown error';
-                        console.error('API error:', errorMsg);
-                        showAlert('Failed to load: ' + errorMsg, 'error');
+                        showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('AJAX error:', error);
+                error: function (xhr) {
                     showAlert('Failed to load: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
         function populateTable(records) {
-            console.log('Populating table with records:', records);
-
-            if (!dataTableInitialized) {
-                console.log('DataTable not initialized, using manual table population');
-                manualPopulateTable(records);
-                return;
-            }
-
-            // 清除现有数据
+            if (!dataTableInitialized) { manualPopulateTable(records); return; }
             dataTable.clear();
-
             if (records && records.length) {
                 records.forEach(function (r, index) {
                     const id = getVal(r, 'Id');
-                    // console.log('Processing record:', r);
-
-                    // 构建数据行 - 根据表格结构 (共45列)
                     const rowData = [
-                        index + 1, // No
-                        getVal(r, 'CompanyName'),                                        // Company Name
-                        getVal(r, 'Activity'),                                           // Activity
-                        getVal(r, 'WhichDB'),                                            // Which Database?
-                        getVal(r, 'YEtodo'),                                             // YE to do
-                        getVal(r, 'QuarterTodo'),                                        // Quarter to do
-                        getVal(r, 'PIC'),                                                // PIC
-                        getVal(r, 'Status'),                                             // Status
-                        formatCurrency(getVal(r, 'Revenue')),                            // Revenue
-                        formatCurrency(getVal(r, 'ProfitLoss')),                         // Profit/(loss)
-                        formatCurrency(getVal(r, 'AuditFee')),                           // Audit Fee
-                        formatDateForDisplay(getVal(r, 'DateBilled')),                   // Date billed
-                        formatDateForDisplay(getVal(r, 'StartDate')),                    // Start Date
-                        formatDateForDisplay(getVal(r, 'AsAt')),                         // As at
-                        getVal(r, 'NoOfDays') || '',                                     // No of Days
-                        getVal(r, 'TotalFieldWkDays') || '',                             // Total Field wk days
-                        getVal(r, 'ResultOverUnder'),                                    // Result Over/Under
-                        formatPercentage(getVal(r, 'AccSetup')),                         // Acc setup(J)
-                        formatPercentage(getVal(r, 'AcSummary')),                        // Ac summary(J)
-                        formatPercentage(getVal(r, 'AuditPlanning')),                    // Audit Planning(PIC)
-                        formatPercentage(getVal(r, 'AuditExecution')),                   // Audit Execution
-                        formatPercentage(getVal(r, 'AuditCompletion')),                  // Audit Completion(PIC)
-                        formatPercentage(getVal(r, 'TotalPercent')),                     // Total %
-                        formatDateForDisplay(getVal(r, 'DateSent')),                     // Kuching Review Date Sent
-                        formatDateForDisplay(getVal(r, 'EndDate')),                      // Kuching Review End Date
-                        getVal(r, 'ResultOverUnderKuching'),                             // Kuching Review Result
-                        formatDateForDisplay(getVal(r, 'DateSentKK')),                   // KK Review Date Sent
-                        formatDateForDisplay(getVal(r, 'EndDateKK')),                    // KK Review End Date
-                        getVal(r, 'ResultOverUnderKK'),                                  // KK Review Result
-                        getVal(r, 'TotalReviewDaysKK') || '',                            // Total # review days
-                        formatDateForDisplay(getVal(r, 'DateSentToKK')),                 // Date Sent to KK
-                        formatDateForDisplay(getVal(r, 'DateReceivedAR')),               // Date received AR
-                        formatDateForDisplay(getVal(r, 'DateOfReport')),                 // Date of Report
-                        formatDateForDisplay(getVal(r, 'DateOfDirectorsRept')),          // Date of Directors
-                        formatDateForDisplay(getVal(r, 'DateSentSigning')),              // Date Sent
-                        formatDateForDisplay(getVal(r, 'FlwUpDate')),                    // Follow up dates
-                        formatDateForDisplay(getVal(r, 'DateReceivedSigning')),          // Date received
-                        formatDateForDisplay(getVal(r, 'CommOfOathsDate')),              // Comm of Oaths date
-                        formatDateForDisplay(getVal(r, 'TaxDueDate')),                   // Tax Due Date
-                        formatDateForDisplay(getVal(r, 'PassToTaxDept')),                // Pass to Tax Dept
-                        formatDateForDisplay(getVal(r, 'SSMDueDate')),                   // SSM Due Date
-                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),            // Date pass to Sec Dept
-                        formatDateForDisplay(getVal(r, 'DateBinded')),                   // Date Binded
-                        formatDateForDisplay(getVal(r, 'DespatchDateToClient')),         // Despatch Date to Client
-                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit">
-                            <i class="fas fa-edit"></i>
-                         </button>
-                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete">
-                            <i class="fas fa-trash"></i>
-                         </button>`
+                        index + 1,
+                        getVal(r, 'CompanyName'),
+                        getVal(r, 'Activity'),
+                        getVal(r, 'WhichDB'),
+                        getVal(r, 'YEtodo'),
+                        getVal(r, 'QuarterTodo'),
+                        getVal(r, 'PIC'),
+                        getVal(r, 'Status'),
+                        formatCurrency(getVal(r, 'Revenue')),
+                        formatCurrency(getVal(r, 'ProfitLoss')),
+                        formatCurrency(getVal(r, 'AuditFee')),
+                        formatDateForDisplay(getVal(r, 'DateBilled')),
+                        formatDateForDisplay(getVal(r, 'StartDate')),
+                        formatDateForDisplay(getVal(r, 'AsAt')),
+                        getVal(r, 'NoOfDays') || '',
+                        getVal(r, 'TotalFieldWkDays') || '',
+                        getVal(r, 'ResultOverUnder'),
+                        formatPercentage(getVal(r, 'AccSetup')),
+                        formatPercentage(getVal(r, 'AcSummary')),
+                        formatPercentage(getVal(r, 'AuditPlanning')),
+                        formatPercentage(getVal(r, 'AuditExecution')),
+                        formatPercentage(getVal(r, 'AuditCompletion')),
+                        formatPercentage(getVal(r, 'TotalPercent')),
+                        formatDateForDisplay(getVal(r, 'DateSent')),
+                        formatDateForDisplay(getVal(r, 'EndDate')),
+                        getVal(r, 'ResultOverUnderKuching'),
+                        formatDateForDisplay(getVal(r, 'DateSentKK')),
+                        formatDateForDisplay(getVal(r, 'EndDateKK')),
+                        getVal(r, 'ResultOverUnderKK'),
+                        getVal(r, 'TotalReviewDaysKK') || '',
+                        formatDateForDisplay(getVal(r, 'DateSentToKK')),
+                        formatDateForDisplay(getVal(r, 'DateReceivedAR')),
+                        formatDateForDisplay(getVal(r, 'DateOfReport')),
+                        formatDateForDisplay(getVal(r, 'DateOfDirectorsRept')),
+                        formatDateForDisplay(getVal(r, 'DateSentSigning')),
+                        formatDateForDisplay(getVal(r, 'FlwUpDate')),
+                        formatDateForDisplay(getVal(r, 'DateReceivedSigning')),
+                        formatDateForDisplay(getVal(r, 'CommOfOathsDate')),
+                        formatDateForDisplay(getVal(r, 'TaxDueDate')),
+                        formatDateForDisplay(getVal(r, 'PassToTaxDept')),
+                        formatDateForDisplay(getVal(r, 'SSMDueDate')),
+                        formatDateForDisplay(getVal(r, 'DatePassToSecDept')),
+                        formatDateForDisplay(getVal(r, 'DateBinded')),
+                        formatDateForDisplay(getVal(r, 'DespatchDateToClient')),
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${id}" title="Edit"><i class="fas fa-edit"></i></button>
+                         <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" title="Delete"><i class="fas fa-trash"></i></button>`
                     ];
-
                     dataTable.row.add(rowData);
                 });
             }
-
             dataTable.draw();
-            console.log('Table populated successfully');
         }
 
-        // 降级方案：手动填充表格
         function manualPopulateTable(records) {
             const tbody = $('#tableBody');
             tbody.empty();
-
-            if (records && records.length) {
-                records.forEach(function (r, index) {
-                    const id = getVal(r, 'Id');
-                    // 此处省略手动拼接 HTML 的代码，因为上面 DataTable 已经处理了
-                });
-            } else {
+            if (!records || !records.length) {
                 tbody.html('<tr><td colspan="48" class="text-center">No audit template records found</td></tr>');
             }
         }
 
-        // ---------- Save (Create / Update) ----------
         function saveRecord() {
-            console.log('Save button clicked');
             hideModalAlert();
             clearFieldErrors();
-
             const formData = {
                 Id: ($('#recordId').val() || '0').trim(),
-
                 CompanyName: ($('#companyName').val() || '').trim(),
                 Activity: ($('#activity').val() || '').trim(),
                 WhichDB: ($('#whichDB').val() || '').trim(),
@@ -957,41 +832,19 @@
                 DespatchDateToClient: ($('#despatchDateToClient').val() || '').trim()
             };
 
-            console.log('Form data:', formData);
-
-            // 简单必填验证
             let hasError = false;
-            if (!formData.CompanyName) {
-                setFieldError('#companyName', 'Company Name is required');
-                hasError = true;
-            }
-
-            if (hasError) {
-                showModalAlert('Please fix the highlighted fields.', 'error');
-                $('#taskForm .is-invalid').first().focus();
-                return;
-            }
+            if (!formData.CompanyName) { setFieldError('#companyName', 'Company Name is required'); hasError = true; }
+            if (hasError) { showModalAlert('Please fix the highlighted fields.', 'error'); return; }
 
             const isUpdate = Number(formData.Id) > 0;
             const url = isUpdate ? '/api/auditdept/at11/update' : '/api/auditdept/at11/create';
             const method = isUpdate ? 'PUT' : 'POST';
 
-            console.log('Saving via:', url, method);
-
-            // 设置提交状态
             setSubmittingState();
-
             $.ajax({
-                url: url,
-                type: method,
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
+                url: url, type: method, contentType: 'application/json', data: JSON.stringify(formData),
                 success: function (res) {
-                    console.log('Save response:', res);
-
-                    // 重置提交状态
                     resetSubmitState();
-
                     if (res && res.success) {
                         $('#taskModal').modal('hide');
                         showAlert('Record saved successfully.', 'success');
@@ -1001,23 +854,17 @@
                         showModalAlert('Error saving record: ' + msg, 'error');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('Save error:', error);
-
-                    // 重置提交状态
+                error: function (xhr) {
                     resetSubmitState();
                     showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
-        // ---------- Edit ----------
         function editRecord(id) {
-            console.log('Editing record ID:', id);
             $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
             hideModalAlert();
             clearFieldErrors();
-
             $.ajax({
                 url: '/api/auditdept/at11/get/' + id,
                 type: 'GET',
@@ -1025,22 +872,15 @@
                     $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audit Template Record');
                     if (res && res.success) {
                         const d = res.data || {};
-                        console.log('Edit data loaded:', d);
-
                         $('#recordId').val(getVal(d, 'Id'));
 
-                        // ⭐ 2. Dropdown Logic in Edit Mode
+                        // ✅ Select2 set value
                         const existingCompany = getVal(d, 'CompanyName');
                         const $select = $('#companyName');
-
-                        // Try to select
-                        $select.val(existingCompany);
-
-                        // If the company is not in the dropdown (e.g. deleted or old data), add it temporarily
-                        if (!$select.val() && existingCompany) {
-                            $select.append(`<option value="${existingCompany}" selected>${existingCompany} (Archived)</option>`);
-                            $select.val(existingCompany);
+                        if ($select.find(`option[value="${existingCompany}"]`).length === 0 && existingCompany) {
+                            $select.append(`<option value="${existingCompany}">${existingCompany} (Archived)</option>`);
                         }
+                        $select.val(existingCompany).trigger('change');
 
                         $('#activity').val(getVal(d, 'Activity'));
                         $('#whichDB').val(getVal(d, 'WhichDB'));
@@ -1084,23 +924,20 @@
                         $('#datePassToSecDept').val(formatDateForInput(getVal(d, 'DatePassToSecDept')));
                         $('#dateBinded').val(formatDateForInput(getVal(d, 'DateBinded')));
                         $('#despatchDateToClient').val(formatDateForInput(getVal(d, 'DespatchDateToClient')));
-
                         $('#taskModal').modal('show');
                     } else {
                         showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function (xhr) {
                     $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audit Template Record');
                     showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
-        // ---------- Delete ----------
         function deleteRecord(id) {
             if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-
             $.ajax({
                 url: '/api/auditdept/at11/delete/' + id,
                 type: 'DELETE',
@@ -1118,7 +955,6 @@
             });
         }
 
-        // 日期格式化辅助函数
         function formatDateForInput(dateString) {
             if (!dateString) return '';
             try {
@@ -1128,12 +964,9 @@
                 const month = (date.getMonth() + 1).toString().padStart(2, '0');
                 const year = date.getFullYear();
                 return `${day}/${month}/${year}`;
-            } catch (e) {
-                return '';
-            }
+            } catch (e) { return ''; }
         }
 
-        // 打开创建模态框的函数
         function openCreateModal() {
             clearForm();
             $('#taskModal').modal('show');
