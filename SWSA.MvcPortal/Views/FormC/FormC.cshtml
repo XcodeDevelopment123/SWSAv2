@@ -25,41 +25,45 @@
             <div class="card-body" style="overflow:auto">
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
-                        <!-- 第一行：主标题 -->
+                        <!-- Row 1: Main headers -->
                         <tr>
-                            <th colspan="3">TX Tax Scheduling</th>
-                            <th colspan="3">Tax WIP</th>
-                            <th colspan="3">Tax work process(Date Done)</th>
-                            <th rowspan="2">Tax payable RM</th>
-                            <th colspan="2">Review by MC</th>
+                            <th colspan="5">TX Tax Scheduling</th>
+                            <th colspan="2">Tax WIP</th>
+                            <th colspan="2">Metrics</th>
+                            <th colspan="2">Tax work process(Date Done)</th>
+                            <th rowspan="2">Refund</th>
+                            <th rowspan="2">Penalties MITRS Submitted</th>
+                            <th colspan="2">Review</th>
                             <th colspan="2">Date to Client</th>
                             <th rowspan="2">Tax payment date</th>
-                            <th rowspan="2">Form C submitted Date</th>
+                            <th rowspan="2">C Submitted Date</th>
                             <th colspan="2">Billing</th>
-                            <th colspan="2">Binding Date</th>
+                            <th colspan="2">MIT+TRS Submitted</th>
                             <th rowspan="2">Job Completed</th>
                             <th rowspan="2">Actions</th>
                         </tr>
 
-                        <!-- 第二行：细分标题 -->
+                        <!-- Row 2: Sub-headers -->
                         <tr>
-                            <th rowspan="1">Tax Due Date</th>
-                            <th rowspan="1">Est Quarter to do</th>
-                            <th rowspan="1">Date mgmt acc available</th>
-                            <th rowspan="1">a. Start Date</th>
-                            <th rowspan="1">b. End Date</th>
-                            <th rowspan="1">No of days</th>
-                            <th rowspan="1">P&L Analysis</th>
-                            <th rowspan="1">CA & Tax compu</th>
-                            <th rowspan="1">Draft Form C</th>
-                            <th rowspan="1">Tax comp/CA</th>
-                            <th rowspan="1">Form C</th>
-                            <th rowspan="1">Sent</th>
-                            <th rowspan="1">Received</th>
-                            <th rowspan="1">Inv Date</th>
-                            <th rowspan="1">Fees</th>
-                            <th rowspan="1">Printing</th>
-                            <th rowspan="1">Despatch</th>
+                            <th>Year End</th>
+                            <th>Year to do</th>
+                            <th>Tax Due Date</th>
+                            <th>Qtr to do</th>
+                            <th>Date mgmtAC</th>
+                            <th>a. Start Date</th>
+                            <th>Draft Form C</th>
+                            <th>No of days</th>
+                            <th>on-time (Days)</th>
+                            <th>P&L Analysis</th>
+                            <th>CA & Tax comp</th>
+                            <th>Tax comp/CA</th>
+                            <th>Review</th>
+                            <th>Sent</th>
+                            <th>Received form Client</th>
+                            <th>Inv Date</th>
+                            <th>Fees</th>
+                            <th>MIT Submitted</th>
+                            <th>TRS Submitted</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,19 +95,19 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="e.g. 31/12" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="estQuarterTodo">Est Quarter to do</label>
-                                <input type="text" id="estQuarterTodo" name="estQuarterTodo" class="form-control" placeholder="Enter quarter" />
+                                <label for="yearToDo">Year to do</label>
+                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="e.g. 2024" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="dateMgmtAccAvailable">Date mgmt acc available</label>
+                                <label for="dateMgmtAccAvailable">Date mgmtAC</label>
                                 <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
@@ -112,13 +116,28 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="startDate">a. Start Date</label>
-                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="taxDueDate">Tax Due Date</label>
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" readonly placeholder="Auto YE+8 months" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="endDate">b. End Date</label>
+                                <label for="estQuarterTodo">Qtr to do</label>
+                                <input type="text" id="estQuarterTodo" name="estQuarterTodo" class="form-control" placeholder="Enter quarter" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="startDate">a. Start Date</label>
+                                <input type="text" id="startDate" name="startDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="endDate">Draft Form C</label>
                                 <input type="text" id="endDate" name="endDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
@@ -126,6 +145,12 @@
                             <div class="form-group">
                                 <label for="noOfDays">No of days</label>
                                 <input type="text" id="noOfDays" name="noOfDays" class="form-control" placeholder="Enter days" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="onTimeDays">On-time (Days)</label>
+                                <input type="text" id="onTimeDays" name="onTimeDays" class="form-control" readonly placeholder="Auto-calculated" />
                             </div>
                         </div>
                     </div>
@@ -139,14 +164,14 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cAnTaxCompu">CA & Tax compu</label>
+                                <label for="cAnTaxCompu">CA & Tax comp</label>
                                 <input type="text" id="cAnTaxCompu" name="cAnTaxCompu" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="draftFormC">Draft Form C</label>
-                                <input type="text" id="draftFormC" name="draftFormC" class="form-control datepicker" placeholder="Select date" />
+                                <label for="taxPayableRM">Refund</label>
+                                <input type="text" id="taxPayableRM" name="taxPayableRM" class="form-control" placeholder="Enter amount" />
                             </div>
                         </div>
                     </div>
@@ -154,8 +179,8 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="taxPayableRM">Tax payable RM</label>
-                                <input type="text" id="taxPayableRM" name="taxPayableRM" class="form-control" placeholder="Enter amount" />
+                                <label for="penaltiesRM">Penalties MITRS Submitted</label>
+                                <input type="text" id="penaltiesRM" name="penaltiesRM" class="form-control" placeholder="Enter amount" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -166,50 +191,47 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="formC">Form C</label>
+                                <label for="formC">Review</label>
                                 <input type="text" id="formC" name="formC" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="sent">Sent</label>
                                 <input type="text" id="sent" name="sent" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="received">Received</label>
+                                <label for="received">Received form Client</label>
                                 <input type="text" id="received" name="received" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="taxPaymentDate">Tax payment date</label>
                                 <input type="text" id="taxPaymentDate" name="taxPaymentDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formCsubmitedDate">Form C submitted Date</label>
-                                <input type="text" id="formCsubmitedDate" name="formCsubmitedDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="formCsubmitedDate">C Submitted Date</label>
+                                <input type="text" id="formCsubmitedDate" name="formCsubmitedDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="invDate">Inv Date</label>
                                 <input type="text" id="invDate" name="invDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fees">Fees</label>
                                 <input type="text" id="fees" name="fees" class="form-control" placeholder="Enter fees" />
@@ -218,22 +240,19 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="printing">Printing</label>
-                                <input type="text" id="printing" name="printing" class="form-control datepicker" placeholder="Select date" />
+                                <label for="mitSubmitted">MIT Submitted</label>
+                                <input type="text" id="mitSubmitted" name="mitSubmitted" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="despatch">Despatch</label>
-                                <input type="text" id="despatch" name="despatch" class="form-control datepicker" placeholder="Select date" />
+                                <label for="trsSubmitted">TRS Submitted</label>
+                                <input type="text" id="trsSubmitted" name="trsSubmitted" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="jobCompleted">Job Completed</label>
                                 <select id="jobCompleted" name="jobCompleted" class="form-control">
@@ -311,16 +330,32 @@
                         }
                     },
                     "columns": [
+                        { "data": "yearEnd" },
+                        { "data": "yearToDo" },
                         { "data": "taxDueDate" },
                         { "data": "estQuarterTodo" },
                         { "data": "dateMgmtAccAvailable" },
                         { "data": "startDate" },
                         { "data": "endDate" },
                         { "data": "noOfDays" },
+                        {
+                            "data": null,
+                            "render": function(data, type, row) {
+                                if (row.taxDueDate && row.formCsubmitedDate) {
+                                    var parts1 = row.taxDueDate.split('-');
+                                    var parts2 = row.formCsubmitedDate.split('-');
+                                    var d1 = new Date(parts1[0], parts1[1] - 1, parts1[2]);
+                                    var d2 = new Date(parts2[0], parts2[1] - 1, parts2[2]);
+                                    var diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+                                    return diff;
+                                }
+                                return '';
+                            }
+                        },
                         { "data": "pnLAnalysis" },
                         { "data": "cAnTaxCompu" },
-                        { "data": "draftFormC" },
                         { "data": "taxPayableRM" },
+                        { "data": "penaltiesRM" },
                         { "data": "taxCompCA" },
                         { "data": "formC" },
                         { "data": "sent" },
@@ -329,8 +364,8 @@
                         { "data": "formCsubmitedDate" },
                         { "data": "invDate" },
                         { "data": "fees" },
-                        { "data": "printing" },
-                        { "data": "despatch" },
+                        { "data": "mitSubmitted" },
+                        { "data": "trsSubmitted" },
                         {
                             "data": "jobCompleted",
                             "render": function(data, type, row) {
@@ -366,9 +401,56 @@
                 });
             }
 
+            // Auto-calculate Tax Due Date from Year End (dd/MM) + 8 months
+            function calcTaxDueDate() {
+                var ye = $('#yearEnd').val();
+                var ytd = $('#yearToDo').val();
+                if (ye && ytd) {
+                    var parts = ye.split('/');
+                    if (parts.length === 2) {
+                        var day = parts[0];
+                        var month = parseInt(parts[1], 10);
+                        month += 8;
+                        var year = parseInt(ytd, 10);
+                        if (month > 12) { month -= 12; year += 1; }
+                        var due = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+                        $('#taxDueDate').val(due);
+                    } else if (parts.length === 3) {
+                        // full date dd/MM/yyyy
+                        var day = parts[0];
+                        var month = parseInt(parts[1], 10) + 8;
+                        var year = parseInt(parts[2], 10);
+                        if (month > 12) { month -= 12; year += 1; }
+                        var due = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+                        $('#taxDueDate').val(due);
+                    }
+                }
+                calcOnTimeDays();
+            }
+
+            // Auto-calculate On-time Days
+            function calcOnTimeDays() {
+                var dueDate = $('#taxDueDate').val();
+                var subDate = $('#formCsubmitedDate').val();
+                if (dueDate && subDate) {
+                    var parts1 = dueDate.split('-');
+                    var parts2 = subDate.split('-');
+                    var d1 = new Date(parts1[0], parts1[1] - 1, parts1[2]);
+                    var d2 = new Date(parts2[0], parts2[1] - 1, parts2[2]);
+                    var diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+                    $('#onTimeDays').val(diff);
+                } else {
+                    $('#onTimeDays').val('');
+                }
+            }
+            $(document).on('change', '#yearEnd, #yearToDo', calcTaxDueDate);
+            $(document).on('change', '#formCsubmitedDate', calcOnTimeDays);
+
             // 保存表单记录
             function saveFormCRecord() {
                 const formData = {
+                    yearEnd: $('#yearEnd').val(),
+                    yearToDo: $('#yearToDo').val(),
                     taxDueDate: $('#taxDueDate').val(),
                     estQuarterTodo: $('#estQuarterTodo').val(),
                     dateMgmtAccAvailable: $('#dateMgmtAccAvailable').val(),
@@ -377,8 +459,8 @@
                     noOfDays: $('#noOfDays').val(),
                     pnLAnalysis: $('#pnLAnalysis').val(),
                     cAnTaxCompu: $('#cAnTaxCompu').val(),
-                    draftFormC: $('#draftFormC').val(),
                     taxPayableRM: $('#taxPayableRM').val(),
+                    penaltiesRM: $('#penaltiesRM').val(),
                     taxCompCA: $('#taxCompCA').val(),
                     formC: $('#formC').val(),
                     sent: $('#sent').val(),
@@ -387,8 +469,8 @@
                     formCsubmitedDate: $('#formCsubmitedDate').val(),
                     invDate: $('#invDate').val(),
                     fees: $('#fees').val(),
-                    printing: $('#printing').val(),
-                    despatch: $('#despatch').val(),
+                    mitSubmitted: $('#mitSubmitted').val(),
+                    trsSubmitted: $('#trsSubmitted').val(),
                     jobCompleted: $('#jobCompleted').val()
                 };
 
@@ -440,6 +522,8 @@
                         currentEditId = record.id;
 
                         // 填充表单
+                        $('#yearEnd').val(record.yearEnd);
+                        $('#yearToDo').val(record.yearToDo);
                         $('#taxDueDate').val(record.taxDueDate);
                         $('#estQuarterTodo').val(record.estQuarterTodo);
                         $('#dateMgmtAccAvailable').val(record.dateMgmtAccAvailable);
@@ -448,8 +532,8 @@
                         $('#noOfDays').val(record.noOfDays);
                         $('#pnLAnalysis').val(record.pnLAnalysis);
                         $('#cAnTaxCompu').val(record.cAnTaxCompu);
-                        $('#draftFormC').val(record.draftFormC);
                         $('#taxPayableRM').val(record.taxPayableRM);
+                        $('#penaltiesRM').val(record.penaltiesRM);
                         $('#taxCompCA').val(record.taxCompCA);
                         $('#formC').val(record.formC);
                         $('#sent').val(record.sent);
@@ -458,8 +542,8 @@
                         $('#formCsubmitedDate').val(record.formCsubmitedDate);
                         $('#invDate').val(record.invDate);
                         $('#fees').val(record.fees);
-                        $('#printing').val(record.printing);
-                        $('#despatch').val(record.despatch);
+                        $('#mitSubmitted').val(record.mitSubmitted);
+                        $('#trsSubmitted').val(record.trsSubmitted);
                         $('#jobCompleted').val(record.jobCompleted);
 
                         $('#modalTitle').text('Edit Form C Record');
@@ -494,6 +578,8 @@
             // 重置表单
             function resetForm() {
                 $('#taskForm')[0].reset();
+                $('#onTimeDays').val('');
+                $('#taxDueDate').val('');
                 currentEditId = null;
                 $('#modalTitle').text('Add New Form C Record');
                 $('.datepicker').datepicker('update', '');

@@ -26,6 +26,15 @@
         public string? LinkedDatePassToTaxDept { get; set; }
         public string? LinkedFormCSubmitDate { get; set; }
 
+        // Admin fields
+        public string? Staff { get; set; }
+        public string? DateStart { get; set; }
+        public string? DateEnd { get; set; }
+        public string? NOrYDays { get; set; }
+        public string? Review { get; set; }
+        public string? ClientDateSent { get; set; }
+        public string? ClientDateReceived { get; set; }
+
         // ★ 新增：仅用于同步到 S16，不写入 TX4 表
         public string? Referral { get; set; }
         public string? CompanyNo { get; set; }

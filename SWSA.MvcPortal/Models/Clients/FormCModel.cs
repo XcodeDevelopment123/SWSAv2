@@ -5,6 +5,8 @@
         public int Id { get; set; }
 
         // TX Tax Scheduling
+        public string? YearEnd { get; set; }
+        public string? YearToDo { get; set; }
         public string? TaxDueDate { get; set; }
         public string? EstQuarterTodo { get; set; }
         public string? DateMgmtAccAvailable { get; set; }
@@ -21,8 +23,9 @@
 
         // Tax payable
         public string? TaxPayableRM { get; set; }
+        public string? PenaltiesRM { get; set; }
 
-        // Review by MC
+        // Review
         public string? TaxCompCA { get; set; }
         public string? FormC { get; set; }
 
@@ -38,9 +41,9 @@
         public string? InvDate { get; set; }
         public string? Fees { get; set; }
 
-        // Binding Date
-        public string? Printing { get; set; }
-        public string? Despatch { get; set; }
+        // MIT+TRS Submitted
+        public string? MITSubmitted { get; set; }
+        public string? TRSSubmitted { get; set; }
 
         // Job status
         public string? JobCompleted { get; set; }

@@ -38,7 +38,8 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 {
                     var sql = @"SELECT [Id], [Grouping], [Referral], [SecFileNo], 
                                       [CompanyName], [YearEnd], [IncorpDate], 
-                                      [CompanyStatus], [ActiveCoActivitySize], 
+                                      [CompanyStatus], [ActiveCoActivitySize],
+                                      [CreditRating],
                                       [YEtodo], [ACCmthTodo], [SSMextensionDate], 
                                       [ADdueDate], [AccReady], [ADsubmitDate], 
                                       [JobCompleted]
@@ -65,7 +66,8 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 {
                     var sql = @"SELECT [Id], [Grouping], [Referral], [SecFileNo], 
                                       [CompanyName], [YearEnd], [IncorpDate], 
-                                      [CompanyStatus], [ActiveCoActivitySize], 
+                                      [CompanyStatus], [ActiveCoActivitySize],
+                                      [CreditRating],
                                       [YEtodo], [ACCmthTodo], [SSMextensionDate], 
                                       [ADdueDate], [AccReady], [ADsubmitDate], 
                                       [JobCompleted]
@@ -97,18 +99,20 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     var sql = @"INSERT INTO [dbo].[S13B] 
-                               ([Grouping], [Referral], [SecFileNo], [CompanyName], 
-                                [YearEnd], [IncorpDate], [CompanyStatus], 
-                                [ActiveCoActivitySize], [YEtodo], [ACCmthTodo], 
-                                [SSMextensionDate], [ADdueDate], [AccReady], 
-                                [ADsubmitDate], [JobCompleted])
-                               VALUES 
-                               (@Grouping, @Referral, @SecFileNo, @CompanyName, 
-                                @YearEnd, @IncorpDate, @CompanyStatus, 
-                                @ActiveCoActivitySize, @YEtodo, @ACCmthTodo, 
-                                @SSMextensionDate, @ADdueDate, @AccReady, 
-                                @ADsubmitDate, @JobCompleted);
-                               SELECT CAST(SCOPE_IDENTITY() as int)";
+                                ([Grouping], [Referral], [SecFileNo], [CompanyName], 
+                                 [YearEnd], [IncorpDate], [CompanyStatus], 
+                                 [ActiveCoActivitySize], [CreditRating],
+                                 [YEtodo], [ACCmthTodo], 
+                                 [SSMextensionDate], [ADdueDate], [AccReady], 
+                                 [ADsubmitDate], [JobCompleted])
+                                VALUES 
+                                (@Grouping, @Referral, @SecFileNo, @CompanyName, 
+                                 @YearEnd, @IncorpDate, @CompanyStatus, 
+                                 @ActiveCoActivitySize, @CreditRating,
+                                 @YEtodo, @ACCmthTodo, 
+                                 @SSMextensionDate, @ADdueDate, @AccReady, 
+                                 @ADsubmitDate, @JobCompleted);
+                                SELECT CAST(SCOPE_IDENTITY() as int)";
 
                     var id = await connection.ExecuteScalarAsync<int>(sql, model);
 
@@ -130,22 +134,23 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     var sql = @"UPDATE [dbo].[S13B] 
-                               SET [Grouping] = @Grouping,
-                                   [Referral] = @Referral,
-                                   [SecFileNo] = @SecFileNo,
-                                   [CompanyName] = @CompanyName,
-                                   [YearEnd] = @YearEnd,
-                                   [IncorpDate] = @IncorpDate,
-                                   [CompanyStatus] = @CompanyStatus,
-                                   [ActiveCoActivitySize] = @ActiveCoActivitySize,
-                                   [YEtodo] = @YEtodo,
-                                   [ACCmthTodo] = @ACCmthTodo,
-                                   [SSMextensionDate] = @SSMextensionDate,
-                                   [ADdueDate] = @ADdueDate,
-                                   [AccReady] = @AccReady,
-                                   [ADsubmitDate] = @ADsubmitDate,
-                                   [JobCompleted] = @JobCompleted
-                               WHERE [Id] = @Id";
+                                SET [Grouping] = @Grouping,
+                                    [Referral] = @Referral,
+                                    [SecFileNo] = @SecFileNo,
+                                    [CompanyName] = @CompanyName,
+                                    [YearEnd] = @YearEnd,
+                                    [IncorpDate] = @IncorpDate,
+                                    [CompanyStatus] = @CompanyStatus,
+                                    [ActiveCoActivitySize] = @ActiveCoActivitySize,
+                                    [CreditRating] = @CreditRating,
+                                    [YEtodo] = @YEtodo,
+                                    [ACCmthTodo] = @ACCmthTodo,
+                                    [SSMextensionDate] = @SSMextensionDate,
+                                    [ADdueDate] = @ADdueDate,
+                                    [AccReady] = @AccReady,
+                                    [ADsubmitDate] = @ADsubmitDate,
+                                    [JobCompleted] = @JobCompleted
+                                WHERE [Id] = @Id";
 
                     var rowsAffected = await connection.ExecuteAsync(sql, model);
 

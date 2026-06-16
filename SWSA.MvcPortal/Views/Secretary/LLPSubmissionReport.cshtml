@@ -41,9 +41,9 @@
 
                         <tr>
                             <th>Incorp Date</th>
-                            <th>Co #</th>
+                            <th>Company Member</th>
                             <th>Co Status</th>
-                            <th>Active Co:Activity size</th>
+                            <th>Activity size</th>
                             <th>SSM Extension date for acc</th>
                             <th>Annual Declaration (AD) Due date</th>
                             <th>AD Submitted date</th>
@@ -122,7 +122,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coNumber">Co #</label>
+                                <label for="coNumber">Company Member</label>
                                 <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
@@ -136,27 +136,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
-                                    <option value="In Liquidation">In Liquidation</option>
-                                </select>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="activitySize">Active Co:Activity size</label>
-                                <select id="activitySize" name="activitySize" class="form-control">
-                                    <option value="">Select Size</option>
-                                    <option value="D">D</option>
-                                    <option value="SD">SD</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
+                                <label for="activitySize">Activity size</label>
+                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -388,6 +374,8 @@
             $('#yearEnd').val('');
             $('#client').val('');
             $('#clientId').val('');
+            $('#coStatus').val('');
+            $('#activitySize').val('');
             $('#adDueDate').val(''); // 清空计算结果
 
             if (!selectedId) return;
@@ -411,6 +399,10 @@
                 // 填入并转换 Year End (例如 "December" -> "31/12/2025")
                 const formattedYearEnd = calculateYearEndDate(getVal(selectedClient, 'YearEndMonth'));
                 $('#yearEnd').val(formattedYearEnd);
+
+                // 自动填入 Co Status 和 Activity Size
+                $('#coStatus').val(getVal(selectedClient, 'CompanyStatus'));
+                $('#activitySize').val(getVal(selectedClient, 'ActivitySize'));
 
                 // 刷新 Datepicker 显示
                 $('#incorpDate, #yearEnd').datepicker('update');
@@ -691,6 +683,8 @@
         $('#taskForm')[0].reset();
         $('#editIndex').val('');
         $('#modalTitle').text('Add New LLP Submission Record');
+        $('#coStatus').val('');
+        $('#activitySize').val('');
         hideModalAlert();
         clearFieldErrors();
     }
