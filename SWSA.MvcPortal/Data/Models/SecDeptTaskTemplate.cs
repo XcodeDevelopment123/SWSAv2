@@ -17,11 +17,15 @@ public partial class SecDeptTaskTemplate
 
     public DateTime? ArreturnByClientDate { get; set; }
 
+    public DateTime? AdDueDate { get; set; }
+
     public DateTime? AdsubmitDate { get; set; }
 
     public DateTime? AdsendToClientDate { get; set; }
 
     public DateTime? AdreturnByClientDate { get; set; }
+
+    public string? YearInput { get; set; }
 
     public string? Remarks { get; set; }
 

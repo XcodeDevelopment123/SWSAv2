@@ -9,8 +9,11 @@
         public string TaxReferenceNo { get; set; }
         public string YearEnd { get; set; }
         public string CompanyType { get; set; }
+        public string CompanyStatus { get; set; }
+        public string YearToDo { get; set; }
         public string PersonInCharge { get; set; }
         public string PastYearTaxEstimate { get; set; }
+        public string Remark { get; set; }
 
         // Initial
         public string Cp204OneMonthBeforeYE { get; set; }

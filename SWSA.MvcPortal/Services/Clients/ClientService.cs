@@ -365,17 +365,21 @@ public class ClientService(
             .Select(c => new CompanyOptionDto
             {
                 Id = c.Id,
-                Grouping = c.Group,                  // 如果是导航对象就用 c.Group.GroupName
+                Grouping = c.Group,
                 FileNo = c.FileNo,
                 Referral = c.Referral,
                 CompanyName = c.Name,
                 CompanyNo = c.RegistrationNumber,
                 IncorporationDate = c.IncorporationDate,
                 YearEndMonth = c.YearEndMonth.HasValue
-                    ? c.YearEndMonth.Value.ToString()   // "December"
+                    ? c.YearEndMonth.Value.ToString()
                     : string.Empty,
                 TaxIdentificationNumber =c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber
+                EmployerNumber = c.EmployerNumber,
+                ActivitySize = c.ActivitySize.ToString(),
+                CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
+                CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
+                AuditExemption = ""
             })
             .ToList();
     }
@@ -397,17 +401,21 @@ public class ClientService(
             .Select(c => new CompanyOptionDto
             {
                 Id = c.Id,
-                Grouping = c.Group,                     // 若是导航对象：c.Group?.GroupName
-                Referral = c.Referral,                  // LLP 需求
+                Grouping = c.Group,
+                Referral = c.Referral,
                 FileNo = c.FileNo,
                 CompanyName = c.Name,
                 CompanyNo = c.RegistrationNumber,
-                IncorporationDate = c.IncorporationDate, // 或 c.RegistrationDate（视你的模型）
+                IncorporationDate = c.IncorporationDate,
                 YearEndMonth = c.YearEndMonth.HasValue
                     ? c.YearEndMonth.Value.ToString()
                     : string.Empty,
                 TaxIdentificationNumber = c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber
+                EmployerNumber = c.EmployerNumber,
+                ActivitySize = c.ActivitySize.ToString(),
+                CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
+                CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
+                AuditExemption = ""
             })
             .ToList();
     }
@@ -502,7 +510,10 @@ public class ClientService(
 
             TaxIdentificationNumber = c.TaxIdentificationNumber ?? "",
 
-            ENumber = (c as BaseCompany).EmployerNumber ?? ""
+            ENumber = (c as BaseCompany).EmployerNumber ?? "",
+            CompanyStatus = (c as BaseCompany).CompanyStatus.HasValue
+                ? (c as BaseCompany).CompanyStatus.Value.ToString()
+                : ""
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();

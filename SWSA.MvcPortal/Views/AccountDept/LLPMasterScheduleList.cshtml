@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "LLPMasterScheduleList";
 }
 
-<h1>LLP Master Scheduling List</h1>
+<h1>F1.2 LLP Work List</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -27,7 +27,7 @@
                     <thead>
                         <!-- 第一行：主标题 -->
                         <tr>
-                            <th colspan="3">Admin</th>
+                            <th colspan="2">Admin</th>
                             <th colspan="8">Co Information</th>
                             <th colspan="11">Scheduling</th>
                             <th rowspan="3">Actions</th>
@@ -37,7 +37,6 @@
                         <tr>
                             <th rowspan="2">Grouping</th>
                             <th rowspan="2">Referral</th>
-                            <th rowspan="2">File No</th>
 
                             <th rowspan="2">Co Name</th>
                             <th rowspan="2">Year End</th>
@@ -47,9 +46,13 @@
                             <th colspan="2">MISC Code</th>
 
                             <th colspan="4">Work Allocation Info</th>
-                            <th colspan="1">Audit Dept</th>
-                            <th colspan="1">Sec/Tax Dept</th>
-                            <th colspan="5">Acc Dept</th>
+                            <th colspan="2">SSM</th>
+                            <th rowspan="2">Due Date</th>
+                            <th rowspan="2">Month to do</th>
+                            <th rowspan="2">Staff</th>
+                            <th rowspan="2">Date Doc In</th>
+                            <th rowspan="2">Allocate to Wk Sch</th>
+                            <th rowspan="2">Complete/Backlog</th>
                         </tr>
 
                         <!-- 第三行：每个字段的详细标题 -->
@@ -65,18 +68,12 @@
 
                             <th>Service Type</th>
                             <th>Co Status</th>
-                            <th>Active Co:Activity/size</th>
-                            <th>YE to do</th>
+                            <th>Activity/size</th>
+                            <th>Year to do</th>
 
-                            <th>Audit Dept Mth to do</th>
+                            <th>Credit Rating</th>
+                            <th>Extension Date</th>
 
-                            <th>Due Date</th>
-
-                            <th>EST Month to do</th>
-                            <th>Date Doc In</th>
-                            <th>Staff</th>
-                            <th>Allocate to Wk Sch</th>
-                            <th>Completed/Backlog</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,7 +94,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New LLP Record</span>
+                    <span id="modalTitle">Add New LLP Work List</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -211,10 +208,16 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="activeCoActivitySize">Active Co:Activity/size</label>
+                                <label for="activeCoActivitySize">Activity/size</label>
                                 <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity/size" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="createRating">Create Rating</label>
+                                <input type="text" id="createRating" name="createRating" class="form-control" placeholder="Enter Create Rating" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -228,34 +231,35 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="extensionDate">SSM Extension Date</label>
+                                <input type="text" id="extensionDate" name="extensionDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        @* <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="auditDeptMth">Audit Dept Mth to do</label>
                                 <input type="text" id="auditDeptMth" name="auditDeptMth" class="form-control" placeholder="Enter month" />
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="aDdueDate">Due Date</label>
+                                <label for="aDdueDate">SSM Due Date</label>
                                 <input type="text" id="aDdueDate" name="aDdueDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="extensionDate">Extension Date</label>
-                                <input type="text" id="extensionDate" name="extensionDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                       
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc In</label>
                                 <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="mthToDo">EST Month to do</label>
+                                <label for="mthToDo">Month to do</label>
                                 <input type="text" id="mthToDo" name="mthToDo" class="form-control" placeholder="Enter month" />
                             </div>
                         </div>
@@ -309,11 +313,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <!-- Include DataTables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <partial name="_DatatablesScriptsPartial" />
 
     <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
@@ -440,8 +440,9 @@
 
             function initializeDataTable() {
                 dataTable = $('#taskDatatable').DataTable({
-                    paging: true, lengthChange: true, searching: true, ordering: true, info: true,
+                    paging: true, lengthChange: false, searching: true, ordering: true, info: true,
                     autoWidth: false, responsive: true,
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     ajax: {
                         url: '/api/bp22/get-all',
                         type: 'GET',
@@ -494,6 +495,7 @@
                         else if (data.completed === 'In Progress') $(row).addClass('table-info');
                     }
                 });
+                dataTable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
             }
 
             function initializeDatePickers() {
@@ -690,7 +692,7 @@
             // 新增按钮
             $('#addNewBtn').click(function () {
                 resetForm();
-                $('#modalTitle').text('Add New LLP Record');
+                $('#modalTitle').text('Add New LLP Work List');
             });
 
             // 表单提交

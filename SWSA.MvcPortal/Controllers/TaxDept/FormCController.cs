@@ -98,17 +98,17 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz].[dbo].[FormC] 
-                            ([TaxDueDate], [EstQuarterTodo], [DateMgmtAccAvailable], [StartDate], 
+                            ([YearEnd], [YearToDo], [TaxDueDate], [EstQuarterTodo], [DateMgmtAccAvailable], [StartDate], 
                              [EndDate], [NoOfDays], [PnLAnalysis], [CAnTaxCompu], [DraftFormC], 
-                             [TaxPayableRM], [TaxCompCA], [FormC], [Sent], [Received], 
+                             [TaxPayableRM], [PenaltiesRM], [TaxCompCA], [FormC], [Sent], [Received], 
                              [TaxPaymentDate], [FormCsubmitedDate], [InvDate], [Fees], 
-                             [Printing], [Despatch], [JobCompleted])
+                             [MITSubmitted], [TRSSubmitted], [JobCompleted])
                             VALUES 
-                            (@TaxDueDate, @EstQuarterTodo, @DateMgmtAccAvailable, @StartDate, 
+                            (@YearEnd, @YearToDo, @TaxDueDate, @EstQuarterTodo, @DateMgmtAccAvailable, @StartDate, 
                              @EndDate, @NoOfDays, @PnLAnalysis, @CAnTaxCompu, @DraftFormC, 
-                             @TaxPayableRM, @TaxCompCA, @FormC, @Sent, @Received, 
+                             @TaxPayableRM, @PenaltiesRM, @TaxCompCA, @FormC, @Sent, @Received, 
                              @TaxPaymentDate, @FormCsubmitedDate, @InvDate, @Fees, 
-                             @Printing, @Despatch, @JobCompleted);
+                             @MITSubmitted, @TRSSubmitted, @JobCompleted);
                             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -130,15 +130,17 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"UPDATE [Quartz].[dbo].[FormC] SET 
+                            [YearEnd] = @YearEnd, [YearToDo] = @YearToDo,
                             [TaxDueDate] = @TaxDueDate, [EstQuarterTodo] = @EstQuarterTodo, 
                             [DateMgmtAccAvailable] = @DateMgmtAccAvailable, [StartDate] = @StartDate, 
                             [EndDate] = @EndDate, [NoOfDays] = @NoOfDays, [PnLAnalysis] = @PnLAnalysis, 
                             [CAnTaxCompu] = @CAnTaxCompu, [DraftFormC] = @DraftFormC, 
-                            [TaxPayableRM] = @TaxPayableRM, [TaxCompCA] = @TaxCompCA, 
+                            [TaxPayableRM] = @TaxPayableRM, [PenaltiesRM] = @PenaltiesRM,
+                            [TaxCompCA] = @TaxCompCA, 
                             [FormC] = @FormC, [Sent] = @Sent, [Received] = @Received, 
                             [TaxPaymentDate] = @TaxPaymentDate, [FormCsubmitedDate] = @FormCsubmitedDate, 
-                            [InvDate] = @InvDate, [Fees] = @Fees, [Printing] = @Printing, 
-                            [Despatch] = @Despatch,
+                            [InvDate] = @InvDate, [Fees] = @Fees, [MITSubmitted] = @MITSubmitted, 
+                            [TRSSubmitted] = @TRSSubmitted,
                             [JobCompleted] = @JobCompleted
                             WHERE Id = @Id";
 
@@ -496,12 +498,16 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     ([CompanyName], [YearEnd], [SSMsubmissionDate], [DateSOff], 
                      [DateReceiveFrSecDept], [IRBpenalties], [AppealDate], [PaymentDate], 
                      [NoteRemark], [AccWkDone], [FormCsubmitDate], [FormEsubmitDate], 
-                     [InvoiceDate], [AmountRM], [ClientCopySent], [JobCompletedDate])
+                     [InvoiceDate], [AmountRM], [ClientCopySent], [JobCompletedDate],
+                     [Staff], [DateStart], [DateEnd], [NOrYDays], [Review],
+                     [ClientDateSent], [ClientDateReceived])
                     VALUES 
                     (@CompanyName, @YearEnd, @SSMsubmissionDate, @DateSOff, 
                      @DateReceiveFrSecDept, @IRBpenalties, @AppealDate, @PaymentDate, 
                      @NoteRemark, @AccWkDone, @FormCsubmitDate, @FormEsubmitDate, 
-                     @InvoiceDate, @AmountRM, @ClientCopySent, @JobCompletedDate);
+                     @InvoiceDate, @AmountRM, @ClientCopySent, @JobCompletedDate,
+                     @Staff, @DateStart, @DateEnd, @NOrYDays, @Review,
+                     @ClientDateSent, @ClientDateReceived);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -536,7 +542,10 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     [NoteRemark] = @NoteRemark, [AccWkDone] = @AccWkDone, 
                     [FormCsubmitDate] = @FormCsubmitDate, [FormEsubmitDate] = @FormEsubmitDate, 
                     [InvoiceDate] = @InvoiceDate, [AmountRM] = @AmountRM, 
-                    [ClientCopySent] = @ClientCopySent, [JobCompletedDate] = @JobCompletedDate
+                    [ClientCopySent] = @ClientCopySent, [JobCompletedDate] = @JobCompletedDate,
+                    [Staff] = @Staff, [DateStart] = @DateStart, [DateEnd] = @DateEnd,
+                    [NOrYDays] = @NOrYDays, [Review] = @Review,
+                    [ClientDateSent] = @ClientDateSent, [ClientDateReceived] = @ClientDateReceived
                     WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);
@@ -771,19 +780,21 @@ VALUES
                 var sql = @"
                 INSERT INTO [Quartz].[dbo].[TX5] 
                 (
-                    [CompanyName], [TaxReferenceNo], [YearEnd], [CompanyType], [PersonInCharge], [PastYearTaxEstimate],
+                    [CompanyName], [TaxReferenceNo], [YearEnd], [CompanyType], [CompanyStatus], [YearToDo], [PersonInCharge], [PastYearTaxEstimate],
                     [Cp204OneMonthBeforeYE], [Cp204ReminderDate], [Cp204ClientResponse], [Cp204CurrentETP], [Cp204DateSubmitIRB],
                     [Cp204a6thMonthAfterYE], [Cp204a1stReminderDate], [Cp204a1stClientResponse], [Cp204a1stRevisedETP], [Cp204a1stDateSubmitIRB],
                     [Cp204a9thMonthAfterYE], [Cp204a2ndReminderDate], [Cp204a2ndClientResponse], [Cp204a2ndRevisedETP], [Cp204a2ndDateSubmitIRB],
-                    [Cp204a11thMonthAfterYE], [Cp204a3rdReminderDate], [Cp204a3rdClientResponse], [Cp204a3rdRevisedETP], [Cp204a3rdDateSubmitIRB]
+                    [Cp204a11thMonthAfterYE], [Cp204a3rdReminderDate], [Cp204a3rdClientResponse], [Cp204a3rdRevisedETP], [Cp204a3rdDateSubmitIRB],
+                    [Remark]
                 )
                 VALUES 
                 (
-                    @CompanyName, @TaxReferenceNo, @YearEnd, @CompanyType, @PersonInCharge, @PastYearTaxEstimate,
+                    @CompanyName, @TaxReferenceNo, @YearEnd, @CompanyType, @CompanyStatus, @YearToDo, @PersonInCharge, @PastYearTaxEstimate,
                     @Cp204OneMonthBeforeYE, @Cp204ReminderDate, @Cp204ClientResponse, @Cp204CurrentETP, @Cp204DateSubmitIRB,
                     @Cp204a6thMonthAfterYE, @Cp204a1stReminderDate, @Cp204a1stClientResponse, @Cp204a1stRevisedETP, @Cp204a1stDateSubmitIRB,
                     @Cp204a9thMonthAfterYE, @Cp204a2ndReminderDate, @Cp204a2ndClientResponse, @Cp204a2ndRevisedETP, @Cp204a2ndDateSubmitIRB,
-                    @Cp204a11thMonthAfterYE, @Cp204a3rdReminderDate, @Cp204a3rdClientResponse, @Cp204a3rdRevisedETP, @Cp204a3rdDateSubmitIRB
+                    @Cp204a11thMonthAfterYE, @Cp204a3rdReminderDate, @Cp204a3rdClientResponse, @Cp204a3rdRevisedETP, @Cp204a3rdDateSubmitIRB,
+                    @Remark
                 );
                 SELECT CAST(SCOPE_IDENTITY() as int);";
 
@@ -811,8 +822,11 @@ VALUES
                     [TaxReferenceNo] = @TaxReferenceNo, 
                     [YearEnd] = @YearEnd, 
                     [CompanyType] = @CompanyType, 
+                    [CompanyStatus] = @CompanyStatus,
+                    [YearToDo] = @YearToDo,
                     [PersonInCharge] = @PersonInCharge, 
                     [PastYearTaxEstimate] = @PastYearTaxEstimate,
+                    [Remark] = @Remark,
 
                     [Cp204OneMonthBeforeYE] = @Cp204OneMonthBeforeYE, 
                     [Cp204ReminderDate] = @Cp204ReminderDate, 

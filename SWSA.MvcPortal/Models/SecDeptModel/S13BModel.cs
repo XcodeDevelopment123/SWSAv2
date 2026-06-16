@@ -11,6 +11,7 @@
         public string? IncorpDate { get; set; }
         public string? CompanyStatus { get; set; }
         public string? ActiveCoActivitySize { get; set; }
+        public string? CreditRating { get; set; }
         public string? YEtodo { get; set; }
         public string? ACCmthTodo { get; set; }
         public string? SSMextensionDate { get; set; }

@@ -109,8 +109,13 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
+                                <label for="reportType">Report Type</label>
+                                <select id="reportType" name="reportType" class="form-control">
+                                    <option value="">-- Select Report Type --</option>
+                                    <option value="AFS">AFS - Audited</option>
+                                    <option value="UFS">UFS - Unaudited</option>
+                                </select>
+                                <input type="hidden" id="yearEnd" name="yearEnd" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -123,6 +128,14 @@
                                     <option value="Strike Off">Strike Off</option>
                                     <option value="In Liquidation">In Liquidation</option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="auditExemption">Audit Exemption</label>
+                                <input type="text" id="auditExemption" name="auditExemption" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -373,7 +386,7 @@
             $('#yearEnd').val('');
             $('#client').val('');
             $('#clientId').val('');
-            $('#first18MonthsDueDate').val('');
+                $('#first18MonthsDueDate').val('');
             $('#circulationAFSDueDate').val('');
 
             if (!selectedId) return;
@@ -395,9 +408,12 @@
                 $('#incorpDate').val(formattedIncorp);
                 $('#yearEnd').val(formattedYearEnd);
 
+                // 自动填入 Audit Exemption
+                const auditExemption = getVal(selectedClient, 'AuditExemption') || '';
+                $('#auditExemption').val(auditExemption);
+
                 // 更新 Datepicker UI 状态
                 $('#incorpDate').datepicker('update');
-                $('#yearEnd').datepicker('update');
 
                 // 🔥 重点：数据填完后，立即触发计算 🔥
                 calculateDueDates();
@@ -534,6 +550,8 @@
             IncorpDate: ($('#incorpDate').val() || '').trim(),
             YearEnd: ($('#yearEnd').val() || '').trim(),
             CompanyStatus: ($('#coStatus').val() || '').trim(),
+            ReportType: ($('#reportType').val() || '').trim(),
+            AuditExemption: ($('#auditExemption').val() || '').trim(),
             YrMthdueDate: ($('#first18MonthsDueDate').val() || '').trim(),
             CirculationAFSduedate: ($('#circulationAFSDueDate').val() || '').trim(),
             MBRSreceivedDate: ($('#mbrsReceivedDate').val() || '').trim(),
@@ -602,6 +620,8 @@
                     $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
                     $('#yearEnd').val(formatDateForDisplay(getVal(d, 'YearEnd')));
                     $('#coStatus').val(getVal(d, 'CompanyStatus'));
+                    $('#reportType').val(getVal(d, 'ReportType'));
+                    $('#auditExemption').val(getVal(d, 'AuditExemption'));
                     $('#first18MonthsDueDate').val(formatDateForDisplay(getVal(d, 'YrMthdueDate')));
                     $('#circulationAFSDueDate').val(formatDateForDisplay(getVal(d, 'CirculationAFSduedate')));
                     $('#mbrsReceivedDate').val(formatDateForDisplay(getVal(d, 'MBRSreceivedDate')));
@@ -682,6 +702,7 @@
         $('#taskForm')[0].reset();
         $('#editIndex').val('');
         $('#modalTitle').text('Add New Audited Account Submission Record');
+        $('#auditExemption').val('');
         hideModalAlert();
         clearFieldErrors();
     }

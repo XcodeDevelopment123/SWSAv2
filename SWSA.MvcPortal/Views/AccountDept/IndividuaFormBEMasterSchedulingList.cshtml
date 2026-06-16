@@ -2,7 +2,7 @@
     ViewData["Title"] = "IndividuaFormBEMasterSchedulingList";
 }
 
-<h1>Individual Form BE Master Scheduling List</h1>
+<h1>F1.5 Individual Form BE Work List</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -26,7 +26,7 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="3" class="text-center">Admin</th>
+                            <th colspan="3"  class="text-center">Admin</th>
                             <th colspan="9" class="text-center">Co Information</th>
                             <th colspan="6" class="text-center">Scheduling</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
@@ -35,9 +35,9 @@
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">Grouping</th>
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
-                            <th rowspan="2" style="vertical-align: middle;">File No</th>
+@*                             <th rowspan="2" style="vertical-align: middle;">File No</th> *@
 
-                            <th rowspan="2" style="vertical-align: middle;">Co Name</th>
+                            <th rowspan="2" style="vertical-align: middle;">Individual Name</th>
                             <th rowspan="2" style="vertical-align: middle;">Year End</th>
                             <th colspan="2" class="text-center">Tax Reference</th>
                             <th colspan="2" class="text-center">Login Info</th>
@@ -83,7 +83,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Individual Form BE Record</span>
+                    <span id="modalTitle">Add New Record Individual Form BE List</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -92,24 +92,24 @@
                     <input type="hidden" id="recordId" value="">
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
                                 <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from Individual" readonly />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
                                 <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto fill from Individual" readonly />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                       @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
                                 <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Enter file number" />
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
                     <div class="row">
@@ -124,26 +124,32 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="tinNumber">TIN number</label>
+                                <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Auto fill from Individual" readonly />
+                            </div>
+                        </div>
+                       @*  <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="yearEnd">Year End</label>
                                 <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill from Individual" readonly />
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
+                  @*   <div class="row">
+                       @ <div class="col-md-6">
                             <div class="form-group">
                                 <label for="enumber">E number</label>
                                 <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Enter E number" />
                             </div>
-                        </div>
+                        </div> 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="tinNumber">TIN number</label>
                                 <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Auto fill from Individual" readonly />
                             </div>
-                        </div>
-                    </div>
+                        </div> 
+                    </div> *@
 
                     <div class="row">
                         <div class="col-md-6">
@@ -160,7 +166,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                  @*   <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="code">MISC Code</label>
@@ -173,7 +179,7 @@
                                 <input type="text" id="description" name="description" class="form-control" placeholder="Enter description" />
                             </div>
                         </div>
-                    </div>
+                    </div> *@
 
                     <div class="row">
                         <div class="col-md-6">
@@ -182,33 +188,38 @@
                                 <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                      @*   <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yEtodo">YE to do</label>
                                 <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="dateDocIn">Date Doc In</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
+                                <label for="dateDocIn">Doc In</label>
+                               @*  <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" /> *@
+                                <select id="dateDocIn" name="dateDocIn" class="form-control">
+                                    <option value="">Select Option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                       @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mthTodo">Month to do</label>
                                 <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
                             </div>
-                        </div>
-                        <div class="col-md-4">
+                        </div> *@
+                        @* <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
                                 <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
                     <div class="row">

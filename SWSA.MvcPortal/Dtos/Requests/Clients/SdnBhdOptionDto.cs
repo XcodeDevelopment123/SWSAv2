@@ -9,16 +9,20 @@
 
     public class CompanyOptionDto
     {
-        public int Id { get; set; }                 // Client Id
-        public string Grouping { get; set; } = "";  // Group AB
+        public int Id { get; set; }
+        public string Grouping { get; set; } = "";
         public string Referral { get; set; } = "";
-        public string FileNo { get; set; } = "";    // fileNo
+        public string FileNo { get; set; } = "";
         public string CompanyName { get; set; } = "";
-        public string CompanyNo { get; set; } = ""; // registrationNumber
+        public string CompanyNo { get; set; } = "";
         public DateTime? IncorporationDate { get; set; }
-        public string YearEndMonth { get; set; } = ""; // e.g. "December"
-        public string TaxIdentificationNumber { get; set; } = ""; // e.g. "December"
-        public string EmployerNumber { get; set; } = ""; // e.g. "December"
+        public string YearEndMonth { get; set; } = "";
+        public string TaxIdentificationNumber { get; set; } = "";
+        public string EmployerNumber { get; set; } = "";
+        public string ActivitySize { get; set; } = "";
+        public string CompanyStatus { get; set; } = "";
+        public string CreditRating { get; set; } = "";
+        public string AuditExemption { get; set; } = "";
     }
 
 }

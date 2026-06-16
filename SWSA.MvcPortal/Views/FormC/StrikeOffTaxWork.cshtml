@@ -29,33 +29,31 @@
                             <th rowspan="3">No</th>
                             <th rowspan="3">Company Name</th>
                             <th rowspan="3">Year End</th>
-                            <th colspan="3">Sec Dept</th>
-                            <th colspan="11">Tax Dept</th>
+                            <th rowspan="3">Date S/Off</th>
+                            <th rowspan="3">Date received fr Sec Dept</th>
+                            <th colspan="8">Admin</th>
                             <th rowspan="3">Actions</th>
                         </tr>
 
                         <tr>
-                            <th rowspan="2">SSM Submission Date</th>
-                            <th rowspan="2">Date S/Off</th>
-                            <th rowspan="2">Date received fr Sec Dept</th>
-                            <th colspan="3">Penalties</th>
-                            <th colspan="2"></th>
-                            <th colspan="2">IRB Submission Date</th>
-                            <th colspan="2">Billing</th>
-                            <th rowspan="2">Clients copy sent</th>
-                            <th rowspan="2">Job completed date</th>
+                            <th>Staff</th>
+                            <th>Date Start</th>
+                            <th>Date End</th>
+                            <th>N or Y days</th>
+                            <th>Review</th>
+                            <th colspan="2">Client</th>
+                            <th>Job completed date</th>
                         </tr>
 
                         <tr>
-                            <th>IRB Penalties</th>
-                            <th>Appeal Date</th>
-                            <th>Payment Date</th>
-                            <th>notes/Remark</th>
-                            <th>Acc wk done?</th>
-                            <th>Form C submitted date</th>
-                            <th>Form E submitted date</th>
-                            <th>Invoice Date</th>
-                            <th>Amount RM</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Date Sent</th>
+                            <th>Date Received</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,7 +92,6 @@
                                 <label for="companyName">Company Name (Suppose Link From Client List)</label>
                                 <select id="companyName" name="companyName" class="form-control" required>
                                     <option value="">-- Select company --</option>
-                                    <!-- 选项用 JS 动态加载 -->
                                 </select>
                                 <small class="text-muted">* Company list is linked from the Client List</small>
                             </div>
@@ -108,24 +105,14 @@
                         </div>
                     </div>
 
-                    <!-- Sec Dept Information -->
-                    <div class="form-info-label col-12">
-                        <label>Sec Dept Information</label>
-                    </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="ssmSubmissionDate">SSM Submission Date</label>
-                                <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateSOff">Date S/Off</label>
                                 <input type="text" id="dateSOff" name="dateSOff" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateReceiveFrSecDept">Date received fr Sec Dept</label>
                                 <input type="text" id="dateReceiveFrSecDept" name="dateReceiveFrSecDept" class="form-control datepicker" placeholder="Select date" />
@@ -133,103 +120,69 @@
                         </div>
                     </div>
 
-                    <!-- Penalties Information -->
+                    <!-- Admin -->
                     <div class="form-info-label col-12">
-                        <label>Penalties Information</label>
+                        <label>Admin</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="irbPenalties">IRB Penalties (RM)</label>
-                                <input type="number" id="irbPenalties" name="irbPenalties" class="form-control" placeholder="Enter amount" step="0.01" />
+                                <label for="staff">Staff</label>
+                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="appealDate">Appeal Date</label>
-                                <input type="text" id="appealDate" name="appealDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="dateStart">Date Start</label>
+                                <input type="text" id="dateStart" name="dateStart" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="paymentDate">Payment Date</label>
-                                <input type="text" id="paymentDate" name="paymentDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="dateEnd">Date End</label>
+                                <input type="text" id="dateEnd" name="dateEnd" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="nOrYDays">N or Y days</label>
+                                <input type="text" id="nOrYDays" name="nOrYDays" class="form-control" placeholder="e.g. N or Y" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="review">Review</label>
+                                <input type="text" id="review" name="review" class="form-control" placeholder="Enter review" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- Additional Information -->
+                    <!-- Client -->
                     <div class="form-info-label col-12">
-                        <label>Additional Information</label>
+                        <label>Client</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="noteRemark">Notes/Remark</label>
-                                <input type="text" id="noteRemark" name="noteRemark" class="form-control" placeholder="Enter notes" />
+                                <label for="clientDateSent">Date Sent</label>
+                                <input type="text" id="clientDateSent" name="clientDateSent" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="accWkDone">Acc wk done?</label>
-                                <select id="accWkDone" name="accWkDone" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <label for="clientDateReceived">Date Received</label>
+                                <input type="text" id="clientDateReceived" name="clientDateReceived" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
 
-                    <!-- IRB Submission Date -->
+                    <!-- Completion -->
                     <div class="form-info-label col-12">
-                        <label>IRB Submission Date</label>
+                        <label>Completion</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formCsubmitDate">Form C submitted date</label>
-                                <input type="text" id="formCsubmitDate" name="formCsubmitDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="formEsubmitDate">Form E submitted date</label>
-                                <input type="text" id="formEsubmitDate" name="formEsubmitDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Billing Information -->
-                    <div class="form-info-label col-12">
-                        <label>Billing Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="invoiceDate">Invoice Date</label>
-                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="amountRM">Amount RM</label>
-                                <input type="number" id="amountRM" name="amountRM" class="form-control" placeholder="Enter amount" step="0.01" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Completion Information -->
-                    <div class="form-info-label col-12">
-                        <label>Completion Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="clientCopySent">Clients copy sent</label>
-                                <input type="text" id="clientCopySent" name="clientCopySent" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="jobCompletedDate">Job completed date</label>
@@ -272,8 +225,18 @@
             let dataTable;
             let currentEditId = null;
 
-            loadClientOptionsForTx4();
-
+            loadClientOptionsForTx4(function() {
+                const params = new URLSearchParams(window.location.search);
+                const companyParam = params.get('company');
+                if (companyParam) {
+                    const decoded = decodeURIComponent(companyParam);
+                    $('#companyName').val(decoded);
+                    $('#companyName').trigger('change');
+                    if (dataTable) {
+                        dataTable.search(decoded).draw();
+                    }
+                }
+            });
 
             // 初始化 DataTable
             initializeDataTable();
@@ -343,35 +306,37 @@
                         },
                         { "data": "companyName" },
                         { "data": "yearEnd" },
-                        { "data": "ssMsubmissionDate" },
-                        { "data": "dateSOff" },
-                        { "data": "dateReceiveFrSecDept" },
                         {
-                            "data": "irbPenalties",
+                            "data": "dateSOff",
                             "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                                if (!data) return '';
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/secretary-dept/StrikeOffSchedule?company=${name}" target="_blank" title="Open in Strike Off Schedule">${data}</a>`;
                             }
                         },
-                        { "data": "appealDate" },
-                        { "data": "paymentDate" },
-                        { "data": "noteRemark" },
                         {
-                            "data": "accWkDone",
+                            "data": "dateReceiveFrSecDept",
                             "render": function(data, type, row) {
-                                return data || 'No';
+                                if (!data) return '';
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/secretary-dept/StrikeOffSchedule?company=${name}" target="_blank" title="Open in Strike Off Schedule">${data}</a>`;
                             }
                         },
-                        { "data": "formCsubmitDate" },
-                        { "data": "formEsubmitDate" },
-                        { "data": "invoiceDate" },
+                        { "data": "staff", "defaultContent": "" },
+                        { "data": "dateStart", "defaultContent": "" },
+                        { "data": "dateEnd", "defaultContent": "" },
+                        { "data": "nOrYDays", "defaultContent": "" },
+                        { "data": "review", "defaultContent": "" },
+                        { "data": "clientDateSent", "defaultContent": "" },
+                        { "data": "clientDateReceived", "defaultContent": "" },
                         {
-                            "data": "amountRM",
+                            "data": "jobCompletedDate",
                             "render": function(data, type, row) {
-                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                                if (!data) return '';
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/secretary-dept/StrikeOffSchedule?company=${name}" target="_blank" title="Open in Strike Off Schedule">${data}</a>`;
                             }
                         },
-                        { "data": "clientCopySent" },
-                        { "data": "jobCompletedDate" },
                         {
                             "data": "id",
                             "render": function(data, type, row) {
@@ -423,19 +388,15 @@
                 const formData = {
                     companyName: $('#companyName').val(),
                     yearEnd: $('#yearEnd').val(),
-                    ssmSubmissionDate: $('#ssmSubmissionDate').val(),
                     dateSOff: $('#dateSOff').val(),
                     dateReceiveFrSecDept: $('#dateReceiveFrSecDept').val(),
-                    irbPenalties: $('#irbPenalties').val(),
-                    appealDate: $('#appealDate').val(),
-                    paymentDate: $('#paymentDate').val(),
-                    noteRemark: $('#noteRemark').val(),
-                    accWkDone: $('#accWkDone').val(),
-                    formCsubmitDate: $('#formCsubmitDate').val(),
-                    formEsubmitDate: $('#formEsubmitDate').val(),
-                    invoiceDate: $('#invoiceDate').val(),
-                    amountRM: $('#amountRM').val(),
-                    clientCopySent: $('#clientCopySent').val(),
+                    staff: $('#staff').val(),
+                    dateStart: $('#dateStart').val(),
+                    dateEnd: $('#dateEnd').val(),
+                    nOrYDays: $('#nOrYDays').val(),
+                    review: $('#review').val(),
+                    clientDateSent: $('#clientDateSent').val(),
+                    clientDateReceived: $('#clientDateReceived').val(),
                     jobCompletedDate: $('#jobCompletedDate').val(),
 
                     referral: $('#referral').val(),
@@ -513,19 +474,15 @@
 
                         // YearEnd 直接用记录里的值
                         $('#yearEnd').val(record.yearEnd);
-                        $('#ssmSubmissionDate').val(record.ssmSubmissionDate);
                         $('#dateSOff').val(record.dateSOff);
                         $('#dateReceiveFrSecDept').val(record.dateReceiveFrSecDept);
-                        $('#irbPenalties').val(record.irbPenalties);
-                        $('#appealDate').val(record.appealDate);
-                        $('#paymentDate').val(record.paymentDate);
-                        $('#noteRemark').val(record.noteRemark);
-                        $('#accWkDone').val(record.accWkDone);
-                        $('#formCsubmitDate').val(record.formCsubmitDate);
-                        $('#formEsubmitDate').val(record.formEsubmitDate);
-                        $('#invoiceDate').val(record.invoiceDate);
-                        $('#amountRM').val(record.amountRM);
-                        $('#clientCopySent').val(record.clientCopySent);
+                        $('#staff').val(record.staff || '');
+                        $('#dateStart').val(record.dateStart || '');
+                        $('#dateEnd').val(record.dateEnd || '');
+                        $('#nOrYDays').val(record.nOrYDays || '');
+                        $('#review').val(record.review || '');
+                        $('#clientDateSent').val(record.clientDateSent || '');
+                        $('#clientDateReceived').val(record.clientDateReceived || '');
                         $('#jobCompletedDate').val(record.jobCompletedDate);
 
                         $('#modalTitle').text('Edit Strike Off Tax Work Record');
@@ -558,7 +515,7 @@
             }
 
             // ★ 用共用的 /api/get/company-options，并挂上 yearEndMonth + 3 个 data
-            function loadClientOptionsForTx4() {
+            function loadClientOptionsForTx4(callback) {
                 $.get('/api/get/company-options', function (response) {
                     if (!response || !response.success) {
                         showAlert('Error loading clients: ' + (response?.message || ''), 'danger');
@@ -611,8 +568,10 @@
 
                         $ddl.append($opt);
                     });
+                    if (typeof callback === 'function') callback();
                 }).fail(function (xhr, status, error) {
                     showAlert('Error loading clients: ' + error, 'danger');
+                    if (typeof callback === 'function') callback();
                 });
             }
 

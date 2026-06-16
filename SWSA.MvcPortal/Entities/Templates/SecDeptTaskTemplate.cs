@@ -19,9 +19,11 @@ public class SecDeptTaskTemplate
     public DateTime? ARSendToClientDate { get; set; }
     public DateTime? ARReturnByClientDate { get; set; }
 
+    public DateTime? ADDueDate { get; set; }
     public DateTime? ADSubmitDate { get; set; }
     public DateTime? ADSendToClientDate { get; set; }
     public DateTime? ADReturnByClientDate { get; set; }
+    public string? YearInput { get; set; }
     public string? Remarks { get; set; } = string.Empty;
 
     [ForeignKey(nameof(ClientId))]

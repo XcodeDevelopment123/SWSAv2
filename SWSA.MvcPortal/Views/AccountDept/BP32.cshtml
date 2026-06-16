@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "BP32 - Tax Compliance Management";
 }
 
-<h1>BP32 - Tax Compliance Management</h1>
+<h1>F3.1 Work In Progress</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -24,55 +24,57 @@
                     <thead>
                         <tr>
                             <th colspan="3" class="text-center">Basic Information</th>
-                            <th colspan="6" class="text-center">Company Details</th>
-                            <th colspan="8" class="text-center">Scheduling & Timeline</th>
+                            <th colspan="8" class="text-center">Company Details</th>
+                            <th colspan="9" class="text-center">Scheduling &amp; Timeline</th>
                             <th colspan="10" class="text-center">Tax Process Steps</th>
-                            <th colspan="6" class="text-center">E-Filing & Billing</th>
-                            <th rowspan="2" style="vertical-align: middle;">Actions</th>
+                            <th colspan="6" class="text-center">E-Filing &amp; Billing</th>
+                            <th rowspan="3" style="vertical-align: middle;">Actions</th>
+
                         </tr>
                         <tr>
-                            <th>File No</th>
-                            <th>Company Name</th>
-                            <th>Year End</th>
+                            <th rowspan="2" style="vertical-align: middle;">File No</th>
+                            <th rowspan="2" style="vertical-align: middle;">Company Name</th>
+                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
 
-                            <th>Job Services</th>
-                            <th>Co Status</th>
-                            <th>Active Co Activity Size</th>
-                            <th>YE to do</th>
-                            <th>Month to do</th>
-                            <th>Doc Received Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">Job Services</th>
+                            <th rowspan="2" style="vertical-align: middle;">Co Status</th>
+                            <th rowspan="2" style="vertical-align: middle;">Activity Size</th>
+                            <th rowspan="2" style="vertical-align: middle;">YE to do</th>
+                            <th colspan="1" class="text-center">Month <br />to do</th>
 
-                            <th>Tax AR Due Date</th>
-                            <th>Staff</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Time Taken</th>
-                            <th>Date Pass to Audit</th>
-                            <th>Date Tax Submitted</th>
-                            <th>Completed/Backlog</th>
+                            <th colspan="1" style="vertical-align: middle;" class="text-center">Doc<br />Received<br />Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">Tax Due Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">Staff</th>
+                            <th rowspan="2" style="vertical-align: middle;">Start Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">End Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">Time Taken</th>
+                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Date<br />Pass to Audit</th>
+                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Target<br />For Audit<br />Dept</th>
+                            <th rowspan="2" style="vertical-align: middle;">Metric</th>
+                            <th rowspan="2" style="vertical-align: middle;">Date Tax Submitted</th>
+                            <th rowspan="2" style="vertical-align: middle;">Completed/Backlog</th>
 
-                            <th>Single Entry</th>
-                            <th>Tax Computation</th>
-                            <th>Sorting Filing</th>
-                            <th>Keyin To Excel</th>
-                            <th>Review Working Acc</th>
-                            <th>Draft Financial Statement</th>
-                            <th>Draft Tax Completed</th>
-                            <th>Review Tax</th>
-                            <th>Final Tax</th>
-                            <th>Tax Com Final Sign By Client</th>
+                            <th rowspan="2" style="vertical-align: middle;">Single Entry</th>
+                            <th rowspan="2" style="vertical-align: middle;">Tax Computation</th>
+                            <th rowspan="2" style="vertical-align: middle;">Sorting Filing</th>
+                            <th rowspan="2" style="vertical-align: middle;">Keyin To Excel</th>
+                            <th rowspan="2" style="vertical-align: middle;">Review Working Acc</th>
+                            <th rowspan="2" style="vertical-align: middle;">Draft Financial Statement</th>
+                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Draft<br />Tax Completed</th>
+                            <th rowspan="2" style="vertical-align: middle;">Review Tax</th>
+                            <th rowspan="2" style="vertical-align: middle;">Final Tax</th>
+                            <th rowspan="2" style="vertical-align: middle;">Tax Com Final Sign By Client</th>
 
-                            <th>Amount Tax Pay</th>
-                            <th>E-File Draft</th>
-                            <th>E-File Final</th>
-                            <th>E-File via SPC</th>
-                            <th>Invoice No</th>
-                            <th>Amount RM</th>
-                            <th>Doc Despatch Date</th>
+                            <th rowspan="2" style="vertical-align: middle;">Amount Tax Pay</th>
+                            <th rowspan="2" style="vertical-align: middle;">E-File Draft</th>
+                            <th rowspan="2" style="vertical-align: middle;">E-File Final</th>
+                            <th rowspan="2" style="vertical-align: middle;">E-File via SPC</th>
+                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Invoice<br />Date</th>
+                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Amount<br />Rm</th>
                         </tr>
                     </thead>
                     <tbody>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -132,6 +134,24 @@
                             <div class="form-group">
                                 <label for="jobServices">Job Services</label>
                                 <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
+                                <select id="jobServices" class="form-control">
+                                    <option value="">Select Company Type</option>
+                                    <option value="Accounting">Accounting Only</option>
+                                    <option value="AccTax">Acc+Tax</option>
+                                    <option value="Tax">Tax Only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="coType">Co Type</label>
+                                <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" />
+                                <select id="coType" class="form-control">
+                                    <option value="">Select Company Type</option>
+                                    <option value="SdnBhd">Sdn Bhd</option>
+                                    <option value="LLP">LLP</option>
+                                    <option value="Enterprise">Enterprise</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -140,18 +160,19 @@
                                 <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="activeCoActivitySize">Active Co Activity Size</label>
-                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity size" />
-                            </div>
-                        </div>
+                       
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label for="activeCoActivitySize">Activity Size</label>
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity size" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label for="yEtodo">YE to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Auto fill" readonly/>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -160,6 +181,8 @@
                                 <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="docReceivedDate">Doc Received Date</label>
@@ -232,6 +255,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="targetDateToAudit">Target date to Audit</label>
+                                <input type="text" id="targetDateToAudit" name="targetDateToAudit" class="form-control datepicker" placeholder="Auto calculate" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="timelinesMatric">Timelines Matric</label>
+                                <input type="text" id="timelinesMatric" name="timelinesMatric" class="form-control datepicker" placeholder="Auto calculate" readonly />
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row mb-3 mt-3">
                         <div class="col-md-12">
@@ -276,8 +313,8 @@
                         <div class="col-md-4"><div class="form-check"><input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" /><label class="form-check-label" for="eFileviaSPC">E-File via SPC</label></div></div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="invoiceNo">Invoice No</label>
-                                <input type="text" id="invoiceNo" name="invoiceNo" class="form-control" placeholder="Enter invoice number" />
+                                <label for="invoiceDate">Invoice Date</label>
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Enter invoice number" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -287,14 +324,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+@*                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="docDespatchDate">Doc Despatch Date</label>
                                 <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                    </div>
+                    </div> *@
                 </form>
             </div>
             <div class="modal-footer">
@@ -308,9 +345,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <partial name="_DatatablesScriptsPartial" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
@@ -334,9 +369,9 @@
                             res.data.forEach(client => {
                                 // 缓存数据
                                 companyOptionsMap[client.id] = client;
-                                
+
                                 // 显示逻辑：Company Name (Company No)
-                                const displayText = client.companyNo 
+                                const displayText = client.companyNo
                                     ? `${client.companyName} (${client.companyNo})`
                                     : client.companyName;
 
@@ -344,8 +379,8 @@
                             });
                         }
                     },
-                    error: function(xhr) { 
-                        console.error("Failed to load options", xhr); 
+                    error: function(xhr) {
+                        console.error("Failed to load options", xhr);
                     }
                 });
             }
@@ -359,14 +394,14 @@
                     'January', 'February', 'March', 'April', 'May', 'June',
                     'July', 'August', 'September', 'October', 'November', 'December'
                 ];
-                
+
                 const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
                 if (idx === -1) return monthName;
-                
+
                 const today = new Date();
                 let year = today.getFullYear();
                 if (idx < today.getMonth()) year += 1;
-                
+
                 const dt = new Date(year, idx + 1, 0);
                 return formatDdMMyyyy(dt);
             }
@@ -383,7 +418,7 @@
             // 🟢 3. Dropdown Change Event (Auto-fill)
             $('#companySelect').change(function() {
                 const selectedId = $(this).val();
-                
+
                 if (!selectedId || !companyOptionsMap[selectedId]) {
                     $('#companyName').val('');
                     $('#fileNo').val('');
@@ -398,7 +433,7 @@
 
                 // 填入 File No
                 $('#fileNo').val(c.fileNo || '');
-                
+
                 // 处理 Year End
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
@@ -419,6 +454,9 @@
                 dataTable = $('#taskDatatable').DataTable({
                     "processing": true,
                     "serverSide": false,
+                    paging: true, lengthChange: false, searching: true, ordering: true, info: true,
+                    autoWidth: false, responsive: true,
+                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     "ajax": {
                         "url": "/api/bp32/get-all", // 假设后端接口
                         "type": "GET",
@@ -444,37 +482,37 @@
                         { "data": "activeCoActivitySize", "defaultContent": "" },
                         { "data": "yEtodo", "defaultContent": "" },
                         { "data": "mthTodo", "defaultContent": "" },
-                        { 
-                            "data": "docReceivedDate", 
+                        {
+                            "data": "docReceivedDate",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "taxARdueDate", 
+                        {
+                            "data": "taxARdueDate",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         { "data": "staff", "defaultContent": "" },
-                        { 
-                            "data": "startDate", 
+                        {
+                            "data": "startDate",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "endDate", 
+                        {
+                            "data": "endDate",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         { "data": "timeTaken", "defaultContent": "" },
-                        { 
-                            "data": "datePassToAudit", 
+                        {
+                            "data": "datePassToAudit",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "dateTaxSubmited", 
+                        {
+                            "data": "dateTaxSubmited",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         { "data": "completedBacklog", "defaultContent": "" },
                         // Boolean Fields (Render Checkmarks)
@@ -488,24 +526,24 @@
                         { "data": "reviewTax", "render": renderCheck },
                         { "data": "finalTax", "render": renderCheck },
                         { "data": "taxComFinalSignByClient", "render": renderCheck },
-                        { 
-                            "data": "amountTaxPay", 
+                        {
+                            "data": "amountTaxPay",
                             "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         { "data": "eFileDraft", "render": renderCheck },
                         { "data": "eFileFinal", "render": renderCheck },
                         { "data": "eFileviaSPC", "render": renderCheck },
                         { "data": "invoiceNo", "defaultContent": "" },
-                        { 
-                            "data": "amountRM", 
+                        {
+                            "data": "amountRM",
                             "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "docDespatchDate", 
+                        {
+                            "data": "docDespatchDate",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         {
                             "data": "id",
@@ -522,6 +560,7 @@
                     ],
                     "order": [[0, 'desc']]
                 });
+                dataTable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
             }
 
             // Helper: Render Checkbox Icons
@@ -670,7 +709,7 @@
                         $('#activeCoActivitySize').val(d.activeCoActivitySize);
                         $('#yEtodo').val(d.yEtodo);
                         $('#mthTodo').val(d.mthTodo);
-                        
+
                         // Dates
                         $('#docReceivedDate').val(formatDateForInput(d.docReceivedDate));
                         $('#taxARdueDate').val(formatDateForInput(d.taxARdueDate));

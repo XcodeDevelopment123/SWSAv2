@@ -2,7 +2,7 @@
     ViewData["Title"] = "ClientAccAuditMasterSchedulingList";
 }
 
-<h1>Client Acc Audit Master Scheduling List</h1>
+<h1>F1.4 Advocate Clients'Acc</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -23,34 +23,35 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="3" class="text-center">Admin</th>
-                            <th colspan="4" class="text-center">Co Information</th>
-                            <th colspan="6" class="text-center">Scheduling</th>
-                            <th rowspan="3" style="vertical-align: middle;">Actions</th>
+                            <th colspan="2" class="text-center">Admin</th>
+                            <th colspan="3" class="text-center">Co Information</th>
+                            <th colspan="8" class="text-center">Scheduling</th>
+                           
                         </tr>
 
                         <tr>
                             <th rowspan="2">Grouping</th>
                             <th rowspan="2">Referral</th>
-                            <th rowspan="2">File No</th>
 
                             <th rowspan="2">Co Name</th>
                             <th rowspan="2">Year End</th>
-                            <th colspan="2" class="text-center">Work Allocation Info</th>
+                            <th rowspan="2">Co #</th>
+                            <th colspan="3" class="text-center">Work Allocation Info</th>
 
                             <th colspan="6" class="text-center">Acc Dept</th>
                         </tr>
 
                         <tr>
-                            <th>Service Type</th>
-                            <th>Active Co:Activity/size</th>
+                            <th>Job Service</th>
+@*                             <th>Active Co:Activity/size</th> *@
 
-                            <th>YE to do</th>
-                            <th>Date Doc In</th>
+                            <th>Year to do</th>
                             <th>Month to do</th>
+                            <th>Date Doc In</th>
                             <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
                             <th>Completed/Backlog</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +68,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Client Acc Audit Record</span>
+                    <span id="modalTitle">Add New Advocate Clients'Acc Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -118,24 +119,27 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="servicesType">Service Type</label>
-                                <input type="text" id="servicesType" name="servicesType" class="form-control" placeholder="Enter service type" />
+@*                                 <input type="text" id="servicesType" name="servicesType" class="form-control" placeholder="Enter service type" />
+ *@                                <select id="servicesType" name="servicesType" class="form-control" required>
+                                    <option value="">Select service</option>
+                                    <option value="accountingAudit">Accounting+Audit</option>
+                                    <option value="auditOnly">Audit Only</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                            @* <div class="form-group">
                                 <label for="activeCoActivitSize">Active Co:Activity/size</label>
                                 <input type="text" id="activeCoActivitSize" name="activeCoActivitSize" class="form-control" placeholder="Enter activity/size" />
+                            </div> *@
+                            <div class="form-group">
+                                <label for="yEtodo">Year to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="yEtodo">YE to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
-                            </div>
-                        </div>
+                    <div class="row">  
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc In</label>
@@ -484,7 +488,7 @@
                 $('#taskForm')[0].reset();
                 currentEditId = null;
                 $('#companySelect').val('');
-                $('#modalTitle').text('Add New Record');
+                $('#modalTitle').text('Add New Advocate Clients Acc Record');
             }
 
             // 初始化
