@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "Form B & P Backlog";
 }
 
-<h1>ACC Form B & P Backlog</h1>
+<h1>F2.3 Form B & P Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -23,8 +23,8 @@
                     <thead>
                         <tr>
                             <th colspan="3" class="text-center">Admin</th>
-                            <th colspan="8" class="text-center">Co Information</th>
-                            <th colspan="8" class="text-center">Scheduling</th>
+                            <th colspan="16" class="text-center">Co Information</th>
+                            @* <th colspan="8" class="text-center">Scheduling</th> *@
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
                         <tr>
@@ -32,7 +32,6 @@
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
                             <th rowspan="2" style="vertical-align: middle;">File No</th>
                             <th rowspan="2" style="vertical-align: middle;">Co Name</th>
-                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
                             <th colspan="2" class="text-center">Registration</th>
                             <th colspan="2" class="text-center">Tax Reference</th>
                             <th colspan="2" class="text-center">MISC Code</th>
@@ -41,7 +40,7 @@
                             <th colspan="3" class="text-center">Acc Dept</th>
                         </tr>
                         <tr>
-                            <th>Incorp Date</th>
+                            <th>Date</th>
                             <th>Co #</th>
                             <th>E number</th>
                             <th>TIN number</th>
@@ -49,16 +48,16 @@
                             <th>Description</th>
                             <th>Sercives Type</th>
                             <th>Co Status</th>
-                            <th>Active Co:Activity/size</th>
-                            <th>YE to do</th>
+                            <th>Activity/size</th>
+                            <th>Year to do</th>
                             <th>Date Doc In</th>
-                            <th>EST Month to do</th>
+                            <th>Month to do</th>
                             <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
                         </tr>
                     </thead>
                     <tbody>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -71,7 +70,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New ACC Form B & P Backlog</span>
+                    <span id="modalTitle">Add New Form B & P Backlog</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -108,7 +107,7 @@
                                 <select id="enterpriseCompanySelect" class="form-control">
                                     <option value="">-- Loading Enterprise Clients... --</option>
                                 </select>
-                                 <small class="text-muted">
+                                <small class="text-muted">
                                     Options are linked from the Enterprise Client List.
                                 </small>
                                 <input type="hidden" id="coName" name="coName" />
@@ -125,13 +124,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="incorpDate">Incorp Date</label>
+                                <label for="incorpDate">Registration Date</label>
                                 <input type="text" id="incorpDate" name="incorpDate" class="form-control datepicker" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coNumber">Co #</label>
+                                <label for="coNumber">Company #</label>
                                 <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
@@ -191,7 +190,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
+                                <label for="yeToDo">Year to do</label>
                                 <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
                             </div>
                         </div>
@@ -242,10 +241,9 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <partial name="_DatatablesScriptsPartial" />
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Include Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
@@ -253,13 +251,12 @@
         $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
-            // 🟢 全局变量存 Enterprise Options
             let enterpriseOptionsMap = {};
 
-            // 🟢 1. 加载 Enterprise Company Options
+            // 1. 加载 Enterprise Company Options
             function loadEnterpriseOptions() {
                 $.ajax({
-                    url: '/api/get/enterprise-company-options', // 你的新 API
+                    url: '/api/get/enterprise-company-options',
                     type: 'GET',
                     success: function (res) {
                         if (res.success && res.data) {
@@ -268,11 +265,8 @@
                             $sel.empty().append('<option value="">-- Select Enterprise Company --</option>');
 
                             res.data.forEach(client => {
-                                // 缓存数据
                                 enterpriseOptionsMap[client.id] = client;
-                                
-                                // 显示逻辑 (假设 Enterprise 也有 CompanyNo/RegistrationNo)
-                                const displayText = client.companyNo 
+                                const displayText = client.companyNo
                                     ? `${client.companyName} (${client.companyNo})`
                                     : client.companyName;
 
@@ -280,13 +274,13 @@
                             });
                         }
                     },
-                    error: function(xhr) { 
-                        console.error("Failed to load enterprise options", xhr); 
+                    error: function(xhr) {
+                        console.error("Failed to load enterprise options", xhr);
                     }
                 });
             }
 
-            // 🟢 2. Helper: Month -> Date String
+            // 2. Helper: Month -> Date String
             function yearEndMonthToDateString(monthName) {
                 if (!monthName) return '';
                 if (monthName.includes('/') || monthName.includes('-')) return monthName;
@@ -295,19 +289,19 @@
                     'January', 'February', 'March', 'April', 'May', 'June',
                     'July', 'August', 'September', 'October', 'November', 'December'
                 ];
-                
+
                 const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
                 if (idx === -1) return monthName;
-                
+
                 const today = new Date();
                 let year = today.getFullYear();
                 if (idx < today.getMonth()) year += 1;
-                
+
                 const dt = new Date(year, idx + 1, 0);
                 return formatDdMMyyyy(dt);
             }
 
-            // 🟢 3. Helper: Format Date
+            // 3. Helper: Format Date
             function formatDdMMyyyy(d) {
                 const date = (d instanceof Date) ? d : new Date(d);
                 if (isNaN(date)) return "";
@@ -317,12 +311,11 @@
                 return `${dd}/${mm}/${yyyy}`;
             }
 
-            // 🟢 4. Dropdown Change Event (Auto-fill)
+            // 4. Dropdown Change Event (Auto-fill)
             $('#enterpriseCompanySelect').change(function() {
                 const selectedId = $(this).val();
-                
+
                 if (!selectedId || !enterpriseOptionsMap[selectedId]) {
-                    // 清空
                     $('#coName').val('');
                     $('#grouping').val('');
                     $('#referral').val('');
@@ -337,10 +330,7 @@
 
                 const c = enterpriseOptionsMap[selectedId];
 
-                // 填入 Hidden Input
                 $('#coName').val(c.companyName || '');
-
-                // 填入其他字段
                 $('#grouping').val(c.grouping || '');
                 $('#referral').val(c.referral || '');
                 $('#fileNo').val(c.fileNo || '');
@@ -348,17 +338,14 @@
                 $('#eNumber').val(c.employerNumber || c.eNumber || '');
                 $('#tinNumber').val(c.taxIdentificationNumber || c.tiNnumber || '');
 
-                // 处理 Year End
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
 
-                // 处理 Incorporation / Commencement Date
                 if (c.incorporationDate) {
                     $('#incorpDate').datepicker('update', new Date(c.incorporationDate));
                 }
             });
 
-            // 初始化日期选择器
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
                     format: 'yyyy-mm-dd',
@@ -399,28 +386,29 @@
                 $('#modalTitle').text('Add New ACC Form B & P Backlog');
                 $('.datepicker').datepicker('update', '');
                 $('#recordId').val('');
-                $('#enterpriseCompanySelect').val(''); // 重置 Dropdown
+                $('#enterpriseCompanySelect').val('');
             }
 
             function getFormData() {
                 return {
                     grouping: $('#grouping').val(),
-                    referral: $('#referral').val(),
+                    refferal: $('#referral').val(),
                     fileNo: $('#fileNo').val(),
-                    companyName: $('#coName').val(), // 取 Hidden Input
+                    companyName: $('#coName').val(),
                     yearEnd: $('#yearEnd').val(),
-                    incorpDate: $('#incorpDate').val(),
+                    registrationDate: $('#incorpDate').val(),
                     co: $('#coNumber').val(),
                     enumber: $('#eNumber').val(),
                     tiNnumber: $('#tinNumber').val(),
+                    login: $('#login').val(),
+                    password: $('#password').val(),
                     code: $('#miscCode').val(),
                     description: $('#miscDescription').val(),
-                    servicesType: $('#servicesType').val(),
-                    coStatus: $('#coStatus').val(),
+                    jobService: $('#servicesType').val(),
                     activeCoActivitySize: $('#activitySize').val(),
                     yEtoDo: $('#yeToDo').val(),
                     dateDocIn: $('#dateDocIn').val(),
-                    estMthTodo: $('#estMonthToDo').val(),
+                    mthTodo: $('#estMonthToDo').val(),
                     staff: $('#staff').val(),
                     allocateToWkSch: $('#allocateToWkSch').val()
                 };
@@ -428,26 +416,24 @@
 
             function populateForm(data) {
                 $('#grouping').val(data.grouping || '');
-                $('#referral').val(data.referral || '');
+                $('#referral').val(data.refferal || '');
                 $('#fileNo').val(data.fileNo || '');
                 $('#coName').val(data.companyName || '');
                 $('#yearEnd').val(data.yearEnd || '');
-                $('#incorpDate').val(data.incorpDate ? data.incorpDate.split('T')[0] : '');
+                $('#incorpDate').val(data.registrationDate ? data.registrationDate.split('T')[0] : '');
                 $('#coNumber').val(data.co || '');
                 $('#eNumber').val(data.enumber || '');
                 $('#tinNumber').val(data.tiNnumber || '');
                 $('#miscCode').val(data.code || '');
                 $('#miscDescription').val(data.description || '');
-                $('#servicesType').val(data.servicesType || '');
-                $('#coStatus').val(data.coStatus || '');
+                $('#servicesType').val(data.jobService || '');
                 $('#activitySize').val(data.activeCoActivitySize || '');
                 $('#yeToDo').val(data.yEtoDo || '');
                 $('#dateDocIn').val(data.dateDocIn ? data.dateDocIn.split('T')[0] : '');
-                $('#estMonthToDo').val(data.estMthTodo || '');
+                $('#estMonthToDo').val(data.mthTodo || '');
                 $('#staff').val(data.staff || '');
                 $('#allocateToWkSch').val(data.allocateToWkSch || '');
 
-                // 🟢 反向选中 Dropdown
                 let foundId = "";
                 for (const [key, val] of Object.entries(enterpriseOptionsMap)) {
                     if (val.companyName === data.companyName) {
@@ -458,12 +444,10 @@
                 $('#enterpriseCompanySelect').val(foundId);
             }
 
-            // 测试 API 连接 (这里保留你原始代码的 bp31 接口，如果这个页面是 Form B/P，通常是 Enterprise，
-            // 确认一下后端是否确实是用 bp31 接口存数据。如果不是，请更改这里的 url)
             function testApiConnection() {
-                console.log('Testing API connection to /api/bp31/get-all');
+                console.log('Testing API connection to /api/bp23/get-all');
                 $.ajax({
-                    url: '/api/bp31/get-all', 
+                    url: '/api/bp23/get-all',
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
@@ -491,8 +475,16 @@
                     dataTable = $('#taskDatatable').DataTable({
                         "processing": true,
                         "serverSide": false,
+                        "paging": true,
+                        "lengthChange": false,
+                        "searching": true,
+                        "ordering": true,
+                        "info": true,
+                        "autoWidth": false,
+                        "responsive": true,
+                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                         "ajax": {
-                            "url": "/api/bp31/get-all", // 确认此处 URL
+                            "url": "/api/bp23/get-all",
                             "type": "GET",
                             "dataSrc": function(response) {
                                 return response.success ? response.data : [];
@@ -503,30 +495,34 @@
                         },
                         "columns": [
                             { "data": "grouping", "defaultContent": "" },
-                            { "data": "referral", "defaultContent": "" },
+                            { "data": "refferal", "defaultContent": "" },
                             { "data": "fileNo", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
                             { "data": "yearEnd", "defaultContent": "" },
-                            { 
-                                "data": "incorpDate", 
+                            {
+                                "data": "registrationDate",
                                 "render": function(data) { return data ? formatDate(data) : ''; },
-                                "defaultContent": "" 
+                                "defaultContent": ""
                             },
                             { "data": "co", "defaultContent": "" },
                             { "data": "enumber", "defaultContent": "" },
                             { "data": "tiNnumber", "defaultContent": "" },
                             { "data": "code", "defaultContent": "" },
                             { "data": "description", "defaultContent": "" },
-                            { "data": "servicesType", "defaultContent": "" },
-                            { "data": "coStatus", "defaultContent": "" },
+                            { "data": "jobService", "defaultContent": "" },
+                            {
+                                "data": null,
+                                "defaultContent": "",
+                                "render": function() { return ""; }
+                            }, // Co Status
                             { "data": "activeCoActivitySize", "defaultContent": "" },
                             { "data": "yEtoDo", "defaultContent": "" },
-                            { 
-                                "data": "dateDocIn", 
+                            {
+                                "data": "dateDocIn",
                                 "render": function(data) { return data ? formatDate(data) : ''; },
-                                "defaultContent": "" 
+                                "defaultContent": ""
                             },
-                            { "data": "estMthTodo", "defaultContent": "" },
+                            { "data": "mthTodo", "defaultContent": "" },
                             { "data": "staff", "defaultContent": "" },
                             { "data": "allocateToWkSch", "defaultContent": "" },
                             {
@@ -543,11 +539,8 @@
                             }
                         ],
                         "order": [[0, 'desc']],
-                        "responsive": true,
-                        "searching": true,
-                        "paging": true,
-                        "pageLength": 10
                     });
+                    dataTable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
                 } catch (error) {
                     console.error('DataTable initialization failed:', error);
                     initializeSimpleTable();
@@ -556,7 +549,7 @@
 
             function initializeSimpleTable() {
                 $.ajax({
-                    url: '/api/bp31/get-all',
+                    url: '/api/bp23/get-all',
                     type: 'GET',
                     success: function(response) {
                         if (response.success && response.data) {
@@ -565,7 +558,7 @@
                             response.data.forEach(function(item) {
                                 var row = `<tr>
                                     <td>${item.grouping}</td>
-                                    <td>${item.referral}</td>
+                                    <td>${item.refferal}</td>
                                     <td>${item.fileNo}</td>
                                     <td>${item.companyName}</td>
                                     <td>
@@ -579,9 +572,9 @@
                 });
             }
 
-            function saveBP31Record() {
+            function saveBP23Record() {
                 const formData = getFormData();
-                const url = currentEditId ? '/api/bp31/update' : '/api/bp31/create';
+                const url = currentEditId ? '/api/bp23/update' : '/api/bp23/create';
                 const method = currentEditId ? 'PUT' : 'POST';
 
                 if (currentEditId) formData.id = currentEditId;
@@ -612,7 +605,7 @@
             }
 
             function editRecord(id) {
-                $.get(`/api/bp31/get/${id}`, function(response) {
+                $.get(`/api/bp23/get/${id}`, function(response) {
                     if (response.success) {
                         const record = response.data;
                         currentEditId = record.id;
@@ -630,7 +623,7 @@
             function deleteRecord(id) {
                 if (confirm('Are you sure you want to delete this record?')) {
                     $.ajax({
-                        url: `/api/bp31/delete/${id}`,
+                        url: `/api/bp23/delete/${id}`,
                         type: 'DELETE',
                         success: function(response) {
                             if (response.success) {
@@ -656,11 +649,11 @@
             }
 
             // 事件绑定
-            $('#saveBtn').click(saveBP31Record);
+            $('#saveBtn').click(saveBP23Record);
             $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', resetForm);
-            
+
             $('#addNewBtn').click(function() {
                 resetForm();
                 $('#modalTitle').text('Add New ACC Form B & P Backlog');
@@ -668,13 +661,13 @@
 
             $('#taskForm').on('submit', function(e) {
                 e.preventDefault();
-                saveBP31Record();
+                saveBP23Record();
             });
 
             // 初始化
             console.log('Initializing ACC Form B & P Backlog application...');
             initializeDatePickers();
-            loadEnterpriseOptions(); // 🟢 启动时加载 Enterprise Dropdown
+            loadEnterpriseOptions();
             testApiConnection();
         });
     </script>
