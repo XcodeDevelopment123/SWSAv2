@@ -21,17 +21,15 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="2">Admin</th>
-                            <th colspan="4">Co Information</th>
+                            <th colspan="1">Admin</th>
+                            <th colspan="3">Co Information</th>
                             <th colspan="2">Due Dates</th>
                             <th colspan="3">Reminder</th>
                             <th colspan="2">Actions</th>
                         </tr>
                         <tr>
                             <th>Grouping</th>
-                            <th>File</th>
                             <th>Company</th>
-                            <th>Company Number</th>
                             <th>Incorporation Date</th>
                             <th>Year end</th>
                             <th>1st yr 18mths due date</th>
@@ -44,7 +42,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
                     </tbody>
                 </table>
             </div>
@@ -79,13 +76,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly/>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="file">File</label>
-                                <input type="text" id="file" name="file" class="form-control" placeholder="Auto fill from company" readonly />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                     </div>
@@ -105,19 +96,11 @@
                                     Options are linked from the Sdn Bhd Client List.
                                 </small>
 
-                                <!-- 真正要存进 B11 的公司名、ClientId 用隐藏字段 -->
                                 <input type="hidden" id="company" name="company" />
                                 <input type="hidden" id="companyClientId" name="companyClientId" />
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="companyNumber">Company Number</label>
-                                <input type="text" id="companyNumber" name="companyNumber"
-                                       class="form-control" placeholder="Auto fill from company" readonly />
-                            </div>
-                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="incorporationDate">Incorporation Date</label>
@@ -134,6 +117,13 @@
                                        class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do <span class="text-danger">*</span></label>
+                                <input type="text" id="yearToDo" name="yearToDo"
+                                       class="form-control" placeholder="Required to fill" />
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Due Dates -->
@@ -144,19 +134,15 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="first18MonthsDue">1st yr 18mths due date</label>
-                                <select id="first18MonthsDue" name="first18MonthsDue" class="form-control">
-                                    <option value="">-- Select from AT2.1 / AEX4.1 --</option>
-                                </select>
-                                <small class="text-muted">Pulled from AT2.1 / AEX4.1</small>
-
+                                <small class="text-muted d-block">(auto = Year end + 18 months)</small>
+                                <input type="text" id="first18MonthsDue" name="first18MonthsDue"
+                                       class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="circulationAfsDue">
-                                    Circulation & AFS due Date
-                                    <small class="text-muted">(auto = Year end + 6 months)</small>
-                                </label>
+                                <label for="circulationAfsDue">Circulation to AES</label>
+                                <small class="text-muted d-block">(auto = Year end + 7 months)</small>
                                 <input type="text" id="circulationAfsDue" name="circulationAfsDue"
                                        class="form-control" placeholder="Auto calculated" readonly />
                             </div>
@@ -171,8 +157,8 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="reminderDate">Reminder date</label>
-                                 <small class="text-muted">30 days after annivesary date</small>
-                                <input type="text" id="reminderDate" name="reminderDate" class="form-control" placeholder="Auto calculated"  readonly/>
+                                <small class="text-muted">30 days after annivesary date</small>
+                                <input type="text" id="reminderDate" name="reminderDate" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -223,28 +209,19 @@
         let dataTableInitialized = false;
         let companyOptionsMap = {};
 
-        // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
         function yearEndMonthToDateString(monthName) {
             if (!monthName) return '';
-
             const months = [
                 'January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
             const idx = months.indexOf(monthName);
-            if (idx === -1) return monthName; // 不认识就原样返回
-
+            if (idx === -1) return monthName;
             const today = new Date();
             let year = today.getFullYear();
-
-            // 如果这个 month 已经过了，就当作明年的 year end
-            if (idx < today.getMonth()) {
-                year += 1;
-            }
-
-            // 取这个月的最后一天
+            if (idx < today.getMonth()) year += 1;
             const dt = new Date(year, idx + 1, 0);
-            return formatDdMMyyyy(dt); // 复用你已有的函数
+            return formatDdMMyyyy(dt);
         }
 
         function loadCompanyOptions() {
@@ -253,19 +230,12 @@
                 type: 'GET',
                 success: function (res) {
                     if (!(res && res.success && Array.isArray(res.data))) return;
-
                     companyOptionsMap = {};
                     const $sel = $('#companySelect');
                     $sel.empty().append('<option value="">-- Select company --</option>');
-
                     res.data.forEach(o => {
-                        // 后端 B11CompanyOptionDto -> 前端是 camelCase：id, grouping, fileNo, companyName, companyNo, incorporationDate, yearEndMonth
                         companyOptionsMap[o.id] = o;
-
-                        const display = o.companyNo
-                            ? `${o.companyName} (${o.companyNo})`
-                            : o.companyName;
-
+                        const display = o.companyNo ? `${o.companyName} (${o.companyNo})` : o.companyName;
                         $sel.append(`<option value="${o.id}">${display}</option>`);
                     });
                 },
@@ -282,16 +252,12 @@
                 success: function (res) {
                     if (!(res && res.success)) return;
                     console.log(res.data);
-
-
                     const $sel = $("#first18MonthsDue");
                     $sel.empty().append(`<option value="">-- Select from AT2.1 / AEX4.1 --</option>`);
-
                     res.data.forEach(o => {
                         const company = o.companyName || "-";
                         const ye = formatDateForDisplay(o.yearEnd);
                         const d18 = formatDateForDisplay(o.first18MthDue);
-
                         $sel.append(`
                             <option value="${d18}">
                                 ${o.sourceType} - ${company} - YE ${ye} - 18mth ${d18}
@@ -302,8 +268,6 @@
             });
         }
 
-
-        // ---------- Date utils (dd/MM/yyyy) ----------
         function parseDdMMyyyy(s) {
             if (!s) return null;
             const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s.trim());
@@ -326,15 +290,12 @@
             return new Date(y, m + months, day);
         }
 
-        // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
             const $box = $('#modalAlert');
             $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
                 .addClass(map[type] || 'alert-info')
                 .html(msg);
-
-            // scroll modal body to top so the alert is visible
             const $body = $('#taskModal .modal-body');
             $body.stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
         }
@@ -355,7 +316,6 @@
             $f.next('.invalid-feedback').text(message);
         }
 
-        // ---------- Page-level alert (outside modal) ----------
         function showAlert(message, type) {
             const cls = type === 'success' ? 'alert-success'
                 : type === 'error' ? 'alert-danger'
@@ -368,16 +328,10 @@
             setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
         }
 
-        // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
-
             s = String(s).trim();
-
-            // 已经是 dd/MM/yyyy
             if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
-
-            // yyyy-MM-dd 或 yyyy-MM-ddTHH...
             var isoMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
             if (isoMatch) {
                 var y = parseInt(isoMatch[1], 10);
@@ -386,18 +340,13 @@
                 var dt = new Date(y, m, d);
                 if (!isNaN(dt.getTime())) return formatDdMMyyyy(dt);
             }
-
-            // 例如 "Feb 27 2025", "Feb 27 2025 12:00AM", "Jan  9 2025 12:00AM"
             var m2 = /^([A-Za-z]{3}\s+\d{1,2}\s+\d{4})/.exec(s);
             if (m2) {
-                var dt2 = new Date(m2[1]); // "Feb 27 2025"
+                var dt2 = new Date(m2[1]);
                 if (!isNaN(dt2.getTime())) return formatDdMMyyyy(dt2);
             }
-
-            // 实在看不懂，就原样显示
             return s;
         }
-
 
         function clearForm() {
             $('#taskForm')[0].reset();
@@ -410,73 +359,48 @@
             clearFieldErrors();
         }
 
-        // ---------- Init ----------
         $(document).ready(function () {
             loadCompanyOptions();
-            load18MthSourceList();
 
             $('#companySelect').on('change', function () {
                 const id = $(this).val();
                 const o = companyOptionsMap[id];
-
                 if (!o) {
-                    // 清空自动字段
                     $('#companyClientId').val('');
                     $('#company').val('');
                     $('#grouping').val('');
-                    $('#file').val('');
-                    $('#companyNumber').val('');
                     $('#incorporationDate').val('');
                     $('#yearEnd').val('').trigger('change');
                     return;
                 }
-
-                // 1) 存 ClientId + 公司名（给后端用）
                 $('#companyClientId').val(o.id);
                 $('#company').val(o.companyName || '');
-
-                // 2) Admin 部分：Grouping / File
                 $('#grouping').val(o.grouping || '');
-                $('#file').val(o.fileNo || '');
-
-                // 3) Co info: Company No / Incorp Date / Year End
-                $('#companyNumber').val(o.companyNo || '');
                 $('#incorporationDate').val(formatDateForDisplay(o.incorporationDate));
-
                 const yeStr = yearEndMonthToDateString(o.yearEndMonth);
-                $('#yearEnd').val(yeStr).trigger('change'); // 触发原本的 YearEnd +6m 逻辑
+                $('#yearEnd').val(yeStr).trigger('change');
             });
 
-            // 你原来的绑定 / DataTable 初始化 / loadRecordsFromDatabase() 继续写在后面...
-
-            // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
                 const ye = parseDdMMyyyy($(this).val());
-                $('#circulationAfsDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 6)) : '');
+                // Auto = YE + 7 months
+                $('#circulationAfsDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 7)) : '');
+                // Auto = YE + 18 months
+                $('#first18MonthsDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 18)) : '');
             });
 
-            // 自动计算 18个月 due + Reminder date
             $('#incorporationDate').on('change', function () {
                 const inc = parseDdMMyyyy($(this).val());
                 if (!inc) {
-                    // $('#first18MonthsDue').val('');
                     $('#reminderDate').val('');
                     return;
                 }
-
-                // // 18个月后的日期
-                // const due18 = addMonthsKeepEnd(inc, 18);
-                // $('#first18MonthsDue').val(formatDdMMyyyy(due18));
-
-                // 成立日 + 1年 + 30天
                 const oneYearLater = addMonthsKeepEnd(inc, 12);
                 const reminder = new Date(oneYearLater);
                 reminder.setDate(reminder.getDate() + 30);
                 $('#reminderDate').val(formatDdMMyyyy(reminder));
             });
 
-
-            // Datepickers (exclude read-only #circulationAfsDue)
             $('input[type="text"]').filter(function () {
                 const id = $(this).attr('id') || '';
                 return (id.includes('Date') || id.includes('date') || id.includes('yearEnd')) && id !== 'circulationAfsDue';
@@ -486,7 +410,6 @@
                 todayHighlight: true
             });
 
-            // EmailSend toggle
             $('#emailSend').on('change', function () {
                 if ($(this).val() === 'No') {
                     $('#dateSend').val('-').prop('disabled', true);
@@ -496,13 +419,13 @@
                 }
             });
 
-            // DataTable (13 columns)
+            // ✅ 11 columns (removed File and Company Number)
             dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
-                order: [[8, 'asc']],
+                order: [[6, 'asc']],
                 language: {
                     search: "Search:",
                     lengthMenu: "Show _MENU_ entries",
@@ -513,22 +436,20 @@
                 },
                 columns: [
                     { data: 0 },  // Grouping
-                    { data: 1 },  // File
-                    { data: 2 },  // Company
-                    { data: 3 },  // Company Number
-                    { data: 4 },  // Incorporation Date
-                    { data: 5 },  // Year end
-                    { data: 6 },  // 1st yr 18mths due date
-                    { data: 7 },  // Circulation & AFS due Date
-                    { data: 8 },  // Reminder date
-                    { data: 9 },  // Email Send
-                    { data: 10 }, // Date Send
-                    { data: 11, orderable: false, searchable: false }, // Edit
-                    { data: 12, orderable: false, searchable: false }  // Delete
+                    { data: 1 },  // Company
+                    { data: 2 },  // Incorporation Date
+                    { data: 3 },  // Year end
+                    { data: 4 },  // 1st yr 18mths due date
+                    { data: 5 },  // Circulation & AFS due Date
+                    { data: 6 },  // Reminder date
+                    { data: 7 },  // Email Send
+                    { data: 8 },  // Date Send
+                    { data: 9,  orderable: false, searchable: false }, // Edit
+                    { data: 10, orderable: false, searchable: false }  // Delete
                 ],
                 columnDefs: [
                     {
-                        targets: 9,
+                        targets: 7,
                         render: function (data) {
                             if (data === 'Yes') return '<span class="badge bg-success">Yes</span>';
                             if (data === 'No') return '<span class="badge bg-warning">No</span>';
@@ -539,18 +460,14 @@
             });
             dataTableInitialized = true;
 
-            // Bindings
             $('#saveBtn').click(saveRecord);
             $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
-            $('#taskModal').on('show.bs.modal', function () {
-            });
+            $('#taskModal').on('show.bs.modal', function () {});
 
-            // First load
             loadRecordsFromDatabase();
         });
 
-        // ---------- Load & Render ----------
         function loadRecordsFromDatabase() {
             $.ajax({
                 url: '/get-b11-records',
@@ -576,9 +493,7 @@
                 records.forEach(function (r) {
                     dataTable.row.add([
                         r.grouping || '',
-                        r.file || '',
                         r.company || '',
-                        r.companyNo || '',
                         formatDateForDisplay(r.incorporationDate),
                         formatDateForDisplay(r.yearEnd),
                         formatDateForDisplay(r.ymDueDate),
@@ -594,7 +509,6 @@
             dataTable.draw();
         }
 
-        // ---------- Save ----------
         function saveRecord() {
             hideModalAlert();
             clearFieldErrors();
@@ -602,11 +516,10 @@
             const formData = {
                 Id: ($('#editIndex').val() || '0').trim(),
                 Grouping: ($('#grouping').val() || '').trim(),
-                File: ($('#file').val() || '').trim(),
                 Company: ($('#company').val() || '').trim(),
-                CompanyNo: ($('#companyNumber').val() || '').trim(),
                 IncorporationDate: ($('#incorporationDate').val() || '').trim(),
                 YearEnd: ($('#yearEnd').val() || '').trim(),
+                YearToDo: ($('#yearToDo').val() || '').trim(),
                 YMDueDate: ($('#first18MonthsDue').val() || '').trim(),
                 CirculationAFSDueDate: ($('#circulationAfsDue').val() || '').trim(),
                 ReminderDate: ($('#reminderDate').val() || '').trim(),
@@ -614,15 +527,10 @@
                 DateSent: ($('#dateSend').val() || '').trim()
             };
 
-            // Required validations + inline errors
-            // === 表单验证 ===
             let hasError = false;
-
-            // 清除旧的错误标记
             $('#taskForm .form-control').removeClass('is-invalid');
             $('.invalid-feedback').remove();
 
-            // 工具函数：在某个字段下方显示错误提示
             function setFieldError(selector, message) {
                 const $field = $(selector);
                 $field.addClass('is-invalid');
@@ -631,34 +539,20 @@
                 }
             }
 
-            // === 验证逻辑 ===
-            // 1️⃣ 基础资料
             if (!formData.Grouping) { setFieldError('#grouping', 'Required'); hasError = true; }
-            if (!formData.File) { setFieldError('#file', 'Required'); hasError = true; }
             if (!formData.Company) { setFieldError('#company', 'Required'); hasError = true; }
-            if (!formData.CompanyNo) { setFieldError('#companyNumber', 'Required'); hasError = true; }
             if (!formData.IncorporationDate) { setFieldError('#incorporationDate', 'Required'); hasError = true; }
             if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
-
-            // 2️⃣ 自动计算的 readonly 字段不用检查：#first18MonthsDue, #circulationAfsDue, #reminderDate
-            // 但如果由于异常为空（例如用户没选日期）也要提示
+            if (!formData.YearToDo) { setFieldError('#yearToDo', 'Required'); hasError = true; }
             if (!formData.YMDueDate) { setFieldError('#first18MonthsDue', 'Auto field missing — please reselect Incorporation Date'); hasError = true; }
             if (!formData.CirculationAFSDueDate) { setFieldError('#circulationAfsDue', 'Auto field missing — please reselect Year End'); hasError = true; }
             if (!formData.ReminderDate) { setFieldError('#reminderDate', 'Auto field missing — please reselect Incorporation Date'); hasError = true; }
-
-            // 3️⃣ Email Send 必选
-            if (!formData.EmailSend) {
-                setFieldError('#emailSend', 'Please select Yes or No');
-                hasError = true;
-            }
-
-            // 4️⃣ 如果选择 Yes 必须填 Date Sent
+            if (!formData.EmailSend) { setFieldError('#emailSend', 'Please select Yes or No'); hasError = true; }
             if (formData.EmailSend === 'Yes' && (!formData.DateSent || formData.DateSent === '-')) {
                 setFieldError('#dateSend', 'Required when Email Send = Yes');
                 hasError = true;
             }
 
-            // === 触发提示 ===
             if (hasError) {
                 showModalAlert('Please fix the highlighted fields.', 'error');
                 $('#taskForm .is-invalid').first().focus();
@@ -697,7 +591,6 @@
             });
         }
 
-        // ---------- Edit ----------
         function editRecord(id) {
             $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
             hideModalAlert();
@@ -712,13 +605,11 @@
                         const d = res.data || {};
                         $('#editIndex').val(d.id || 0);
                         $('#grouping').val(d.grouping || '');
-                        $('#file').val(d.file || '');
                         $('#company').val(d.company || '');
-                        $('#companyNumber').val(d.companyNo || d.companyNumber || '');
                         $('#incorporationDate').val(d.incorporationDate || '');
                         $('#yearEnd').val(d.yearEnd || '').trigger('change');
+                        $('#yearToDo').val(d.yearToDo || '');
 
-                        // 1st yr 18mths due date
                         const ym = d.ymDueDate || d.first18MonthsDue || '';
                         $('#first18MonthsDue').val(ym).trigger('change');
 
@@ -726,27 +617,17 @@
                         $('#reminderDate').val(d.reminderDate || '');
                         $('#emailSend').val(d.emailSend || '').trigger('change');
                         $('#dateSend').val(d.dateSent || '');
-                        // === 根据 Company + Company Number 反选 dropdown ===
+
                         const existingCompanyName = (d.company || '').trim().toUpperCase();
-                        const existingCompanyNo = (d.companyNo || d.companyNumber || '').trim().toUpperCase();
-
                         let matchedId = null;
-
                         for (const [id, o] of Object.entries(companyOptionsMap)) {
                             const optName = (o.companyName || '').trim().toUpperCase();
-                            const optNo = (o.companyNo || '').trim().toUpperCase();
-
-                            if (optName === existingCompanyName && optNo === existingCompanyNo) {
+                            if (optName === existingCompanyName) {
                                 matchedId = id;
                                 break;
                             }
                         }
-
-                        if (matchedId) {
-                            $('#companySelect').val(matchedId);
-                            // 一般不用触发 change，避免把已经从 record 载入的值再覆盖一遍
-                            // 如果你希望重新根据 dropdown 再算一遍，也可以加: $('#companySelect').trigger('change');
-                        }
+                        if (matchedId) $('#companySelect').val(matchedId);
 
                         $('#taskModal').modal('show');
                     } else {
@@ -760,7 +641,6 @@
             });
         }
 
-        // ---------- Delete ----------
         function deleteRecord(id) {
             if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
             $.ajax({

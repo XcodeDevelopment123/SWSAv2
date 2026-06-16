@@ -46,7 +46,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("AEXBcklogs");
+                    b.ToTable("AEXBcklogs", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Backlogs.AuditBacklogSchedule", b =>
@@ -73,7 +73,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("AuditBacklogSchedules");
+                    b.ToTable("AuditBacklogSchedules", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseClient", b =>
@@ -111,7 +111,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -136,7 +136,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("MsicCodeId");
 
-                    b.ToTable("CompanyMsicCodes");
+                    b.ToTable("CompanyMsicCodes", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.CommunicationContact", b =>
@@ -175,7 +175,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("CommunicationContacts");
+                    b.ToTable("CommunicationContacts", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.CompanyOwner", b =>
@@ -222,7 +222,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientCompanyId");
 
-                    b.ToTable("CompanyOwners");
+                    b.ToTable("CompanyOwners", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.OfficialContact", b =>
@@ -258,7 +258,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("OfficialContacts");
+                    b.ToTable("OfficialContacts", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.DocumentRecord", b =>
@@ -304,7 +304,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("HandledByStaffId");
 
-                    b.ToTable("DocumentRecords");
+                    b.ToTable("DocumentRecords", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.MsicCode", b =>
@@ -329,7 +329,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MsicCodes");
+                    b.ToTable("MsicCodes", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.ScheduledJob", b =>
@@ -394,7 +394,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("JobGroup", "JobKey")
                         .IsUnique();
 
-                    b.ToTable("ScheduledJobs");
+                    b.ToTable("ScheduledJobs", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.SystemAuditLog", b =>
@@ -437,7 +437,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PerformedByUserId");
 
-                    b.ToTable("SystemAuditLogs");
+                    b.ToTable("SystemAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.SystemNotificationLog", b =>
@@ -471,7 +471,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("CreatedAt", "Channel");
 
-                    b.ToTable("SystemNotificationLogs");
+                    b.ToTable("SystemNotificationLogs", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AEXTemplate", b =>
@@ -611,7 +611,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PersonInChargeId");
 
-                    b.ToTable("AEXTemplates");
+                    b.ToTable("AEXTemplates", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AuditTemplate", b =>
@@ -748,7 +748,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PersonInChargeId");
 
-                    b.ToTable("AuditTemplates");
+                    b.ToTable("AuditTemplates", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecDeptTaskTemplate", b =>
@@ -790,7 +790,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("SecDeptTaskTemplates");
+                    b.ToTable("SecDeptTaskTemplates", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecStrikeOffTemplate", b =>
@@ -842,7 +842,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("DoneByUserId");
 
-                    b.ToTable("SecStrikeOffTemplates");
+                    b.ToTable("SecStrikeOffTemplates", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.TaxStrikeOffTemplate", b =>
@@ -892,7 +892,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("TaxStrikeOffTemplates");
+                    b.ToTable("TaxStrikeOffTemplates", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.User", b =>
@@ -960,7 +960,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("StaffId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseCompany", b =>
@@ -970,25 +970,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<int>("ActivitySize")
                         .HasColumnType("int");
 
-                    b.Property<string>("AppointmentEngagementData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BusinessNature")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClientRating")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CompanyStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CompanyStatusReason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CompanyType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CreditRating")
                         .HasColumnType("int");
 
                     b.Property<string>("EmployerNumber")
@@ -997,20 +979,11 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("FileNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("ForeignOwned")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("IncorporationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PrincipalActivity")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RegistrationNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ServiceSelected")
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("BaseCompanies", (string)null);

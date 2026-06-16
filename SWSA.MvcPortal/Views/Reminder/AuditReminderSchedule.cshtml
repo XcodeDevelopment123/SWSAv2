@@ -26,69 +26,52 @@
                         <tr>
                             <th rowspan="3">Grouping</th>
                             <th rowspan="3">Company Name</th>
-
                             <th colspan="6">Planing & Allocation</th>
-
                             <th colspan="11">Reminder & Letter</th>
-
                             <th colspan="2">Inward Doc</th>
                             <th colspan="2">Actions</th>
                         </tr>
-
                         <tr>
                             <th colspan="2">Co Status</th>
-
                             <th rowspan="2">Year End</th>
                             <th rowspan="2">PIC</th>
-
                             <th colspan="2">Due Dates</th>
                             <th colspan="5">Bank Confirmation</th>
                             <th colspan="2">Mth 1 Email</th>
-                            <th colspan="2">Mth 4 Reminder PIC</th>
+                            <th colspan="2">Mth 3 Reminder PIC</th>
                             <th colspan="2">Mth 6 Text PIC</th>
-
                             <th rowspan="2">Date Received</th>
                             <th rowspan="2">Note</th>
                             <th rowspan="2">Edit</th>
                             <th rowspan="2">Delete</th>
-
                         </tr>
-
                         <tr>
                             <th>Active</th>
                             <th>AEX/OT</th>
-
                             <th>SSM 18 Mth Due</th>
                             <th>SSM/Tax</th>
-
                             <th>Targeted send date</th>
                             <th>Date send</th>
                             <th>Targeted Reminder</th>
                             <th>Date send</th>
                             <th>Date Received</th>
-
                             <th>Targeted date</th>
                             <th>Date sent</th>
-
                             <th>Targeted call/text</th>
                             <th>Date remind</th>
-
                             <th>Targeted Final Text</th>
                             <th>Date Text</th>
                         </tr>
                     </thead>
                     <tbody>
-                     
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
+<!-- Modal -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -132,25 +115,18 @@
                         <label>Planning & Allocation</label>
                     </div>
                     <div class="row">
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="coStatusActive">Active</label>
-                                <select id="coStatusActive" name="coStatusActive" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <input type="text" id="coStatusActive" name="coStatusActive" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="coStatusAEX">AEX/OT</label>
-                                <select id="coStatusAEX" name="coStatusAEX" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="AEX">AEX</option>
-                                    <option value="OT">OT</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <input type="text" id="coStatusAEX" name="coStatusAEX" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -165,12 +141,9 @@
                                 <select id="pic" name="pic" class="form-control">
                                     <option value="">-- Select from AT2.1 / AEX4.1 --</option>
                                 </select>
-                                <small class="text-muted">
-                                    Pulled from AT2.1 / AEX4.1 (Team)
-                                </small>
+                                <small class="text-muted">Pulled from AT2.1 / AEX4.1 (Team)</small>
                             </div>
                         </div>
-
                     </div>
 
                     <!-- Due Dates -->
@@ -178,23 +151,19 @@
                         <label>Due Dates</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ssm18MonthDue">SSM 18 Mth Due</label>
-                                <select id="ssm18MonthDue" name="ssm18MonthDue" class="form-control">
-                                    <option value="">-- Select from S13A (YrMthDueDate) --</option>
-                                </select>
-                                <small class="text-muted">
-                                    Pulled from S13A · YrMthDueDate
-                                </small>
-                            </div>
-                        </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="ssm18MonthDue">SSM 18 Mth Due</label>
+                                <small class="text-muted d-block">(auto = Year end + 18 months)</small>
+                                <input type="text" id="ssm18MonthDue" name="ssm18MonthDue" class="form-control" placeholder="Auto calculated" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="ssmTaxDue">SSM/Tax</label>
-                                 <small class="text-muted">(auto = Year end + 7 months)</small>
-                                 <input type="text" id="ssmTaxDue" name="ssmTaxDue" class="form-control" placeholder="Auto calculated" readonly />
+                                <small class="text-muted d-block">(auto = Year end + 7 months)</small>
+                                <input type="text" id="ssmTaxDue" name="ssmTaxDue" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
                     </div>
@@ -207,12 +176,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="bankTargetedSend">Targeted send date</label>
-                                 <small class="text-muted d-block"> 
-                                • YE Jun–Sep → Send in Oct      
-                                <br>
-                                 • YE Oct–Jan → Send in Feb
-                                 <br>
-                                 • YE Feb–May → Send in Jun
+                                <small class="text-muted d-block">
+                                    • YE Jun–Sep → Send in Oct
+                                    <br>• YE Oct–Jan → Send in Feb
+                                    <br>• YE Feb–May → Send in Jun
                                 </small>
                                 <input type="text" id="bankTargetedSend" name="bankTargetedSend" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
@@ -232,7 +199,7 @@
                         </div>
                     </div>
                     <div class="row">
-                          <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="bankDateSend2">Date Send</label>
                                 <input type="text" id="bankDateSend2" name="bankDateSend2" class="form-control" placeholder="Select date" />
@@ -248,7 +215,7 @@
 
                     <!-- Month 1 Email -->
                     <div class="form-info-label col-12">
-                        <label>Month 1 Email</label>
+                        <label>Month 1 Email / Request for DOC</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -266,15 +233,15 @@
                         </div>
                     </div>
 
-                    <!-- Month 4 Reminder PIC -->
+                    <!-- Month 3 Reminder (2nd Reminder) -->
                     <div class="form-info-label col-12">
-                        <label>Month 4 Reminder PIC</label>
+                        <label>Month 3 Reminder (2nd Reminder)</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth4TargetedCall">Targeted call/text</label>
-                                <small class="text-muted">(auto = Year end + 4 months)</small>
+                                <small class="text-muted">(auto = Year end + 3 months)</small>
                                 <input type="text" id="mth4TargetedCall" name="mth4TargetedCall" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -294,7 +261,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth6TargetedFinal">Targeted Final Text</label>
-                                 <small class="text-muted">(auto = Year end + 6 months)</small>
+                                <small class="text-muted">(auto = Year end + 5 months)</small>
                                 <input type="text" id="mth6TargetedFinal" name="mth6TargetedFinal" class="form-control" placeholder="Auto calculated" readonly />
                             </div>
                         </div>
@@ -315,11 +282,9 @@
                             <div class="form-group">
                                 <label for="inwardDateReceived">Date Received</label>
                                 <select id="inwardDateReceived" name="inwardDateReceived" class="form-control">
-                                    <option value="">-- Select from A31A (DateReceived) --</option>
+                                    <option value="">-- Link From C 1.1 --</option>
                                 </select>
-                                <small class="text-muted">
-                                    Pulled from A31A · DateReceived
-                                </small>
+                                <small class="text-muted">Linked from C 1.1</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -346,200 +311,108 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-       <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
         let dataTable;
         let dataTableInitialized = false;
 
-        // 把 YearEndMonth ("December") 粗略转成 dd/MM/yyyy，方便你现有的 +6 months 逻辑工作
         function yearEndMonthToDateString(monthName) {
             if (!monthName) return '';
-
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
+            const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
             const idx = months.indexOf(monthName);
-            if (idx === -1) return monthName; // 不认识就原样返回
-
+            if (idx === -1) return monthName;
             const today = new Date();
             let year = today.getFullYear();
-
-            // 如果这个 month 已经过了，就当作明年的 year end
-            if (idx < today.getMonth()) {
-                year += 1;
-            }
-
-            // 取这个月的最后一天
+            if (idx < today.getMonth()) year += 1;
             const dt = new Date(year, idx + 1, 0);
-            return formatDdMMyyyy(dt); // 复用你已有的函数
+            return formatDdMMyyyy(dt);
         }
 
-        // 0) Company 下拉：从 Sdn Bhd Client List 拿 Group + YearEndMonth
         function loadCompanyOptions() {
             $.ajax({
-                url: "/api/get/company-options",   // 你刚才的 API
+                url: "/api/get/company-options",
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#companyName");
                     $sel.empty().append('<option value="">-- Select company --</option>');
-
                     if (!(res && res.success && res.data)) return;
-
                     res.data.forEach(o => {
                         const name = o.companyName || o.name || "-";
                         const grouping = o.group || o.grouping || o.groupName || "";
-                        const yeMonth = o.yearEndMonth || "";    // e.g. "December"
-
-                        // 把 Grouping / YearEndMonth 存在 data-* 里，后面 change 时用
-                        $sel.append(`
-                            <option value="${name}"
-                                    data-grouping="${grouping}"
-                                    data-yearendmonth="${yeMonth}">
-                                ${name}
-                            </option>
-                        `);
+                        const yeMonth = o.yearEndMonth || "";
+                        // ✅ 加入 active 和 aex 的 data 属性
+                        const active = o.active || o.isActive || "";
+                        const aex = o.aex || o.aexStatus || "";
+                        $sel.append(`<option value="${name}"
+                            data-grouping="${grouping}"
+                            data-yearendmonth="${yeMonth}"
+                            data-active="${active}"
+                            data-aex="${aex}">${name}</option>`);
                     });
                 }
             });
         }
 
-        // 1) PIC：AT21 / AEX41.Team
         function loadPicSourceList() {
             $.ajax({
                 url: "/get-b2-pic-sources",
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#pic");
-                    $sel.empty().append(
-                        '<option value="">-- Select from AT2.1 / AEX4.1 --</option>'
-                    );
-
+                    $sel.empty().append('<option value="">-- Select from AT2.1 / AEX4.1 --</option>');
                     if (!(res && res.success && res.data)) return;
-
                     res.data.forEach(o => {
                         const company = o.companyName || "-";
                         const ye = formatDateForDisplay(o.yearEnd);
                         const pic = o.pic || "-";
-
-                        // value 用 PIC 名字，刚好存去 B2.PIC 即可
-                        $sel.append(`
-                            <option value="${pic}">
-                                ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
-                            </option>
-                        `);
+                        $sel.append(`<option value="${pic}">${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}</option>`);
                     });
                 }
             });
         }
 
-        // 2) SSM 18 Mth Due：S13A.YrMthDueDate
-        function loadSsm18MthSourceList() {
-            $.ajax({
-                url: "/get-b2-ssm18-sources",
-                type: "GET",
-                success: function (res) {
-                    const $sel = $("#ssm18MonthDue");
-                    $sel.empty().append(
-                        '<option value="">-- Select from S13A (YrMthDueDate) --</option>'
-                    );
-
-                    if (!(res && res.success && res.data)) return;
-
-                    res.data.forEach(o => {
-                        const company = o.companyName || "-";
-                        const ye = formatDateForDisplay(o.yearEnd);
-                        const d18 = formatDateForDisplay(o.yrMthDueDate);
-
-                        // value 直接用日期字串，存入 B2.SSM18MthDue
-                        $sel.append(`
-                            <option value="${d18}">
-                                ${o.sourceType} - ${company} - YE ${ye} - 18mth ${d18}
-                            </option>
-                        `);
-                    });
-                }
-            });
-        }
-
-        // 3) Inward Date Received：A31A.DateReceived -> B2.DateReceived2
         function loadInwardSourceList() {
             $.ajax({
                 url: "/get-b2-inward-sources",
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#inwardDateReceived");
-                    $sel.empty().append(
-                        '<option value="">-- Select from A31A (DateReceived) --</option>'
-                    );
-
+                    $sel.empty().append('<option value="">-- Select from C 1.1 (DateReceived) --</option>');
                     if (!(res && res.success && res.data)) return;
-
                     res.data.forEach(o => {
                         const company = o.companyName || "-";
                         const ye = formatDateForDisplay(o.yearEnd);
                         const dr = formatDateForDisplay(o.dateReceived);
-
-                        $sel.append(`
-                            <option value="${dr}">
-                                ${o.sourceType} - ${company} - YE ${ye} - Date ${dr}
-                            </option>
-                        `);
+                        $sel.append(`<option value="${dr}">${o.sourceType} - ${company} - YE ${ye} - Date ${dr}</option>`);
                     });
                 }
             });
         }
 
+        function calcBankTargetedSendDate(yeStr) {
+            const dt = parseDdMMyyyy(yeStr);
+            if (!dt) return "";
+            const m = dt.getMonth() + 1;
+            let targetMonth, targetYear = dt.getFullYear();
+            if (m >= 6 && m <= 9) { targetMonth = 10; }
+            else if (m === 10 || m === 11 || m === 12) { targetMonth = 2; targetYear += 1; }
+            else if (m === 1) { targetMonth = 2; }
+            else if (m >= 2 && m <= 5) { targetMonth = 6; }
+            return formatDdMMyyyy(new Date(targetYear, targetMonth - 1, 1));
+        }
 
-        // ========== Bank Confirmation 计算逻辑 ==========
-function calcBankTargetedSendDate(yeStr) {
-    const dt = parseDdMMyyyy(yeStr);
-    if (!dt) return "";
+        function calcMonthNPlus7th(yeStr, nMonths) {
+            const dt = parseDdMMyyyy(yeStr);
+            if (!dt) return "";
+            const d = addMonthsKeepEnd(dt, nMonths);
+            return formatDdMMyyyy(new Date(d.getFullYear(), d.getMonth(), 7));
+        }
 
-    const m = dt.getMonth() + 1; // 1–12
-    let targetMonth;
-    let targetYear = dt.getFullYear();
-
-    // Rule:
-    // Jun–Sep → October same year
-    // Oct–Dec → February next year
-    // Jan     → February same year
-    // Feb–May → June same year
-
-    if (m >= 6 && m <= 9) {
-        targetMonth = 10; // October
-    } else if (m === 10 || m === 11 || m === 12) {
-        targetMonth = 2;
-        targetYear += 1;
-    } else if (m === 1) {
-        targetMonth = 2; // same year
-    } else if (m >= 2 && m <= 5) {
-        targetMonth = 6; // June
-    }
-
-    return formatDdMMyyyy(new Date(targetYear, targetMonth - 1, 1)); // 1st of the month
-}
-
-
-// 统一逻辑：YearEnd + N months → 当月 7 号
-function calcMonthNPlus7th(yeStr, nMonths) {
-    const dt = parseDdMMyyyy(yeStr);
-    if (!dt) return "";
-    const d = addMonthsKeepEnd(dt, nMonths);
-    return formatDdMMyyyy(new Date(d.getFullYear(), d.getMonth(), 7));
-}
-
-        // ---------- Date utils (dd/MM/yyyy) ----------
         function parseDdMMyyyy(s) {
             if (!s) return null;
             const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s.trim());
@@ -562,21 +435,17 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             return new Date(y, m + months, day);
         }
 
-         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+            if ($('#modalAlert').length === 0) {
+                $('#taskModal .modal-body').prepend('<div id="modalAlert" class="alert d-none"></div>');
+            }
             const $box = $('#modalAlert');
             $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
-                .addClass(map[type] || 'alert-info')
-                .html(msg);
-
-            // scroll modal body to top so the alert is visible
-            const $body = $('#taskModal .modal-body');
-            $body.stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
+                .addClass(map[type] || 'alert-info').html(msg);
+            $('#taskModal .modal-body').stop(true).animate({ scrollTop: 0 }, 200, function () { $box.attr('tabindex', -1).focus(); });
         }
-        function hideModalAlert() {
-            $('#modalAlert').addClass('d-none').empty();
-        }
+        function hideModalAlert() { $('#modalAlert').addClass('d-none').empty(); }
         function clearFieldErrors() {
             $('#taskForm .is-invalid').removeClass('is-invalid');
             $('#taskForm .invalid-feedback').remove();
@@ -585,17 +454,11 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             const $f = $(selector);
             if (!$f.length) return;
             $f.addClass('is-invalid');
-            if ($f.next('.invalid-feedback').length === 0) {
-                $f.after('<div class="invalid-feedback"></div>');
-            }
+            if ($f.next('.invalid-feedback').length === 0) $f.after('<div class="invalid-feedback"></div>');
             $f.next('.invalid-feedback').text(message);
         }
-
-          // ---------- Page-level alert (outside modal) ----------
         function showAlert(message, type) {
-            const cls = type === 'success' ? 'alert-success'
-                : type === 'error' ? 'alert-danger'
-                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const cls = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-info';
             const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
                             ${message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -603,8 +466,6 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             $('.card-header').after(html);
             setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
         }
-
-           // ---------- Helpers ----------
         function formatDateForDisplay(s) {
             if (!s) return '';
             if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
@@ -614,146 +475,95 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             $('#taskForm')[0].reset();
             $('#editIndex').val('');
             $('#modalTitle').text('Add New Audit Schedule Reminder');
-            $('#dateSend').prop('disabled', false);
             hideModalAlert();
             clearFieldErrors();
         }
 
-        // ---------- Init ----------
         $(document).ready(function () {
-
-            loadPicSourceList();      
-            loadSsm18MthSourceList();   
-            loadInwardSourceList();
-
             loadCompanyOptions();
+            loadPicSourceList();
+            loadInwardSourceList();
 
             $('#companyName').on('change', function () {
                 const $opt = $(this).find('option:selected');
-
                 const grp = $opt.data('grouping') || '';
-                const yeMonth = $opt.data('yearendmonth') || '';   // "December"
-                const yeDate = yearEndMonthToDateString(yeMonth); // 转成 dd/MM/yyyy
+                const yeMonth = $opt.data('yearendmonth') || '';
+                const active = $opt.data('active') || '';
+                const aex = $opt.data('aex') || '';
+                const yeDate = yearEndMonthToDateString(yeMonth);
 
                 $('#grouping').val(grp);
-                $('#yearEnd').val(yeDate).trigger('change');       // 触发 YearEnd 的 auto 计算
+                // ✅ Auto fill Active and AEX/OT from company
+                $('#coStatusActive').val(active);
+                $('#coStatusAEX').val(aex);
+                $('#yearEnd').val(yeDate).trigger('change');
             });
 
-            // Year end -> Circulation & AFS due (auto = +6 months, read-only)
             $('#yearEnd').on('change', function () {
-    const yeStr = $(this).val();
-    const ye = parseDdMMyyyy(yeStr);
+                const yeStr = $(this).val();
+                const ye = parseDdMMyyyy(yeStr);
 
-    // (你原本的代码) SSM/Tax
-    $('#ssmTaxDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 7)) : '');
+                // ✅ SSM 18 Mth Due — auto = YE + 18 months
+                $('#ssm18MonthDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 18)) : '');
+                // SSM/Tax — auto = YE + 7 months
+                $('#ssmTaxDue').val(ye ? formatDdMMyyyy(addMonthsKeepEnd(ye, 7)) : '');
 
-    if (!ye) {
-        // 清空所有 auto 字段
-        $('#bankTargetedSend').val('');
-        $('#bankTargetedReminder').val('');
-        $('#mth1TargetedDate').val('');
-        $('#mth4TargetedCall').val('');
-        $('#mth6TargetedFinal').val('');
-        return;
-    }
+                if (!ye) {
+                    $('#bankTargetedSend').val('');
+                    $('#bankTargetedReminder').val('');
+                    $('#mth1TargetedDate').val('');
+                    $('#mth4TargetedCall').val('');
+                    $('#mth6TargetedFinal').val('');
+                    return;
+                }
 
-    // ---------- Bank Targeted Send ----------
-    const bankSend = calcBankTargetedSendDate(yeStr);
-    $('#bankTargetedSend').val(bankSend);
+                const bankSend = calcBankTargetedSendDate(yeStr);
+                $('#bankTargetedSend').val(bankSend);
+                const sendDt = parseDdMMyyyy(bankSend);
+                $('#bankTargetedReminder').val(sendDt ? formatDdMMyyyy(addMonthsKeepEnd(sendDt, 2)) : '');
+                $('#mth1TargetedDate').val(calcMonthNPlus7th(yeStr, 1));
+                $('#mth4TargetedCall').val(calcMonthNPlus7th(yeStr, 3));
+                $('#mth6TargetedFinal').val(calcMonthNPlus7th(yeStr, 5));
+            });
 
-    // ---------- Bank Reminder = Send + 2 Months ----------
-    const sendDt = parseDdMMyyyy(bankSend);
-    $('#bankTargetedReminder').val(
-        sendDt ? formatDdMMyyyy(addMonthsKeepEnd(sendDt, 2)) : ''
-    );
-
-    // ---------- Mth 1 / 4 / 6 ----------
-    $('#mth1TargetedDate').val(calcMonthNPlus7th(yeStr, 1)); // Month 1 → YE + 1m → 7th
-    $('#mth4TargetedCall').val(calcMonthNPlus7th(yeStr, 4)); // Month 4 → YE + 4m → 7th
-    $('#mth6TargetedFinal').val(calcMonthNPlus7th(yeStr, 6)); // Month 6 → YE + 6m → 7th
-    });
-
-            // Datepickers (exclude read-only #circulationAfsDue)
             $('input[type="text"]').filter(function () {
                 const id = $(this).attr('id') || '';
-                return (id.includes('Date') || id.includes('date') || id.includes('yearEnd')) && id !== 'circulationAfsDue';
-            }).datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            });
+                return (id.includes('Date') || id.includes('date')) && !$(this).prop('readonly');
+            }).datepicker({ format: 'dd/mm/yyyy', autoclose: true, todayHighlight: true });
 
-            // DataTable (20 columns)
-           dataTable = $('#taskDatatable').DataTable({
-           responsive: true,
-           ordering: true,
-           autoWidth: false,
-           pageLength: 10,
-           order: [], // 建议先不强制按第8列排序
-           language: {
-           search: "Search:",
-           lengthMenu: "Show _MENU_ entries",
-           emptyTable: "No records found",
-           info: "Showing _START_ to _END_ of _TOTAL_ entries",
-           infoEmpty: "Showing 0 to 0 of 0 entries",
-           paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
-           },
-            columns: [
-            { data: 0 },  // Grouping
-            { data: 1 },  // Company Name
-
-            { data: 2 },  // Active
-            { data: 3 },  // AEX/OT
-            { data: 4 },  // Year End
-            { data: 5 },  // PIC
-            { data: 6 },  // SSM 18 Mth Due
-            { data: 7 },  // SSM/Tax
-
-            { data: 8 },  // Bank Targeted send date
-            { data: 9 },  // Bank Date send (第1个)
-            { data:10 },  // Bank Targeted Reminder
-            { data:11 },  // Bank Date send (第2个)  <-- 新增
-            { data:12 },  // Bank Date Received
-
-            { data:13 },  // Mth1 Targeted date
-            { data:14 },  // Mth1 Date sent
-
-            { data:15 },  // Mth4 Targeted call/text
-            { data:16 },  // Mth4 Date remind
-
-            { data:17 },  // Mth6 Targeted Final Text
-            { data:18 },  // Mth6 Date Text
-
-            { data:19 },  // Inward Date Received
-            { data:20 },  // Note
-
-            { data:21, orderable:false, searchable:false }, // Edit
-            { data:22, orderable:false, searchable:false }  // Delete
-              ],
-                columnDefs: [
-                    {
-                        targets: 9,
-                        render: function (data) {
-                            if (data === 'Yes') return '<span class="badge bg-success">Yes</span>';
-                            if (data === 'No') return '<span class="badge bg-warning">No</span>';
-                            return data || '';
-                        }
-                    }
+            dataTable = $('#taskDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                order: [],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+                },
+                columns: [
+                    { data: 0 }, { data: 1 }, { data: 2 }, { data: 3 }, { data: 4 }, { data: 5 },
+                    { data: 6 }, { data: 7 }, { data: 8 }, { data: 9 }, { data: 10 }, { data: 11 },
+                    { data: 12 }, { data: 13 }, { data: 14 }, { data: 15 }, { data: 16 }, { data: 17 },
+                    { data: 18 }, { data: 19 }, { data: 20 },
+                    { data: 21, orderable: false, searchable: false },
+                    { data: 22, orderable: false, searchable: false }
                 ]
             });
             dataTableInitialized = true;
 
-            // Bindings
             $('#saveBtn').click(saveRecord);
             $(document).on('click', '.edit-btn', function () { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function () { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', clearForm);
 
-            // First load
             loadRecordsFromDatabase();
         });
 
-        // ---------- Load & Render ----------
         function loadRecordsFromDatabase() {
             $.ajax({
                 url: '/get-b2-records',
@@ -762,8 +572,6 @@ function calcMonthNPlus7th(yeStr, nMonths) {
                     if (res && res.success) {
                         populateTable(res.data || []);
                         showAlert('Loaded ' + (res.data?.length || 0) + ' records.', 'success');
-                        console.log('sample keys:', Object.keys((res.data||[])[0]||{}));
-
                     } else {
                         showAlert('Failed to load: ' + (res?.message || 'Unknown error'), 'error');
                     }
@@ -775,136 +583,68 @@ function calcMonthNPlus7th(yeStr, nMonths) {
         }
 
         function populateTable(records) {
-        if (!dataTableInitialized) return;
-        dataTable.clear();
+            if (!dataTableInitialized) return;
+            dataTable.clear();
+            if (records && records.length) {
+                records.forEach(function (r) {
+                    dataTable.row.add([
+                        r.grouping || '', r.companyName || '',
+                        r.activeStatus || '', r.aeXstatus || '',
+                        formatDateForDisplay(r.yearEnd), r.pic || '',
+                        formatDateForDisplay(r.ssM18MthDue), formatDateForDisplay(r.ssM_TAX),
+                        formatDateForDisplay(r.targetedSendDate), formatDateForDisplay(r.dateSend),
+                        formatDateForDisplay(r.targetedReminder), formatDateForDisplay(r.dateSend2),
+                        formatDateForDisplay(r.dateReceived),
+                        formatDateForDisplay(r.targetedDate), formatDateForDisplay(r.dateSent),
+                        formatDateForDisplay(r.targetedCall), formatDateForDisplay(r.dateRemind),
+                        formatDateForDisplay(r.targetedFinalText), formatDateForDisplay(r.dateText),
+                        formatDateForDisplay(r.dateReceived2), r.note || '',
+                        `<button class="btn btn-sm btn-warning edit-btn" data-id="${r.id}" title="Edit"><i class="fas fa-edit"></i></button>`,
+                        `<button class="btn btn-sm btn-danger delete-btn" data-id="${r.id}" title="Delete"><i class="fas fa-trash"></i></button>`
+                    ]);
+                });
+            }
+            dataTable.draw();
+        }
 
-        if (records && records.length) {
-        records.forEach(function (r) {
-        dataTable.row.add([
-        r.grouping || '',
-        r.companyName || '',
-
-        r.activeStatus || '',
-        r.aeXstatus || '',
-        formatDateForDisplay(r.yearEnd),
-        r.pic || '',
-        formatDateForDisplay(r.ssM18MthDue),
-        formatDateForDisplay(r.ssM_TAX),
-
-        formatDateForDisplay(r.targetedSendDate),
-        formatDateForDisplay(r.dateSend),        // 第1个 Date send
-        formatDateForDisplay(r.targetedReminder),
-        formatDateForDisplay(r.dateSend2),       // 第2个 Date send  ← 关键补上
-        formatDateForDisplay(r.dateReceived),
-
-        formatDateForDisplay(r.targetedDate),
-        formatDateForDisplay(r.dateSent),
-
-        formatDateForDisplay(r.targetedCall),
-        formatDateForDisplay(r.dateRemind),
-
-        formatDateForDisplay(r.targetedFinalText),
-        formatDateForDisplay(r.dateText),
-
-        formatDateForDisplay(r.dateReceived2),
-        r.note || '',
-
-        `<button class="btn btn-sm btn-warning edit-btn" data-id="${r.id}" title="Edit"><i class="fas fa-edit"></i></button>`,
-        `<button class="btn btn-sm btn-danger delete-btn" data-id="${r.id}" title="Delete"><i class="fas fa-trash"></i></button>`
-        ]);
-      });
-     }
-        dataTable.draw();
-    }
-
-        // ---------- Save ----------
         function saveRecord() {
             hideModalAlert();
             clearFieldErrors();
+            const formData = {
+                Id: ($('#editIndex').val() || '0').trim(),
+                Grouping: ($('#grouping').val() || '').trim(),
+                CompanyName: ($('#companyName').val() || '').trim(),
+                ActiveStatus: ($('#coStatusActive').val() || '').trim(),
+                AEXstatus: ($('#coStatusAEX').val() || '').trim(),
+                YearEnd: ($('#yearEnd').val() || '').trim(),
+                PIC: ($('#pic').val() || '').trim(),
+                SSM18MthDue: ($('#ssm18MonthDue').val() || '').trim(),
+                SSM_TAX: ($('#ssmTaxDue').val() || '').trim(),
+                TargetedSendDate: ($('#bankTargetedSend').val() || '').trim(),
+                DateSend: ($('#bankDateSend').val() || '').trim(),
+                TargetedReminder: ($('#bankTargetedReminder').val() || '').trim(),
+                DateSend2: ($('#bankDateSend2').val() || '').trim(),
+                DateReceived: ($('#bankDateReceived').val() || '').trim(),
+                TargetedDate: ($('#mth1TargetedDate').val() || '').trim(),
+                DateSent: ($('#mth1DateSent').val() || '').trim(),
+                TargetedCall: ($('#mth4TargetedCall').val() || '').trim(),
+                DateRemind: ($('#mth4DateRemind').val() || '').trim(),
+                TargetedFinalText: ($('#mth6TargetedFinal').val() || '').trim(),
+                DateText: ($('#mth6DateText').val() || '').trim(),
+                DateReceived2: ($('#inwardDateReceived').val() || '').trim(),
+                Note: ($('#inwardNote').val() || '').trim()
+            };
 
-              const formData = {
-        Id: ($('#editIndex').val() || '0').trim(),
-
-        // 1) Basic
-        Grouping: ($('#grouping').val() || '').trim(),
-        CompanyName: ($('#companyName').val() || '').trim(),
-        ActiveStatus: ($('#coStatusActive').val() || '').trim(),
-        AEXstatus: ($('#coStatusAEX').val() || '').trim(),
-        YearEnd: ($('#yearEnd').val() || '').trim(),
-        PIC: ($('#pic').val() || '').trim(),
-
-        // 2) Due dates
-        SSM18MthDue: ($('#ssm18MonthDue').val() || '').trim(),
-        SSM_TAX: ($('#ssmTaxDue').val() || '').trim(),
-
-        // 3) Bank Confirmation
-        TargetedSendDate: ($('#bankTargetedSend').val() || '').trim(),
-        DateSend: ($('#bankDateSend').val() || '').trim(),
-        TargetedReminder: ($('#bankTargetedReminder').val() || '').trim(),
-        // 这个是 Bank 那个第二个「Date send」
-        // 如果你将来加一个 input，就用 id="bankDateSend2"
-        DateSend2: ($('#bankDateSend2').val() || '').trim(),
-        DateReceived: ($('#bankDateReceived').val() || '').trim(),
-
-        // 4) Mth 1 Email
-        TargetedDate: ($('#mth1TargetedDate').val() || '').trim(),
-        DateSent: ($('#mth1DateSent').val() || '').trim(),
-
-        // 5) Mth 4 Reminder PIC
-        TargetedCall: ($('#mth4TargetedCall').val() || '').trim(),
-        DateRemind: ($('#mth4DateRemind').val() || '').trim(),
-
-        // 6) Mth 6 Text PIC
-        TargetedFinalText: ($('#mth6TargetedFinal').val() || '').trim(),
-        DateText: ($('#mth6DateText').val() || '').trim(),
-
-        // 7) Inward Doc
-        DateReceived2: ($('#inwardDateReceived').val() || '').trim(),
-        Note: ($('#inwardNote').val() || '').trim()
-    };
-
-            // Required validations + inline errors
-            // === 表单验证 ===
             let hasError = false;
-
-            // 清除旧的错误标记
-            $('#taskForm .form-control').removeClass('is-invalid');
-            $('.invalid-feedback').remove();
-
-            // 工具函数：在某个字段下方显示错误提示
-            function setFieldError(selector, message) {
-                const $field = $(selector);
-                $field.addClass('is-invalid');
-                if ($field.next('.invalid-feedback').length === 0) {
-                    $field.after(`<div class="invalid-feedback">${message}</div>`);
-                }
-            }
-
-            // === 验证逻辑 ===
-            // 1️⃣ 基础资料
-            if (!formData.Grouping) { setFieldError('#grouping', 'Required'); hasError = true; }
-            if (!formData.CompanyName ) { setFieldError('#companyName ', 'Required'); hasError = true; }
+            if (!formData.CompanyName) { setFieldError('#companyName', 'Required'); hasError = true; }
             if (!formData.YearEnd) { setFieldError('#yearEnd', 'Required'); hasError = true; }
             if (!formData.PIC) { setFieldError('#pic', 'Required'); hasError = true; }
-            if (!formData.SSM18MthDue) { setFieldError('#ssm18MonthDue', 'Required'); hasError = true; }
-            // 3️⃣ co status 必选
-            if (!formData.ActiveStatus) {
-                setFieldError('#coStatusActive', 'Please select Yes or No');
-                hasError = true;
-            }
-             if (!formData.AEXstatus) {
-                setFieldError('#coStatusAEX', 'Please select AEX / OT or No');
-                hasError = true;
-            }
 
-            // === 触发提示 ===
             if (hasError) {
                 showModalAlert('Please fix the highlighted fields.', 'error');
                 $('#taskForm .is-invalid').first().focus();
                 return;
             }
-
-            if (formData.EmailSend === 'No') formData.DateSent = '-';
 
             const isUpdate = Number(formData.Id) > 0;
             const url = isUpdate ? '/update-b2' : '/create-b2';
@@ -914,10 +654,7 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
             $.ajax({
-                url: url,
-                type: method,
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
+                url: url, type: method, contentType: 'application/json', data: JSON.stringify(formData),
                 success: function (res) {
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     if (res && res.success) {
@@ -936,12 +673,10 @@ function calcMonthNPlus7th(yeStr, nMonths) {
             });
         }
 
-        // ---------- Edit ----------
         function editRecord(id) {
             $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
             hideModalAlert();
             clearFieldErrors();
-
             $.ajax({
                 url: '/get-b2-record/' + id,
                 type: 'GET',
@@ -952,34 +687,23 @@ function calcMonthNPlus7th(yeStr, nMonths) {
                         $('#editIndex').val(d.id || 0);
                         $('#grouping').val(d.grouping || '');
                         $('#companyName').val(d.companyName || '').trigger('change');
-
                         $('#coStatusActive').val(d.activeStatus || '');
                         $('#coStatusAEX').val(d.aeXstatus || '');
-
-                        if (d.yearEnd || d.YearEnd) {
-                            $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
-                        }
+                        $('#yearEnd').val(d.yearEnd || d.YearEnd || '').trigger('change');
                         $('#pic').val(d.pic || '');
-
-                        const ssm18 = d.ssM18MthDue || '';
-                        $('#ssm18MonthDue').val(ssm18).trigger('change');
+                        $('#ssm18MonthDue').val(d.ssM18MthDue || '');
                         $('#ssmTaxDue').val(d.ssM_TAX || '');
-
                         $('#bankTargetedSend').val(d.targetedSendDate || '');
                         $('#bankDateSend').val(d.dateSend || '');
                         $('#bankTargetedReminder').val(d.targetedReminder || '');
                         $('#bankDateSend2').val(d.dateSend2 || '');
                         $('#bankDateReceived').val(d.dateReceived || '');
-
                         $('#mth1TargetedDate').val(d.targetedDate || '');
                         $('#mth1DateSent').val(d.dateSent || '');
-
                         $('#mth4TargetedCall').val(d.targetedCall || '');
                         $('#mth4DateRemind').val(d.dateRemind || '');
-
                         $('#mth6TargetedFinal').val(d.targetedFinalText || '');
                         $('#mth6DateText').val(d.dateText || '');
-
                         $('#inwardDateReceived').val(d.dateReceived2 || '');
                         $('#inwardNote').val(d.note || '');
                         $('#taskModal').modal('show');
@@ -988,13 +712,12 @@ function calcMonthNPlus7th(yeStr, nMonths) {
                     }
                 },
                 error: function (xhr) {
-                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit 18 Months Reminder');
+                    $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Audit Reminder Schedule');
                     showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
                 }
             });
         }
 
-        // ---------- Delete ----------
         function deleteRecord(id) {
             if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
             $.ajax({
