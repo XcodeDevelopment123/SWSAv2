@@ -2,7 +2,7 @@
     ViewData["Title"] = "ACC LLP Back log";
 }
 
-<h1>ACC LLP Back log</h1>
+<h1>F2.2 LLP Back log</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -40,7 +40,7 @@
                             <th colspan="3" class="text-center">Acc Dept</th>
                         </tr>
                         <tr>
-                            <th>Incorp Date</th>
+                            <th>Date</th>
                             <th>Co #</th>
                             <th>E number</th>
                             <th>TIN number</th>
@@ -48,10 +48,10 @@
                             <th>Description</th>
                             <th>Services Type</th>
                             <th>Co Status</th>
-                            <th>Active Co:Activity/size</th>
-                            <th>YE to do</th>
+                            <th>Activity/size</th>
+                            <th>Year to do</th>
                             <th>Date Doc In</th>
-                            <th>EST Month to do</th>
+                            <th>Month to do</th>
                             <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
                         </tr>
@@ -70,7 +70,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New ACC LLP Back log</span>
+                    <span id="modalTitle">Add New LLP Back log</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -92,12 +92,12 @@
                                 <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                       @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fileNo">File No</label>
                                 <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
                     <div class="row">
@@ -130,7 +130,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="coNumber">Co #</label>
+                                <label for="coNumber">Company #</label>
                                 <input type="text" id="coNumber" name="coNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
@@ -184,13 +184,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="activitySize">Active Co:Activity/size</label>
+                                <label for="activitySize">Activity/size</label>
                                 <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Enter activity/size" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
+                                <label for="yeToDo">Year to do</label>
                                 <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="estMonthToDo">EST Month to do</label>
+                                <label for="estMonthToDo">Month to do</label>
                                 <input type="text" id="estMonthToDo" name="estMonthToDo" class="form-control" placeholder="Enter month" />
                             </div>
                         </div>

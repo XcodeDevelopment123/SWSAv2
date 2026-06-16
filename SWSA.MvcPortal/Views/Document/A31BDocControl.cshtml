@@ -27,6 +27,7 @@
 
                         </tr>
                         <tr>
+                            <th>Grouping</th>
                             <th>Client</th>
                             <th>Year End</th>
                             <th>Date Received</th>
@@ -73,27 +74,49 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="clientId">Client (Suppose Link From Client List)</label>
+                                <label for="clientId">Client (Link From Client List)</label>
                                 <select id="clientId" name="clientId" class="form-control" required>
                                     <option value="">Select Client</option>
                                     <!-- Clients will be loaded dynamically -->
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Year end will auto-fill when client is selected" readonly />
+                                <select id="yearEnd" name="yearEnd" class="form-control" required>
+                                    <option value="">Select Month</option>
+                                    <option value="Jan">Jan</option>
+                                    <option value="Feb">Feb</option>
+                                    <option value="Mar">Mar</option>
+                                    <option value="Apr">Apr</option>
+                                    <option value="May">May</option>
+                                    <option value="Jun">Jun</option>
+                                    <option value="Jul">Jul</option>
+                                    <option value="Aug">Aug</option>
+                                    <option value="Sept">Sept</option>
+                                    <option value="Oct">Oct</option>
+                                    <option value="Nov">Nov</option>
+                                    <option value="Dec">Dec</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="yearEnd">Years</label>
+                                <select id="coStatus" name="coStatus" class="form-control" required>
+                                    <option value="">Select Year</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="coStatus">Co Status</label>
+                                <label for="coStatus">Co Type</label>
                                 <select id="coStatus" name="coStatus" class="form-control" required>
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
+                                    <option value="">Select Type</option>
+                                    <option value="Sdn Bhd">Sdn Bhd</option>
+                                    <option value="LLP">LLP</option>
+                                    <option value="Enterprise">Enterpise</option>
                                 </select>
                             </div>
                         </div>

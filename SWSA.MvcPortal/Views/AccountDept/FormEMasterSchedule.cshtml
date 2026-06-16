@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "FormEMasterSchedule";
 }
 
-<h1>Form E Master Schedule</h1>
+<h1>F1.6 Form E List</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -23,33 +23,24 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="3" class="text-center">Admin</th>
-                            <th colspan="9" class="text-center">Co Information</th>
-                            <th colspan="6" class="text-center">Scheduling</th>
+                            <th colspan="12" class="text-center">Admin</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">Grouping</th>
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
-                            <th rowspan="2" style="vertical-align: middle;">File No</th>
                             <th rowspan="2" style="vertical-align: middle;">Co Name</th>
                             <th rowspan="2" style="vertical-align: middle;">Year End</th>
-                            <th colspan="2" class="text-center">Tax Reference</th>
-                            <th colspan="2" class="text-center">Login Info</th>
-                            <th colspan="2" class="text-center">MISC Code</th>
-                            <th rowspan="2" style="vertical-align: middle;">Job Services</th>
-                            <th colspan="6" class="text-center">Acc Dept</th>
+                            <th colspan="1" class="text-center">Tax Reference</th>
+                            <th colspan="7" class="text-center">Login Info</th>
+@*                             <th colspan="5" class="text-center">Acc Dept</th> *@
                         </tr>
                         <tr>
                             <th>E number</th>
-                            <th>TIN number</th>
                             <th>Login</th>
                             <th>Password</th>
-                            <th>Code</th>
-                            <th>Description</th>
-                            <th>YE to do</th>
+                            <th>Year to do</th>
                             <th>Date Doc In</th>
-                            <th>Month to do</th>
                             <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
                             <th>Completed/Backlog</th>
@@ -69,7 +60,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Form E Record</span>
+                    <span id="modalTitle">Add New Form E Lisst</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -91,10 +82,10 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
+                         @*    <div class="form-group">
                                 <label for="fileNo">File No</label>
                                 <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
-                            </div>
+                            </div> *@
                         </div>
                     </div>
 
@@ -109,19 +100,20 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                           @*  <div class="form-group">
                                 <label for="yearEnd">Year End</label>
                                 <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
+                            </div> *@
                             <div class="form-group">
                                 <label for="enumber">E number</label>
                                 <input type="text" id="enumber" name="enumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
+                        </div>
+                    </div>
+
+                   @*  <div class="row">
+                        <div class="col-md-6">
+                            
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -129,7 +121,7 @@
                                 <input type="text" id="tinNumber" name="tinNumber" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
-                    </div>
+                    </div> *@
 
                     <div class="row">
                         <div class="col-md-6">
@@ -164,14 +156,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="jobServices">Job Services</label>
-                                <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
+                                <label for="jobServices">Remark</label>
+                                <input type="text" id="remark" name="remark" class="form-control" placeholder="Enter Remark" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="yEtodo">YE to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
+                                <label for="yEtodo">Year to do</label>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter Year to do" />
                             </div>
                         </div>
                     </div>
@@ -183,12 +175,12 @@
                                 <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                       @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mthTodo">Month to do</label>
                                 <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
@@ -445,23 +437,17 @@
                         "columns": [
                             { "data": "grouping", "defaultContent": "" },
                             { "data": "refferal", "defaultContent": "" },
-                            { "data": "fileNo", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
                             { "data": "yearEnd", "defaultContent": "" },
                             { "data": "enumber", "defaultContent": "" },
-                            { "data": "taxIdentificationNumber", "defaultContent": "" },
                             { "data": "login", "defaultContent": "" },
                             { "data": "password", "defaultContent": "" },
-                            { "data": "code", "defaultContent": "" },
-                            { "data": "description", "defaultContent": "" },
-                            { "data": "jobServices", "defaultContent": "" },
                             { "data": "yEtodo", "defaultContent": "" },
                             {
                                 "data": "dateDocIn",
                                 "render": function(data) { return data ? formatDate(data) : ''; },
                                 "defaultContent": ""
                             },
-                            { "data": "mthTodo", "defaultContent": "" },
                             { "data": "staff", "defaultContent": "" },
                             { "data": "allocateToWkSch", "defaultContent": "" },
                             { "data": "completed", "defaultContent": "" },
@@ -505,19 +491,13 @@
                                     var row = `<tr>
                                         <td>${item.grouping || ''}</td>
                                         <td>${item.refferal || ''}</td>
-                                        <td>${item.fileNo || ''}</td>
                                         <td>${item.companyName || ''}</td>
                                         <td>${item.yearEnd || ''}</td>
                                         <td>${item.enumber || ''}</td>
-                                        <td>${item.taxIdentificationNumber || ''}</td>
                                         <td>${item.login || ''}</td>
                                         <td>${item.password || ''}</td>
-                                        <td>${item.code || ''}</td>
-                                        <td>${item.description || ''}</td>
-                                        <td>${item.jobServices || ''}</td>
                                         <td>${item.yEtodo || ''}</td>
                                         <td>${item.dateDocIn ? formatDate(item.dateDocIn) : ''}</td>
-                                        <td>${item.mthTodo || ''}</td>
                                         <td>${item.staff || ''}</td>
                                         <td>${item.allocateToWkSch || ''}</td>
                                         <td>${item.completed || ''}</td>
