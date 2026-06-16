@@ -31,6 +31,11 @@ public class ClientOptionService(
             tasks.Add(LoadProfessionsAsync(res));
         }
 
+        if (req.IncludeReferrals)
+        {
+            tasks.Add(LoadReferralsAsync(res, req.ClientType));
+        }
+
         await Task.WhenAll(tasks);
 
         return res;
@@ -64,5 +69,47 @@ public class ClientOptionService(
             .ToListAsync();
 
         res.Professions = data;
+    }
+
+    private async Task LoadReferralsAsync(ClientOptionResponse res, ClientType clientType)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        var baseQuery = db.Set<BaseClient>().AsQueryable().AsNoTracking()
+            .Where(c => c.ClientType == clientType)
+            .Where(c => c.Referral != null && c.Referral.Trim() != "");
+
+        var referrals = await baseQuery
+            .Select(c => c.Referral ?? "")
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+
+        res.Referrals = referrals ?? [];
+
+        if (clientType == ClientType.Individual)
+            return;
+
+        var companyQuery = db.Set<BaseCompany>().AsQueryable().AsNoTracking()
+            .Where(c => c.ClientType == clientType)
+            .Where(c => c.Referral != null && c.Referral.Trim() != "");
+
+        var data = await companyQuery
+            .GroupBy(c => c.Referral)
+            .Select(g => new
+            {
+                Referral = g.Key ?? "",
+                CompanyNo = g.First().RegistrationNumber ?? "",
+                IncorpDate = g.First().IncorporationDate
+            })
+            .ToListAsync();
+
+        res.ReferralCompanyInfoMap = data.ToDictionary(
+            x => x.Referral,
+            x => new ReferralCompanyInfoDto
+            {
+                CompanyNumber = x.CompanyNo,
+                IncorporationDate = x.IncorpDate?.ToString("yyyy-MM-dd") ?? ""
+            }
+        );
     }
 }

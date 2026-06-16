@@ -1,12 +1,23 @@
 ﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Helpers
+@using System.Linq
 @model ClientType
 @{
     var isIndividual = Model == ClientType.Individual;
     var isSdnBhd = Model == ClientType.SdnBhd;
     var labelDetails = isIndividual ? "Client" : "Company";
+
+    var showResign = ViewData["ShowResign"] as bool? == true;
+    var companyTypeList = SelectHelper.GetEnumSelectList<CompanyType>(null, "")
+        .Where(x => x.Value is "SdnBhd" or "LLP" or "Bhd" or "Enterprise" or "Advocate" || (showResign && x.Value == "Resign")).ToList();
+    var activitySizeList = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null, "")
+        .Where(x => x.Value != "D").ToList();
+    var companyStatusList = SelectHelper.GetEnumSelectList<CompanyStatus>(null, "")
+        .Where(x => showResign || x.Value != "Resign").ToList();
+    var creditRatingList = SelectHelper.GetEnumSelectList<CreditRating>(null, "");
 }
 
-<div class="card card-primary  collapsed-card">
+<div class="card card-primary collapsed-card">
     <div class="card-header detail-header">
         <h3 class="card-title">
             <i class="fas fa-building"></i>  @labelDetails Details
@@ -18,24 +29,18 @@
         </div>
     </div>
     <div class="card-body pt-0" style="display:none">
-        <form class="mb-2">
+        <form id="detailsForm" class="mb-2">
             <div class="row">
                 <div class="col-md-12">
                     <div class="mt-3 d-flex flex-wrap justify-content-start gap-2">
                         <button type="button" class="btn btn-primary mr-2 mb-2 btn-nav-edit" value="0">
                             <i class="fas fa-edit mr-1"></i> Edit Info
                         </button>
-
                         <button type="button" class="btn btn-outline-primary mr-2 mb-2 btn-start-schedule" value="0">
                             <i class="fas fa-edit mr-1"></i> Schedule Work
                         </button>
-
                         @if (!isIndividual)
                         {
-                            @*                         <button type="button" class="btn btn-warning mr-2 mb-2 btn-work-alloc" data-table-id="workAllocationDatatable">
-                                <i class="fas fa-tasks mr-1"></i> Add Work Allocation
-                            </button> *@
-
                             <button type="button" class="btn btn-secondary mr-2 mb-2 btn-add-owner" data-table-id="ownerDatatable">
                                 <i class="fas fa-user-plus mr-1"></i> Add Owner Contact
                             </button>
@@ -43,7 +48,6 @@
                         <button type="button" class="btn btn-success mr-2 mb-2 btn-add-official" data-table-id="officialCtDatatable">
                             <i class="fas fa-id-badge mr-1"></i> Add Official Contact
                         </button>
-
                         <button type="button" class="btn btn-info mr-2 mb-2 btn-add-comm" data-table-id="communicationCtDatatable">
                             <i class="fas fa-phone mr-1"></i> Add Communication Contact
                         </button>
@@ -56,67 +60,67 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="grouping">Group</label>
-                        <input readonly type="text" class="form-control" id="grouping" placeholder="grouping">
-
+                        <label for="detailGroup">Group</label>
+                        <select class="form-control select2" id="detailGroup" name="detailGroup">
+                            <option value="">All</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="referral">Referral</label>
-                        <input readonly type="text" class="form-control" id="referral" placeholder="referral">
+                        <label for="detailReferral">Referral</label>
+                        <select class="form-control select2" id="detailReferral" name="detailReferral">
+                            <option value="">All</option>
+                        </select>
                     </div>
                 </div>
                 @if (!isIndividual)
                 {
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="fileNo">File No</label>
-                            <input readonly type="text" class="form-control" id="fileNo" placeholder="File No">
+                            <label for="detailFileNo">File No</label>
+                            <input type="text" class="form-control" id="detailFileNo" placeholder="File No">
                         </div>
                     </div>
                 }
 
                 <div class="divider-line"></div>
+
                 @if (isIndividual)
                 {
                     <div class="form-info-label col-12">
-                        <label>Company Info</label>
+                        <label>Individual Info</label>
                     </div>
-                    <input readonly type="text" class="form-control d-none" id="clientId">
+                    <input type="hidden" id="clientId">
 
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="individualName">Individual Name</label>
-                            <input readonly type="text" class="form-control" id="individualName">
+                            <input type="text" class="form-control" id="individualName">
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="icOrPassport">IC / Passport#</label>
-                            <input readonly type="text" class="form-control" id="icOrPassport">
+                            <input type="text" class="form-control" id="icOrPassport">
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="profession">Profession</label>
-                            <input readonly type="text" class="form-control" id="profession">
+                            <input type="text" class="form-control" id="profession">
                         </div>
                     </div>
-
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="yearEnd">Year End</label>
-                            <input readonly type="text" class="form-control" id="yearEnd">
+                            <input type="text" class="form-control" id="yearEnd">
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="tinNumber">TIN Number</label>
-                            <input readonly type="text" class="form-control" id="tinNumber">
+                            <input type="text" class="form-control" id="tinNumber">
                         </div>
                     </div>
                 }
@@ -125,37 +129,32 @@
                     <div class="form-info-label col-12">
                         <label>Company Info</label>
                     </div>
-                    <input readonly type="text" class="form-control d-none" id="clientId">
+                    <input type="hidden" id="clientId">
 
                     <div class="col-md-4">
-
                         <div class="form-group">
-                            <label for="companyName">Company Name</label>
-                            <input readonly type="text" class="form-control" id="companyName">
+                            <label for="detailCompanyName">Company Name</label>
+                            <input type="text" class="form-control" id="detailCompanyName">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="companyType">Company Type</label>
-                            <input readonly type="text" class="form-control" id="companyType">
+                            <label for="detailCompanyType">Company Type</label>
+                            <select class="form-control select2" id="detailCompanyType" name="detailCompanyType">
+                                @foreach (var item in companyTypeList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="yearEnd">Year End</label>
-                            <input readonly type="text" class="form-control" id="yearEnd">
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="incorpDate">Incorporation Date</label>
+                            <label for="detailYearEnd">Year End</label>
                             <div class="input-group">
-                                <input readonly type="text" id="incorpDate" class="form-control" />
+                                <input type="text" id="detailYearEnd" class="form-control" placeholder="Select month" />
                                 <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -163,38 +162,168 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="companyNumber">Registration Number</label>
-                            <input readonly type="text" class="form-control" id="companyNumber">
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="eNumber">E Number </label>
-                            <input readonly type="text" class="form-control" id="eNumber">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tinNumber">TIN Number</label>
-                            <input readonly type="text" class="form-control" id="tinNumber">
-                        </div>
-                    </div>
-
-                    if (!isIndividual)
-                    {
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="activitySize">Activity Size</label>
-                                <input readonly type="text" class="form-control" id="activitySize">
+                            <label for="detailIncorpDate">Incorporation Date</label>
+                            <div class="input-group">
+                                <input type="text" id="detailIncorpDate" class="form-control" placeholder="Select date" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
                             </div>
                         </div>
-                    }
-
-                    <div class="form-info-label col-12">
-                        <label>MSIC Code</label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="detailRegNumber">Registration Number</label>
+                            <input type="text" class="form-control" id="detailRegNumber">
+                        </div>
                     </div>
 
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="detailENumber">E Number</label>
+                            <input type="text" class="form-control" id="detailENumber">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="detailTinNumber">TIN Number</label>
+                            <input type="text" class="form-control" id="detailTinNumber">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailActivitySize">Activity Size</label>
+                            <select class="form-control select2" id="detailActivitySize" name="detailActivitySize">
+                                @foreach (var item in activitySizeList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailCompanyStatus">Company Status</label>
+                            <select class="form-control select2" id="detailCompanyStatus" name="detailCompanyStatus">
+                                @foreach (var item in companyStatusList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailCompanyStatusReason">Reason</label>
+                            <input type="text" class="form-control" id="detailCompanyStatusReason" placeholder="Reason for status">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailCreditRating">Credit Rating</label>
+                            <select class="form-control select2" id="detailCreditRating" name="detailCreditRating">
+                                @foreach (var item in creditRatingList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailPrincipalActivity">MSIC Code</label>
+                            <input type="text" class="form-control" id="detailPrincipalActivity" placeholder="MSIC Code">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailForeignOwned">Foreign-owned?</label>
+                            <select class="form-control" id="detailForeignOwned" name="detailForeignOwned">
+                                <option value="">-- Select --</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-1">
+                            <label class="text-muted small">Notes Reference</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group mb-1">
+                            <label class="small text-muted">Client Rating</label>
+                            <span id="noteClientRating" class="form-control form-control-sm bg-light border-0 d-block" style="cursor:default">-</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group mb-1">
+                            <label class="small text-muted">Note 8: Company Status</label>
+                            <span id="noteCompanyStatus" class="form-control form-control-sm bg-light border-0 d-block" style="cursor:default">-</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group mb-1">
+                            <label class="small text-muted">Note 9: Credit Rating</label>
+                            <span id="noteCreditRating" class="form-control form-control-sm bg-light border-0 d-block" style="cursor:default">-</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label class="small text-muted">Note 10: Business Nature</label>
+                            <span id="noteBusinessNature" class="form-control form-control-sm bg-light border-0 d-block" style="cursor:default">-</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-1">
+                            <label class="small text-muted">Note 11: Service Selected</label>
+                            <span id="noteServiceSelected" class="form-control form-control-sm bg-light border-0 d-block" style="cursor:default">-</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailBusinessNature">Business Nature</label>
+                            <input type="text" class="form-control" id="detailBusinessNature" placeholder="Business Nature">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Appointment & Engagement</label>
+                            <div>
+                                <button type="button" class="btn btn-outline-info" id="btnAppointmentEngagement">
+                                    <i class="fas fa-file-alt mr-1"></i> <span id="apptEngText">None</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Service Selected</label>
+                            <div>
+                                <button type="button" class="btn btn-outline-info" id="btnSelectService">
+                                    <i class="fas fa-check-square mr-1"></i> <span id="serviceSelectedText">None</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="btnSaveDetails">
+                                <i class="fas fa-save mr-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider-line"></div>
+
+                    <div class="form-info-label col-12">
+                        <label>MSIC Code Table</label>
+                    </div>
                     <div class="col-md-12">
                         <table id="msicCodeDatatable" class="table table-bordered table-striped">
                             <thead>
@@ -203,54 +332,10 @@
                                     <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 }
-                @* 
-                <div class="form-info-label col-12">
-                    <label>
-                        Work Allocations
-                        @if (!isIndividual)
-                        {
-                            <button type="button" class="btn btn-warning mr-2 mb-2 btn-work-alloc" data-table-id="workAllocationDatatable">
-                                <i class="fas fa-tasks mr-1"></i> Add Work Allocation
-                            </button>
-                        }
-
-                    </label>
-                </div>
-                <div class="col-md-12">
-                    <table id="workAllocationDatatable" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th @(isSdnBhd ? "rowspan=2" : "")>Service Required By Client</th>
-                                @if (!isIndividual)
-                                {
-                                    if (isSdnBhd)
-                                    {
-                                        <th colspan="2">For Audit Dept</th>
-                                    }
-                                    <th @(isSdnBhd ? "rowspan=2" : "")>Activity/Co size</th>
-                                }
-
-                                <th @(isSdnBhd ? "rowspan=2" : "")>Remarks</th>
-                                <th @(isSdnBhd ? "rowspan=2" : "")>Action</th>
-                            </tr>
-                            @if (isSdnBhd)
-                            {
-                                <tr>
-                                    <th>Co status</th>
-                                    <th>Audit Status</th>
-                                </tr>
-                            }
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
- *@
 
                 <div class="divider-line"></div>
 
@@ -264,14 +349,12 @@
                             </button>
                         </label>
                     </div>
-
                     <div class="col-md-12">
                         <table id="ownerDatatable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Id</th>
                                     <th>Name per IC</th>
-                                    <th>Form BE to Submit</th>
                                     <th>IC /Passport #</th>
                                     <th>Position</th>
                                     <th>Tax Ref No.</th>
@@ -280,11 +363,9 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
-
                     <div class="divider-line"></div>
                 }
 
@@ -294,8 +375,6 @@
                         <button type="button" class="btn btn-success mr-2 mb-2 btn-add-official" data-table-id="officialCtDatatable">
                             <i class="fas fa-id-badge mr-1"></i> Add Official Contact
                         </button>
-
-
                     </label>
                 </div>
                 <div class="col-md-12">
@@ -310,8 +389,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="divider-line"></div>
@@ -337,13 +415,233 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-
             </div>
-
         </form>
+    </div>
+</div>
+
+<!-- Service Selected Modal -->
+<div class="modal fade" id="serviceSelectedModal" tabindex="-1" role="dialog" aria-labelledby="serviceSelectedModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceSelectedModalLabel">Select Services</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="Sec" id="serviceSec">
+                    <label class="form-check-label" for="serviceSec">Secretary (Sec)</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="Tax" id="serviceTax">
+                    <label class="form-check-label" for="serviceTax">Tax</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="Audit" id="serviceAudit">
+                    <label class="form-check-label" for="serviceAudit">Audit</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="Acc" id="serviceAcc">
+                    <label class="form-check-label" for="serviceAcc">Account (Acc)</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="FormE" id="serviceFormE">
+                    <label class="form-check-label" for="serviceFormE">Form E</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input service-checkbox" type="checkbox" value="HR" id="serviceHR">
+                    <label class="form-check-label" for="serviceHR">HR</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmService">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Appointment & Engagement Modal -->
+<div class="modal fade" id="apptEngModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Appointment & Engagement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Sec</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptSecFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptSecDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Tax</h6></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Tax Work</label>
+                            <select class="form-control" id="apptTaxWork">
+                                <option value="">-- Select --</option>
+                                <option value="RAKC">RAKC</option>
+                                <option value="KTNG">KTNG</option>
+                                <option value="KTL">KTL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptTaxFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptTaxDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Audit</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptAuditFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptAuditDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Acc</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptAccFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptAccDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Form E</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptFormEFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptFormEDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">HR</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Upload Appointment Letter</label>
+                            <input type="file" class="form-control-file" id="apptHRFile" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptHRDate">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Link E1 (Audit Exemption)</h6></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Audit Exemption</label>
+                            <select class="form-control" id="apptLinkE1Exempt">
+                                <option value="">-- Select --</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Who</label>
+                            <select class="form-control" id="apptLinkE1Who">
+                                <option value="">-- Select --</option>
+                                <option value="BTM">BTM</option>
+                                <option value="KTNG">KTNG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <input type="date" class="form-control" id="apptLinkE1Date">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-12"><h6 class="text-primary">Link E2.2 (Co.Secretary)</h6></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Co.Secretary</label>
+                            <select class="form-control" id="apptLinkE22CoSec">
+                                <option value="">-- Select --</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Who</label>
+                            <select class="form-control" id="apptLinkE22Who">
+                                <option value="">-- Select --</option>
+                                <option value="RPTC">RPTC</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmApptEng">Confirm</button>
+            </div>
+        </div>
     </div>
 </div>

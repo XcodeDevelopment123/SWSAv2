@@ -15,12 +15,10 @@ public class NewClientController(
 {
 
     [Route("sdnbhd")]
-    public async Task<IActionResult> CreateSdnBhd()
+    public IActionResult CreateSdnBhd()
     {
         ViewData["client-type"] = ClientType.SdnBhd;
-        var codes = await _msicCodeService.GetMsicCodeAsync();
-        var vm = new CompanyCreatePageVM(codes);
-        return View(vm);
+        return View();
     }
 
     [Route("llp")]
