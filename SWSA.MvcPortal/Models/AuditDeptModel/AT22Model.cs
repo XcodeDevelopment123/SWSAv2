@@ -9,6 +9,11 @@
         public string Activity { get; set; }
         public DateTime? YearEnd { get; set; }
         public string YearToDo { get; set; }
+        public string CompanyStatus { get; set; }
+        public string AuditExemption { get; set; }
+        public string CoSec { get; set; }
+        public string CreditRating { get; set; }
+        public string SigningFirm { get; set; }
         public string MoveToActiveAexSch { get; set; }
         public string DateDocIn { get; set; }
         public string AcctngWk { get; set; }

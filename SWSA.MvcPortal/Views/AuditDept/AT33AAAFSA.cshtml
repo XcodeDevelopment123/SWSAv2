@@ -2,14 +2,14 @@
     ViewData["Title"] = "AT33AAAFSA";
 }
 
-<h1>AT3.3 Active & AEX Audited Financial Statement AFS</h1>
+<h1>AT3.3 AFS/UFS Financial Report</h1>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>AFS Records
+                    <i class="fas fa-tasks me-2"></i>AFS/UFS Financial Report Records
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
@@ -28,25 +28,27 @@
                     <table id="taskDatatable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th colspan="6"></th>
+                                <th colspan="7"></th>
                                 <th colspan="2">KK Review</th>
-                                <th colspan="5">AFS from KK</th>
+                                <th colspan="6">AFS from KK</th>
                                 <th rowspan="3">Remark</th>
                                 <th rowspan="3">Actions</th>
                             </tr>
                             <tr>
                                 <th rowspan="2">No</th>
                                 <th rowspan="2">Company Name</th>
-                                <th rowspan="2">YE to do</th>
+                                <th rowspan="2">Year End</th>
+                                <th rowspan="2">Years to do</th>
                                 <th rowspan="2">PIC</th>
                                 <th colspan="2">Activity</th>
-                                <th rowspan="2">Date sent</th>
+                                <th rowspan="2">Audit Exemption?</th>
                                 <th rowspan="2">Date Reviewed</th>
                                 <th rowspan="2">Date sent to KK</th>
-                                <th rowspan="2">Date received AFS</th>
+                                <th rowspan="2">Signing Firm</th>
                                 <th rowspan="2">Date of AFS</th>
                                 <th rowspan="2">Date of Directors Rept</th>
                                 <th rowspan="2">MBRS generated</th>
+                                <th rowspan="2">MBRS date end</th>
                             </tr>
                             <tr>
                                 <th>Active</th>
@@ -70,7 +72,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New AFS Record</span>
+                    <span id="modalTitle">Add AFS/UFS Record</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -95,15 +97,23 @@
                             <input type="hidden" id="clientId" name="clientId" />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="yeToDo" class="form-label">YE to do</label>
-                            <input type="text" id="yeToDo" class="form-control" placeholder="Enter year" />
+                            <label for="yearEnd" class="form-label">Year End</label>
+                            <input type="text" id="yearEnd" class="form-control" placeholder="Auto-fill from client" readonly />
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="yeToDo" class="form-label">Years to do</label>
+                            <input type="text" id="yeToDo" class="form-control" placeholder="Enter year" />
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label for="pic" class="form-label">PIC</label>
                             <input type="text" id="pic" class="form-control" placeholder="Enter PIC name" />
                         </div>
+                        <div class="col-md-4 mb-3">
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3 mb-3">
                             <label for="active" class="form-label">Active</label>
                             <select id="active" class="form-control">
@@ -120,6 +130,16 @@
                                 <option value="No">No</option>
                             </select>
                         </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="auditExemption" class="form-label">Audit Exemption?</label>
+                            <select id="auditExemption" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                        </div>
                     </div>
 
                     <!-- KK Review -->
@@ -130,12 +150,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="dateSent" class="form-label">Date sent</label>
-                            <input type="date" id="dateSent" class="form-control" />
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <label for="dateReviewed" class="form-label">Date Reviewed</label>
                             <input type="date" id="dateReviewed" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dateSentToKK" class="form-label">Date sent to KK</label>
+                            <input type="date" id="dateSentToKK" class="form-control" />
                         </div>
                     </div>
 
@@ -147,30 +167,32 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="dateSentToKK" class="form-label">Date sent to KK</label>
-                            <input type="date" id="dateSentToKK" class="form-control" />
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="dateReceivedAFS" class="form-label">Date received AFS</label>
-                            <input type="date" id="dateReceivedAFS" class="form-control" />
+                            <label for="signingFirm" class="form-label">Signing Firm</label>
+                            <input type="text" id="signingFirm" class="form-control" placeholder="eg BTM, RAKC Firms or KTNg" />
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="dateOfAFS" class="form-label">Date of AFS</label>
                             <input type="date" id="dateOfAFS" class="form-control" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label for="dateOfDirectorsRept" class="form-label">Date of Directors Rept</label>
                             <input type="date" id="dateOfDirectorsRept" class="form-control" />
                         </div>
-                        <div class="col-md-6 mb-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
                             <label for="mbrsGenerated" class="form-label">MBRS generated</label>
                             <select id="mbrsGenerated" class="form-control">
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="mbrsDateEnd" class="form-label">MBRS date end</label>
+                            <input type="date" id="mbrsDateEnd" class="form-control" />
+                        </div>
+                        <div class="col-md-4 mb-3">
                         </div>
                     </div>
 
@@ -265,7 +287,7 @@
             });
         }
 
-        // Dropdown 改变时，同步隐藏字段
+        // Dropdown 改变时，同步隐藏字段并自动填充 Year End
         $('#clientSelect').on('change', function() {
             const selectedId = $(this).val();
             const clientData = clientDataMap[selectedId];
@@ -274,10 +296,25 @@
                 $('#companyName').val(clientData.companyName);
                 $('#clientId').val(clientData.id);
                 $('#client').val(clientData.companyName);
+
+                // 自动填充 Year End
+                if (clientData.yearEndMonth) {
+                    const months = {
+                        "january": "01", "february": "02", "march": "03", "april": "04",
+                        "may": "05", "june": "06", "july": "07", "august": "08",
+                        "september": "09", "october": "10", "november": "11", "december": "12"
+                    };
+                    const monthNum = months[(clientData.yearEndMonth || '').trim().toLowerCase()];
+                    if (monthNum) {
+                        const currentYear = new Date().getFullYear();
+                        $('#yearEnd').val(`${currentYear}-${monthNum}-${new Date(currentYear, parseInt(monthNum), 0).getDate()}`);
+                    }
+                }
             } else {
                 $('#companyName').val('');
                 $('#clientId').val('');
                 $('#client').val('');
+                $('#yearEnd').val('');
             }
         });
 
@@ -343,17 +380,19 @@
                         <tr>
                             <td>${index + 1}</td>
                             <td>${escapeHtml(record.CompanyName || record.companyName || '')}</td>
+                            <td>${escapeHtml(record.YearEnd || record.yearEnd || '')}</td>
                             <td>${escapeHtml(record.YEtodo || record.yEtodo || '')}</td>
                             <td>${escapeHtml(record.PIC || record.pic || '')}</td>
                             <td>${escapeHtml(record.Active || record.active || '')}</td>
                             <td>${escapeHtml(record.AEX || record.aex || '')}</td>
-                            <td>${formatDateForDisplay(record.DateSent || record.dateSent)}</td>
+                            <td>${escapeHtml(record.AuditExemption || record.auditExemption || '')}</td>
                             <td>${formatDateForDisplay(record.DateReviewed || record.dateReviewed)}</td>
                             <td>${formatDateForDisplay(record.DateSentToKK || record.dateSentToKK)}</td>
-                            <td>${formatDateForDisplay(record.DateReceivedAFS || record.dateReceivedAFS)}</td>
+                            <td>${escapeHtml(record.SigningFirm || record.signingFirm || '')}</td>
                             <td>${formatDateForDisplay(record.DateofAFS || record.dateofAFS)}</td>
                             <td>${formatDateForDisplay(record.DateofDirectorsRept || record.dateofDirectorsRept)}</td>
                             <td>${escapeHtml(record.MBRSgenerated || record.mbrsgenerated || '')}</td>
+                            <td>${formatDateForDisplay(record.MBRSdateend || record.mbrsdateend)}</td>
                             <td>${escapeHtml(record.Remark || record.remark || '')}</td>
                             <td style="white-space: nowrap;">
                                 <button class="btn btn-sm btn-info me-1" onclick="editRecord(${record.Id || record.id})" title="Edit"><i class="fas fa-edit"></i></button>
@@ -379,7 +418,7 @@
                     if (response.success) {
                         const record = response.data;
                         isEditMode = true;
-                        $('#modalTitle').text('Edit AFS Record');
+                        $('#modalTitle').text('Edit AFS/UFS Record');
                         $('#recordId').val(record.id);
 
                         // === 关键 Dropdown 回显逻辑 ===
@@ -400,17 +439,19 @@
                         // === 逻辑结束 ===
 
                         // 填充其他字段
+                        $('#yearEnd').val(record.yearEnd || '');
                         $('#yeToDo').val(record.yEtodo || '');
                         $('#pic').val(record.pic || '');
                         $('#active').val(record.active || '');
                         $('#aex').val(record.aex || '');
-                        $('#dateSent').val(formatDateForInput(record.dateSent));
+                        $('#auditExemption').val(record.auditExemption || '');
                         $('#dateReviewed').val(formatDateForInput(record.dateReviewed));
                         $('#dateSentToKK').val(formatDateForInput(record.dateSentToKK));
-                        $('#dateReceivedAFS').val(formatDateForInput(record.dateReceivedAFS));
+                        $('#signingFirm').val(record.signingFirm || '');
                         $('#dateOfAFS').val(formatDateForInput(record.dateofAFS));
                         $('#dateOfDirectorsRept').val(formatDateForInput(record.dateofDirectorsRept));
                         $('#mbrsGenerated').val(record.mbrsgenerated || '');
+                        $('#mbrsDateEnd').val(formatDateForInput(record.mbrsdateend));
                         $('#remark').val(record.remark || '');
 
                         $('#taskModal').modal('show');
@@ -439,17 +480,19 @@
 
             const formData = {
                 companyName: companyName,
+                yearEnd: $('#yearEnd').val() || null,
                 yEtodo: $('#yeToDo').val() || null,
                 pic: $('#pic').val() || null,
                 active: $('#active').val() || null,
                 aex: $('#aex').val() || null,
-                dateSent: $('#dateSent').val() || null,
+                auditExemption: $('#auditExemption').val() || null,
                 dateReviewed: $('#dateReviewed').val() || null,
                 dateSentToKK: $('#dateSentToKK').val() || null,
-                dateReceivedAFS: $('#dateReceivedAFS').val() || null,
+                signingFirm: $('#signingFirm').val() || null,
                 dateofAFS: $('#dateOfAFS').val() || null,
                 dateofDirectorsRept: $('#dateOfDirectorsRept').val() || null,
                 mbrsgenerated: $('#mbrsGenerated').val() || null,
+                mbrsdateend: $('#mbrsDateEnd').val() || null,
                 remark: $('#remark').val() || null
             };
 
@@ -489,7 +532,7 @@
         // ---------------------------------------------------------
         function openModal(editMode) {
             isEditMode = editMode;
-            $('#modalTitle').text(editMode ? 'Edit AFS Record' : 'Add New AFS Record');
+            $('#modalTitle').text(editMode ? 'Edit AFS/UFS Record' : 'Add AFS/UFS Record');
             if (!editMode) { resetForm(); }
             $('#taskModal').modal('show');
         }
@@ -499,6 +542,10 @@
             $('#recordId').val('');
             $('#clientSelect').val('');
             $('#companyName').val(''); // 清空隐藏字段
+            $('#yearEnd').val('');
+            $('#auditExemption').val('');
+            $('#signingFirm').val('');
+            $('#mbrsDateEnd').val('');
             isEditMode = false;
         }
 

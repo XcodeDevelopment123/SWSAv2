@@ -41,6 +41,10 @@ public partial class Aex51
 
     public string? Completed { get; set; }
 
+    public string? Days1_3 { get; set; }
+
+    public string? TotalFieldWorksDays1_4 { get; set; }
+
     public string? DateSent { get; set; }
 
     public string? DateSenttoKk { get; set; }
@@ -66,4 +70,6 @@ public partial class Aex51
     public string? Binded { get; set; }
 
     public string? DespatachDateClient { get; set; }
+
+    public string? Metric421 { get; set; }
 }

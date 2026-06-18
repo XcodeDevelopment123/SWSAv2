@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "AT21AuditMasterSchedule";
 }
 
-<h1>AT 2.1 Audit Master Schedule</h1>
+<h1>E2.1 Audit Work Schedule</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -21,26 +21,37 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th>Grouping</th>
-                            <th>Company Name</th>
-                            <th>Quarter to Audit</th>
-                            <th>Activity</th>
-                            <th>Year End</th>
-                            <th>Year to do</th>
-                            <th>Co Status</th>
-                            <th>Audit Status</th>
-                            <th>Move to AEX Sch</th>
-                            <th>Move to Backlog</th>
-                            <th>1st 18mths due</th>
-                            <th>AFS due date</th>
-                            <th>Co Sec?</th>
-                            <th>Audit Staff</th>
+                            <th rowspan="2">Grouping</th>
+                            <th rowspan="2">Company Name</th>
+                            <th>Quarter</th>
+                            <th>Staff</th>
+                            <th rowspan="2">Co. Status</th>
+                            <th rowspan="2">Audit Execution</th>
+                            <th rowspan="2">Co. Sec</th>
+                            <th rowspan="2">Credit Rating</th>
+                            <th rowspan="2">Signing Form</th>
+                            <th rowspan="2">Account Work?</th>
+                            <th rowspan="2">Acc dept mth to do</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Year End</th>
+                            <th rowspan="2">Year to do</th>
+                            <th rowspan="2">Audit Status</th>
+                            <th rowspan="2">Move to AEX Sch</th>
+                            <th rowspan="2">Move to Backlog</th>
+                            <th rowspan="2">1st 18mths due</th>
+                            <th>AFS/UFS</th>
+                            <th rowspan="2">Co. Sec</th>
+                            <th>Fr Acc</th>
+                            <th rowspan="2">EST Rev('000)</th>
+                            <th rowspan="2">NP/(loss)'000</th>
+                            <th rowspan="2">Remark</th>
+                            <th rowspan="2">Actions</th>
+                        </tr>
+                        <tr>
+                            <th>to Audit</th>
+                            <th>(PIC)</th>
+                            <th>due date</th>
                             <th>Date Doc in</th>
-                            <th>EST Rev/NP('000)</th>
-                            <th>Acctng wk?</th>
-                            <th>Job Completed</th>
-                            <th>Remark</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -59,7 +70,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Audit Master Schedule Record</span>
+                    <span id="modalTitle">Add New Audit Work Schedule Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -101,17 +112,17 @@
                                 <label for="quartertoAudit">Quarter to Audit</label>
                                 <select id="quartertoAudit" name="quartertoAudit" class="form-control">
                                     <option value="">Select Quarter</option>
-                                    <option value="Q1">Q1</option>
-                                    <option value="Q2">Q2</option>
-                                    <option value="Q3">Q3</option>
-                                    <option value="Q4">Q4</option>
+                                    <option value="Q1">Q1 Jan-Mar</option>
+                                    <option value="Q2">Q2 Apr-Jun</option>
+                                    <option value="Q3">Q3 Jul-Sep</option>
+                                    <option value="Q4">Q4 Oct-Dec</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -136,16 +147,17 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyStatus">Co Status</label>
-                                <select id="companyStatus" name="companyStatus" class="form-control">
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto fill" readonly />
+@*                                 <select id="companyStatus" name="companyStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Dormant">Dormant</option>
                                     <option value="Strike Off">Strike Off</option>
                                     <option value="In Liquidation">In Liquidation</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
-                        <div class="col-md-4">
+                @*         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="auditStatus">Audit Status</label>
                                 <select id="auditStatus" name="auditStatus" class="form-control">
@@ -157,12 +169,12 @@
                                     <option value="On Hold">On Hold</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
 
                     <!-- Schedule Information -->
                     <div class="form-info-label col-12">
-                        <label>Schedule Information</label>
+                        <label>Scheduling Info</label>
                     </div>
                     <div class="row">
                         <div class="col-md-3">
@@ -188,13 +200,14 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="first18mthdue">1st 18mths due</label>
-                                <input type="date" id="first18mthdue" name="first18mthdue" class="form-control" />
+                                <input type="text" id="first18mthdue" name="first18mthdue" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="aFSdueDate">AFS due date</label>
-                                <input type="date" id="aFSdueDate" name="aFSdueDate" class="form-control" />
+                                <input type="text" id="aFSdueDate" name="aFSdueDate" class="form-control" placeholder="Auto calculate" readonly />
+                                <small class="text-muted">Year + 7 mths</small>
                             </div>
                         </div>
                     </div>
@@ -207,17 +220,18 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="coSec">Co Sec?</label>
-                                <select id="coSec" name="coSec" class="form-control">
+                                <input type="text" id="coSec" name="coSec" class="form-control" placeholder="Auto fill" readonly />
+                                @* <select id="coSec" name="coSec" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="auditStaff">Audit Staff</label>
-                                <input type="text" id="auditStaff" name="auditStaff" class="form-control" placeholder="Enter staff name" />
+                                <label for="auditStaff">Audit Staff (PIC)</label>
+                                <input type="text" id="auditStaff" name="auditStaff" class="form-control" placeholder="S" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -228,8 +242,14 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="estRev">EST Rev/NP('000)</label>
+                                <label for="estRev">EST Rev('000)</label>
                                 <input type="text" id="estRev" name="estRev" class="form-control" placeholder="e.g., 2,500 / 350" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="NPL">P/(L)'000</label>
+                                <input type="text" id="NPL" name="NPL" class="form-control" placeholder="" />
                             </div>
                         </div>
                     </div>
@@ -263,6 +283,26 @@
                             <div class="form-group">
                                 <label for="remark">Remark</label>
                                 <input type="text" id="remark" name="remark" class="form-control" placeholder="Enter remark" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="acctngWk">Acc dept mth to do</label>
+                                <input type="text" id="acctngWk" name="acctngWk" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="jobCompleted">Job Completed</label>
+                                <input type="text" id="jobCompleted" name="jobCompleted" class="form-control" placeholder="Y/N" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="signingFirm">Signing Firm</label>
+                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -338,6 +378,13 @@
 
                             select.append(`<option value="${client.id}">${client.companyName}</option>`);
                         });
+
+                        // 初始化 Select2
+                        select.select2({
+                            theme: 'bootstrap4',
+                            dropdownParent: $('#taskModal'),
+                            width: '100%'
+                        });
                     }
                 }
             });
@@ -364,6 +411,42 @@
                     const yearEndDate = calculateYearEndDateForInput(clientData.yearEndMonth);
                     $('#yearEnd').val(yearEndDate);
                 }
+
+                // D. 自动填充 Co. Sec (link from appointed B1)
+                let coSecVal = 'No';
+                if (clientData.appointmentEngagementData) {
+                    try {
+                        const apptData = typeof clientData.appointmentEngagementData === 'string' 
+                            ? JSON.parse(clientData.appointmentEngagementData) 
+                            : clientData.appointmentEngagementData;
+                        
+                        // Check if Co.Secretary is true OR if Sec appointmentDate is set/filled
+                        const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                        const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+                        
+                        if (hasCoSec || hasSecDate) {
+                            coSecVal = 'Yes';
+                        }
+                    } catch (e) {
+                        console.error('Error parsing appointmentEngagementData:', e);
+                    }
+                }
+                $('#coSec').val(coSecVal);
+
+                // E. 自动填充 Acc Wk? (link from B1 "Service type")
+                let hasAcc = false;
+                if (clientData.serviceSelected) {
+                    const services = clientData.serviceSelected.split(',').map(s => s.trim().toLowerCase());
+                    hasAcc = services.includes('acc');
+                }
+                $('select#acctngWk').val(hasAcc ? 'Yes' : 'No');
+
+                // F. 自动填充 Date doc in (link from c1-1)
+                if (clientData.latestDateDocIn) {
+                    $('#dateDocIn').val(convertDateToYmd(clientData.latestDateDocIn));
+                } else {
+                    $('#dateDocIn').val('');
+                }
             } else {
                 // 清空逻辑
                 $('#grouping').val('');
@@ -371,6 +454,9 @@
                 $('#companyName').val('');
                 $('#client').val('');
                 $('#clientId').val('');
+                $('#coSec').val('');
+                $('select#acctngWk').val('');
+                $('#dateDocIn').val('');
             }
         });
 
@@ -396,7 +482,7 @@
                         // 2. 尝试选中 Dropdown
                         // 情况 A: 记录里有 ClientID，直接用
                         if (record.clientId && clientOptionsMap[record.clientId]) {
-                            $('#clientSelect').val(record.clientId);
+                            $('#clientSelect').val(record.clientId).trigger('change');
                         }
                         // 情况 B: 记录里没 ID (或 ID 对不上)，但有名字 -> 反向查找
                         else if (record.companyName) {
@@ -404,7 +490,7 @@
                             const foundId = clientNameMap[cleanName]; // 在 Name->ID 表里找
 
                             if (foundId) {
-                                $('#clientSelect').val(foundId); // 找到了！选中它
+                                $('#clientSelect').val(foundId).trigger('change'); // 找到了！选中它
                                 // 同时把 ID 补全到隐藏字段，保证数据完整性
                                 $('#clientId').val(foundId);
                             } else {
@@ -545,6 +631,40 @@
             } catch (e) { return ''; }
         }
 
+        function convertDateToYmd(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.includes('/')) {
+                let parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            } else if (dateStr.includes('-')) {
+                let parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return dateStr.substring(0, 10);
+                    }
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            try {
+                let d = new Date(dateStr);
+                if (!isNaN(d.getTime())) {
+                    let dd = String(d.getDate()).padStart(2, '0');
+                    let mm = String(d.getMonth() + 1).padStart(2, '0');
+                    let yyyy = d.getFullYear();
+                    return `${yyyy}-${mm}-${dd}`;
+                }
+            } catch (e) {}
+            return '';
+        }
+
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return unsafe.toString()
@@ -568,7 +688,7 @@
         }
 
         // DataTable Logic (Standard)
-        function initializeDataTable() {
+         function initializeDataTable() {
             if (dataTable) {
                 dataTable.destroy();
                 $('#taskDatatable').empty();
@@ -576,26 +696,36 @@
             const tableHtml = `
                 <thead>
                     <tr>
-                        <th>Grouping</th>
-                        <th>Company Name</th>
-                        <th>Quarter to Audit</th>
-                        <th>Activity</th>
-                        <th>Year End</th>
-                        <th>Year to do</th>
-                        <th>Co Status</th>
-                        <th>Audit Status</th>
-                        <th>Move to AEX Sch</th>
-                        <th>Move to Backlog</th>
-                        <th>1st 18mths due</th>
+                        <th rowspan="2">Grouping</th>
+                            <th rowspan="2">Company Name</th>
+                            <th>Quarter</th>
+                            <th>Staff</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Co. Status</th>
+                            <th rowspan="2">Audit Exemption</th>
+                            <th rowspan="2">Co. Sec</th>
+                            <th rowspan="2">Credit Rating</th>
+                            <th rowspan="2">Signing Firm</th>
+                            <th rowspan="2">Account Work?</th>
+                            <th rowspan="2">Acc dept mth to do</th>
+                            <th rowspan="2">Year End</th>
+                            <th rowspan="2">Year to do</th>
+                            <th rowspan="2">Audit Status</th>
+                            <th rowspan="2">Move to AEX Sch</th>
+                            <th rowspan="2">Move to Backlog</th>
+                            <th rowspan="2">1st 18mths due</th>
+                            <th>AFS/UFS</th>
+                            <th>Fr Acc</th>
+                            <th rowspan="2">EST Rev('000)</th>
+                            <th rowspan="2">NP/(loss)'000</th>
+                            <th rowspan="2">Remark</th>
+                            <th rowspan="2">Actions</th>
+                    </tr>
+                    <tr>
+                        <th>to Audit</th>
+                        <th>(PIC)</th>
                         <th>AFS due date</th>
-                        <th>Co Sec?</th>
-                        <th>Audit Staff</th>
                         <th>Date Doc in</th>
-                        <th>EST Rev/NP('000)</th>
-                        <th>Acctng wk?</th>
-                        <th>Job Completed</th>
-                        <th>Remark</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -620,6 +750,7 @@
                             <td>${escapeHtml(item.grouping || '')}</td>
                             <td>${escapeHtml(item.companyName || '')}</td>
                             <td>${escapeHtml(item.quartertoAudit || '')}</td>
+                            <td>${escapeHtml(item.auditStaff || '')}</td>
                             <td>${escapeHtml(item.activity || '')}</td>
                             <td>${formatDate(item.yearEnd)}</td>
                             <td>${escapeHtml(item.yearTodo || '')}</td>
@@ -630,7 +761,6 @@
                             <td>${formatDate(item.first18mthdue)}</td>
                             <td>${formatDate(item.afSdueDate)}</td>
                             <td>${escapeHtml(item.coSec || '')}</td>
-                            <td>${escapeHtml(item.auditStaff || '')}</td>
                             <td>${formatDate(item.dateDocIn)}</td>
                             <td>${escapeHtml(item.estRev || '')}</td>
                             <td>${escapeHtml(item.acctngWk || '')}</td>
@@ -677,7 +807,7 @@
             $('#modalTitle').text('Add New Audit Master Schedule Record');
             $('#taskForm')[0].reset();
             $('#recordId').val('');
-            $('#clientSelect').val('');
+            $('#clientSelect').val('').trigger('change');
             $('#taskModal').modal('show');
         }
     </script>

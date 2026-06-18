@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -2048,6 +2048,18 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
+                // Auto-create InvoiceAmount column if it doesn't exist
+                var checkColumnSql = @"
+                    IF NOT EXISTS (
+                        SELECT * FROM sys.columns 
+                        WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP33]') 
+                        AND name = 'InvoiceAmount'
+                    )
+                    BEGIN
+                        ALTER TABLE [Quartz].[dbo].[BP33] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
+                    END";
+                await connection.ExecuteAsync(checkColumnSql);
+
                 var sql = "SELECT * FROM [Quartz].[dbo].[BP33] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
@@ -2105,12 +2117,12 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     ([Item], [Grouping], [CompanyName], [DraftTaxCompleted], [ReviewTax],
                      [FinalTax], [TaxComFinalSignByClient], [AmountofTaxPay], [EFileDraft],
                      [EFileFinal], [TaxReferennceNo], [Login], [Password], [TypeofForm],
-                     [SPC], [InvoicesNo], [DocDespatchDate])
+                     [SPC], [InvoicesNo], [DocDespatchDate], [InvoiceAmount])
                     VALUES 
                     (@Item, @Grouping, @CompanyName, @DraftTaxCompleted, @ReviewTax,
                      @FinalTax, @TaxComFinalSignByClient, @AmountofTaxPay, @EFileDraft,
                      @EFileFinal, @TaxReferennceNo, @Login, @Password, @TypeofForm,
-                     @SPC, @InvoicesNo, @DocDespatchDate);
+                     @SPC, @InvoicesNo, @DocDespatchDate, @InvoiceAmount);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -2138,7 +2150,8 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [AmountofTaxPay] = @AmountofTaxPay, [EFileDraft] = @EFileDraft,
                     [EFileFinal] = @EFileFinal, [TaxReferennceNo] = @TaxReferennceNo,
                     [Login] = @Login, [Password] = @Password, [TypeofForm] = @TypeofForm,
-                    [SPC] = @SPC, [InvoicesNo] = @InvoicesNo, [DocDespatchDate] = @DocDespatchDate
+                    [SPC] = @SPC, [InvoicesNo] = @InvoicesNo, [DocDespatchDate] = @DocDespatchDate,
+                    [InvoiceAmount] = @InvoiceAmount
                     WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);
@@ -2189,6 +2202,21 @@ namespace SWSA.MvcPortal.Controllers.AccDept
 
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
+
+                // Auto-create new columns if they do not exist
+                var checkColumnsSql = @"
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'ReviewTaxComplete')
+                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [ReviewTaxComplete] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'FinalTaxComplete')
+                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [FinalTaxComplete] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'AmountTaxPayable')
+                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [AmountTaxPayable] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'InvoiceDate')
+                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [InvoiceDate] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'InvoiceAmount')
+                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
+                ";
+                await connection.ExecuteAsync(checkColumnsSql);
 
                 var sql = "SELECT * FROM [Quartz].[dbo].[BP34] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
@@ -2247,12 +2275,14 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     ([Item], [Grouping], [CompanyName], [DraftTaxCompleted], [ReviewTax],
                      [FinalTax], [TaxComFinalSignbyClient], [AmountTaxPay], [EFileDraft],
                      [EFileFinal], [TaxRefferanceNo], [Login], [Password], [TypeofForm],
-                     [SPC], [InvoiceNo], [DocDespatchDate])
+                     [SPC], [InvoiceNo], [DocDespatchDate], [ReviewTaxComplete], [FinalTaxComplete],
+                     [AmountTaxPayable], [InvoiceDate], [InvoiceAmount])
                     VALUES 
                     (@Item, @Grouping, @CompanyName, @DraftTaxCompleted, @ReviewTax,
                      @FinalTax, @TaxComFinalSignbyClient, @AmountTaxPay, @EFileDraft,
                      @EFileFinal, @TaxRefferanceNo, @Login, @Password, @TypeofForm,
-                     @SPC, @InvoiceNo, @DocDespatchDate);
+                     @SPC, @InvoiceNo, @DocDespatchDate, @ReviewTaxComplete, @FinalTaxComplete,
+                     @AmountTaxPayable, @InvoiceDate, @InvoiceAmount);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -2280,7 +2310,10 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [AmountTaxPay] = @AmountTaxPay, [EFileDraft] = @EFileDraft,
                     [EFileFinal] = @EFileFinal, [TaxRefferanceNo] = @TaxRefferanceNo,
                     [Login] = @Login, [Password] = @Password, [TypeofForm] = @TypeofForm,
-                    [SPC] = @SPC, [InvoiceNo] = @InvoiceNo, [DocDespatchDate] = @DocDespatchDate
+                    [SPC] = @SPC, [InvoiceNo] = @InvoiceNo, [DocDespatchDate] = @DocDespatchDate,
+                    [ReviewTaxComplete] = @ReviewTaxComplete, [FinalTaxComplete] = @FinalTaxComplete,
+                    [AmountTaxPayable] = @AmountTaxPayable, [InvoiceDate] = @InvoiceDate,
+                    [InvoiceAmount] = @InvoiceAmount
                     WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);

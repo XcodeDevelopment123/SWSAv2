@@ -314,6 +314,8 @@ public partial class QuartzContext : DbContext
             entity.Property(e => e.Binded).HasMaxLength(500);
             entity.Property(e => e.CompanyName).HasMaxLength(500);
             entity.Property(e => e.Completed).HasMaxLength(500);
+            entity.Property(e => e.Days1_3).HasMaxLength(500);
+            entity.Property(e => e.TotalFieldWorksDays1_4).HasMaxLength(500);
             entity.Property(e => e.DateBilled).HasMaxLength(500);
             entity.Property(e => e.DatePassToSecDept).HasMaxLength(500);
             entity.Property(e => e.DateReceivedBack).HasMaxLength(500);
@@ -330,6 +332,7 @@ public partial class QuartzContext : DbContext
             entity.Property(e => e.DonePercent).HasMaxLength(500);
             entity.Property(e => e.EndDate).HasMaxLength(500);
             entity.Property(e => e.First18mthDue).HasMaxLength(500);
+            entity.Property(e => e.Metric421).HasMaxLength(500);
             entity.Property(e => e.PasstoTaxDept).HasMaxLength(500);
             entity.Property(e => e.Pic)
                 .HasMaxLength(500)
@@ -462,6 +465,9 @@ public partial class QuartzContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("DateReceiveFromKK");
             entity.Property(e => e.DateSent).HasMaxLength(500);
+            entity.Property(e => e.DateSent1_6).HasMaxLength(500);
+            entity.Property(e => e.EndDate1_7).HasMaxLength(500);
+            entity.Property(e => e.Days1_8).HasMaxLength(500);
             entity.Property(e => e.DateSentToKk)
                 .HasMaxLength(500)
                 .HasColumnName("DateSentToKK");
@@ -480,6 +486,8 @@ public partial class QuartzContext : DbContext
             entity.Property(e => e.QuartertoDo).HasMaxLength(500);
             entity.Property(e => e.Revenue).HasMaxLength(500);
             entity.Property(e => e.ReviewResultofDays).HasMaxLength(500);
+            entity.Property(e => e.TotalReviewDays).HasMaxLength(500);
+            entity.Property(e => e.Metric421).HasMaxLength(500);
             entity.Property(e => e.SsmdueDate)
                 .HasMaxLength(500)
                 .HasColumnName("SSMdueDate");

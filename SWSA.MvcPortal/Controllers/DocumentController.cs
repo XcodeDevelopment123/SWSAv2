@@ -386,28 +386,30 @@ public class DocumentController(
             var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
                 ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
                  [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
-                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
-                 [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
-                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
+                 [EndDate1_7], [Days1_8], [DateSentToKK],
+                 [ReviewResultofDays], [DateReceiveFromKK], [TotalReviewDays], [WhoMeetClientDate], [DateSenttoClient],
+                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [Metric421], [SSMdueDate], [DatePasstoSecDept],
                  [Binded], [DespatchDateToClient])
                 VALUES 
                 (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
                  @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
-                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
-                 @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
-                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSent1_6,
+                 @EndDate1_7, @Days1_8, @DateSentToKK,
+                 @ReviewResultofDays, @DateReceiveFromKK, @TotalReviewDays, @WhoMeetClientDate, @DateSenttoClient,
+                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @Metric421, @SSMdueDate, @DatePasstoSecDept,
                  @Binded, @DespatchDateToClient)";
 
             var at31Model = new AT31Model
             {
                 CompanyName = a31aModel.Client,
                 Activity = "Auto-created from A31A",
-                YEtoDo = a31aModel.YearEnded, // 使用 A31A 的 YearEnded
+                YEtoDo = a31aModel.YearEnded,
                 QuartertoDo = "",
                 PIC = "",
                 MthDue = "",
                 Status = "Pending",
-                DocInwardsDate = a31aModel.Date, // 将 A31A 的 Date 存入 AT31 的 DocInwardsDate
+                DocInwardsDate = a31aModel.Date,
                 Revenue = null,
                 Profit = null,
                 AuditFee = null,
@@ -418,14 +420,19 @@ public class DocumentController(
                 DonePercent = null,
                 Completed = "No",
                 DateSent = null,
+                DateSent1_6 = null,
+                EndDate1_7 = null,
+                Days1_8 = null,
                 DateSentToKK = null,
                 ReviewResultofDays = null,
                 DateReceiveFromKK = null,
+                TotalReviewDays = null,
                 WhoMeetClientDate = null,
                 DateSenttoClient = null,
                 DateReceiveBack = null,
                 TaxDueDate = null,
                 PasstoDept = null,
+                Metric421 = null,
                 SSMdueDate = null,
                 DatePasstoSecDept = null,
                 Binded = null,

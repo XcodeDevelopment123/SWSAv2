@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "AEX41S";
 }
 
-<h1>AEX Scheduling For Current Year</h1>
+<h1>E2.2 AEX Audit Work Schedule</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -24,25 +24,37 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th>Action</th>
-                            <th>Grouping</th>
-                            <th>Company Name</th>
-                            <th>Quarter to Audit</th>
-                            <th>Activity</th>
-                            <th>Year End</th>
-                            <th>Year to do</th>
-                            <th>Move to Active Sch</th>
-                            <th>Move to Backlog</th>
-                            <th>1st 18 mths due</th>
-                            <th>Audited Acc due date</th>
-                            <th>Co Sec?</th>
-                            <th>Team</th>
-                            <th>Date Doc in</th>
-                            <th>Est Rev</th>
-                            <th>Est Net Profit/(loss)'000</th>
-                            <th>Acctng wk?</th>
-                            <th>Job Completed</th>
-                            <th>Remark</th>
+                            <th rowspan="2">Action</th>
+                            <th rowspan="2">Grouping</th>
+                            <th rowspan="2">Company Name</th>
+                            <th>Quarter</th>
+                            <th>Staff</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Co. Status</th>
+                            <th rowspan="2">Audit Execution</th>
+                            <th rowspan="2">Co. Sec</th>
+                            <th rowspan="2">Credit Rating</th>
+                            <th rowspan="2">Signing Form</th>
+                            <th rowspan="2">Account Work?</th>
+                            <th rowspan="2">Acc dept mth to do</th>
+                            <th rowspan="2">Year End</th>
+                            <th rowspan="2">Year to do</th>
+                            <th rowspan="2">Move to Active Sch</th>
+                            <th rowspan="2">Move to Backlog</th>
+                            <th rowspan="2">1st 18 mths due</th>
+                            <th>due date</th>
+                            <th rowspan="2">Date Doc in</th>
+                            <th rowspan="2">Est Rev'000</th>
+                            <th rowspan="2">P/(L)'000</th>
+                            <th rowspan="2">Est Net Profit/(loss)'000</th>
+                            <th rowspan="2">Acctng wk?</th>
+                            <th rowspan="2">Job Completed</th>
+                            <th rowspan="2">Remark</th>
+                        </tr>
+                        <tr>
+                            <th>to Audit</th>
+                            <th>(PIC)</th>
+                            <th>UFS</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,26 +122,30 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto fill" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto-fill from client" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
+                                <label for="signingPages">Signing Pages</label>
+                                <input type="text" id="signingPages" name="signingPages" class="form-control" placeholder="Enter signing pages" />
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year" />
-                            </div>
                         </div>
                     </div>
 
                     <!-- Schedule Options -->
                     <div class="form-info-label col-12">
-                        <label>Schedule Options</label>
+                        <label>Scheduling Info</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -155,35 +171,36 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="first18MonthsDue">1st 18 mths due</label>
-                                <input type="text" id="first18MonthsDue" name="first18MonthsDue" class="form-control" placeholder="Select date" />
+                                <input type="text" id="first18MonthsDue" name="first18MonthsDue" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
 
                     <!-- Due Dates & Team -->
                     <div class="form-info-label col-12">
-                        <label>Due Dates & Team</label>
+                        <label>staff & Fin.info</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="auditedAccDueDate">Audited Acc due date</label>
-                                <input type="text" id="auditedAccDueDate" name="auditedAccDueDate" class="form-control" placeholder="Select date" />
+                                <input type="text" id="auditedAccDueDate" name="auditedAccDueDate" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coSec">Co Sec?</label>
-                                <select id="coSec" name="coSec" class="form-control">
+                                <input type="text" id="coSec" name="coSec" class="form-control" placeholder="Auto fill" readonly />
+                              @*   <select id="coSec" name="coSec" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="team">Team</label>
+                                <label for="team">Staff (PIC)</label>
                                 <input type="text" id="team" name="team" class="form-control" placeholder="Enter team name" />
                             </div>
                         </div>
@@ -191,7 +208,7 @@
 
                     <!-- Document & Financial Information -->
                     <div class="form-info-label col-12">
-                        <label>Document & Financial Information</label>
+                        <label>Financial Information</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -222,11 +239,12 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="acctngWk">Acctng wk?</label>
-                                <select id="acctngWk" name="acctngWk" class="form-control">
+                                <input type="text" id="acctngWk" name="acctngWk" class="form-control" placeholder="Auto fill" readonly />
+                               @*  <select id="acctngWk" name="acctngWk" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -318,6 +336,22 @@
                 $('#clientId').val(clientData.id);
                 $('#client').val(clientData.companyName);
 
+                // 自动填充 Activity
+                if (clientData.activitySize) {
+                    $('#activity').val(clientData.activitySize);
+                }
+
+                // 自动填充 Co.Status, Audit Exemption, Credit Rating
+                if (clientData.companyStatus) {
+                    $('#companyStatus').val(clientData.companyStatus);
+                }
+                if (clientData.auditExemption) {
+                    $('#auditExemption').val(clientData.auditExemption);
+                }
+                if (clientData.creditRating) {
+                    $('#creditRating').val(clientData.creditRating);
+                }
+
                 // 计算 Year End
                 if (clientData.yearEndMonth) {
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
@@ -335,6 +369,10 @@
                 $('#clientId').val('');
                 $('#client').val('');
                 $('#yearEnd').val('').datepicker('update', '');
+                $('#activity').val('');
+                $('#companyStatus').val('');
+                $('#auditExemption').val('');
+                $('#creditRating').val('');
             }
         }
 
@@ -386,6 +424,13 @@
                             clientDataMap[client.id] = client;
                             select.append(`<option value="${client.id}">${client.companyName}</option>`);
                         });
+
+                        // 初始化 Select2
+                        select.select2({
+                            theme: 'bootstrap4',
+                            dropdownParent: $('#taskModal'),
+                            width: '100%'
+                        });
                     }
                 }
             });
@@ -397,7 +442,7 @@
                 $('#taskDatatable').DataTable().destroy();
             }
             dataTable = $('#taskDatatable').DataTable({
-                responsive: true,
+                responsive: false,
                 autoWidth: false,
                 pageLength: 10,
                 columnDefs: [{ "orderable": false, "targets": 0 }]
@@ -432,30 +477,37 @@
                     const row = `
                         <tr>
                             <td>${createActionButtons(item.id)}</td>
-                            <td>${escapeHtml(item.grouping)}</td>
-                            <td>${escapeHtml(item.companyName)}</td>
-                            <td>${escapeHtml(item.quartertoAudit)}</td>
-                            <td>${escapeHtml(item.activity)}</td>
+                            <td>${escapeHtml(item.grouping || '')}</td>
+                            <td>${escapeHtml(item.companyName || '')}</td>
+                            <td>${escapeHtml(item.quartertoAudit || '')}</td>
+                            <td>${escapeHtml(item.team || '')}</td>
+                            <td>${escapeHtml(item.activity || '')}</td>
+                            <td></td>
+                            <td></td>
+                            <td>${escapeHtml(item.coSec || '')}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td>${formatDate(item.yearEnd)}</td>
-                            <td>${escapeHtml(item.yeattodo)}</td>
-                            <td>${escapeHtml(item.movetoActiveSch)}</td>
-                            <td>${escapeHtml(item.movetoBacklog)}</td>
+                            <td>${escapeHtml(item.yeattodo || '')}</td>
+                            <td>${escapeHtml(item.movetoActiveSch || '')}</td>
+                            <td>${escapeHtml(item.movetoBacklog || '')}</td>
                             <td>${formatDate(item.first18mthsdue)}</td>
                             <td>${formatDate(item.auditedAccDueDate)}</td>
-                            <td>${escapeHtml(item.coSec)}</td>
-                            <td>${escapeHtml(item.team)}</td>
                             <td>${formatDate(item.dateDocIn)}</td>
                             <td>${formatNumber(item.estRev)}</td>
+                            <td></td>
                             <td>${formatNumber(item.estNetProfit)}</td>
-                            <td>${escapeHtml(item.acctngWk)}</td>
-                            <td>${escapeHtml(item.jobCompleted)}</td>
-                            <td>${escapeHtml(item.remark)}</td>
+                            <td>${escapeHtml(item.acctngWk || '')}</td>
+                            <td>${escapeHtml(item.jobCompleted || '')}</td>
+                            <td>${escapeHtml(item.remark || '')}</td>
                         </tr>
                     `;
                     tbody.append(row);
                 });
             }
-            $('#taskDatatable').DataTable({ responsive: true, autoWidth: false });
+            $('#taskDatatable').DataTable({ responsive: false, autoWidth: false });
         }
 
         function createActionButtons(id) {
@@ -469,7 +521,7 @@
             $('#modalTitle').text('Add New AEX Schedule Record');
             $('#recordId').val('');
             $('#taskForm')[0].reset();
-            $('#clientSelect').val('');
+            $('#clientSelect').val('').trigger('change');
             $('.datepicker').datepicker('update', ''); // 重置所有日期选择器
             $('#taskModal').modal('show');
         }
@@ -487,9 +539,9 @@
                         // Dropdown 回显
                         $('#companyName').val(data.companyName || '');
                         if (data.clientId && clientDataMap[data.clientId]) {
-                            $('#clientSelect').val(data.clientId);
+                            $('#clientSelect').val(data.clientId).trigger('change');
                         } else if (data.companyName && clientNameMap[data.companyName.trim()]) {
-                            $('#clientSelect').val(clientNameMap[data.companyName.trim()]);
+                            $('#clientSelect').val(clientNameMap[data.companyName.trim()]).trigger('change');
                         }
 
                         // 填充其他字段
@@ -504,6 +556,10 @@
                         $('#dateDocIn').datepicker('update', formatDate(data.dateDocIn));
 
                         $('#yearToDo').val(data.yeattodo || '');
+                        $('#companyStatus').val(data.companyStatus || '');
+                        $('#auditExemption').val(data.auditExemption || '');
+                        $('#creditRating').val(data.creditRating || '');
+                        $('#signingPages').val(data.signingPages || '');
                         $('#moveToActiveSch').val(data.movetoActiveSch || '');
                         $('#moveToBacklog').val(data.movetoBacklog || '');
                         $('#coSec').val(data.coSec || '');
@@ -539,6 +595,10 @@
                 // YearEnd 是自动计算并显示的，也要提交回去
                 yearEnd: convertDateToISO($('#yearEnd').val()),
                 yeattodo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditExemption: $('#auditExemption').val(),
+                creditRating: $('#creditRating').val(),
+                signingPages: $('#signingPages').val(),
                 movetoActiveSch: $('#moveToActiveSch').val(),
                 movetoBacklog: $('#moveToBacklog').val(),
                 first18mthsdue: convertDateToISO($('#first18MonthsDue').val()),

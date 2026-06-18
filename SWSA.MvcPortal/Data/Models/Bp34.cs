@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Data.Models;
@@ -40,4 +40,10 @@ public partial class Bp34
     public string? InvoiceNo { get; set; }
 
     public string? DocDespatchDate { get; set; }
+
+    public string? ReviewTaxComplete { get; set; }
+    public string? FinalTaxComplete { get; set; }
+    public string? AmountTaxPayable { get; set; }
+    public string? InvoiceDate { get; set; }
+    public string? InvoiceAmount { get; set; }
 }

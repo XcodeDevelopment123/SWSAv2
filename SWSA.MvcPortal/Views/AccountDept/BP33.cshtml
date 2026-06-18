@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "BP33 - Form E Work Progress Schedule";
 }
 
-<h1>BP33 - Form E Work Progress Schedule</h1>
+<h1>F3.2 Form E Work In Progress</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i> BP33 Records
+                    <i class="fas fa-tasks me-2"></i> F3.2 Records
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
@@ -18,46 +18,47 @@
                     </button>
                 </div>
             </div>
-<div class="card-body">
-    <div class="table-responsive">
-        <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
-            <thead>
-                <tr>
-                    <th colspan="3" class="text-center">Basic Info</th>
-                    <th colspan="7" class="text-center">Tax Process & E-Filing</th>
-                    <th colspan="4" class="text-center">Login & Reference</th>
-                    <th colspan="3" class="text-center">Billing & Dispatch</th>
-                    <th rowspan="2" style="vertical-align: middle;">Actions</th>
-                </tr>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="text-center">Basic Info</th>
+                                <th colspan="6" class="text-center">Tax Process & E-Filing</th>
+                                <th colspan="1" class="text-center">Tax</th>
+                                <th colspan="4" class="text-center">Login & Reference</th>
+                                <th colspan="2" class="text-center">Billing & Dispatch</th>
+                                <th rowspan="2" style="vertical-align: middle;">Actions</th>
+                            </tr>
 
-                <tr>
-                    <th>Item</th>
-                    <th>Grouping</th>
-                    <th>Company Name</th>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grouping</th>
+                                <th>Company Name</th>
 
-                    <th>Draft Tax Completed</th>
-                    <th>Review Tax</th>
-                    <th>Final Tax</th>
-                    <th>Tax Com Final Sign By Client</th>
-                    <th>Amount of Tax Pay</th>
-                    <th>E-File Draft</th>
-                    <th>E-File Final</th>
+                                <th>Draft Form E</th>
+                                <th>Review Form E</th>
+                                <th>Final Form E</th>
+                                <th>Form E Sign By Client</th>
+                                <th>E-File Draft</th>
+                                <th>E-File Final</th>
 
-                    <th>Tax Reference No</th>
-                    <th>Login</th>
-                    <th>Password</th>
-                    <th>Type of Form</th>
+                                <th>Amount of Tax Pay</th>
 
-                    <th>SPC</th>
-                    <th>Invoices No</th>
-                    <th>Doc Despatch Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
-    </div>
-</div>
+                                <th>Reference No</th>
+                                <th>Login</th>
+                                <th>Password</th>
+                                <th>Type of Form</th>
+
+                                <th>Invoices No</th>
+                                <th>Invoice Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -68,7 +69,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New BP33 Record</span>
+                    <span id="modalTitle">Add New Form E Work In Progress</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -83,7 +84,7 @@
                                 <input type="text" id="item" name="item" class="form-control" placeholder="Enter item" />
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyName">Company Name</label>
@@ -106,59 +107,88 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="draftTaxCompleted">Draft Tax Completed</label>
-                                <input type="text" id="draftTaxCompleted" name="draftTaxCompleted" class="form-control datepicker" placeholder="Select date" />
+                                <label for="draftFormE">Draft Form E</label>
+                                @*  <input type="text" id="draftTaxCompleted" name="draftTaxCompleted" class="form-control datepicker" placeholder="Select date" /> *@
+                                <select id="draftFormE" class="form-control">
+                                    <option value="">Select Y/N</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="reviewTax">Review Tax</label>
-                                <input type="text" id="reviewTax" name="reviewTax" class="form-control datepicker" placeholder="Select date" />
+                                <label for="reviewTax">Review Form E</label>
+                                @*   <input type="text" id="reviewTax" name="reviewTax" class="form-control datepicker" placeholder="Select date" /> *@
+                                <select id="reviewTax" class="form-control">
+                                    <option value="">Select Y/N</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        @*  <div class="col-md-6">
                             <div class="form-group">
                                 <label for="finalTax">Final Tax</label>
                                 <input type="text" id="finalTax" name="finalTax" class="form-control datepicker" placeholder="Select date" />
                             </div>
-                        </div>
+                        </div> *@
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="taxComFinalSignByClient">Tax Com Final Sign By Client</label>
-                                <input type="text" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="amountofTaxPay">Amount of Tax Pay</label>
-                                <input type="number" step="0.01" id="amountofTaxPay" name="amountofTaxPay" class="form-control" placeholder="0.00" />
+                                <label for="formESignByClient">form E Sign By Client</label>
+                                @* <input type="text" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-control datepicker" placeholder="Select date" /> *@
+                                <select id="formESignByClient" class="form-control">
+                                    <option value="">Select Y/N</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="taxReferennceNo">Tax Reference No</label>
+                                <label for="taxReferennceNo">Tax<br /> Reference No</label>
                                 <input type="text" id="taxReferennceNo" name="taxReferennceNo" class="form-control" placeholder="Enter reference number" />
                             </div>
                         </div>
                     </div>
 
+                    @* <div class="row">
+                <div class="col-md-6">
+                     <div class="form-group">
+                                <label for="amountofTaxPay">Amount of Tax Pay</label>
+                                <input type="number" step="0.01" id="amountofTaxPay" name="amountofTaxPay" class="form-control" placeholder="0.00" />
+                            </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="taxReferennceNo">Tax Reference No</label>
+                        <input type="text" id="taxReferennceNo" name="taxReferennceNo" class="form-control" placeholder="Enter reference number" />
+                    </div>
+                </div>
+            </div> *@
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="eFileDraft">E-File Draft</label>
-                                <input type="text" id="eFileDraft" name="eFileDraft" class="form-control datepicker" placeholder="Select date" />
+                                @*   <input type="text" id="eFileDraft" name="eFileDraft" class="form-control datepicker" placeholder="Select date" /> *@
+                                <select id="eFileDraft" class="form-control">
+                                    <option value="">Select Y/N</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="eFileFinal">E-File Final</label>
-                                <input type="text" id="eFileFinal" name="eFileFinal" class="form-control datepicker" placeholder="Select date" />
+                                <label for="eFileFinal">
+                                    E-File Final Submitted
+
+                                </label>
+                                <input type="text" id="eFileFinal" name="eFileFinal" class="form-control datepicker" placeholder="Enter date" />
                             </div>
                         </div>
                     </div>
@@ -179,31 +209,27 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="typeofForm">Type of Form</label>
-                                <input type="text" id="typeofForm" name="typeofForm" class="form-control" placeholder="Enter type of form" />
+                                <label for="typeofForm">Type of Form E</label>
+                                @* <input type="text" id="typeofForm" name="typeofForm" class="form-control" placeholder="Enter type of form" /> *@
+                                <select id="draftFormE" class="form-control">
+                                    <option value="">Select Type</option>
+                                    <option value="Dormant">Dormant</option>
+                                    <option value="Active">Active</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="spc">SPC</label>
-                                <input type="text" id="spc" name="spc" class="form-control" placeholder="Enter SPC" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="invoicesNo">Invoices No</label>
+                                <label for="invoicesNo">Invoices Date</label>
                                 <input type="text" id="invoicesNo" name="invoicesNo" class="form-control" placeholder="Enter invoices number" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="docDespatchDate">Doc Despatch Date</label>
-                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="invoiceAmount">Invoice Amount</label>
+                                <input type="number" step="0.01" id="invoiceAmount" name="invoiceAmount" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
                     </div>
@@ -248,7 +274,7 @@
 
                             filteredList.forEach(client => {
                                 clientOptionsMap[client.id] = client;
-                                
+
                                 // 显示格式：Name (Type)
                                 let displayText = client.companyName;
                                 if (client.clientType) {
@@ -258,8 +284,8 @@
                             });
                         }
                     },
-                    error: function(xhr) { 
-                        console.error("Failed to load clients", xhr); 
+                    error: function(xhr) {
+                        console.error("Failed to load clients", xhr);
                     }
                 });
             }
@@ -267,7 +293,7 @@
             // 🟢 2. Dropdown Change Event (Auto-fill Grouping)
             $('#clientSelect').change(function() {
                 const selectedId = $(this).val();
-                
+
                 if (!selectedId || !clientOptionsMap[selectedId]) {
                     $('#companyName').val('');
                     $('#grouping').val('');
@@ -282,7 +308,7 @@
 
                 // 🟢 自动填入 Grouping
                 $('#grouping').val(c.grouping || '');
-                
+
                 // 如果需要，也可以自动填入 File No 或 Reference No
                 // if(c.fileNo) ...
             });
@@ -351,51 +377,50 @@
                         { "data": "item", "defaultContent": "" },
                         { "data": "grouping", "defaultContent": "" },
                         { "data": "companyName", "defaultContent": "" },
-                        { 
-                            "data": "draftTaxCompleted", 
+                        {
+                            "data": "draftTaxCompleted",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "reviewTax", 
+                        {
+                            "data": "reviewTax",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "finalTax", 
+                        {
+                            "data": "finalTax",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "taxComFinalSignByClient", 
+                        {
+                            "data": "taxComFinalSignByClient",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
-                        { 
-                            "data": "amountofTaxPay", 
+                        {
+                            "data": "eFileDraft",
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": ""
+                        },
+                        {
+                            "data": "eFileFinal",
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": ""
+                        },
+                        {
+                            "data": "amountofTaxPay",
                             "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": "" 
-                        },
-                        { 
-                            "data": "eFileDraft", 
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
-                        },
-                        { 
-                            "data": "eFileFinal", 
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                            "defaultContent": ""
                         },
                         { "data": "taxReferennceNo", "defaultContent": "" },
                         { "data": "login", "defaultContent": "" },
                         { "data": "password", "defaultContent": "" },
                         { "data": "typeofForm", "defaultContent": "" },
-                        { "data": "spc", "defaultContent": "" },
                         { "data": "invoicesNo", "defaultContent": "" },
-                        { 
-                            "data": "docDespatchDate", 
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": "" 
+                        {
+                            "data": "invoiceAmount",
+                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
+                            "defaultContent": ""
                         },
                         {
                             "data": "id",
@@ -431,9 +456,8 @@
                     login: $('#login').val(),
                     password: $('#password').val(),
                     typeofForm: $('#typeofForm').val(),
-                    spc: $('#spc').val(),
                     invoicesNo: $('#invoicesNo').val(),
-                    docDespatchDate: $('#docDespatchDate').val()
+                    invoiceAmount: $('#invoiceAmount').val()
                 };
 
                 const url = currentEditId ? '/api/bp33/update' : '/api/bp33/create';
@@ -496,9 +520,8 @@
                         $('#login').val(d.login);
                         $('#password').val(d.password);
                         $('#typeofForm').val(d.typeofForm);
-                        $('#spc').val(d.spc);
                         $('#invoicesNo').val(d.invoicesNo);
-                        $('#docDespatchDate').val(formatDateForInput(d.docDespatchDate));
+                        $('#invoiceAmount').val(d.invoiceAmount);
 
                         $('#modalTitle').text('Edit BP33 Record');
                         $('#taskModal').modal('show');

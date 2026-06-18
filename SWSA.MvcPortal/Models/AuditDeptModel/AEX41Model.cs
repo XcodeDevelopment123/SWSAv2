@@ -9,11 +9,15 @@
         public string? Activity { get; set; }
         public string? YearEnd { get; set; }
         public string? Yeattodo { get; set; }
+        public string? CompanyStatus { get; set; }
+        public string? AuditExemption { get; set; }
+        public string? CoSec { get; set; }
+        public string? CreditRating { get; set; }
+        public string? SigningPages { get; set; }
         public string? MovetoActiveSch { get; set; }
         public string? MovetoBacklog { get; set; }
         public string? First18mthsdue { get; set; }
         public string? AuditedAccDueDate { get; set; }
-        public string? CoSec { get; set; }
         public string? Team { get; set; }
         public string? DateDocIn { get; set; }
         public decimal? EstRev { get; set; }
