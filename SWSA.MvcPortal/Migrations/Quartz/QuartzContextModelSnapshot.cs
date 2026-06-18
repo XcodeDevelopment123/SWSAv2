@@ -2962,9 +2962,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("InvoiceAmount")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InvoicesNo")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -3019,9 +3016,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("AmountTaxPayable")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CompanyName")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -3048,18 +3042,9 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("FinalTaxComplete")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Grouping")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("InvoiceAmount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InvoiceDate")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InvoiceNo")
                         .HasMaxLength(500)
@@ -3080,9 +3065,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                     b.Property<string>("ReviewTax")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ReviewTaxComplete")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Spc")
                         .HasMaxLength(500)
