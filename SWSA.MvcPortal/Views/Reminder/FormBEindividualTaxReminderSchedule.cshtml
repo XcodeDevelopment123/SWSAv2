@@ -27,9 +27,7 @@
                         <tr>
                             <th rowspan="3">Grouping</th>
                             <th rowspan="3">Individual Tax payer</th>
-                            <th colspan="2">Planing & Allocation</th>
-
-                            <th colspan="6"></th>
+                            <th colspan="6">Planing & Allocation</th>
 
                             <th colspan="2">Inward Doc</th>
 
@@ -37,12 +35,9 @@
                         </tr>
 
                         <tr>
-                            <th rowspan="2">PIC</th>
-                            <th rowspan="2">Target to start wk</th>
-
                             <th colspan="2">Mth 1 Email</th>
-                            <th colspan="2">Mth 2 Reminder PIC</th>
-                            <th colspan="2">Mth 3 Text PIC</th>
+                            <th colspan="2">Mth 2 Reminder</th>
+                            <th colspan="2">Mth 4 Final</th>
 
                             <th rowspan="2">Date Received</th>
                             <th rowspan="2">Note</th>
@@ -69,13 +64,10 @@
                                     <td>@record.Grouping</td>
                                     <td>@record.IndividualTaxPayer</td>
 
-                                    <td>@record.PIC</td>
-                                    <td>@record.T_startWk</td>
-
                                     <td>@record.T_Date</td>
                                     <td>@record.DateSent</td>
 
-                                    <td>@record.T_startWk</td>
+                                    <td>@record.T_Call</td>
                                     <td>@record.DateRemind</td>
 
                                     <td>@record.T_FinalText</td>
@@ -140,30 +132,6 @@
                         </div>
                     </div>
 
-                    <!-- Planning & Allocation -->
-                    <div class="form-info-label col-12">
-                        <label>Planning & Allocation</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pic">PIC</label>
-                                <select id="pic" name="pic" class="form-control">
-                                    <option value="">-- Select from AT21 / AEX41 --</option>
-                                </select>
-                                <small class="text-muted">
-                                    Pulled from AT21 (AuditStaff) / AEX41 (Team)
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="targetStartWk">Target to start wk</label>
-                                <input type="text" id="targetStartWk" name="targetStartWk" class="form-control" placeholder="Fixed: March" readonly />
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Month 1 Email -->
                     <div class="form-info-label col-12">
                         <label>Month 1 Email</label>
@@ -172,7 +140,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth1TargetedDate">Targeted Date</label>
-                                <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Fixed: Jan" readonly />
+                                <input type="text" id="mth1TargetedDate" name="mth1TargetedDate" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -183,15 +151,15 @@
                         </div>
                     </div>
 
-                    <!-- Month 2 Reminder PIC -->
+                    <!-- Month 2 Reminder -->
                     <div class="form-info-label col-12">
-                        <label>Month 2 Reminder PIC</label>
+                        <label>Month 2 Reminder</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth2TargetedCall">Targeted call/text</label>
-                                <input type="text" id="mth2TargetedCall" name="mth2TargetedCall" class="form-control" placeholder="Fixed: Feb" readonly />
+                                <input type="text" id="mth2TargetedCall" name="mth2TargetedCall" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -202,15 +170,15 @@
                         </div>
                     </div>
 
-                    <!-- Month 3 Text PIC -->
+                    <!-- Month 4 Final -->
                     <div class="form-info-label col-12">
-                        <label>Month 3 Text PIC</label>
+                        <label>Month 4 Final</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="mth3TargetedFinal">Targeted Final Text</label>
-                                <input type="text" id="mth3TargetedFinal" name="mth3TargetedFinal" class="form-control" placeholder="Fixed: March" readonly />
+                                <input type="text" id="mth3TargetedFinal" name="mth3TargetedFinal" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -270,35 +238,6 @@
         let dataTable;
         let dataTableInitialized = false;
 
-        // ========= 1) PIC 来源：AT21 / AEX41 =========
-        function loadPicSourceListB36() {
-            $.ajax({
-                url: "/get-b36-pic-sources",
-                type: "GET",
-                success: function (res) {
-                    const $sel = $("#pic");
-                    $sel.empty().append(
-                        '<option value="">-- Select from AT21 / AEX41 --</option>'
-                    );
-
-                    if (!(res && res.success && res.data)) return;
-
-                    res.data.forEach(o => {
-                        const company = o.companyName || "-";
-                        const ye = formatDateForDisplay(o.yearEnd);
-                        const pic = o.pic || "-";
-
-                        // value = PIC 名字 → 存到 B34.PIC
-                        $sel.append(`
-                                    <option value="${pic}">
-                                        ${o.sourceType} - ${company} - YE ${ye} - PIC ${pic}
-                                    </option>
-                                `);
-                    });
-                }
-            });
-        }
-
         // ---------- Modal alert + inline field errors ----------
         function showModalAlert(msg, type) {
             const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
@@ -349,13 +288,11 @@
         }
 
 
-        // ------------ 固定 4 个 Targeted 月份（核心逻辑） -------------
+        // ------------ Targeted 字段：清空，等待 Auto fill from company -------------
         function setFixedTargetMonths() {
-            // 这 4 个位置是固定月份，不跟公司 / year end 变化
-            $('#targetStartWk').val('March'); // Targeted to start Acc wk
-            $('#mth1TargetedDate').val('Jan');   // Mth 1 Email Targeted Date
-            $('#mth2TargetedCall').val('Feb');   // Mth 2 Reminder Targeted call/text
-            $('#mth3TargetedFinal').val('March'); // Mth 3 Text Targeted Final Text
+            $('#mth1TargetedDate').val('');
+            $('#mth2TargetedCall').val('');
+            $('#mth3TargetedFinal').val('');
         }
 
         function clearForm() {
@@ -371,8 +308,6 @@
         // ---------- Init ----------
         $(document).ready(function () {
             setFixedTargetMonths();
-
-            loadPicSourceListB36();
 
             // 只有真正需要选 date 的字段用 datepicker（Targeted 月份已经固定，不用 picker）
             ['#mth1DateSent', '#mth2DateReminder', '#mth3DateText', '#inwardDateReceived']
@@ -396,13 +331,13 @@
             });
 
 
-            // DataTable - 对应 B35 的列
+            // DataTable - 对应 B36 的列
             dataTable = $('#taskDatatable').DataTable({
                 responsive: true,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
-                order: [[1, 'asc']], // Company Name 排序
+                order: [[1, 'asc']], // Individual Tax payer 排序
                 language: {
                     search: "Search:",
                     lengthMenu: "Show _MENU_ entries",
@@ -418,19 +353,17 @@
                 },
                 columns: [
                     { data: 0 },  // Grouping
-                    { data: 1 },  // Company Name
-                    { data: 2 },  // Year End
-                    { data: 3 },  // PIC
-                    { data: 4 },  // Target to start wk (T_startWk)
-                    { data: 5 },  // Mth 1 Targeted Date (T_Date)
-                    { data: 6 },  // Mth 1 Date Sent
-                    { data: 7 },  // Mth 2 Targeted call/text (T_call)
-                    { data: 8 },  // Mth 2 Date reminder
-                    { data: 9 },  // Mth 3 Targeted Final Text (T_finalText)
-                    { data: 10 }, // Mth 3 Date Text
-                    { data: 11 }, // Date Received
-                    { data: 12, orderable: false, searchable: false }, // Edit
-                    { data: 13, orderable: false, searchable: false }  // Delete
+                    { data: 1 },  // Individual Tax payer
+                    { data: 2 },  // Mth 1 Targeted Date (T_Date)
+                    { data: 3 },  // Mth 1 Date Sent
+                    { data: 4 },  // Mth 2 Targeted call/text (T_call)
+                    { data: 5 },  // Mth 2 Date reminder
+                    { data: 6 },  // Mth 4 Final Targeted Final Text (T_finalText)
+                    { data: 7 },  // Mth 4 Final Date Text
+                    { data: 8 },  // Date Received
+                    { data: 9 },  // Note
+                    { data: 10, orderable: false, searchable: false }, // Edit
+                    { data: 11, orderable: false, searchable: false }  // Delete
                 ]
             });
             dataTableInitialized = true;
@@ -480,17 +413,15 @@
                 records.forEach(function (r) {
                     dataTable.row.add([
                         r.grouping || r.Grouping || '',                         // 0 Grouping
-                        r.individualTaxPayer || '',                   // 1 Company Name
-                        r.pic || r.PIC || '',                                   // 3 PIC
-                        r.t_startWk || r.T_startWk || '',                       // 4 Target to start wk
-                        formatDateForDisplay(r.t_Date || r.T_Date),             // 5 Mth1 Targeted Date
-                        formatDateForDisplay(r.dateSent || r.DateSent),         // 6 Mth1 Date Sent
-                        r.t_Call|| '',                             // 7 Mth2 Targeted call/text
-                        formatDateForDisplay(r.dateRemind || r.DateRemind),     // 8 Mth2 Date reminder
-                        r.t_FinalText || '',                   // 9 Mth3 Targeted Final Text
-                        formatDateForDisplay(r.dateText || r.DateText),         // 10 Mth3 Date Text
-                        formatDateForDisplay(r.dateReceived || r.DateReceived), // 11 Date Received
-                        r.note || r.Note || '',                                 // 12 Note
+                        r.individualTaxPayer || '',                   // 1 Individual Tax payer
+                        formatDateForDisplay(r.t_Date || r.T_Date),             // 2 Mth1 Targeted Date
+                        formatDateForDisplay(r.dateSent || r.DateSent),         // 3 Mth1 Date Sent
+                        r.t_Call|| '',                             // 4 Mth2 Targeted call/text
+                        formatDateForDisplay(r.dateRemind || r.DateRemind),     // 5 Mth2 Date reminder
+                        r.t_FinalText || '',                   // 6 Mth4 Final Targeted Final Text
+                        formatDateForDisplay(r.dateText || r.DateText),         // 7 Mth4 Final Date Text
+                        formatDateForDisplay(r.dateReceived || r.DateReceived), // 8 Date Received
+                        r.note || r.Note || '',                                 // 9 Note
                         `<button class="btn btn-sm btn-warning edit-btn" data-id="${r.id || r.Id}" title="Edit">
                                             <i class="fas fa-edit"></i>
                                          </button>`,
@@ -513,8 +444,6 @@
 
                 Grouping: ($('#grouping').val() || '').trim(),
                 IndividualTaxPayer: ($('#individualTaxPayer').val() || '').trim(),
-                PIC: ($('#pic').val() || '').trim(),
-                T_startWk: ($('#targetStartWk').val() || '').trim(),
 
                 T_Date: ($('#mth1TargetedDate').val() || '').trim(),
                 DateSent: ($('#mth1DateSent').val() || '').trim(),
@@ -537,10 +466,6 @@
             }
             if (!formData.IndividualTaxPayer) {
                 setFieldError('#individualTaxPayer', 'Required');
-                hasError = true;
-            }
-            if (!formData.PIC) {
-                setFieldError('#pic', 'Required');
                 hasError = true;
             }
 
@@ -600,8 +525,6 @@
 
                         $('#grouping').val(d.grouping || d.Grouping || '');
                         $('#individualTaxPayer').val(d.individualTaxPayer || d.IndividualTaxPayer || '');
-                        $('#pic').val(d.pic || d.PIC || '');
-                        $('#targetStartWk').val(d.t_startWk || d.T_startWk || '');
 
                         $('#mth1TargetedDate').val(d.t_Date || d.T_Date || '');
                         $('#mth1DateSent').val(d.dateSent || d.DateSent || '');

@@ -33,7 +33,7 @@
                             <th colspan="2">Due Dates</th>
                             <th colspan="2">Mth 1 Email</th>
                             <th colspan="2">Mth 2 Reminder</th>
-                            <th colspan="2">Mth 3 Text PIC</th>
+                            <th colspan="2">Mth 3 Final</th>
                             <th rowspan="2">Date Received</th>
                             <th rowspan="2">Note</th>
                             <th rowspan="2">Edit</th>
@@ -120,7 +120,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ssm18MonthDue">SSM 18 Mth Due</label>
-                                <input type="text" id="ssm18MonthDue" name="ssm18MonthDue" class="form-control" placeholder="Auto = Incorporation Date + 18 months" readonly />
+                                <input type="text" id="ssm18MonthDue" name="ssm18MonthDue" class="form-control" placeholder="Auto = Incorporation Date + 17 months" readonly />
                                 <small class="text-muted">Pulled from Clients · Sdn Bhd / LLP (Incorporation Date as base date)</small>
                             </div>
                         </div>
@@ -172,7 +172,7 @@
                     </div>
 
                     <div class="form-info-label col-12">
-                        <label>Month 3 Text PIC</label>
+                        <label>Month 3 Final</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -198,9 +198,9 @@
                             <div class="form-group">
                                 <label for="inwardDateReceived">Date Received</label>
                                 <select id="inwardDateReceived" name="inwardDateReceived" class="form-control">
-                                    <option value="">-- Select from C 1-2 (DateReceived) --</option>
+                                    <option value="">-- Select from A31B (DateReceived) --</option>
                                 </select>
-                                <small class="text-muted">Link from C 1-2</small>
+                                <small class="text-muted">Pulled from A31B · DateReceived</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -315,7 +315,7 @@
                 type: "GET",
                 success: function (res) {
                     const $sel = $("#inwardDateReceived");
-                    $sel.empty().append('<option value="">-- Select from C 1-2 (DateReceived) --</option>');
+                    $sel.empty().append('<option value="">-- Select from A31B (DateReceived) --</option>');
                     if (!(res && res.success && res.data)) return;
                     res.data.forEach(o => {
                         const company = o.companyName || "-";

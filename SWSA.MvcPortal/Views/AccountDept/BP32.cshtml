@@ -29,19 +29,16 @@
                             <th colspan="10" class="text-center">Tax Process Steps</th>
                             <th colspan="6" class="text-center">E-Filing &amp; Billing</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
-
                         </tr>
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">File No</th>
                             <th rowspan="2" style="vertical-align: middle;">Company Name</th>
                             <th rowspan="2" style="vertical-align: middle;">Year End</th>
-
                             <th rowspan="2" style="vertical-align: middle;">Job Services</th>
                             <th rowspan="2" style="vertical-align: middle;">Co Status</th>
                             <th rowspan="2" style="vertical-align: middle;">Activity Size</th>
                             <th rowspan="2" style="vertical-align: middle;">YE to do</th>
                             <th colspan="1" class="text-center">Month <br />to do</th>
-
                             <th colspan="1" style="vertical-align: middle;" class="text-center">Doc<br />Received<br />Date</th>
                             <th rowspan="2" style="vertical-align: middle;">Tax Due Date</th>
                             <th rowspan="2" style="vertical-align: middle;">Staff</th>
@@ -53,7 +50,6 @@
                             <th rowspan="2" style="vertical-align: middle;">Metric</th>
                             <th rowspan="2" style="vertical-align: middle;">Date Tax Submitted</th>
                             <th rowspan="2" style="vertical-align: middle;">Completed/Backlog</th>
-
                             <th rowspan="2" style="vertical-align: middle;">Single Entry</th>
                             <th rowspan="2" style="vertical-align: middle;">Tax Computation</th>
                             <th rowspan="2" style="vertical-align: middle;">Sorting Filing</th>
@@ -64,7 +60,6 @@
                             <th rowspan="2" style="vertical-align: middle;">Review Tax</th>
                             <th rowspan="2" style="vertical-align: middle;">Final Tax</th>
                             <th rowspan="2" style="vertical-align: middle;">Tax Com Final Sign By Client</th>
-
                             <th rowspan="2" style="vertical-align: middle;">Amount Tax Pay</th>
                             <th rowspan="2" style="vertical-align: middle;">E-File Draft</th>
                             <th rowspan="2" style="vertical-align: middle;">E-File Final</th>
@@ -133,8 +128,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="jobServices">Job Services</label>
-                                <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
-                                <select id="jobServices" class="form-control">
+                                <select id="jobServices" name="jobServices" class="form-control">
                                     <option value="">Select Company Type</option>
                                     <option value="Accounting">Accounting Only</option>
                                     <option value="AccTax">Acc+Tax</option>
@@ -145,8 +139,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coType">Co Type</label>
-                                <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" />
-                                <select id="coType" class="form-control">
+                                <select id="coType" name="coType" class="form-control">
                                     <option value="">Select Company Type</option>
                                     <option value="SdnBhd">Sdn Bhd</option>
                                     <option value="LLP">LLP</option>
@@ -160,7 +153,6 @@
                                 <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
                             </div>
                         </div>
-                       
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -172,7 +164,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yEtodo">YE to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Auto fill" readonly/>
+                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -265,7 +257,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="timelinesMatric">Timelines Matric</label>
-                                <input type="text" id="timelinesMatric" name="timelinesMatric" class="form-control datepicker" placeholder="Auto calculate" readonly />
+                                <input type="text" id="timelinesMatric" name="timelinesMatric" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
                     </div>
@@ -314,7 +306,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="invoiceDate">Invoice Date</label>
-                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Enter invoice number" />
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Enter invoice date" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -324,14 +316,6 @@
                             </div>
                         </div>
                     </div>
-@*                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="docDespatchDate">Doc Despatch Date</label>
-                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div> *@
                 </form>
             </div>
             <div class="modal-footer">
@@ -344,7 +328,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <partial name="_DatatablesScriptsPartial" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
@@ -353,55 +336,39 @@
         $(document).ready(function() {
             let dataTable;
             let currentEditId = null;
-            let companyOptionsMap = {}; // 存储 API 返回的公司数据
+            let companyOptionsMap = {};
 
-            // 🟢 1. 加载 Company Options (Sdn Bhd)
             function loadCompanyOptions() {
                 $.ajax({
-                    url: '/api/get/company-options', // 🟢 使用你要求的新 API
+                    url: '/api/get/company-options',
                     type: 'GET',
                     success: function (res) {
                         if (res.success && res.data) {
                             companyOptionsMap = {};
                             const $sel = $('#companySelect');
                             $sel.empty().append('<option value="">-- Select Sdn Bhd --</option>');
-
                             res.data.forEach(client => {
-                                // 缓存数据
                                 companyOptionsMap[client.id] = client;
-
-                                // 显示逻辑：Company Name (Company No)
                                 const displayText = client.companyNo
                                     ? `${client.companyName} (${client.companyNo})`
                                     : client.companyName;
-
                                 $sel.append(`<option value="${client.id}">${displayText}</option>`);
                             });
                         }
                     },
-                    error: function(xhr) {
-                        console.error("Failed to load options", xhr);
-                    }
+                    error: function(xhr) { console.error("Failed to load options", xhr); }
                 });
             }
 
-            // 🟢 2. Helper: Month -> Date String
             function yearEndMonthToDateString(monthName) {
                 if (!monthName) return '';
                 if (monthName.includes('/') || monthName.includes('-')) return monthName;
-
-                const months = [
-                    'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ];
-
+                const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
                 const idx = months.findIndex(m => m.toLowerCase() === monthName.toLowerCase());
                 if (idx === -1) return monthName;
-
                 const today = new Date();
                 let year = today.getFullYear();
                 if (idx < today.getMonth()) year += 1;
-
                 const dt = new Date(year, idx + 1, 0);
                 return formatDdMMyyyy(dt);
             }
@@ -415,52 +382,46 @@
                 return `${dd}/${mm}/${yyyy}`;
             }
 
-            // 🟢 3. Dropdown Change Event (Auto-fill)
             $('#companySelect').change(function() {
                 const selectedId = $(this).val();
-
                 if (!selectedId || !companyOptionsMap[selectedId]) {
                     $('#companyName').val('');
                     $('#fileNo').val('');
                     $('#yearEnd').val('');
                     return;
                 }
-
                 const c = companyOptionsMap[selectedId];
-
-                // 填入 Hidden Input (给后端保存)
                 $('#companyName').val(c.companyName || '');
-
-                // 填入 File No
                 $('#fileNo').val(c.fileNo || '');
-
-                // 处理 Year End
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
-
-                // 自动填入其他字段 (如果 API 返回了这些)
-                if(c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activeCoActivitySize);
-                if(c.coStatus) $('#coStatus').val(c.coStatus);
-                if(c.jobServices) $('#jobServices').val(c.jobServices);
+                if (c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activeCoActivitySize);
+                if (c.coStatus) $('#coStatus').val(c.coStatus);
+                if (c.jobServices) $('#jobServices').val(c.jobServices);
             });
 
-            // 🟢 4. 核心：初始化 DataTable (修复 Not Defined 问题)
             function initializeDataTable() {
-                // 如果已存在则销毁
                 if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                     dataTable.destroy();
                 }
 
+                // ✅ 参考 Sdn Bhd List 设计 — 用 _DatatablesScriptsPartial 的本地插件
                 dataTable = $('#taskDatatable').DataTable({
-                    "processing": true,
-                    "serverSide": false,
-                    paging: true, lengthChange: false, searching: true, ordering: true, info: true,
-                    autoWidth: false, responsive: true,
+                    processing: true,
+                    serverSide: false,
+                    paging: true,
+                    lengthChange: false,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    responsive: true,
+                    dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                    "ajax": {
-                        "url": "/api/bp32/get-all", // 假设后端接口
-                        "type": "GET",
-                        "dataSrc": function(response) {
+                    ajax: {
+                        url: "/api/bp32/get-all",
+                        type: "GET",
+                        dataSrc: function(response) {
                             if (response.success) {
                                 return response.data;
                             } else {
@@ -469,115 +430,70 @@
                                 return [];
                             }
                         },
-                        "error": function(xhr, error, thrown) {
+                        error: function(xhr, error, thrown) {
                             console.error('DataTable AJAX error:', error);
                         }
                     },
-                    "columns": [
-                        { "data": "fileNo", "defaultContent": "" },
-                        { "data": "companyName", "defaultContent": "" },
-                        { "data": "yearEnd", "defaultContent": "" },
-                        { "data": "jobServices", "defaultContent": "" },
-                        { "data": "coStatus", "defaultContent": "" },
-                        { "data": "activeCoActivitySize", "defaultContent": "" },
-                        { "data": "yEtodo", "defaultContent": "" },
-                        { "data": "mthTodo", "defaultContent": "" },
+                    columns: [
+                        { data: "fileNo", defaultContent: "" },
+                        { data: "companyName", defaultContent: "" },
+                        { data: "yearEnd", defaultContent: "" },
+                        { data: "jobServices", defaultContent: "" },
+                        { data: "coStatus", defaultContent: "" },
+                        { data: "activeCoActivitySize", defaultContent: "" },
+                        { data: "yEtodo", defaultContent: "" },
+                        { data: "mthTodo", defaultContent: "" },
+                        { data: "docReceivedDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "taxARdueDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "staff", defaultContent: "" },
+                        { data: "startDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "endDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "timeTaken", defaultContent: "" },
+                        { data: "datePassToAudit", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "targetDateToAudit", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "timelinesMatric", defaultContent: "" },
+                        { data: "dateTaxSubmited", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { data: "completedBacklog", defaultContent: "" },
+                        { data: "singleEntry", render: renderCheck },
+                        { data: "taxComputation", render: renderCheck },
+                        { data: "sortingFiling", render: renderCheck },
+                        { data: "keyinToExcel", render: renderCheck },
+                        { data: "reviewWorkingAcc", render: renderCheck },
+                        { data: "draftFinancialStatement", render: renderCheck },
+                        { data: "draftTaxCompleted", render: renderCheck },
+                        { data: "reviewTax", render: renderCheck },
+                        { data: "finalTax", render: renderCheck },
+                        { data: "taxComFinalSignByClient", render: renderCheck },
+                        { data: "amountTaxPay", render: function(d) { return d ? parseFloat(d).toFixed(2) : ''; }, defaultContent: "" },
+                        { data: "eFileDraft", render: renderCheck },
+                        { data: "eFileFinal", render: renderCheck },
+                        { data: "eFileviaSPC", render: renderCheck },
+                        { data: "invoiceDate", defaultContent: "" },
+                        { data: "amountRM", render: function(d) { return d ? parseFloat(d).toFixed(2) : ''; }, defaultContent: "" },
                         {
-                            "data": "docReceivedDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "taxARdueDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "staff", "defaultContent": "" },
-                        {
-                            "data": "startDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "endDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "timeTaken", "defaultContent": "" },
-                        {
-                            "data": "datePassToAudit",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "dateTaxSubmited",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "completedBacklog", "defaultContent": "" },
-                        // Boolean Fields (Render Checkmarks)
-                        { "data": "singleEntry", "render": renderCheck },
-                        { "data": "taxComputation", "render": renderCheck },
-                        { "data": "sortingFiling", "render": renderCheck },
-                        { "data": "keyinToExcel", "render": renderCheck },
-                        { "data": "reviewWorkingAcc", "render": renderCheck },
-                        { "data": "draftFinancialStatement", "render": renderCheck },
-                        { "data": "draftTaxCompleted", "render": renderCheck },
-                        { "data": "reviewTax", "render": renderCheck },
-                        { "data": "finalTax", "render": renderCheck },
-                        { "data": "taxComFinalSignByClient", "render": renderCheck },
-                        {
-                            "data": "amountTaxPay",
-                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "eFileDraft", "render": renderCheck },
-                        { "data": "eFileFinal", "render": renderCheck },
-                        { "data": "eFileviaSPC", "render": renderCheck },
-                        { "data": "invoiceNo", "defaultContent": "" },
-                        {
-                            "data": "amountRM",
-                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "docDespatchDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "id",
-                            "render": function(data, type, row) {
-                                return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                `;
+                            data: "id",
+                            render: function(data) {
+                                return `<div class="btn-group">
+                                    <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>`;
                             },
-                            "orderable": false
+                            orderable: false
                         }
                     ],
-                    "order": [[0, 'desc']]
+                    order: [[0, 'desc']]
                 });
-                dataTable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
             }
 
-            // Helper: Render Checkbox Icons
             function renderCheck(data) {
-                // 兼容字符串 "1" 或 boolean true
                 if (data == "1" || data == 1 || data === true || data === "true") {
                     return '<i class="fas fa-check text-success"></i>';
                 }
-                return ''; // 空白表示未勾选
+                return '';
             }
 
             function initializeDatePickers() {
-                $('.datepicker').datepicker({
-                    format: 'yyyy-mm-dd',
-                    autoclose: true,
-                    todayHighlight: true
-                });
+                $('.datepicker').datepicker({ format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true });
             }
 
             function formatDate(dateString) {
@@ -585,9 +501,7 @@
                 try {
                     const date = new Date(dateString);
                     return date.toLocaleDateString('en-GB');
-                } catch (e) {
-                    return dateString;
-                }
+                } catch (e) { return dateString; }
             }
 
             function formatDateForInput(dateString) {
@@ -595,9 +509,7 @@
                 try {
                     const date = new Date(dateString);
                     return date.toISOString().split('T')[0];
-                } catch (e) {
-                    return dateString;
-                }
+                } catch (e) { return dateString; }
             }
 
             function showAlert(msg, type) {
@@ -610,7 +522,7 @@
                 $('#taskForm')[0].reset();
                 currentEditId = null;
                 $('#recordId').val('');
-                $('#companySelect').val(''); // 重置下拉
+                $('#companySelect').val('');
                 $('#modalTitle').text('Add New BP32 Record');
                 $('.datepicker').datepicker('update', '');
             }
@@ -635,7 +547,6 @@
                     datePassToAudit: $('#datePassToAudit').val(),
                     dateTaxSubmited: $('#dateTaxSubmited').val(),
                     completedBacklog: $('#completedBacklog').val(),
-                    // Boolean fields
                     singleEntry: $('#singleEntry').is(':checked') ? "1" : "0",
                     taxComputation: $('#taxComputation').is(':checked') ? "1" : "0",
                     sortingFiling: $('#sortingFiling').is(':checked') ? "1" : "0",
@@ -650,26 +561,21 @@
                     eFileDraft: $('#eFileDraft').is(':checked') ? "1" : "0",
                     eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
                     eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
-                    invoiceNo: $('#invoiceNo').val(),
-                    amountRM: $('#amountRM').val(),
-                    docDespatchDate: $('#docDespatchDate').val()
+                    invoiceDate: $('#invoiceDate').val(),
+                    amountRM: $('#amountRM').val()
                 };
 
                 const url = currentEditId ? '/api/bp32/update' : '/api/bp32/create';
                 const method = currentEditId ? 'PUT' : 'POST';
-
                 $('#saveBtn').prop('disabled', true).html('Saving...');
 
                 $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
+                    url: url, type: method, contentType: 'application/json', data: JSON.stringify(formData),
                     success: function(response) {
-                        $('#saveBtn').prop('disabled', false).html('Save');
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                         if (response.success) {
                             $('#taskModal').modal('hide');
-                            if(dataTable) dataTable.ajax.reload(null, false);
+                            if (dataTable) dataTable.ajax.reload(null, false);
                             resetForm();
                             showAlert('Saved successfully!', 'success');
                         } else {
@@ -677,7 +583,7 @@
                         }
                     },
                     error: function(xhr) {
-                        $('#saveBtn').prop('disabled', false).html('Save');
+                        $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                         showAlert('Error saving record', 'danger');
                     }
                 });
@@ -689,18 +595,11 @@
                         const d = res.data;
                         currentEditId = d.id;
                         $('#recordId').val(d.id);
-
-                        // 反选 Dropdown
                         let foundId = "";
                         for (const [key, val] of Object.entries(companyOptionsMap)) {
-                            if (val.companyName === d.companyName) {
-                                foundId = key;
-                                break;
-                            }
+                            if (val.companyName === d.companyName) { foundId = key; break; }
                         }
                         $('#companySelect').val(foundId);
-
-                        // 填充 Input
                         $('#fileNo').val(d.fileNo);
                         $('#companyName').val(d.companyName);
                         $('#yearEnd').val(d.yearEnd);
@@ -709,24 +608,18 @@
                         $('#activeCoActivitySize').val(d.activeCoActivitySize);
                         $('#yEtodo').val(d.yEtodo);
                         $('#mthTodo').val(d.mthTodo);
-
-                        // Dates
                         $('#docReceivedDate').val(formatDateForInput(d.docReceivedDate));
                         $('#taxARdueDate').val(formatDateForInput(d.taxARdueDate));
                         $('#startDate').val(formatDateForInput(d.startDate));
                         $('#endDate').val(formatDateForInput(d.endDate));
                         $('#datePassToAudit').val(formatDateForInput(d.datePassToAudit));
                         $('#dateTaxSubmited').val(formatDateForInput(d.dateTaxSubmited));
-                        $('#docDespatchDate').val(formatDateForInput(d.docDespatchDate));
-
                         $('#staff').val(d.staff);
                         $('#timeTaken').val(d.timeTaken);
                         $('#completedBacklog').val(d.completedBacklog);
                         $('#amountTaxPay').val(d.amountTaxPay);
-                        $('#invoiceNo').val(d.invoiceNo);
+                        $('#invoiceDate').val(d.invoiceDate);
                         $('#amountRM').val(d.amountRM);
-
-                        // Checks
                         const check = (val) => (val == "1" || val == 1 || val === true);
                         $('#singleEntry').prop('checked', check(d.singleEntry));
                         $('#taxComputation').prop('checked', check(d.taxComputation));
@@ -741,7 +634,6 @@
                         $('#eFileDraft').prop('checked', check(d.eFileDraft));
                         $('#eFileFinal').prop('checked', check(d.eFileFinal));
                         $('#eFileviaSPC').prop('checked', check(d.eFileviaSPC));
-
                         $('#modalTitle').text('Edit BP32 Record');
                         $('#taskModal').modal('show');
                     } else {
@@ -767,17 +659,15 @@
                 }
             }
 
-            // Bindings
             $('#saveBtn').click(saveBP32Record);
             $('#addNewBtn').click(function() { resetForm(); });
             $(document).on('click', '.edit-btn', function() { editRecord($(this).data('id')); });
             $(document).on('click', '.delete-btn', function() { deleteRecord($(this).data('id')); });
             $('#taskModal').on('hidden.bs.modal', resetForm);
 
-            // 🚀 Init Logic
             initializeDatePickers();
             loadCompanyOptions();
-            initializeDataTable(); // 确保这个函数已经定义并在这里调用
+            initializeDataTable();
         });
     </script>
 }
