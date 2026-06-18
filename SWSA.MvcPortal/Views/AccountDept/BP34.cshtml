@@ -1,8 +1,8 @@
-﻿@{
+@{
     ViewData["Title"] = "BP34 - Form BE Work Progress Schedule";
 }
 
-<h1>BP34 Records (Form BE)</h1>
+<h1>F3.3 Form BE Work In Progress</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -23,35 +23,38 @@
                     <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
                         <thead>
                             <tr>
-                                <th colspan="3" class="text-center">Basic Info</th>
+                                <th colspan="2" class="text-center">Basic Info</th>
                                 <th colspan="5" class="text-center">Tax Process</th>
                                 <th colspan="2" class="text-center">E-Filing</th>
-                                <th colspan="4" class="text-center">Login & Reference</th>
+                                <th colspan="3" class="text-center">Login & Reference</th>
                                 <th colspan="3" class="text-center">Billing & Dispatch</th>
-                                <th rowspan="2" style="vertical-align: middle;">Actions</th>
+                                <th rowspan="3" style="vertical-align: middle;">Actions</th>
                             </tr>
                             <tr>
-                                <th>Item</th>
-                                <th>Grouping</th>
-                                <th>Individual Name</th>
+                                <th rowspan="2" style="vertical-align: middle;">Grouping</th>
+                                <th rowspan="2" style="vertical-align: middle;">Individual Name</th>
 
-                                <th>Draft Tax Completed</th>
-                                <th>Review Tax</th>
+                                <th rowspan="2" style="vertical-align: middle;">Draft Tax Completed</th>
+                                <th colspan="1" class="text-center">Review Tax</th>
+                                <th colspan="1" class="text-center">Complete</th>
+                                <th rowspan="2" style="vertical-align: middle;">Tax Com Final Sign by Client</th>
+                                <th colspan="1" class="text-center">Amount Tax Pay</th>
+
+                                <th rowspan="2" style="vertical-align: middle;">E-File Draft</th>
+                                <th rowspan="2" style="vertical-align: middle;">E-File Final</th>
+
+                                <th rowspan="2" style="vertical-align: middle;">Tax Reference No</th>
+                                <th rowspan="2" style="vertical-align: middle;">Login</th>
+                                <th rowspan="2" style="vertical-align: middle;">Password</th>
+
+                                <th rowspan="2" style="vertical-align: middle;">Invoice No</th>
+                                <th rowspan="2" style="vertical-align: middle;">Invoice Date</th>
+                                <th rowspan="2" style="vertical-align: middle;">Invoice Amount</th>
+                            </tr>
+                            <tr>
+                                <th>Date</th>
                                 <th>Final Tax</th>
-                                <th>Tax Com Final Sign by Client</th>
-                                <th>Amount Tax Pay</th>
-
-                                <th>E-File Draft</th>
-                                <th>E-File Final</th>
-
-                                <th>Tax Reference No</th>
-                                <th>Login</th>
-                                <th>Password</th>
-                                <th>Type of Form</th>
-
-                                <th>SPC</th>
-                                <th>Invoice No</th>
-                                <th>Doc Despatch Date</th>
+                                <th>Payable</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,7 +72,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New BP34 Record</span>
+                    <span id="modalTitle">Add New Form BE Work In Progress</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -78,14 +81,7 @@
                     <input type="hidden" id="recordId" value="">
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="item">Item</label>
-                                <input type="text" id="item" name="item" class="form-control" placeholder="Enter item" />
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="individualSelect">Individual Name</label>
                                 <select id="individualSelect" class="form-control">
@@ -96,7 +92,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
                                 <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto-fill" readonly />
@@ -113,59 +109,50 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="reviewTax">Review Tax</label>
+                                <label for="reviewTax">Review Tax Date</label>
                                 <input type="text" id="reviewTax" name="reviewTax" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="finalTax">Final Tax</label>
+                                <label for="finalTax">Final Tax Complete</label>
                                 <input type="text" id="finalTax" name="finalTax" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
+                    <div class="row mt-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="taxComFinalSignbyClient">Tax Com Final Sign by Client</label>
+                                <label for="taxComFinalSignbyClient">Final Tax Com Sign by Client</label>
                                 <input type="text" id="taxComFinalSignbyClient" name="taxComFinalSignbyClient" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="amountTaxPay">Amount Tax Pay</label>
+                                <label for="amountTaxPay">Amount Tax Payable</label>
                                 <input type="text" id="amountTaxPay" name="amountTaxPay" class="form-control" placeholder="Enter amount" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="eFileDraft">E-File Draft</label>
                                 <input type="text" id="eFileDraft" name="eFileDraft" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="eFileFinal">E-File Final</label>
                                 <input type="text" id="eFileFinal" name="eFileFinal" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxRefferanceNo">Tax Reference No</label>
                                 <input type="text" id="taxRefferanceNo" name="taxRefferanceNo" class="form-control" placeholder="Enter reference number" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="typeofForm">Type of Form</label>
-                                <input type="text" id="typeofForm" name="typeofForm" class="form-control" placeholder="Enter type of form" value="BE" />
                             </div>
                         </div>
                     </div>
@@ -188,20 +175,20 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="spc">SPC</label>
-                                <input type="text" id="spc" name="spc" class="form-control" placeholder="Enter SPC" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
                                 <label for="invoiceNo">Invoice No</label>
                                 <input type="text" id="invoiceNo" name="invoiceNo" class="form-control" placeholder="Enter invoice number" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="docDespatchDate">Doc Despatch Date</label>
-                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
+                                <label for="invoiceDate">Invoice Date</label>
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="invoiceAmount">Invoice Amount</label>
+                                <input type="number" step="0.01" id="invoiceAmount" name="invoiceAmount" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
                     </div>
@@ -304,6 +291,13 @@
                 } catch (e) { return dateString; }
             }
 
+            function renderCheck(data) {
+                if (data == "1" || data == 1 || data === true || data === "true") {
+                    return '<i class="fas fa-check text-success"></i>';
+                }
+                return '';
+            }
+
             function showAlert(msg, type) {
                 const html = `<div class="alert alert-${type} alert-dismissible fade show">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
                 $('#alertContainer').html(html);
@@ -340,12 +334,9 @@
                         }
                     },
                     "columns": [
-                        // 1-3
-                        { "data": "item", "defaultContent": "" },
                         { "data": "grouping", "defaultContent": "" },
                         { "data": "companyName", "defaultContent": "" },
                         
-                        // 4-8 (Tax Process)
                         { 
                             "data": "draftTaxCompleted", 
                             "render": function(data) { return data ? formatDate(data) : ''; },
@@ -358,7 +349,16 @@
                         },
                         { 
                             "data": "finalTax", 
-                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "render": function(data, type, row) {
+                                let html = '';
+                                if (row.finalTaxComplete == "1" || row.finalTaxComplete == 1 || row.finalTaxComplete === true || row.finalTaxComplete === "true") {
+                                    html += '<div class="text-center mb-1"><i class="fas fa-check text-success"></i></div>';
+                                } else {
+                                    html += '<div class="text-center mb-1"><i class="fas fa-times text-muted"></i></div>';
+                                }
+                                html += `<div class="text-center text-muted font-monospace small">${data ? formatDate(data) : '-'}</div>`;
+                                return html;
+                            },
                             "defaultContent": "" 
                         },
                         { 
@@ -366,9 +366,20 @@
                             "render": function(data) { return data ? formatDate(data) : ''; },
                             "defaultContent": "" 
                         },
-                        { "data": "amountTaxPay", "defaultContent": "" },
+                        { 
+                            "data": "amountTaxPay", 
+                            "render": function(data, type, row) {
+                                let html = `<div class="text-center font-monospace">${data || '-'}</div>`;
+                                if (row.amountTaxPayable == "1" || row.amountTaxPayable == 1 || row.amountTaxPayable === true || row.amountTaxPayable === "true") {
+                                    html += '<div class="text-center mt-1"><span class="badge bg-warning text-dark">Payable</span></div>';
+                                } else {
+                                    html += '<div class="text-center mt-1"><span class="badge bg-light text-muted">Not Payable</span></div>';
+                                }
+                                return html;
+                            },
+                            "defaultContent": "" 
+                        },
 
-                        // 9-10 (E-Filing)
                         { 
                             "data": "eFileDraft", 
                             "render": function(data) { return data ? formatDate(data) : ''; },
@@ -380,22 +391,22 @@
                             "defaultContent": "" 
                         },
 
-                        // 11-14 (Login)
                         { "data": "taxRefferanceNo", "defaultContent": "" },
                         { "data": "login", "defaultContent": "" },
                         { "data": "password", "defaultContent": "" },
-                        { "data": "typeofForm", "defaultContent": "" },
 
-                        // 15-17 (Billing)
-                        { "data": "spc", "defaultContent": "" },
                         { "data": "invoiceNo", "defaultContent": "" },
                         { 
-                            "data": "docDespatchDate", 
+                            "data": "invoiceDate", 
                             "render": function(data) { return data ? formatDate(data) : ''; },
                             "defaultContent": "" 
                         },
+                        { 
+                            "data": "invoiceAmount", 
+                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
+                            "defaultContent": "" 
+                        },
 
-                        // 18 (Actions)
                         {
                             "data": "id",
                             "render": function(data, type, row) {
@@ -416,7 +427,6 @@
             function saveBP34Record() {
                 const formData = {
                     id: currentEditId || 0,
-                    item: $('#item').val(),
                     grouping: $('#grouping').val(),
                     companyName: $('#companyName').val(),
                     draftTaxCompleted: $('#draftTaxCompleted').val(),
@@ -429,10 +439,12 @@
                     taxRefferanceNo: $('#taxRefferanceNo').val(),
                     login: $('#login').val(),
                     password: $('#password').val(),
-                    typeofForm: $('#typeofForm').val(),
-                    spc: $('#spc').val(),
                     invoiceNo: $('#invoiceNo').val(),
-                    docDespatchDate: $('#docDespatchDate').val()
+                    reviewTaxComplete: $('#reviewTaxComplete').is(':checked') ? "1" : "0",
+                    finalTaxComplete: $('#finalTaxComplete').is(':checked') ? "1" : "0",
+                    amountTaxPayable: $('#amountTaxPayable').is(':checked') ? "1" : "0",
+                    invoiceDate: $('#invoiceDate').val(),
+                    invoiceAmount: $('#invoiceAmount').val()
                 };
 
                 const url = currentEditId ? '/api/bp34/update' : '/api/bp34/create';
@@ -481,7 +493,6 @@
                         $('#individualSelect').val(foundId);
 
                         // 填充 Input
-                        $('#item').val(d.item);
                         $('#grouping').val(d.grouping);
                         $('#companyName').val(d.companyName);
                         $('#draftTaxCompleted').val(formatDateForInput(d.draftTaxCompleted));
@@ -494,10 +505,12 @@
                         $('#taxRefferanceNo').val(d.taxRefferanceNo);
                         $('#login').val(d.login);
                         $('#password').val(d.password);
-                        $('#typeofForm').val(d.typeofForm);
-                        $('#spc').val(d.spc);
                         $('#invoiceNo').val(d.invoiceNo);
-                        $('#docDespatchDate').val(formatDateForInput(d.docDespatchDate));
+                        $('#reviewTaxComplete').prop('checked', d.reviewTaxComplete === "1" || d.reviewTaxComplete === true);
+                        $('#finalTaxComplete').prop('checked', d.finalTaxComplete === "1" || d.finalTaxComplete === true);
+                        $('#amountTaxPayable').prop('checked', d.amountTaxPayable === "1" || d.amountTaxPayable === true);
+                        $('#invoiceDate').val(formatDateForInput(d.invoiceDate));
+                        $('#invoiceAmount').val(d.invoiceAmount);
 
                         $('#modalTitle').text('Edit BP34 Record');
                         $('#taskModal').modal('show');

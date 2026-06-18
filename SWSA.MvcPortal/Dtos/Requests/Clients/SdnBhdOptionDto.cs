@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Dtos.Requests.Clients
+namespace SWSA.MvcPortal.Dtos.Requests.Clients
 {
     public class SdnBhdOptionDto
     {
@@ -19,6 +19,8 @@
         public string YearEndMonth { get; set; } = ""; // e.g. "December"
         public string TaxIdentificationNumber { get; set; } = ""; // e.g. "December"
         public string EmployerNumber { get; set; } = ""; // e.g. "December"
+        public string? AppointmentEngagementData { get; set; }
+        public string? ServiceSelected { get; set; }
+        public string? LatestDateDocIn { get; set; } // From A31A (C1-1)
     }
-
 }

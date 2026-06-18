@@ -25,32 +25,30 @@
                         <tr>
                             <th colspan="3" class="text-center">Basic Information</th>
                             <th colspan="8" class="text-center">Company Details</th>
-                            <th colspan="9" class="text-center">Scheduling &amp; Timeline</th>
+                            <th colspan="6" class="text-center">Scheduling &amp; Timeline</th>
                             <th colspan="10" class="text-center">Tax Process Steps</th>
                             <th colspan="6" class="text-center">E-Filing &amp; Billing</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
-
                         </tr>
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">File No</th>
                             <th rowspan="2" style="vertical-align: middle;">Company Name</th>
                             <th rowspan="2" style="vertical-align: middle;">Year End</th>
 
-                            <th rowspan="2" style="vertical-align: middle;">Job Services</th>
+                            <th rowspan="2" style="vertical-align: middle;">Job Type</th>
                             <th rowspan="2" style="vertical-align: middle;">Co Status</th>
                             <th rowspan="2" style="vertical-align: middle;">Activity Size</th>
                             <th rowspan="2" style="vertical-align: middle;">YE to do</th>
-                            <th colspan="1" class="text-center">Month <br />to do</th>
+                            <th colspan="1" class="text-center">Month</th>
 
-                            <th colspan="1" style="vertical-align: middle;" class="text-center">Doc<br />Received<br />Date</th>
+                            <th colspan="1" style="vertical-align: middle;" class="text-center">Doc Received</th>
                             <th rowspan="2" style="vertical-align: middle;">Tax Due Date</th>
                             <th rowspan="2" style="vertical-align: middle;">Staff</th>
+
                             <th rowspan="2" style="vertical-align: middle;">Start Date</th>
                             <th rowspan="2" style="vertical-align: middle;">End Date</th>
                             <th rowspan="2" style="vertical-align: middle;">Time Taken</th>
-                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Date<br />Pass to Audit</th>
-                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Target<br />For Audit<br />Dept</th>
-                            <th rowspan="2" style="vertical-align: middle;">Metric</th>
+                            <th colspan="1" style="vertical-align: middle;" class="text-center">Date</th>
                             <th rowspan="2" style="vertical-align: middle;">Date Tax Submitted</th>
                             <th rowspan="2" style="vertical-align: middle;">Completed/Backlog</th>
 
@@ -69,8 +67,15 @@
                             <th rowspan="2" style="vertical-align: middle;">E-File Draft</th>
                             <th rowspan="2" style="vertical-align: middle;">E-File Final</th>
                             <th rowspan="2" style="vertical-align: middle;">E-File via SPC</th>
-                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Invoice<br />Date</th>
-                            <th rowspan="2" style="vertical-align: middle;" class="text-center">Amount<br />Rm</th>
+                            <th colspan="1" class="text-center">Invoice</th>
+                            <th colspan="1" class="text-center">Amount</th>
+                        </tr>
+                        <tr>
+                            <th>to do</th>
+                            <th>Date</th>
+                            <th>Pass to Audit</th>
+                            <th>Date</th>
+                            <th>RM</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -133,7 +138,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="jobServices">Job Services</label>
-                                <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" />
+                                @* <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" /> *@
                                 <select id="jobServices" class="form-control">
                                     <option value="">Select Company Type</option>
                                     <option value="Accounting">Accounting Only</option>
@@ -145,7 +150,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coType">Co Type</label>
-                                <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" />
+                               @*  <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" /> *@
                                 <select id="coType" class="form-control">
                                     <option value="">Select Company Type</option>
                                     <option value="SdnBhd">Sdn Bhd</option>
@@ -309,12 +314,11 @@
                         <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" /><label class="form-check-label" for="eFileDraft">E-File Draft</label></div></div>
                         <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" /><label class="form-check-label" for="eFileFinal">E-File Final</label></div></div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4"><div class="form-check"><input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" /><label class="form-check-label" for="eFileviaSPC">E-File via SPC</label></div></div>
+                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="invoiceDate">Invoice Date</label>
-                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Enter invoice number" />
+                                <label for="invoiceNo">Invoice Date</label>
+                                <input type="text" id="invoiceNo" name="invoiceNo" class="form-control" placeholder="Enter invoice number" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -323,15 +327,13 @@
                                 <input type="number" step="0.01" id="amountRM" name="amountRM" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
-                    </div>
-@*                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="docDespatchDate">Doc Despatch Date</label>
-                                <input type="text" id="docDespatchDate" name="docDespatchDate" class="form-control datepicker" placeholder="Select date" />
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" />
+                                <label class="form-check-label" for="eFileviaSPC">E-File via SPC</label>
                             </div>
                         </div>
-                    </div> *@
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -455,7 +457,7 @@
                     "processing": true,
                     "serverSide": false,
                     paging: true, lengthChange: false, searching: true, ordering: true, info: true,
-                    autoWidth: false, responsive: true,
+                    autoWidth: false, responsive: false,
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     "ajax": {
                         "url": "/api/bp32/get-all", // 假设后端接口
@@ -538,11 +540,6 @@
                         {
                             "data": "amountRM",
                             "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "docDespatchDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
                             "defaultContent": ""
                         },
                         {
@@ -651,8 +648,7 @@
                     eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
                     eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
                     invoiceNo: $('#invoiceNo').val(),
-                    amountRM: $('#amountRM').val(),
-                    docDespatchDate: $('#docDespatchDate').val()
+                    amountRM: $('#amountRM').val()
                 };
 
                 const url = currentEditId ? '/api/bp32/update' : '/api/bp32/create';
@@ -717,7 +713,6 @@
                         $('#endDate').val(formatDateForInput(d.endDate));
                         $('#datePassToAudit').val(formatDateForInput(d.datePassToAudit));
                         $('#dateTaxSubmited').val(formatDateForInput(d.dateTaxSubmited));
-                        $('#docDespatchDate').val(formatDateForInput(d.docDespatchDate));
 
                         $('#staff').val(d.staff);
                         $('#timeTaken').val(d.timeTaken);

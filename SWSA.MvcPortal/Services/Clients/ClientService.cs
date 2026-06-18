@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Force.DeepCloner;
 using Mapster;
 using Microsoft.Data.SqlClient;
@@ -347,6 +347,35 @@ public class ClientService(
         public bool IsActive { get; set; }
     }
 
+    private async Task<Dictionary<string, string>> GetLatestA31ADatesAsync()
+    {
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            var sql = @"
+                SELECT Client, DateReceived 
+                FROM (
+                    SELECT Client, DateReceived, 
+                           ROW_NUMBER() OVER (PARTITION BY Client ORDER BY Id DESC) as rn 
+                    FROM [Quartz].[dbo].[A31A]
+                    WHERE Client IS NOT NULL AND Client <> ''
+                ) t 
+                WHERE rn = 1";
+            var records = await connection.QueryAsync<(string Client, string DateReceived)>(sql);
+            return records.ToDictionary(
+                x => x.Client.Trim(), 
+                x => x.DateReceived, 
+                StringComparer.OrdinalIgnoreCase
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching latest A31A dates: {ex.Message}");
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
     public async Task<List<CompanyOptionDto>> GetCompanyOptionsAsync()
     {
         // 如果你有特定 filter（比如只要 active），可以在这里设置
@@ -358,6 +387,7 @@ public class ClientService(
 
         // 1️⃣ 先用 SearchClientsAsync 拿到所有 SdnBhd
         var raw = await SearchClientsAsync(ClientType.SdnBhd, filter);
+        var latestDates = await GetLatestA31ADatesAsync();
 
         // 2️⃣ 把 object 转回 SdnBhdClient，然后投影成我们要的 DTO
         return raw
@@ -375,7 +405,10 @@ public class ClientService(
                     ? c.YearEndMonth.Value.ToString()   // "December"
                     : string.Empty,
                 TaxIdentificationNumber =c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber
+                EmployerNumber = c.EmployerNumber,
+                AppointmentEngagementData = c.AppointmentEngagementData,
+                ServiceSelected = c.ServiceSelected,
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
             })
             .ToList();
     }
@@ -390,6 +423,7 @@ public class ClientService(
 
         // ① 拉 LLP 客户
         var raw = await SearchClientsAsync(ClientType.LLP, filter);
+        var latestDates = await GetLatestA31ADatesAsync();
 
         // ② Cast 成 LLP Client 并投影为 DTO
         return raw
@@ -407,7 +441,10 @@ public class ClientService(
                     ? c.YearEndMonth.Value.ToString()
                     : string.Empty,
                 TaxIdentificationNumber = c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber
+                EmployerNumber = c.EmployerNumber,
+                AppointmentEngagementData = c.AppointmentEngagementData,
+                ServiceSelected = c.ServiceSelected,
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
             })
             .ToList();
     }
@@ -423,10 +460,11 @@ public class ClientService(
 
         // ① 拉 LLP 客户
         var raw = await SearchClientsAsync(ClientType.Enterprise, filter);
+        var latestDates = await GetLatestA31ADatesAsync();
 
         // ② Cast 成 LLP Client 并投影为 DTO
         return raw
-            .Cast<EnterpriseClient>() // 如果你的类型名不同，请换成实际的 LLP 客户类型
+            .Cast<EnterpriseClient>() // 如果你的类型名不同，请换成实际 of LLP 客户类型
             .Select(c => new CompanyOptionDto
             {
                 Id = c.Id,
@@ -440,7 +478,10 @@ public class ClientService(
                     ? c.YearEndMonth.Value.ToString()
                     : string.Empty,
                 TaxIdentificationNumber = c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber
+                EmployerNumber = c.EmployerNumber,
+                AppointmentEngagementData = c.AppointmentEngagementData,
+                ServiceSelected = c.ServiceSelected,
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
             })
             .ToList();
     }

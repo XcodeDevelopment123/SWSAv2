@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.AccDeptModel
+namespace SWSA.MvcPortal.Models.AccDeptModel
 {
     public class BP33Model
     {
@@ -19,6 +19,7 @@
         public string? TypeofForm { get; set; }
         public string? SPC { get; set; }
         public string? InvoicesNo { get; set; }
+        public string? InvoiceAmount { get; set; }
         public DateTime? DocDespatchDate { get; set; }
     }
 }
