@@ -119,16 +119,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="AEX">AEX</option>
-                                   @*   <option value="">Select Status</option>
-                                     <option value="Active">Active</option>
-                                     <option value="Dormant">Dormant</option>
-                                     <option value="Strike Off">Strike Off</option>
-                                     <option value="In Liquidation">In Liquidation</option> *@
-                                </select>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
+                                <input type="hidden" id="yearEndMonth" />
                             </div>
                         </div>
                     </div>
@@ -176,7 +168,7 @@
                                 <label for="dateOfAnnualReturn">Date of Annual Return</label>
                                 <small class="text-muted">(auto = anniversary day of this/next year)</small>
                                 <input type="text" id="dateOfAnnualReturn" name="dateOfAnnualReturn"
-                                       class="form-control" placeholder="Auto from Incorp Date" readonly />
+                                       class="form-control" placeholder="dd/MM" />
                             </div>
                         </div>
 
@@ -289,12 +281,17 @@
                             ? formatDateForDisplay(incorpRaw)
                             : incorpRaw;
 
+                        const yearEndMonth = o.yearEndMonth || o.YearEndMonth || "";
+                        const companyStatus = o.companyStatus || o.CompanyStatus || "";
+
                         // 存在 data-* 里，方便 change 事件读取
                         $sel.append(`
                             <option value="${name}"
                                     data-fileno="${fileNo}"
                                     data-companyno="${companyNo}"
-                                    data-incorpdate="${incorpDisplay}">
+                                    data-incorpdate="${incorpDisplay}"
+                                    data-yearendmonth="${yearEndMonth}"
+                                    data-companystatus="${companyStatus}">
                                 ${name}
                             </option>
                         `);
@@ -388,46 +385,52 @@
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
 
-        // 根据 Incorp Date 自动计算 Anniversary / AR due / DateOfAR
+        // 根据 Incorp Date 自动计算 Anniversary / DateOfAR
+        // AR due date 根据 Year End + 7 months 计算
         function recalcFromIncorp() {
             const incorpStr = ($('#incorpDate').val() || '').trim();
             const incorp = parseDdMmYyyy(incorpStr);
+            const yearEndMonth = ($('#yearEndMonth').val() || '').trim();
 
             if (!incorp) {
-                // 没有合法成立日就清空自动栏位
                 $('#anniversaryDate').val('');
-                $('#arDueDate').val('');
-                $('#dateOfAnnualReturn').val('');
+                $('#dateOfAnnualReturn').datepicker('update', '');
+                if (!yearEndMonth) $('#arDueDate').val('');
                 return;
             }
 
             const today = new Date();
-            const incorpMonthIndex = incorp.getMonth(); // 0-11
+            const incorpMonthIndex = incorp.getMonth();
             const incorpDay = incorp.getDate();
             const monthName = MONTH_NAMES_SHORT[incorpMonthIndex];
 
             // 1) Anniversary：只要月份
             $('#anniversaryDate').val(monthName);
 
-            // 2) 决定今年还是明年的周年年份
-            let targetYear = today.getFullYear();
-            const thisYearAnniv = new Date(targetYear, incorpMonthIndex, incorpDay);
+            // 2) Date of Annual Return：dd/MM (anniversary day + month)
+            const arDate = new Date(today.getFullYear(), incorpMonthIndex, incorpDay);
+            let arYear = today.getFullYear();
+            if (today > arDate) arYear++;
+            const arDate2 = new Date(arYear, incorpMonthIndex, incorpDay);
+            const dd = ('0' + arDate2.getDate()).slice(-2);
+            const mm = ('0' + (arDate2.getMonth() + 1)).slice(-2);
+            $('#dateOfAnnualReturn').datepicker('update', dd + '/' + mm);
 
-            // 如果今天已经超过今年的 Incorp 日 → 用明年的
-            if (today > thisYearAnniv) {
-                targetYear++;
+            // 3) SSM AR due date：Year End + 7 months
+            if (yearEndMonth) {
+                const fullMonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+                const yeIdx = fullMonths.indexOf(yearEndMonth.toLowerCase());
+                if (yeIdx >= 0) {
+                    const dueIdx = (yeIdx + 7) % 12;
+                    const dueYearAdd = Math.floor((yeIdx + 7) / 12);
+                    let dueYear = today.getFullYear();
+                    const thisYearYe = new Date(dueYear, yeIdx, 1);
+                    if (today > thisYearYe) dueYear++;
+                    dueYear += dueYearAdd;
+                    const arDueText = MONTH_NAMES_SHORT[dueIdx] + '-' + dueYear;
+                    $('#arDueDate').val(arDueText);
+                }
             }
-
-            // 3) AR due：显示 月份 + 年份，例如 "Sep-2025"
-            const arDueText = monthName + '-' + targetYear;
-            $('#arDueDate').val(arDueText);
-
-            // 4) Date of Annual Return：用真正的日/月/年（当天的周年日）
-            const arDate = new Date(targetYear, incorpMonthIndex, incorpDay);
-            $('#dateOfAnnualReturn').val(formatDdMmYyyy(arDate));
-
-            // 🔸 你如果想顺便把 AR Submitted Date 先预填同一天（可改可不改）
-            // $('#arSubmittedDate').val(formatDdMmYyyy(arDate));
         }
 
         function formatDateForDisplay(s) {
@@ -492,6 +495,8 @@
             $('#taskForm')[0].reset();
             $('#editIndex').val('');
             $('#modalTitle').text('Add New Annual Return Record');
+            $('#yearEndMonth').val('');
+            $('#dateOfAnnualReturn').datepicker('update', '');
             hideModalAlert();
             clearFieldErrors();
         }
@@ -507,10 +512,14 @@
                 const fileNo = $opt.data('fileno') || '';
                 const companyNo = $opt.data('companyno') || '';
                 const incorp = $opt.data('incorpdate') || '';
+                const companyStatus = $opt.data('companystatus') || '';
+                const yearEndMonth = $opt.data('yearendmonth') || '';
 
                 $('#fileNo').val(fileNo);
                 $('#companyNo').val(companyNo);
                 $('#incorpDate').val(incorp);
+                $('#coStatus').val(companyStatus);
+                $('#yearEndMonth').val(yearEndMonth);
 
                 recalcFromIncorp();
             });
@@ -535,6 +544,12 @@
                     autoclose: true,
                     todayHighlight: true
                 });
+
+            $('#dateOfAnnualReturn').datepicker({
+                format: 'dd/mm',
+                autoclose: true,
+                todayHighlight: true
+            });
 
 
             // DataTable：对应 S14A 所有列
@@ -755,7 +770,7 @@
                         $('#arDueDate').val(formatDateForDisplay(getVal(d, 'ARdueDate')));
                         $('#reminderDate').val(formatDateForDisplay(getVal(d, 'ReminderDate')));
 
-                        $('#dateOfAnnualReturn').val(formatDateForDisplay(getVal(d, 'DateOfAR')));
+                        $('#dateOfAnnualReturn').datepicker('update', formatDateForDisplay(getVal(d, 'DateOfAR')));
                         $('#arSubmittedDate').val(formatDateForDisplay(getVal(d, 'ARsubmitDate')));
 
                         $('#dateSendToClient').val(formatDateForDisplay(getVal(d, 'DateSendToClient')));

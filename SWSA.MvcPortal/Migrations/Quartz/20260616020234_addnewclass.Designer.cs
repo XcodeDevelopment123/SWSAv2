@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Data;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Data;
 namespace SWSA.MvcPortal.Migrations.Quartz
 {
     [DbContext(typeof(QuartzContext))]
-    partial class QuartzContextModelSnapshot : ModelSnapshot
+    [Migration("20260616020234_addnewclass")]
+    partial class addnewclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -525,10 +528,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DateSenttoKK");
 
-                    b.Property<string>("Days1_3")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("DespatachDateClient")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -551,10 +550,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
 
                     b.Property<int?>("Id")
                         .HasColumnType("int");
-
-                    b.Property<string>("Metric421")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("PasstoTaxDept")
                         .HasMaxLength(500)
@@ -599,10 +594,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TaxDueDate")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("TotalFieldWorksDays1_4")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -1037,20 +1028,12 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("DateSent1_6")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("DateSentToKk")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DateSentToKK");
 
                     b.Property<string>("DateSenttoClient")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Days1_8")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -1071,14 +1054,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("EndDate")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("EndDate1_7")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Metric421")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -1125,10 +1100,6 @@ namespace SWSA.MvcPortal.Migrations.Quartz
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TaxDueDate")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("TotalReviewDays")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 

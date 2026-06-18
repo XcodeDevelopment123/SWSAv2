@@ -23,18 +23,21 @@
                     <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
                         <thead>
                             <tr>
-                                <th colspan="6" class="text-center bg-light">Company Information</th>
+                                <th colspan="8" class="text-center bg-light">Company Information</th>
                                 <th colspan="5" class="text-center bg-info">CP 204 (Initial)</th>
                                 <th colspan="5" class="text-center bg-warning">1st Revision (6th Mth)</th>
                                 <th colspan="5" class="text-center bg-warning">2nd Revision (9th Mth)</th>
                                 <th colspan="5" class="text-center bg-warning">3rd Revision (11th Mth)</th>
                                 <th rowspan="2" style="vertical-align: middle;">Actions</th>
+                                <th rowspan="2" style="vertical-align: middle;">Remark</th>
                             </tr>
                             <tr>
                                 <th>Company Name</th>
                                 <th>Tax Ref No.</th>
                                 <th>Year End</th>
-                                <th>Type</th>
+                                <th>Co.Type</th>
+                                <th>Co.Status</th>
+                                <th>Year to do</th>
                                 <th>PIC</th>
                                 <th>Past Year Tax</th>
                                 <th>Due Date</th>
@@ -111,8 +114,22 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyType">Company Type</label>
+                                <label for="companyType">Co.Type</label>
                                 <input type="text" id="companyType" name="companyType" class="form-control" placeholder="Auto-fill" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyStatus">Co.Status</label>
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto-fill" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do</label>
+                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Auto-fill" />
                             </div>
                         </div>
                     </div>
@@ -127,6 +144,14 @@
                             <div class="form-group">
                                 <label for="pastYearTaxEstimate">Past Year Tax Estimate (ETP)</label>
                                 <input type="text" id="pastYearTaxEstimate" name="pastYearTaxEstimate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="remark">Remark</label>
+                                <textarea id="remark" name="remark" class="form-control" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -465,6 +490,9 @@
                 $('#modalTitle').text('Add New CP204 Record');
                 $('.datepicker').datepicker('update', '');
                 $('#companyTypeHint').text('Selected Type: -');
+                $('#companyStatus').val('');
+                $('#yearToDo').val('');
+                $('#remark').val('');
                 // Clear readonlies
                 $('.bg-light').val('');
             }
@@ -513,6 +541,7 @@
                 $('#taxReferenceNo').val(c.taxIdentificationNumber || c.tinNumber || c.taxRefNo || '');
                 $('#companyType').val(c.clientType || '');
                 $('#companyTypeHint').text(`Selected Type: ${c.clientType || 'Unknown'}`);
+                $('#companyStatus').val(c.companyStatus || '');
                 
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 const yeDateString = yearEndMonthToDateString(rawYearEnd);
@@ -520,6 +549,10 @@
 
                 if (yeDateString) {
                     calculateDeadlines(yeDateString);
+                    const parts = yeDateString.split('/');
+                    if (parts.length === 3) {
+                        $('#yearToDo').val(parts[2]);
+                    }
                 }
             });
 
@@ -544,6 +577,8 @@
                         { "data": "taxReferenceNo", "defaultContent": "" },
                         { "data": "yearEnd", "defaultContent": "" },
                         { "data": "companyType", "defaultContent": "" },
+                        { "data": "companyStatus", "defaultContent": "" },
+                        { "data": "yearToDo", "defaultContent": "" },
                         { "data": "personInCharge", "defaultContent": "" },
                         { "data": "pastYearTaxEstimate", "defaultContent": "" },
 
@@ -581,7 +616,8 @@
                                     </div>`;
                             },
                             "orderable": false
-                        }
+                        },
+                        { "data": "remark", "defaultContent": "" }
                     ],
                     "order": [[0, 'asc']]
                 });
@@ -594,8 +630,11 @@
                     taxReferenceNo: $('#taxReferenceNo').val(),
                     yearEnd: $('#yearEnd').val(),
                     companyType: $('#companyType').val(),
+                    companyStatus: $('#companyStatus').val(),
+                    yearToDo: $('#yearToDo').val(),
                     personInCharge: $('#personInCharge').val(),
                     pastYearTaxEstimate: $('#pastYearTaxEstimate').val(),
+                    remark: $('#remark').val(),
                     
                     cp204OneMonthBeforeYE: $('#cp204OneMonthBeforeYE').val(),
                     cp204ReminderDate: $('#cp204ReminderDate').val(),
@@ -671,8 +710,11 @@
                         $('#taxReferenceNo').val(d.taxReferenceNo);
                         $('#yearEnd').val(d.yearEnd);
                         $('#companyType').val(d.companyType);
+                        $('#companyStatus').val(d.companyStatus || '');
+                        $('#yearToDo').val(d.yearToDo || '');
                         $('#personInCharge').val(d.personInCharge);
                         $('#pastYearTaxEstimate').val(d.pastYearTaxEstimate);
+                        $('#remark').val(d.remark || '');
 
                         $('#cp204OneMonthBeforeYE').val(d.cp204OneMonthBeforeYE);
                         $('#cp204ReminderDate').val(d.cp204ReminderDate);

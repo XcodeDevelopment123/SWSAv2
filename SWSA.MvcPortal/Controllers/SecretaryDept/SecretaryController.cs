@@ -803,11 +803,13 @@ WHERE Id = @Id";
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz].[dbo].[S14B]
 		([FileNo], [CompanyName], [CompanyNo], [IncorpDate], [YearEnd],
- 		[CompanyStatus], [YrMthdueDate], [CirculationAFSduedate],
+ 		[CompanyStatus], [ReportType], [AuditExemption],
+ 		[YrMthdueDate], [CirculationAFSduedate],
  		[MBRSreceivedDate], [OntimeLate], [ReasonForLate], [JobCompleted])
 		VALUES
 		(@FileNo, @CompanyName, @CompanyNo, @IncorpDate, @YearEnd,
- 		@CompanyStatus, @YrMthdueDate, @CirculationAFSduedate,
+ 		@CompanyStatus, @ReportType, @AuditExemption,
+ 		@YrMthdueDate, @CirculationAFSduedate,
  		@MBRSreceivedDate, @OntimeLate, @ReasonForLate, @JobCompleted);
 
 		SELECT CAST(SCOPE_IDENTITY() AS int);";
@@ -839,6 +841,8 @@ WHERE Id = @Id";
  		[IncorpDate] = @IncorpDate,
  		[YearEnd] = @YearEnd,
 		[CompanyStatus] = @CompanyStatus,
+		[ReportType] = @ReportType,
+		[AuditExemption] = @AuditExemption,
  		[YrMthdueDate] = @YrMthdueDate,
  		[CirculationAFSduedate] = @CirculationAFSduedate,
  		[MBRSreceivedDate] = @MBRSreceivedDate,
@@ -1075,6 +1079,20 @@ FROM [Quartz].[dbo].[AT31];
             try
             {
                 var list = await _clientService.GetCompanyOptionsAsync();
+                return Json(new { success = true, data = list });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("api/get/llp-company-options")]
+        public async Task<IActionResult> GetLlpCompanyOptions()
+        {
+            try
+            {
+                var list = await _clientService.GetLlpCompanyOptionsAsync();
                 return Json(new { success = true, data = list });
             }
             catch (Exception ex)

@@ -17,23 +17,21 @@
                     </button>
                 </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body">
-                <!-- Alert container for messages -->
                 <div id="alertContainer"></div>
 
-                <!-- 简化表格结构 -->
                 <table id="taskDatatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Grouping</th>
                             <th>Referral</th>
                             <th>Sec File No</th>
+                            <th>Credit Rating</th>
                             <th>Co Name</th>
                             <th>Year End</th>
                             <th>Incorp Date</th>
                             <th>Co Status</th>
-                            <th>Activity/size</th>
+                            <th>Activity size</th>
                             <th>YE to do</th>
                             <th>Acc Mth</th>
                             <th>Extension Date</th>
@@ -45,17 +43,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be loaded from database -->
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
 </div>
 
-<!-- 模态框部分 -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -77,14 +71,12 @@
                                 <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
                                 <input type="text" id="referral" name="referral" class="form-control" placeholder="Auto fill from company" readonly />
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="secFileNo">Sec File No</label>
@@ -94,19 +86,24 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Linked from Client List)</label>
+                                <label for="companyName">Company Name</label>
                                 <select id="companyName" name="companyName" class="form-control">
                                     <option value="">-- Select company --</option>
                                 </select>
                                 <small class="text-muted">
-                                    Options are linked from the LLP Client List. Grouping, Referral, File No will be filled automatically.
+                                    Grouping, Referral, File No, Credit Rating will be filled automatically.
                                 </small>
                             </div>
                         </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto fill" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
                                 <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="AutoFill" readonly />
@@ -126,7 +123,6 @@
                                 <input type="hidden" id="incorpDate" name="incorpDate" />
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyStatus">Co Status</label>
@@ -138,10 +134,9 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="activeCoActivitySize">Active Co: Activity/size</label>
+                                <label for="activeCoActivitySize">Activity size</label>
                                 <select id="activeCoActivitySize" name="activeCoActivitySize" class="form-control">
                                     <option value="">Select Size</option>
                                     <option value="Small">Small</option>
@@ -153,7 +148,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yEtodo">YE to do</label>
                                 <select id="yEtodo" name="yEtodo" class="form-control">
@@ -163,25 +158,19 @@
                                 </select>
                             </div>
                         </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="acCmthTodo">Acc Mth to do</label>
-                                <select id="acCmthTodo" name="acCmthTodo" class="form-control">
-                                    <option value="">Select month</option>
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="May">May</option>
-                                    <option value="June">June</option>
-                                    <option value="July">July</option>
-                                    <option value="August">August</option>
-                                    <option value="September">September</option>
-                                    <option value="October">October</option>
-                                    <option value="November">November</option>
-                                    <option value="December">December</option>
-                                </select>
+                                <input type="text" id="acCmthTodo" name="acCmthTodo" class="form-control" placeholder="Auto fill" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ssMextensionDate">SSM Extension Date</label>
+                                <div class="input-group date" id="ssmExtensionDatePicker">
+                                    <input type="text" id="ssMextensionDate" name="ssMextensionDate" class="form-control" placeholder="dd/MM" />
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -193,15 +182,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="ssMextensionDate">SSM Extension Date</label>
-                                <input type="date" id="ssMextensionDate" name="ssMextensionDate" class="form-control" />
+                                <label for="aDdueDate">Annual Declaration Due Date</label>
+                                <input type="text" id="aDdueDate" name="aDdueDate" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="aDdueDate">Annual Declaration Due Date</label>
-                                <input type="date" id="aDdueDate" name="aDdueDate" class="form-control" />
+                                <label for="accReady">Acc Ready?</label>
+                                <select id="accReady" name="accReady" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -213,23 +206,10 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="accReady">Acc Ready?</label>
-                                <select id="accReady" name="accReady" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
                                 <label for="aDsubmitDate">Annual Declaration Submitted Date</label>
                                 <input type="date" id="aDsubmitDate" name="aDsubmitDate" class="form-control" />
                             </div>
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="jobCompleted">Job Completed/Backlog</label>
@@ -261,6 +241,9 @@
     <partial name="_ValidationScriptsPartial" />
     <partial name="_DatatablesScriptsPartial" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <style>
         .form-info-label {
             background-color: #f8f9fa;
@@ -270,35 +253,29 @@
             font-weight: bold;
             color: #495057;
         }
-
         .table th {
             background-color: #e9ecef;
             vertical-align: middle;
             text-align: center;
             white-space: nowrap;
         }
-
         .table td {
             white-space: nowrap;
             text-align: center;
             vertical-align: middle;
         }
-
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid #dee2e6;
         }
-
         .card-body {
             padding: 1rem;
             overflow-x: auto;
         }
-
         #taskDatatable {
             width: 100%;
             min-width: 1400px;
         }
-
         .btn-group .btn {
             margin: 0 2px;
         }
@@ -313,11 +290,9 @@
                 if (!raw) return null;
                 if (raw instanceof Date) return isNaN(raw) ? null : raw;
                 if (typeof raw === 'string') {
-                    // ISO: yyyy-MM-dd 或 yyyy-MM-ddTHH:mm:ss...
                     if (/^\d{4}-\d{2}-\d{2}/.test(raw)) {
                         return new Date(raw.substring(0, 10) + 'T00:00:00');
                     }
-                    // 欧式: dd/MM/yyyy
                     if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw)) {
                         const [dd, mm, yyyy] = raw.split('/');
                         return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
@@ -326,7 +301,6 @@
                 const d = new Date(raw);
                 return isNaN(d) ? null : d;
             }
-            // -------- 日期工具 --------
             function toIsoYYYYMMDD(d) {
                 const date = (d instanceof Date) ? d : new Date(d);
                 if (isNaN(date)) return "";
@@ -348,11 +322,11 @@
                 const m = name.toLowerCase();
                 const list = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
                 const idx = list.indexOf(m);
-                return idx >= 0 ? idx : null; // 0-based
+                return idx >= 0 ? idx : null;
             }
             function lastDayOfMonthForYear(monthIndex0, year) {
                 if (monthIndex0 == null) return null;
-                return new Date(year, monthIndex0 + 1, 0); // 下个月第0天=本月最后一天
+                return new Date(year, monthIndex0 + 1, 0);
             }
             function toDateInputValue(raw) {
                 if (!raw) return "";
@@ -368,11 +342,10 @@
                 } catch { return ""; }
             }
 
-            // YearEnd 显示为该月最后一天（dd/MM/yyyy）
             function formatYearEndText(yearEndMonth) {
                 if (!yearEndMonth) return "";
                 const mIdx = monthNameToIndex(yearEndMonth);
-                if (mIdx == null) return yearEndMonth; // 兜底
+                if (mIdx == null) return yearEndMonth;
                 const today = new Date();
                 const lastThisYear = lastDayOfMonthForYear(mIdx, today.getFullYear());
                 const year = (today > lastThisYear) ? (today.getFullYear() + 1) : today.getFullYear();
@@ -380,9 +353,20 @@
                 return toDisplayDDMMYYYY(lastDay);
             }
 
-            // -------- 加载 LLP 公司下拉（返回 Promise）--------
+            function addMonthsToDate(dateStr, months) {
+                const d = parseToDate(dateStr);
+                if (!d) return null;
+                d.setMonth(d.getMonth() + months);
+                return d;
+            }
+
+            function monthNameFromDate(date) {
+                const list = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                return list[date.getMonth()];
+            }
+
             function loadLlpCompanyOptions() {
-                if (companyOptionsPromise) return companyOptionsPromise; // 防重复
+                if (companyOptionsPromise) return companyOptionsPromise;
                 companyOptionsPromise = $.ajax({
                     url: "/api/get/llp-company-options",
                     type: "GET"
@@ -400,6 +384,9 @@
                         const companyNo = o.companyNo ?? o.CompanyNo ?? "";
                         const incorpRaw = o.incorporationDate ?? o.IncorporationDate ?? "";
                         const yearEndMonth = o.yearEndMonth ?? o.YearEndMonth ?? "";
+                        const creditRating = o.creditRating ?? o.CreditRating ?? "";
+                        const activitySize = o.activitySize ?? o.ActivitySize ?? "";
+                        const companyStatus = o.companyStatus ?? o.CompanyStatus ?? "";
                         const textShown = companyNo ? `${companyName} (${companyNo})` : companyName;
 
                         $sel.append(
@@ -410,7 +397,10 @@
             data-fileno="${fileNo}"
             data-companyno="${companyNo}"
             data-incorpdate="${toDateInputValue(incorpRaw)}"
-            data-yearendmonth="${yearEndMonth}">
+            data-yearendmonth="${yearEndMonth}"
+            data-creditrating="${creditRating}"
+            data-activitysize="${activitySize}"
+            data-companystatus="${companyStatus}">
             ${textShown}
         </option>`
                         );
@@ -421,27 +411,39 @@
                 return companyOptionsPromise;
             }
 
-            // 选择公司 → 自动回填（仅新增或用户手动更改时生效）
             $("#companyName").on("change", function () {
                 const $opt = $(this).find("option:selected");
                 if (!$opt.val()) {
-                    $("#grouping,#referral,#secFileNo,#yearEnd,#incorpDateDisplay").val("");
+                    $("#grouping,#referral,#secFileNo,#yearEnd,#incorpDateDisplay,#creditRating,#acCmthTodo,#aDdueDate").val("");
+                    $('#ssMextensionDate').datepicker('update', '');
                     $("#incorpDate").val("");
                     return;
                 }
                 $("#grouping").val($opt.data("grouping") || "");
                 $("#referral").val($opt.data("referral") || "");
                 $("#secFileNo").val($opt.data("fileno") || "");
+                $("#creditRating").val($opt.data("creditrating") || "");
 
                 const isoIncorp = $opt.data("incorpdate") || "";
-                $("#incorpDate").val(isoIncorp);                           // 隐藏 ISO
-                $("#incorpDateDisplay").val(toDisplayDDMMYYYY(isoIncorp)); // 显示 dd/MM/yyyy
+                $("#incorpDate").val(isoIncorp);
+                $("#incorpDateDisplay").val(toDisplayDDMMYYYY(isoIncorp));
 
                 const yearEndMonth = $opt.data("yearendmonth") || "";
-                $("#yearEnd").val(formatYearEndText(yearEndMonth));        // dd/MM/yyyy
+                const yearEndText = formatYearEndText(yearEndMonth);
+                $("#yearEnd").val(yearEndText);
+
+                if (yearEndText) {
+                    const accMthDate = addMonthsToDate(yearEndText, 3);
+                    if (accMthDate) {
+                        $("#acCmthTodo").val(monthNameFromDate(accMthDate));
+                    }
+                    const adDueDate = addMonthsToDate(yearEndText, 3);
+                    if (adDueDate) {
+                        $("#aDdueDate").val(toDisplayDDMMYYYY(adDueDate));
+                    }
+                }
             });
 
-            // -------- Alert --------
             function showAlert(message, type) {
                 const alertClass = `alert alert-${type} alert-dismissible fade show`;
                 const alertHtml = `
@@ -464,7 +466,6 @@
                 } catch { return dateString; }
             }
 
-            // -------- DataTable --------
             function initializeDataTable() {
                 if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                     $('#taskDatatable').DataTable().destroy();
@@ -483,13 +484,14 @@
                         },
                         error: function (xhr) {
                             console.error('AJAX Error:', xhr.responseText);
-                            showAlert('Failed to load data. Please check if the API endpoint is available.', 'danger');
+                            showAlert('Failed to load data.', 'danger');
                         }
                     },
                     columns: [
                         { data: "grouping", className: "text-center", defaultContent: "-" },
                         { data: "referral", className: "text-center", defaultContent: "-" },
                         { data: "secFileNo", className: "text-center", defaultContent: "-" },
+                        { data: "creditRating", className: "text-center", defaultContent: "-" },
                         { data: "companyName", className: "text-center", defaultContent: "-" },
                         { data: "yearEnd", className: "text-center", defaultContent: "-" },
                         {
@@ -542,16 +544,18 @@
                 });
             }
 
-            // -------- 表单工具 --------
             function resetForm() {
                 $('#taskForm')[0].reset();
                 $('#recordId').val('0');
                 isEditMode = false;
                 $('#modalTitle').text('Add New Record');
-                // 清空显示/隐藏的并保持下拉可选
                 $('#companyName').val('');
                 $('#incorpDate').val('');
                 $('#incorpDateDisplay').val('');
+                $('#creditRating').val('');
+                $('#acCmthTodo').val('');
+                $('#aDdueDate').val('');
+                $('#ssMextensionDate').datepicker('update', '');
             }
             function getFormData() {
                 const $opt = $('#companyName option:selected');
@@ -566,6 +570,7 @@
                     IncorpDate: $('#incorpDate').val(),
                     CompanyStatus: $('#companyStatus').val(),
                     ActiveCoActivitySize: $('#activeCoActivitySize').val(),
+                    CreditRating: $('#creditRating').val(),
                     YEtodo: $('#yEtodo').val(),
                     ACCmthTodo: $('#acCmthTodo').val(),
                     SSMextensionDate: $('#ssMextensionDate').val(),
@@ -587,14 +592,12 @@
                 return isValid;
             }
 
-            // -------- 回填（Edit）--------
             function populateForm(data) {
                 $('#recordId').val(data.id);
                 $('#grouping').val(data.grouping || '');
                 $('#referral').val(data.referral || '');
                 $('#secFileNo').val(data.secFileNo || '');
 
-                // 先按 CompanyId 选中；没有就按名称兜底（仅设值，不触发 change）
                 if (data.companyId) {
                     $('#companyName').val(String(data.companyId));
                 } else if (data.companyName) {
@@ -607,16 +610,13 @@
                     $('#companyName').val('');
                 }
 
-                // Year End：优先显示数据库值；支持 ISO 或 dd/MM/yyyy
                 let yearEndDisplay = '';
                 if (data.yearEnd) {
                     const parsed = parseToDate(data.yearEnd);
-                    yearEndDisplay = parsed ? toDisplayDDMMYYYY(parsed) : data.yearEnd; // 解析失败就保持原样
+                    yearEndDisplay = parsed ? toDisplayDDMMYYYY(parsed) : data.yearEnd;
                 }
                 $('#yearEnd').val(yearEndDisplay);
 
-
-                // Incorp：显示 + 隐藏
                 const isoIncorp = data.incorpDate
                     ? (data.incorpDate.includes('T') ? data.incorpDate.split('T')[0] : data.incorpDate)
                     : '';
@@ -625,14 +625,42 @@
 
                 $('#companyStatus').val(data.companyStatus || '');
                 $('#activeCoActivitySize').val(data.activeCoActivitySize || '');
+                $('#creditRating').val(data.creditRating || '');
+
+                // Recalc ACC Mth and AD Due Date from YearEnd if available
+                if (yearEndDisplay) {
+                    const accMthDate = addMonthsToDate(yearEndDisplay, 3);
+                    if (accMthDate) {
+                        $('#acCmthTodo').val(monthNameFromDate(accMthDate));
+                    }
+                    const adDueDate = addMonthsToDate(yearEndDisplay, 3);
+                    if (adDueDate) {
+                        $('#aDdueDate').val(toDisplayDDMMYYYY(adDueDate));
+                    }
+                } else {
+                    $('#acCmthTodo').val(data.accmthTodo || '');
+                    const adDueIso = data.aDdueDate ? (data.aDdueDate.split('T')[0]) : '';
+                    if (adDueIso) {
+                        const parsedAd = parseToDate(adDueIso);
+                        $('#aDdueDate').val(parsedAd ? toDisplayDDMMYYYY(parsedAd) : adDueIso);
+                    }
+                }
+
+                const ssmExtRaw = data.ssMextensionDate || '';
+                if (ssmExtRaw) {
+                    const parsedSsm = parseToDate(ssmExtRaw);
+                    if (parsedSsm) {
+                        const dd = String(parsedSsm.getDate()).padStart(2, '0');
+                        const mm = String(parsedSsm.getMonth() + 1).padStart(2, '0');
+                        $('#ssMextensionDate').datepicker('update', `${dd}/${mm}`);
+                    } else {
+                        $('#ssMextensionDate').datepicker('update', ssmExtRaw);
+                    }
+                } else {
+                    $('#ssMextensionDate').datepicker('update', '');
+                }
+
                 $('#yEtodo').val(data.yEtodo || '');
-                $('#acCmthTodo').val(data.accmthTodo || '');
-
-                const ssmExtIso = data.ssMextensionDate ? (data.ssMextensionDate.split('T')[0]) : '';
-                const adDueIso = data.aDdueDate ? (data.aDdueDate.split('T')[0]) : '';
-                $('#ssMextensionDate').val(ssmExtIso);
-                $('#aDdueDate').val(adDueIso);
-
                 $('#accReady').val(data.accReady || '');
 
                 const adSubIso = data.aDsubmitDate ? (data.aDsubmitDate.split('T')[0]) : '';
@@ -641,7 +669,6 @@
                 $('#jobCompleted').val(data.jobCompleted || '');
             }
 
-            // -------- Save --------
             $('#saveBtn').click(function () {
                 if (!validateForm()) {
                     showAlert('Please fill in all required fields', 'warning');
@@ -672,13 +699,11 @@
                 });
             });
 
-            // -------- Edit --------
             $('#taskDatatable').on('click', '.edit-btn', function () {
                 const id = $(this).data('id');
                 isEditMode = true;
                 $('#modalTitle').text('Edit Record');
 
-                // 先保证下拉已加载，再取详情并回填（不禁用、不触发 change）
                 loadLlpCompanyOptions().then(function () {
                     $.ajax({
                         url: '/LLPMastersecSchedule/GetById?id=' + id,
@@ -699,7 +724,6 @@
                 });
             });
 
-            // -------- Delete --------
             $('#taskDatatable').on('click', '.delete-btn', function () {
                 const id = $(this).data('id');
                 if (!confirm('Are you sure you want to delete this record?')) return;
@@ -722,22 +746,25 @@
                 });
             });
 
-            // -------- Modal --------
             $('#taskModal').on('show.bs.modal', function () {
-                if (!isEditMode) resetForm(); // 新增时清空并允许选择
+                if (!isEditMode) resetForm();
             });
             $('#taskModal').on('hidden.bs.modal', function () {
                 resetForm();
             });
 
-            // 清除校验
             $('input, select').on('input change', function () {
                 $(this).removeClass('is-invalid');
             });
 
-            // 初始化
             initializeDataTable();
             loadLlpCompanyOptions();
+
+            $('#ssMextensionDate').datepicker({
+                format: 'dd/mm',
+                autoclose: true,
+                todayHighlight: true
+            });
         });
     </script>
 }

@@ -125,17 +125,21 @@
                                 <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto-fill from client" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year" />
+                                <label for="signingPages">Signing Pages</label>
+                                <input type="text" id="signingPages" name="signingPages" class="form-control" placeholder="Enter signing pages" />
                             </div>
+                        </div>
+                        <div class="col-md-4">
                         </div>
                     </div>
 
@@ -332,6 +336,22 @@
                 $('#clientId').val(clientData.id);
                 $('#client').val(clientData.companyName);
 
+                // 自动填充 Activity
+                if (clientData.activitySize) {
+                    $('#activity').val(clientData.activitySize);
+                }
+
+                // 自动填充 Co.Status, Audit Exemption, Credit Rating
+                if (clientData.companyStatus) {
+                    $('#companyStatus').val(clientData.companyStatus);
+                }
+                if (clientData.auditExemption) {
+                    $('#auditExemption').val(clientData.auditExemption);
+                }
+                if (clientData.creditRating) {
+                    $('#creditRating').val(clientData.creditRating);
+                }
+
                 // 计算 Year End
                 if (clientData.yearEndMonth) {
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
@@ -349,6 +369,10 @@
                 $('#clientId').val('');
                 $('#client').val('');
                 $('#yearEnd').val('').datepicker('update', '');
+                $('#activity').val('');
+                $('#companyStatus').val('');
+                $('#auditExemption').val('');
+                $('#creditRating').val('');
             }
         }
 
@@ -532,6 +556,10 @@
                         $('#dateDocIn').datepicker('update', formatDate(data.dateDocIn));
 
                         $('#yearToDo').val(data.yeattodo || '');
+                        $('#companyStatus').val(data.companyStatus || '');
+                        $('#auditExemption').val(data.auditExemption || '');
+                        $('#creditRating').val(data.creditRating || '');
+                        $('#signingPages').val(data.signingPages || '');
                         $('#moveToActiveSch').val(data.movetoActiveSch || '');
                         $('#moveToBacklog').val(data.movetoBacklog || '');
                         $('#coSec').val(data.coSec || '');
@@ -567,6 +595,10 @@
                 // YearEnd 是自动计算并显示的，也要提交回去
                 yearEnd: convertDateToISO($('#yearEnd').val()),
                 yeattodo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditExemption: $('#auditExemption').val(),
+                creditRating: $('#creditRating').val(),
+                signingPages: $('#signingPages').val(),
                 movetoActiveSch: $('#moveToActiveSch').val(),
                 movetoBacklog: $('#moveToBacklog').val(),
                 first18mthsdue: convertDateToISO($('#first18MonthsDue').val()),

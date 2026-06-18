@@ -41,6 +41,7 @@ public class SecretaryTemplateController(
             return Ok();
         }
 
+        task.ADDueDate = req.ADDueDate;
         task.ADSubmitDate = req.ADSubmitDate;
         task.ADSendToClientDate = req.ADSendToClientDate;
         task.ADReturnByClientDate = req.ADReturnByClientDate;
@@ -48,6 +49,7 @@ public class SecretaryTemplateController(
         task.ARReturnByClientDate = req.ARReturnByClientDate;
         task.ARSendToClientDate = req.ARSendToClientDate;
         task.ARSubmitDate = req.ARSubmitDate;
+        task.YearInput = req.YearInput;
         task.Remarks = req.Remarks;
 
         _tasks.Update(task);

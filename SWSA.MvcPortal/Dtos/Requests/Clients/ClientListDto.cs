@@ -16,5 +16,8 @@
 
         public string ENumber { get; set; } = "";               // Employer Number (Form E 关键字段)
         public string TaxIdentificationNumber { get; set; } = ""; // TIN
+        public string CompanyStatus { get; set; } = "";
+        public string CreditRating { get; set; } = "";
+        public string AuditExemption { get; set; } = "";
     }
 }

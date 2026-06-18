@@ -372,7 +372,20 @@
         $(document).ready(function() {
             
             // 1. 加载 Client List
-            loadClientOptions();
+            loadClientOptions(function() {
+                const params = new URLSearchParams(window.location.search);
+                const companyParam = params.get('company');
+                if (companyParam) {
+                    const decoded = decodeURIComponent(companyParam);
+                    const $opt = $("#clientSelect option").filter(function() {
+                        return $(this).text().includes(decoded);
+                    });
+                    if ($opt.length > 0) {
+                        $opt.prop('selected', true);
+                        $('#clientSelect').trigger('change');
+                    }
+                }
+            });
 
             // 2. 初始化 DataTable
             initializeDataTable();
@@ -454,6 +467,14 @@
                         return response.success ? response.data : [];
                     }
                 },
+                "initComplete": function() {
+                    const params = new URLSearchParams(window.location.search);
+                    const companyParam = params.get('company');
+                    if (companyParam) {
+                        const decoded = decodeURIComponent(companyParam);
+                        dataTable.search(decoded).draw();
+                    }
+                },
                 "columns": [
                     { 
                         "data": null, 
@@ -477,16 +498,39 @@
                     { "data": "paymentDate" },
                     { "data": "s_OffDocsendtoClient" },
                     { "data": "ssMsubmitDate" },
-                    { "data": "ssMstrikeoffDate" },
+                    {
+                        "data": "ssMstrikeoffDate",
+                        "render": function(data, type, row) {
+                            if (!data) return '';
+                            const name = encodeURIComponent(row.companyName || '');
+                            return `<a href="/FormC/StrikeOffTaxWork?company=${name}" target="_blank" title="Open in Strike Off Tax Work">${data}</a>`;
+                        }
+                    },
                     { "data": "remark" },
                     { "data": "action" },
-                    { "data": "datePassToTaxDept" },
-                    { "data": "formCSubmitDate" },
-                    { 
+                    {
+                        "data": "datePassToTaxDept",
+                        "render": function(data, type, row) {
+                            if (!data) return '';
+                            const name = encodeURIComponent(row.companyName || '');
+                            return `<a href="/FormC/StrikeOffTaxWork?company=${name}" target="_blank" title="Open in Strike Off Tax Work">${data}</a>`;
+                        }
+                    },
+                    {
+                        "data": "formCSubmitDate",
+                        "render": function(data, type, row) {
+                            if (!data) return '';
+                            const name = encodeURIComponent(row.companyName || '');
+                            return `<a href="/FormC/StrikeOffTaxWork?company=${name}" target="_blank" title="Open in Strike Off Tax Work">${data}</a>`;
+                        }
+                    },
+                    {
                         "data": "jobCompleted",
-                        "render": function (data) {
+                        "render": function (data, type, row) {
+                            if (!data) return '';
+                            const name = encodeURIComponent(row.companyName || '');
                             const cls = data === 'Completed' ? 'success' : (data === 'Backlog' ? 'danger' : 'warning');
-                            return data ? `<span class="badge bg-${cls}">${data}</span>` : '';
+                            return `<a href="/FormC/StrikeOffTaxWork?company=${name}" target="_blank" title="Open in Strike Off Tax Work"><span class="badge bg-${cls}">${data}</span></a>`;
                         }
                     },
                     {
@@ -514,7 +558,7 @@
         }
 
         // 🟢 加载 Client List
-        function loadClientOptions() {
+        function loadClientOptions(callback) {
             $.ajax({
                 url: '/api/auditdept/clients/get-list',
                 type: 'GET',
@@ -537,6 +581,7 @@
                             const displayText = `${name} (${type})`;
                             $sel.append(`<option value="${id}">${displayText}</option>`);
                         });
+                        if (typeof callback === 'function') callback();
                     }
                 }
             });

@@ -2,14 +2,14 @@
     ViewData["Title"] = "AT34AADSP";
 }
 
-<h1>AT3.4 Active Audit Directors Signing Pages</h1>
+<h1>AT3.4 Directors Report</h1>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>Directors Signing Pages Records
+                    <i class="fas fa-tasks me-2"></i>Directors Report Records
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
@@ -66,7 +66,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Directors Signing Pages Record</span>
+                    <span id="modalTitle">Add Directors Report</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -393,7 +393,7 @@
 
         function openModal(editMode, recordId = null) {
             isEditMode = editMode;
-            $('#modalTitle').text(editMode ? 'Edit Directors Signing Pages Record' : 'Add New Directors Signing Pages Record');
+            $('#modalTitle').text(editMode ? 'Edit Directors Report' : 'Add Directors Report');
 
             if (editMode && recordId) {
                 loadRecordForEdit(recordId);

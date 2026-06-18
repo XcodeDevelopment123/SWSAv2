@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Data;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Data;
 namespace SWSA.MvcPortal.Migrations.Quartz
 {
     [DbContext(typeof(QuartzContext))]
-    partial class QuartzContextModelSnapshot : ModelSnapshot
+    [Migration("20260618020518_fixerrorclass")]
+    partial class fixerrorclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

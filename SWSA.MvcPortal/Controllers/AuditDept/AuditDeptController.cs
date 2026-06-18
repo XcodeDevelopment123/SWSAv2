@@ -578,10 +578,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz].[dbo].[AT22] 
             ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
-             [YearToDo], [MoveToActiveAexSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
+             [YearToDo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningFirm],
+             [MoveToActiveAexSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
             VALUES 
             (@Grouping, @CompanyName, @QuarterToDoAudit, @Activity, @YearEnd, 
-             @YearToDo, @MoveToActiveAexSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
+             @YearToDo, @CompanyStatus, @AuditExemption, @CoSec, @CreditRating, @SigningFirm,
+             @MoveToActiveAexSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -624,6 +626,11 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [Activity] = @Activity, 
             [YearEnd] = @YearEnd, 
             [YearToDo] = @YearToDo, 
+            [CompanyStatus] = @CompanyStatus, 
+            [AuditExemption] = @AuditExemption, 
+            [CoSec] = @CoSec, 
+            [CreditRating] = @CreditRating, 
+            [SigningFirm] = @SigningFirm, 
             [MoveToActiveAexSch] = @MoveToActiveAexSch, 
             [DateDocIn] = @DateDocIn, 
             [AcctngWk] = @AcctngWk, 
@@ -790,16 +797,18 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
             ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
              [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
-             [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
-             [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
-             [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+             [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
+             [EndDate1_7], [Days1_8], [DateSentToKK],
+             [ReviewResultofDays], [DateReceiveFromKK], [TotalReviewDays], [WhoMeetClientDate], [DateSenttoClient],
+             [DateReceiveBack], [TaxDueDate], [PasstoDept], [Metric421], [SSMdueDate], [DatePasstoSecDept],
              [Binded], [DespatchDateToClient])
             VALUES 
             (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
              @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
-             @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
-             @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
-             @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+             @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSent1_6,
+             @EndDate1_7, @Days1_8, @DateSentToKK,
+             @ReviewResultofDays, @DateReceiveFromKK, @TotalReviewDays, @WhoMeetClientDate, @DateSenttoClient,
+             @DateReceiveBack, @TaxDueDate, @PasstoDept, @Metric421, @SSMdueDate, @DatePasstoSecDept,
              @Binded, @DespatchDateToClient);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
@@ -830,10 +839,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [DocInwardsDate] = @DocInwardsDate, [Revenue] = @Revenue, [Profit] = @Profit,
             [AuditFee] = @AuditFee, [DateBilled] = @DateBilled, [StartDate] = @StartDate,
             [EndDate] = @EndDate, [DaysDone] = @DaysDone, [DonePercent] = @DonePercent,
-            [Completed] = @Completed, [DateSent] = @DateSent, [DateSentToKK] = @DateSentToKK,
+            [Completed] = @Completed, [DateSent] = @DateSent, [DateSent1_6] = @DateSent1_6,
+            [EndDate1_7] = @EndDate1_7, [Days1_8] = @Days1_8, [DateSentToKK] = @DateSentToKK,
             [ReviewResultofDays] = @ReviewResultofDays, [DateReceiveFromKK] = @DateReceiveFromKK,
+            [TotalReviewDays] = @TotalReviewDays,
             [WhoMeetClientDate] = @WhoMeetClientDate, [DateSenttoClient] = @DateSenttoClient,
             [DateReceiveBack] = @DateReceiveBack, [TaxDueDate] = @TaxDueDate, [PasstoDept] = @PasstoDept,
+            [Metric421] = @Metric421,
             [SSMdueDate] = @SSMdueDate, [DatePasstoSecDept] = @DatePasstoSecDept, [Binded] = @Binded,
             [DespatchDateToClient] = @DespatchDateToClient
             WHERE Id = @Id";
@@ -1043,21 +1055,22 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
         ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
-         [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
-         [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
-         [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+         [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
+         [EndDate1_7], [Days1_8], [DateSentToKK],
+         [ReviewResultofDays], [DateReceiveFromKK], [TotalReviewDays], [WhoMeetClientDate], [DateSenttoClient],
+         [DateReceiveBack], [TaxDueDate], [PasstoDept], [Metric421], [SSMdueDate], [DatePasstoSecDept],
          [Binded], [DespatchDateToClient])
         VALUES 
         (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
          @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
-         @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
-         @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
-         @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+         @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSent1_6,
+         @EndDate1_7, @Days1_8, @DateSentToKK,
+         @ReviewResultofDays, @DateReceiveFromKK, @TotalReviewDays, @WhoMeetClientDate, @DateSenttoClient,
+         @DateReceiveBack, @TaxDueDate, @PasstoDept, @Metric421, @SSMdueDate, @DatePasstoSecDept,
          @Binded, @DespatchDateToClient)";
 
                 var at31Model = new AT31Model
                 {
-                    // 只设置这些字段，其他字段会自动为 null 或默认值
                     StartDate = at32Model.StartDate,
                     EndDate = at32Model.EndDate,
                     DaysDone = at32Model.NoOfDays,
@@ -1065,8 +1078,8 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     DateSent = at32Model.ReviewDateSent,
                     DateSentToKK = at32Model.KKdateSent,
                     ReviewResultofDays = at32Model.TotalReviewDays,
+                    TotalReviewDays = at32Model.TotalReviewDays,
 
-                    // 其他字段不需要设置，会保持为 null
                     CompanyName = null,
                     Activity = null,
                     YEtoDo = null,
@@ -1080,12 +1093,16 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     AuditFee = null,
                     DateBilled = null,
                     Completed = null,
+                    DateSent1_6 = null,
+                    EndDate1_7 = null,
+                    Days1_8 = null,
                     DateReceiveFromKK = null,
                     WhoMeetClientDate = null,
                     DateSenttoClient = null,
                     DateReceiveBack = null,
                     TaxDueDate = null,
                     PasstoDept = null,
+                    Metric421 = null,
                     SSMdueDate = null,
                     DatePasstoSecDept = null,
                     Binded = null,
@@ -1210,20 +1227,20 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 var sql = @"INSERT INTO [Quartz].[dbo].[AT33] 
-        ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
-         [DateSent], [DateReviewed], [DateSentToKK], [DateReceivedAFS], 
-         [DateofAFS], [DateofDirectorsRept], [MBRSgenerated], [Remark])
+        ([CompanyName], [YearEnd], [YEtodo], [PIC], [Active], [AEX], 
+         [AuditExemption], [DateReviewed], [DateSentToKK], [SigningFirm], 
+         [DateofAFS], [DateofDirectorsRept], [MBRSgenerated], [MBRSdateend], [Remark])
         VALUES 
-        (@CompanyName, @YEtodo, @PIC, @Active, @AEX, 
-         @DateSent, @DateReviewed, @DateSentToKK, @DateReceivedAFS, 
-         @DateofAFS, @DateofDirectorsRept, @MBRSgenerated, @Remark);
+        (@CompanyName, @YearEnd, @YEtodo, @PIC, @Active, @AEX, 
+         @AuditExemption, @DateReviewed, @DateSentToKK, @SigningFirm, 
+         @DateofAFS, @DateofDirectorsRept, @MBRSgenerated, @MBRSdateend, @Remark);
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 Console.WriteLine($"Record created successfully with ID: {id}");
 
-                // 检查是否有 DateReceivedAFS，如果有则创建 AT31 记录
-                if (!string.IsNullOrEmpty(model.DateReceivedAFS))
+                // 检查是否有 MBRSdateend，如果有则创建 AT31 记录
+                if (!string.IsNullOrEmpty(model.MBRSdateend))
                 {
                     await CreateAT31FromAT33(model);
                 }
@@ -1254,23 +1271,25 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine($"Updating AT33 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
 
-                // 先获取旧的记录来检查 DateReceivedAFS 是否变化
-                var oldRecordSql = "SELECT DateReceivedAFS FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
+                // 先获取旧的记录来检查 MBRSdateend 是否变化
+                var oldRecordSql = "SELECT MBRSdateend FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT33Model>(oldRecordSql, new { Id = model.Id });
 
                 var sql = @"UPDATE [Quartz].[dbo].[AT33] SET 
         [CompanyName] = @CompanyName, 
+        [YearEnd] = @YearEnd, 
         [YEtodo] = @YEtodo, 
         [PIC] = @PIC, 
         [Active] = @Active, 
         [AEX] = @AEX, 
-        [DateSent] = @DateSent, 
+        [AuditExemption] = @AuditExemption, 
         [DateReviewed] = @DateReviewed, 
         [DateSentToKK] = @DateSentToKK, 
-        [DateReceivedAFS] = @DateReceivedAFS, 
+        [SigningFirm] = @SigningFirm, 
         [DateofAFS] = @DateofAFS, 
         [DateofDirectorsRept] = @DateofDirectorsRept, 
         [MBRSgenerated] = @MBRSgenerated, 
+        [MBRSdateend] = @MBRSdateend, 
         [Remark] = @Remark
         WHERE Id = @Id";
 
@@ -1280,8 +1299,8 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 if (affectedRows == 0)
                     return Json(new { success = false, message = "Record not found" });
 
-                // 检查 DateReceivedAFS 是否从空变为有值，如果是则创建 AT31 记录
-                if (string.IsNullOrEmpty(oldRecord?.DateReceivedAFS) && !string.IsNullOrEmpty(model.DateReceivedAFS))
+                // 检查 MBRSdateend 是否从空变为有值，如果是则创建 AT31 记录
+                if (string.IsNullOrEmpty(oldRecord?.MBRSdateend) && !string.IsNullOrEmpty(model.MBRSdateend))
                 {
                     await CreateAT31FromAT33(model);
                 }
@@ -1312,24 +1331,24 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
                 ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
                  [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
-                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSentToKK],
-                 [ReviewResultofDays], [DateReceiveFromKK], [WhoMeetClientDate], [DateSenttoClient],
-                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [SSMdueDate], [DatePasstoSecDept],
+                 [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
+                 [EndDate1_7], [Days1_8], [DateSentToKK],
+                 [ReviewResultofDays], [DateReceiveFromKK], [TotalReviewDays], [WhoMeetClientDate], [DateSenttoClient],
+                 [DateReceiveBack], [TaxDueDate], [PasstoDept], [Metric421], [SSMdueDate], [DatePasstoSecDept],
                  [Binded], [DespatchDateToClient])
                 VALUES 
                 (@CompanyName, @Activity, @YEtoDo, @QuartertoDo, @PIC, @MthDue, @Status,
                  @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate,
-                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSentToKK,
-                 @ReviewResultofDays, @DateReceiveFromKK, @WhoMeetClientDate, @DateSenttoClient,
-                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @SSMdueDate, @DatePasstoSecDept,
+                 @EndDate, @DaysDone, @DonePercent, @Completed, @DateSent, @DateSent1_6,
+                 @EndDate1_7, @Days1_8, @DateSentToKK,
+                 @ReviewResultofDays, @DateReceiveFromKK, @TotalReviewDays, @WhoMeetClientDate, @DateSenttoClient,
+                 @DateReceiveBack, @TaxDueDate, @PasstoDept, @Metric421, @SSMdueDate, @DatePasstoSecDept,
                  @Binded, @DespatchDateToClient)";
 
                 var at31Model = new AT31Model
                 {
-                    // 将 AT33 的 DateReceivedAFS 存入 AT31 的 DateReceiveFromKK
-                    DateReceiveFromKK = at33Model.DateReceivedAFS,
+                    DateReceiveFromKK = at33Model.MBRSdateend,
 
-                    // 其他字段保持为 null
                     CompanyName = null,
                     Activity = null,
                     YEtoDo = null,
@@ -1348,13 +1367,18 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     DonePercent = null,
                     Completed = null,
                     DateSent = null,
+                    DateSent1_6 = null,
+                    EndDate1_7 = null,
+                    Days1_8 = null,
                     DateSentToKK = null,
                     ReviewResultofDays = null,
+                    TotalReviewDays = null,
                     WhoMeetClientDate = null,
                     DateSenttoClient = null,
                     DateReceiveBack = null,
                     TaxDueDate = null,
                     PasstoDept = null,
+                    Metric421 = null,
                     SSMdueDate = null,
                     DatePasstoSecDept = null,
                     Binded = null,
@@ -1580,7 +1604,6 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 if (existingId.HasValue)
                 {
-                    // 更新已存在的记录
                     var updateSql = @"UPDATE [Quartz].[dbo].[AT31] SET 
                             [DateSenttoClient] = @DateSenttoClient,
                             [DateReceiveBack] = @DateReceiveBack,
@@ -1600,11 +1623,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 }
                 else
                 {
-                    // 创建新记录
                     var insertSql = @"INSERT INTO [Quartz].[dbo].[AT31] 
-                            ([CompanyName], [DateSenttoClient], [DateReceiveBack], [Binded])
+                            ([CompanyName], [DateSenttoClient], [DateReceiveBack], [DateSent1_6], [EndDate1_7], [Days1_8], [TotalReviewDays], [Metric421], [Binded])
                             VALUES 
-                            (@CompanyName, @DateSenttoClient, @DateReceiveBack, @Binded)";
+                            (@CompanyName, @DateSenttoClient, @DateReceiveBack, NULL, NULL, NULL, NULL, NULL, @Binded)";
 
                     var at31InsertModel = new
                     {
@@ -1944,13 +1966,15 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var sql = @"INSERT INTO [Quartz].[dbo].[AEX41] 
         ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
-         [Yeattodo], [MovetoActiveSch], [MovetoBacklog], [First18mthsdue], 
-         [AuditedAccDueDate], [CoSec], [Team], [DateDocIn], [EstRev], 
+         [Yeattodo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningPages],
+         [MovetoActiveSch], [MovetoBacklog], [First18mthsdue], 
+         [AuditedAccDueDate], [Team], [DateDocIn], [EstRev], 
          [EstNetProfit], [AcctngWk], [JobCompleted], [Remark])
         VALUES 
         (@Grouping, @CompanyName, @QuartertoAudit, @Activity, @YearEnd, 
-         @Yeattodo, @MovetoActiveSch, @MovetoBacklog, @First18mthsdue, 
-         @AuditedAccDueDate, @CoSec, @Team, @DateDocIn, @EstRev, 
+         @Yeattodo, @CompanyStatus, @AuditExemption, @CoSec, @CreditRating, @SigningPages,
+         @MovetoActiveSch, @MovetoBacklog, @First18mthsdue, 
+         @AuditedAccDueDate, @Team, @DateDocIn, @EstRev, 
          @EstNetProfit, @AcctngWk, @JobCompleted, @Remark);
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
@@ -2000,11 +2024,15 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [Activity] = @Activity, 
         [YearEnd] = @YearEnd, 
         [Yeattodo] = @Yeattodo, 
+        [CompanyStatus] = @CompanyStatus, 
+        [AuditExemption] = @AuditExemption, 
+        [CoSec] = @CoSec, 
+        [CreditRating] = @CreditRating, 
+        [SigningPages] = @SigningPages, 
         [MovetoActiveSch] = @MovetoActiveSch, 
         [MovetoBacklog] = @MovetoBacklog, 
         [First18mthsdue] = @First18mthsdue, 
         [AuditedAccDueDate] = @AuditedAccDueDate, 
-        [CoSec] = @CoSec, 
         [Team] = @Team, 
         [DateDocIn] = @DateDocIn, 
         [EstRev] = @EstRev, 
@@ -2402,15 +2430,17 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = @"INSERT INTO [Quartz].[dbo].[AEX51] 
         ([CompanyName], [Activity], [YEtodo], [Quartertodo], [PIC], [First18mthDue], [Status],
          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate], [EndDate],
-         [DonePercent], [ResultOverUnder], [Completed], [DateSent], [DateSenttoKK], [ReviewResult],
+         [DonePercent], [ResultOverUnder], [Completed], [Days1_3], [TotalFieldWorksDays1_4],
+         [DateSent], [DateSenttoKK], [ReviewResult],
          [DateReceivedfrKK], [WhomeetClientDate], [DateSentClient], [DateReceivedBack], [TaxDueDate],
-         [PasstoTaxDept], [SSMdueDate], [DatePassToSecDept], [Binded], [DespatachDateClient])
+         [PasstoTaxDept], [Metric421], [SSMdueDate], [DatePassToSecDept], [Binded], [DespatachDateClient])
         VALUES 
         (@CompanyName, @Activity, @YEtodo, @Quartertodo, @PIC, @First18mthDue, @Status,
          @DocInwardsDate, @Revenue, @Profit, @AuditFee, @DateBilled, @StartDate, @EndDate,
-         @DonePercent, @ResultOverUnder, @Completed, @DateSent, @DateSenttoKK, @ReviewResult,
+         @DonePercent, @ResultOverUnder, @Completed, @Days1_3, @TotalFieldWorksDays1_4,
+         @DateSent, @DateSenttoKK, @ReviewResult,
          @DateReceivedfrKK, @WhomeetClientDate, @DateSentClient, @DateReceivedBack, @TaxDueDate,
-         @PasstoTaxDept, @SSMdueDate, @DatePassToSecDept, @Binded, @DespatachDateClient);
+         @PasstoTaxDept, @Metric421, @SSMdueDate, @DatePassToSecDept, @Binded, @DespatachDateClient);
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -2460,6 +2490,8 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [DonePercent] = @DonePercent, 
         [ResultOverUnder] = @ResultOverUnder, 
         [Completed] = @Completed, 
+        [Days1_3] = @Days1_3,
+        [TotalFieldWorksDays1_4] = @TotalFieldWorksDays1_4,
         [DateSent] = @DateSent, 
         [DateSenttoKK] = @DateSenttoKK, 
         [ReviewResult] = @ReviewResult,
@@ -2468,7 +2500,8 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [DateSentClient] = @DateSentClient, 
         [DateReceivedBack] = @DateReceivedBack, 
         [TaxDueDate] = @TaxDueDate,
-        [PasstoTaxDept] = @PasstoTaxDept, 
+        [PasstoTaxDept] = @PasstoTaxDept,
+        [Metric421] = @Metric421,
         [SSMdueDate] = @SSMdueDate, 
         [DatePassToSecDept] = @DatePassToSecDept, 
         [Binded] = @Binded, 
