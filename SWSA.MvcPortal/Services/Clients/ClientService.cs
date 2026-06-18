@@ -409,8 +409,7 @@ public class ClientService(
                 ActivitySize = c.ActivitySize.ToString(),
                 CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
                 CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
-                AuditExemption = ""
-                EmployerNumber = c.EmployerNumber,
+                AuditExemption = "",
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
                 LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
@@ -450,8 +449,7 @@ public class ClientService(
                 ActivitySize = c.ActivitySize.ToString(),
                 CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
                 CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
-                AuditExemption = ""
-                EmployerNumber = c.EmployerNumber,
+                AuditExemption = "",
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
                 LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
