@@ -2,6 +2,14 @@
     ViewData["Title"] = "AT21AuditMasterSchedule";
 }
 
+<style>
+    .dt-button-collection {
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+</style>
+
 <h1>E2.1 Audit Work Schedule</h1>
 
 <div class="row">
@@ -91,7 +99,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                               <label for="clientSelect">Client <span class="text-danger">*</span></label>
+                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
                                 <select id="clientSelect" name="clientSelect" class="form-control" required>
                                     <option value="">-- Select client --</option>
                                 </select>
@@ -148,7 +156,7 @@
                             <div class="form-group">
                                 <label for="companyStatus">Co Status</label>
                                 <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto fill" readonly />
-@*                                 <select id="companyStatus" name="companyStatus" class="form-control">
+                                @*                                 <select id="companyStatus" name="companyStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Dormant">Dormant</option>
@@ -157,7 +165,7 @@
                                 </select> *@
                             </div>
                         </div>
-                @*         <div class="col-md-4">
+                        @*         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="auditStatus">Audit Status</label>
                                 <select id="auditStatus" name="auditStatus" class="form-control">
@@ -322,10 +330,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <partial name="_DatatablesScriptsPartial" />
 
     <script>
         let currentEditingId = null;
@@ -416,14 +421,14 @@
                 let coSecVal = 'No';
                 if (clientData.appointmentEngagementData) {
                     try {
-                        const apptData = typeof clientData.appointmentEngagementData === 'string' 
-                            ? JSON.parse(clientData.appointmentEngagementData) 
+                        const apptData = typeof clientData.appointmentEngagementData === 'string'
+                            ? JSON.parse(clientData.appointmentEngagementData)
                             : clientData.appointmentEngagementData;
-                        
+
                         // Check if Co.Secretary is true OR if Sec appointmentDate is set/filled
                         const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
                         const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
-                        
+
                         if (hasCoSec || hasSecDate) {
                             coSecVal = 'Yes';
                         }
@@ -734,9 +739,11 @@
             populateTableBody(currentData);
 
             dataTable = $('#taskDatatable').DataTable({
-                "paging": true, "lengthChange": true, "searching": true, "ordering": true,
-                "info": true, "autoWidth": false, "responsive": true,
-                "language": { "emptyTable": "No records found", "zeroRecords": "No matching records found" }
+                paging: true, lengthChange: false, searching: true, ordering: true,
+                info: true, autoWidth: false, responsive: true,
+                dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                language: { emptyTable: "No records found", zeroRecords: "No matching records found" }
             });
         }
 
