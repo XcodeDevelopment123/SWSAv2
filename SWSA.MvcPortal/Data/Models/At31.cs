@@ -43,11 +43,21 @@ public partial class At31
 
     public string? DateSent { get; set; }
 
+    public string? DateSent1_6 { get; set; }
+
+    public string? EndDate1_7 { get; set; }
+
+    public string? Days1_8 { get; set; }
+
     public string? DateSentToKk { get; set; }
 
     public string? ReviewResultofDays { get; set; }
 
     public string? DateReceiveFromKk { get; set; }
+
+    public string? TotalReviewDays { get; set; }
+
+    public string? Metric421 { get; set; }
 
     public string? WhoMeetClientDate { get; set; }
 

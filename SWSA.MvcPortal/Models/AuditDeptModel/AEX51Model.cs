@@ -59,6 +59,12 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
         [Display(Name = "Completed")]
         public string Completed { get; set; }
 
+        [Display(Name = "Days 1.3")]
+        public string? Days1_3 { get; set; }
+
+        [Display(Name = "Total Field Works Days 1.4")]
+        public string? TotalFieldWorksDays1_4 { get; set; }
+
         [Display(Name = "Date Sent")]
         public string? DateSent { get; set; }
 
@@ -97,5 +103,8 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
 
         [Display(Name = "Despatch Date Client")]
         public string? DespatachDateClient { get; set; }
+
+        [Display(Name = "Metric 4.2-4.1")]
+        public string? Metric421 { get; set; }
     }
 }

@@ -513,7 +513,11 @@ public class ClientService(
             ENumber = (c as BaseCompany).EmployerNumber ?? "",
             CompanyStatus = (c as BaseCompany).CompanyStatus.HasValue
                 ? (c as BaseCompany).CompanyStatus.Value.ToString()
-                : ""
+                : "",
+            CreditRating = (c as BaseCompany).CreditRating.HasValue
+                ? (c as BaseCompany).CreditRating.Value.ToString()
+                : "",
+            AuditExemption = ""
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();

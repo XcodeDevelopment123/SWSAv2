@@ -21,14 +21,19 @@
         public string? DonePercent { get; set; }
         public string? Completed { get; set; }
         public string? DateSent { get; set; }
+        public string? DateSent1_6 { get; set; }
+        public string? EndDate1_7 { get; set; }
+        public string? Days1_8 { get; set; }
         public string? DateSentToKK { get; set; }
         public string? ReviewResultofDays { get; set; }
         public string? DateReceiveFromKK { get; set; }
+        public string? TotalReviewDays { get; set; }
         public string? WhoMeetClientDate { get; set; }
         public string? DateSenttoClient { get; set; }
         public string? DateReceiveBack { get; set; }
         public string? TaxDueDate { get; set; }
         public string? PasstoDept { get; set; }
+        public string? Metric421 { get; set; }
         public string? SSMdueDate { get; set; }
         public string? DatePasstoSecDept { get; set; }
         public string? Binded { get; set; }

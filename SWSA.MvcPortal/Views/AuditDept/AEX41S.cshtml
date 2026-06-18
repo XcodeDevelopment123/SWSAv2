@@ -2,7 +2,7 @@
     ViewData["Title"] = "AEX41S";
 }
 
-<h1>AEX Scheduling For Current Year</h1>
+<h1>AEX Audit Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -31,6 +31,10 @@
                             <th>Activity</th>
                             <th>Year End</th>
                             <th>Year to do</th>
+                            <th>Co.Status</th>
+                            <th>Audit Exemption</th>
+                            <th>Credit Rating</th>
+                            <th>Signing Pages</th>
                             <th>Move to Active Sch</th>
                             <th>Move to Backlog</th>
                             <th>1st 18 mths due</th>
@@ -109,21 +113,37 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
                                 <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year" />
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="companyStatus">Co.Status</label>
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="auditExemption">Audit Exemption</label>
+                                <input type="text" id="auditExemption" name="auditExemption" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="signingPages">Signing Pages</label>
+                                <input type="text" id="signingPages" name="signingPages" class="form-control" placeholder="Enter signing pages" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                         </div>
                     </div>
 
@@ -318,6 +338,22 @@
                 $('#clientId').val(clientData.id);
                 $('#client').val(clientData.companyName);
 
+                // 自动填充 Activity
+                if (clientData.activitySize) {
+                    $('#activity').val(clientData.activitySize);
+                }
+
+                // 自动填充 Co.Status, Audit Exemption, Credit Rating
+                if (clientData.companyStatus) {
+                    $('#companyStatus').val(clientData.companyStatus);
+                }
+                if (clientData.auditExemption) {
+                    $('#auditExemption').val(clientData.auditExemption);
+                }
+                if (clientData.creditRating) {
+                    $('#creditRating').val(clientData.creditRating);
+                }
+
                 // 计算 Year End
                 if (clientData.yearEndMonth) {
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
@@ -335,6 +371,10 @@
                 $('#clientId').val('');
                 $('#client').val('');
                 $('#yearEnd').val('').datepicker('update', '');
+                $('#activity').val('');
+                $('#companyStatus').val('');
+                $('#auditExemption').val('');
+                $('#creditRating').val('');
             }
         }
 
@@ -438,6 +478,10 @@
                             <td>${escapeHtml(item.activity)}</td>
                             <td>${formatDate(item.yearEnd)}</td>
                             <td>${escapeHtml(item.yeattodo)}</td>
+                            <td>${escapeHtml(item.companyStatus)}</td>
+                            <td>${escapeHtml(item.auditExemption)}</td>
+                            <td>${escapeHtml(item.creditRating)}</td>
+                            <td>${escapeHtml(item.signingPages)}</td>
                             <td>${escapeHtml(item.movetoActiveSch)}</td>
                             <td>${escapeHtml(item.movetoBacklog)}</td>
                             <td>${formatDate(item.first18mthsdue)}</td>
@@ -470,6 +514,10 @@
             $('#recordId').val('');
             $('#taskForm')[0].reset();
             $('#clientSelect').val('');
+            $('#companyStatus').val('');
+            $('#auditExemption').val('');
+            $('#creditRating').val('');
+            $('#signingPages').val('');
             $('.datepicker').datepicker('update', ''); // 重置所有日期选择器
             $('#taskModal').modal('show');
         }
@@ -504,6 +552,10 @@
                         $('#dateDocIn').datepicker('update', formatDate(data.dateDocIn));
 
                         $('#yearToDo').val(data.yeattodo || '');
+                        $('#companyStatus').val(data.companyStatus || '');
+                        $('#auditExemption').val(data.auditExemption || '');
+                        $('#creditRating').val(data.creditRating || '');
+                        $('#signingPages').val(data.signingPages || '');
                         $('#moveToActiveSch').val(data.movetoActiveSch || '');
                         $('#moveToBacklog').val(data.movetoBacklog || '');
                         $('#coSec').val(data.coSec || '');
@@ -539,6 +591,10 @@
                 // YearEnd 是自动计算并显示的，也要提交回去
                 yearEnd: convertDateToISO($('#yearEnd').val()),
                 yeattodo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditExemption: $('#auditExemption').val(),
+                creditRating: $('#creditRating').val(),
+                signingPages: $('#signingPages').val(),
                 movetoActiveSch: $('#moveToActiveSch').val(),
                 movetoBacklog: $('#moveToBacklog').val(),
                 first18mthsdue: convertDateToISO($('#first18MonthsDue').val()),

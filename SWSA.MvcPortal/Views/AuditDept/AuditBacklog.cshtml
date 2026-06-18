@@ -1,15 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "AuditBacklog";
+    ViewData["Title"] = "ActiveAuditBacklog";
 }
 
-<h1>Audit Backlog</h1>
+<h1>Active Audit Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>Audit Backlog Records
+                    <i class="fas fa-tasks me-2"></i>Active Audit Backlog Records
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="openCreateModal()">
@@ -27,6 +27,11 @@
                             <th>Activity</th>
                             <th>Year End</th>
                             <th>Year to do</th>
+                            <th>Co.Status</th>
+                            <th>Audit exemption</th>
+                            <th>Co.Sec</th>
+                            <th>Credit Rating</th>
+                            <th>Signing Firm</th>
                             <th>Move to Active/AEX Sch</th>
                             <th>Date Doc in</th>
                             <th>Acctng wk?</th>
@@ -112,6 +117,42 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="companyStatus">Co.Status</label>
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="auditExemption">Audit exemption</label>
+                                <input type="text" id="auditExemption" name="auditExemption" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="coSec">Co.Sec</label>
+                                <input type="text" id="coSec" name="coSec" class="form-control" placeholder="Enter co sec" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto-fill from client" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="signingFirm">Signing Firm</label>
+                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Enter signing firm" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="moveToActiveAexSch">Move to Active/AEX Sch</label>
                                 <select id="moveToActiveAexSch" name="moveToActiveAexSch" class="form-control">
                                     <option value="">Select</option>
@@ -181,21 +222,22 @@
             loadData();
         });
 
+        // 存储客户数据用于自动填充
+        let clientDataMap = {};
+
         // ⭐⭐ 新增：加载客户列表函数
         function loadClientOptions() {
             $.ajax({
-                url: '/api/auditdept/clients/get-list', // 确保 Controller 有这个 API
+                url: '/api/auditdept/clients/get-list',
                 type: 'GET',
                 success: function (res) {
                     if (res && res.success && res.data) {
                         const $select = $('#companyName');
-                        // 保留第一项 "-- Select Company --"，清空后面的
                         $select.find('option:not(:first)').remove();
+                        clientDataMap = {};
 
                         res.data.forEach(client => {
-                            // 兼容属性名大小写
                             const name = client.CompanyName || client.companyName || client.Name || client.name;
-                            // 获取客户类型
                             const type = client.ClientType || client.clientType || '';
 
                             if (name) {
@@ -204,6 +246,16 @@
                                     displayText = `${name} (${type})`;
                                 }
                                 $select.append(`<option value="${name}">${displayText}</option>`);
+
+                                // 存储客户数据用于自动填充
+                                clientDataMap[name] = {
+                                    grouping: client.Grouping || client.grouping || '',
+                                    activitySize: '', // 目前无此字段
+                                    yearEndMonth: client.YearEndMonth || client.yearEndMonth || '',
+                                    companyStatus: client.CompanyStatus || client.companyStatus || '',
+                                    creditRating: client.CreditRating || client.creditRating || '',
+                                    auditExemption: client.AuditExemption || client.auditExemption || ''
+                                };
                             }
                         });
                     }
@@ -213,6 +265,25 @@
                 }
             });
         }
+
+        // 公司选择变更时自动填充
+        $(document).on('change', '#companyName', function() {
+            const selectedName = $(this).val();
+            if (selectedName && clientDataMap[selectedName]) {
+                const data = clientDataMap[selectedName];
+                $('#grouping').val(data.grouping);
+                $('#companyStatus').val(data.companyStatus);
+                $('#auditExemption').val(data.auditExemption);
+                $('#creditRating').val(data.creditRating);
+                if (data.yearEndMonth) {
+                    // 尝试将 YearEndMonth 填写到 yearEnd 输入框（格式为 YYYY-MM）
+                    // 或者仅显示月份名
+                }
+                if (data.activitySize) {
+                    $('#activity').val(data.activitySize);
+                }
+            }
+        });
 
         function initializeDataTable() {
             if (dataTable) {
@@ -242,6 +313,11 @@
                         "render": function(data) { return formatDate(data); }
                     },
                     { "data": "yearToDo" },
+                    { "data": "companyStatus" },
+                    { "data": "auditExemption" },
+                    { "data": "coSec" },
+                    { "data": "creditRating" },
+                    { "data": "signingFirm" },
                     { "data": "moveToActiveAexSch" },
                     {
                         "data": "dateDocIn",
@@ -306,6 +382,11 @@
                         activity: escapeHtml(item.activity || item.Activity || ''),
                         yearEnd: item.yearEnd || item.YearEnd, // 保持原始值，交给 render 处理
                         yearToDo: escapeHtml(item.yearToDo || item.YearToDo || ''),
+                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || ''),
+                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || ''),
+                        coSec: escapeHtml(item.coSec || item.CoSec || ''),
+                        creditRating: escapeHtml(item.creditRating || item.CreditRating || ''),
+                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || ''),
                         moveToActiveAexSch: escapeHtml(item.moveToActiveAexSch || item.MoveToActiveAexSch || ''),
                         dateDocIn: item.dateDocIn || item.DateDocIn, // 保持原始值
                         acctngWk: escapeHtml(item.acctngWk || item.AcctngWk || ''),
@@ -355,6 +436,11 @@
                         $('#activity').val(record.activity || '');
                         $('#yearEnd').val(formatDateForInput(record.yearEnd));
                         $('#yearToDo').val(record.yearToDo || '');
+                        $('#companyStatus').val(record.companyStatus || '');
+                        $('#auditExemption').val(record.auditExemption || '');
+                        $('#coSec').val(record.coSec || '');
+                        $('#creditRating').val(record.creditRating || '');
+                        $('#signingFirm').val(record.signingFirm || '');
                         $('#moveToActiveAexSch').val(record.moveToActiveAexSch || '');
                         $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
                         $('#acctngWk').val(record.acctngWk || '');
@@ -379,6 +465,11 @@
                 activity: $('#activity').val(),
                 yearEnd: $('#yearEnd').val() || null,
                 yearToDo: $('#yearToDo').val(),
+                companyStatus: $('#companyStatus').val(),
+                auditExemption: $('#auditExemption').val(),
+                coSec: $('#coSec').val(),
+                creditRating: $('#creditRating').val(),
+                signingFirm: $('#signingFirm').val(),
                 moveToActiveAexSch: $('#moveToActiveAexSch').val(),
                 dateDocIn: $('#dateDocIn').val() || null,
                 acctngWk: $('#acctngWk').val(),
