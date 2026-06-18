@@ -2,6 +2,14 @@
     ViewData["Title"] = "SdnBhdMasterScheduleList";
 }
 
+<style>
+    .dt-button-collection {
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+</style>
+
 <h1>F1.1 Sdn Bhd Master Work List</h1>
 
 <div class="row">
@@ -32,21 +40,21 @@
                             <th colspan="11">Scheduling</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
-                        
+
                         <!-- 第二行：细分标题 -->
                         <tr class="text-center">
                             <th rowspan="2" style="vertical-align: middle;">Grouping</th>
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
                             <th rowspan="2" style="vertical-align: middle;">File No</th>
-                            
+
                             <th colspan="3">Registration</th>
                             <th colspan="2">Tax Reference</th>
                             <th colspan="2">MISC Code</th>
-                            
+
                             <th colspan="11">Work Allocation Info</th>
-@*                             <th colspan="6">Acc Dept</th> *@
+                            @*                             <th colspan="6">Acc Dept</th> *@
                         </tr>
-                        
+
                         <!-- 第三行：每个字段的详细标题 -->
                         <tr class="text-center">
                             <th>Co Name</th>
@@ -204,7 +212,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly/>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -213,7 +221,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activeCoActivitySize">Activity/size</label>
-                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Auto" readonly/>
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Auto" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -452,6 +460,7 @@
                 dataTable = $('#taskDatatable').DataTable({
                     paging: true, lengthChange: false, searching: true, ordering: true, info: true,
                     autoWidth: false, responsive: true,
+                    dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     ajax: {
                         url: '/api/bp21/get-all',
@@ -504,7 +513,6 @@
                         else if (data.completed === 'In Progress') $(row).addClass('table-info');
                     }
                 });
-                dataTable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
             }
 
             function initializeDatePickers() {

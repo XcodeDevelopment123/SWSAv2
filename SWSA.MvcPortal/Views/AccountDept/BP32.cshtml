@@ -2,6 +2,14 @@
     ViewData["Title"] = "BP32 - Tax Compliance Management";
 }
 
+<style>
+    .dt-button-collection {
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+</style>
+
 <h1>F3.1 Work In Progress</h1>
 
 <div class="row">
@@ -141,25 +149,25 @@
                                 <label for="jobServices">Job Services</label>
                                 @* <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" /> *@
                                 <select id="jobServices" class="form-control">
-                                <select id="jobServices" name="jobServices" class="form-control">
-                                    <option value="">Select Company Type</option>
-                                    <option value="Accounting">Accounting Only</option>
-                                    <option value="AccTax">Acc+Tax</option>
-                                    <option value="Tax">Tax Only</option>
-                                </select>
+                                    <select id="jobServices" name="jobServices" class="form-control">
+                                        <option value="">Select Company Type</option>
+                                        <option value="Accounting">Accounting Only</option>
+                                        <option value="AccTax">Acc+Tax</option>
+                                        <option value="Tax">Tax Only</option>
+                                    </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coType">Co Type</label>
-                               @*  <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" /> *@
+                                @*  <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" /> *@
                                 <select id="coType" class="form-control">
-                                <select id="coType" name="coType" class="form-control">
-                                    <option value="">Select Company Type</option>
-                                    <option value="SdnBhd">Sdn Bhd</option>
-                                    <option value="LLP">LLP</option>
-                                    <option value="Enterprise">Enterprise</option>
-                                </select>
+                                    <select id="coType" name="coType" class="form-control">
+                                        <option value="">Select Company Type</option>
+                                        <option value="SdnBhd">Sdn Bhd</option>
+                                        <option value="LLP">LLP</option>
+                                        <option value="Enterprise">Enterprise</option>
+                                    </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -316,7 +324,7 @@
                         <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" /><label class="form-check-label" for="eFileDraft">E-File Draft</label></div></div>
                         <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" /><label class="form-check-label" for="eFileFinal">E-File Final</label></div></div>
                     </div>
-                     <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="invoiceNo">Invoice Date</label>
@@ -429,11 +437,11 @@
 
                 // ✅ 参考 Sdn Bhd List 设计 — 用 _DatatablesScriptsPartial 的本地插件
                 dataTable = $('#taskDatatable').DataTable({
-                    "processing": true,
+                    "processing": false,
                     "serverSide": false,
                     paging: true, lengthChange: false, searching: true, ordering: true, info: true,
                     autoWidth: false, responsive: false,
-                    processing: true,
+                    processing: false,
                     serverSide: false,
                     paging: true,
                     lengthChange: false,
@@ -460,82 +468,6 @@
                             console.error('DataTable AJAX error:', error);
                         }
                     },
-                    "columns": [
-                        { "data": "fileNo", "defaultContent": "" },
-                        { "data": "companyName", "defaultContent": "" },
-                        { "data": "yearEnd", "defaultContent": "" },
-                        { "data": "jobServices", "defaultContent": "" },
-                        { "data": "coStatus", "defaultContent": "" },
-                        { "data": "activeCoActivitySize", "defaultContent": "" },
-                        { "data": "yEtodo", "defaultContent": "" },
-                        { "data": "mthTodo", "defaultContent": "" },
-                        {
-                            "data": "docReceivedDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "taxARdueDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "staff", "defaultContent": "" },
-                        {
-                            "data": "startDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "endDate",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "timeTaken", "defaultContent": "" },
-                        {
-                            "data": "datePassToAudit",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "dateTaxSubmited",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "completedBacklog", "defaultContent": "" },
-                        // Boolean Fields (Render Checkmarks)
-                        { "data": "singleEntry", "render": renderCheck },
-                        { "data": "taxComputation", "render": renderCheck },
-                        { "data": "sortingFiling", "render": renderCheck },
-                        { "data": "keyinToExcel", "render": renderCheck },
-                        { "data": "reviewWorkingAcc", "render": renderCheck },
-                        { "data": "draftFinancialStatement", "render": renderCheck },
-                        { "data": "draftTaxCompleted", "render": renderCheck },
-                        { "data": "reviewTax", "render": renderCheck },
-                        { "data": "finalTax", "render": renderCheck },
-                        { "data": "taxComFinalSignByClient", "render": renderCheck },
-                        {
-                            "data": "amountTaxPay",
-                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": ""
-                        },
-                        { "data": "eFileDraft", "render": renderCheck },
-                        { "data": "eFileFinal", "render": renderCheck },
-                        { "data": "eFileviaSPC", "render": renderCheck },
-                        { "data": "invoiceNo", "defaultContent": "" },
-                        {
-                            "data": "amountRM",
-                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "id",
-                            "render": function(data, type, row) {
-                                return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                `;
                     columns: [
                         { data: "fileNo", defaultContent: "" },
                         { data: "companyName", defaultContent: "" },
@@ -663,8 +595,6 @@
                     eFileDraft: $('#eFileDraft').is(':checked') ? "1" : "0",
                     eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
                     eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
-                    invoiceNo: $('#invoiceNo').val(),
-                    amountRM: $('#amountRM').val()
                     invoiceDate: $('#invoiceDate').val(),
                     amountRM: $('#amountRM').val()
                 };
