@@ -24,7 +24,7 @@
                         <thead>
                             <tr>
                                 <th colspan="3" class="text-center">Basic Info</th>
-                                <th colspan="6" class="text-center">Tax Process & E-Filing</th>
+                                <th colspan="5" class="text-center">Tax Process & E-Filing</th>
                                 <th colspan="1" class="text-center">Tax</th>
                                 <th colspan="4" class="text-center">Login & Reference</th>
                                 <th colspan="2" class="text-center">Billing & Dispatch</th>
@@ -38,7 +38,6 @@
 
                                 <th>Draft Form E</th>
                                 <th>Review Form E</th>
-                                <th>Final Form E</th>
                                 <th>Form E Sign By Client</th>
                                 <th>E-File Draft</th>
                                 <th>E-File Final</th>
@@ -349,7 +348,7 @@
                 currentEditId = null;
                 $('#recordId').val('');
                 $('#clientSelect').val('');
-                $('#modalTitle').text('Add New BP33 Record');
+                $('#modalTitle').text('Add New Form E WIP');
                 $('.datepicker').datepicker('update', '');
             }
 
@@ -387,11 +386,7 @@
                             "render": function(data) { return data ? formatDate(data) : ''; },
                             "defaultContent": ""
                         },
-                        {
-                            "data": "finalTax",
-                            "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
+
                         {
                             "data": "taxComFinalSignByClient",
                             "render": function(data) { return data ? formatDate(data) : ''; },

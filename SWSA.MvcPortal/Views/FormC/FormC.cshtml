@@ -2,7 +2,7 @@
     ViewData["Title"] = "FormC";
 }
 
-<h1>FormC</h1>
+<h1>G1.  Tax Work logbook</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -30,10 +30,10 @@
                             <th colspan="5">TX Tax Scheduling</th>
                             <th colspan="2">Tax WIP</th>
                             <th colspan="2">Metrics</th>
-                            <th colspan="2">Tax work process(Date Done)</th>
-                            <th rowspan="2">Refund</th>
+                            <th colspan="3">Tax work process(Date Done)</th>
+                            <th rowspan="2">Tax payable</th>
                             <th rowspan="2">Penalties MITRS Submitted</th>
-                            <th colspan="2">Review</th>
+                            <th colspan="2">Form C</th>
                             <th colspan="2">Date to Client</th>
                             <th rowspan="2">Tax payment date</th>
                             <th rowspan="2">C Submitted Date</th>
@@ -45,17 +45,18 @@
 
                         <!-- Row 2: Sub-headers -->
                         <tr>
-                            <th>Year End</th>
-                            <th>Year to do</th>
                             <th>Tax Due Date</th>
                             <th>Qtr to do</th>
+                            <th>Year End</th>
+                            <th>Year to do</th>
                             <th>Date mgmtAC</th>
                             <th>a. Start Date</th>
-                            <th>Draft Form C</th>
+                            <th>b. End Date</th>
                             <th>No of days</th>
                             <th>on-time (Days)</th>
                             <th>P&L Analysis</th>
                             <th>CA & Tax comp</th>
+                            <th>Draft Form C</th>
                             <th>Tax comp/CA</th>
                             <th>Review</th>
                             <th>Sent</th>
@@ -84,7 +85,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Form C Record</span>
+                    <span id="modalTitle">Add New tax work record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -581,7 +582,7 @@
                 $('#onTimeDays').val('');
                 $('#taxDueDate').val('');
                 currentEditId = null;
-                $('#modalTitle').text('Add New Form C Record');
+                $('#modalTitle').text('Add New tax work Record');
                 $('.datepicker').datepicker('update', '');
             }
 

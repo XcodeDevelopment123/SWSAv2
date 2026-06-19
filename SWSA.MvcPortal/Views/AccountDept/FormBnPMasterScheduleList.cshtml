@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "FormBnPMasterScheduleList";
 }
 
@@ -22,14 +22,15 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
                     <thead>
                         <!-- 第一行：主标题 -->
                         <tr>
                             <th colspan="3">Admin</th>
                             <th colspan="10">Co Information</th>
-                            <th colspan="8">Scheduling</th>
+                            <th colspan="9">Scheduling</th>
                             <th rowspan="3">Actions</th>
                         </tr>
 
@@ -81,6 +82,7 @@
                         <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
+            </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -387,13 +389,14 @@
                     { "data": "description" },
                     { "data": "jobService" },
                     { "data": "activeCoActivitySize" },
+                    { "data": "creditRating", "defaultContent": "-" },
                     { "data": "yEtoDo" },
                     { "data": "mthTodo" },
+                    { "data": "staff" },
                     {
                         "data": "dateDocIn",
                         "render": function(data) { return formatDate(data); }
                     },
-                    { "data": "staff" },
                     { "data": "allocateToWkSch" },
                     { "data": "completed" },
                     {
@@ -409,7 +412,7 @@
                         "orderable": false
                     }
                 ],
-                "responsive": true,
+                "scrollX": true,
                 "autoWidth": false,
                 "order": [[0, "desc"]]
             });

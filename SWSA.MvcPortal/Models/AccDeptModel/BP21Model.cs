@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.AccDeptModel
+namespace SWSA.MvcPortal.Models.AccDeptModel
 {
     public class BP21Model
     {
@@ -17,6 +17,7 @@
         public string ServiceType { get; set; }
         public string CoStatus { get; set; }
         public string ActiveCoActivitySize { get; set; }
+        public string CreditRating { get; set; }
         public string YEtodo { get; set; }
         public string AuditDeptMth { get; set; } // 添加这个属性
         public string DueDate { get; set; }

@@ -2,7 +2,7 @@
     ViewData["Title"] = "AuditedAccSubmissionReport";
 }
 
-<h1>Audited Account Submission Report</h1>
+<h1>D5. Sdn. Bhd. AFS/UFS Submission</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -64,7 +64,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Audited Account Submission Record</span>
+                    <span id="modalTitle">Add New AFS/UFS Submission Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -161,17 +161,17 @@
                                 <label for="mbrsReceivedDate">MBRS received date</label>
 
                                 <select id="mbrsSourceSelect" class="form-control mb-2">
-                                    <option value="">-- Link from AT3.1 Audit Logbook --</option>
+                                    <option value="">-- Link from E5 Audit --</option>
                                 </select>
                                 <small class="text-muted">
                                     Select a record from AT3.1 to auto-fill MBRS received date.
                                 </small>
 
-                                <input type="text"
+  @*                               <input type="text"
                                        id="mbrsReceivedDate"
                                        name="mbrsReceivedDate"
                                        class="form-control mt-2"
-                                       placeholder="Select date or choose from AT3.1" />
+                                       placeholder="Select date or choose from AT3.1" /> *@
                             </div>
                         </div>
 
@@ -701,7 +701,7 @@
     function clearForm() {
         $('#taskForm')[0].reset();
         $('#editIndex').val('');
-        $('#modalTitle').text('Add New Audited Account Submission Record');
+        $('#modalTitle').text('Add New AFS/UFS Submission Record');
         $('#auditExemption').val('');
         hideModalAlert();
         clearFieldErrors();

@@ -2,7 +2,7 @@
     ViewData["Title"] = "LLPMastersecSchedule";
 }
 
-<h1>LLP Master sec Schedule</h1>
+<h1>D3.  LLP Master sec Schedule</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -56,7 +56,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Record</span>
+                    <span id="modalTitle">Add New Record LLP</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -126,23 +126,25 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyStatus">Co Status</label>
-                                <select id="companyStatus" name="companyStatus" class="form-control">
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto fill" readonly />
+                                @* <select id="companyStatus" name="companyStatus" class="form-control">
                                     <option value="">Select Status</option>
                                     <option value="Active">Active</option>
                                     <option value="Dormant">Dormant</option>
                                     <option value="Strike Off">Strike Off</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="activeCoActivitySize">Activity size</label>
-                                <select id="activeCoActivitySize" name="activeCoActivitySize" class="form-control">
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Auto fill" readonly />
+                                @* <select id="activeCoActivitySize" name="activeCoActivitySize" class="form-control">
                                     <option value="">Select Size</option>
                                     <option value="Small">Small</option>
                                     <option value="Medium">Medium</option>
                                     <option value="Large">Large</option>
-                                </select>
+                                </select> *@
                             </div>
                         </div>
                     </div>
@@ -150,7 +152,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="yEtodo">YE to do</label>
+                                <label for="yEtodo">Year to do</label>
                                 <select id="yEtodo" name="yEtodo" class="form-control">
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -164,15 +166,7 @@
                                 <input type="text" id="acCmthTodo" name="acCmthTodo" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="ssMextensionDate">SSM Extension Date</label>
-                                <div class="input-group date" id="ssmExtensionDatePicker">
-                                    <input type="text" id="ssMextensionDate" name="ssMextensionDate" class="form-control" placeholder="dd/MM" />
-                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
 
                     <div class="form-info-label col-12">
@@ -182,11 +176,28 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="ssMextensionDate">SSM Extension Date</label>
+                                <div class="input-group date" id="ssmExtensionDatePicker">
+                                    <input type="text" id="ssMextensionDate" name="ssMextensionDate" class="form-control" placeholder="dd/MM" />
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="aDdueDate">Annual Declaration Due Date</label>
                                 <input type="text" id="aDdueDate" name="aDdueDate" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                       
+                    </div>
+
+                    <div class="form-info-label col-12">
+                        <label>Status</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="accReady">Acc Ready?</label>
                                 <select id="accReady" name="accReady" class="form-control">
@@ -197,13 +208,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-info-label col-12">
-                        <label>Status</label>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="aDsubmitDate">Annual Declaration Submitted Date</label>

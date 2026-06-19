@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SWSA.MvcPortal.Models.AccDeptModel
 {
@@ -49,5 +49,6 @@ namespace SWSA.MvcPortal.Models.AccDeptModel
         public string InvoiceNo { get; set; }
         public string AmountRM { get; set; }
         public string DocDespatchDate { get; set; }
+        public string? JobType { get; set; }
     }
 }

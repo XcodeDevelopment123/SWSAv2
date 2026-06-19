@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.AccDeptModel
+namespace SWSA.MvcPortal.Models.AccDeptModel
 {
     public class BP23Model
     {
@@ -24,5 +24,6 @@
         public string? Staff { get; set; }
         public string? AllocateToWkSch { get; set; }
         public string? Completed { get; set; }
+        public string? CreditRating { get; set; }
     }
 }

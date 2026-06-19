@@ -94,7 +94,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP21] ORDER BY Id DESC";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP21] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    ORDER BY b.Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP21Model>(sql);
@@ -124,7 +136,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP21] WHERE Id = @Id";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP21] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    WHERE b.Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP21Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -354,7 +378,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP22] ORDER BY Id DESC";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP22] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    ORDER BY b.Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP22Model>(sql);
@@ -384,7 +420,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP22] WHERE Id = @Id";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP22] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    WHERE b.Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP22Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -613,7 +661,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP23] ORDER BY Id DESC";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP23] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    ORDER BY b.Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP23Model>(sql);
@@ -643,7 +703,19 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP23] WHERE Id = @Id";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE c.CreditRating 
+                               WHEN 0 THEN 'Excellent' 
+                               WHEN 1 THEN 'Good' 
+                               WHEN 2 THEN 'Fair' 
+                               WHEN 3 THEN 'Poor' 
+                               ELSE '' 
+                           END AS CreditRating
+                    FROM [Quartz].[dbo].[BP23] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
+                    WHERE b.Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP23Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1894,7 +1966,18 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP32] ORDER BY Id DESC";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE cl.ClientType 
+                               WHEN 0 THEN 'Sdn Bhd' 
+                               WHEN 1 THEN 'LLP' 
+                               WHEN 2 THEN 'Enterprise' 
+                               WHEN 3 THEN 'Individual' 
+                               ELSE '' 
+                           END AS JobType
+                    FROM [Quartz].[dbo].[BP32] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    ORDER BY b.Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP32Model>(sql);
@@ -1924,7 +2007,18 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP32] WHERE Id = @Id";
+                var sql = @"
+                    SELECT b.*, 
+                           CASE cl.ClientType 
+                               WHEN 0 THEN 'Sdn Bhd' 
+                               WHEN 1 THEN 'LLP' 
+                               WHEN 2 THEN 'Enterprise' 
+                               WHEN 3 THEN 'Individual' 
+                               ELSE '' 
+                           END AS JobType
+                    FROM [Quartz].[dbo].[BP32] b
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
+                    WHERE b.Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP32Model>(sql, new { Id = id });
 
                 if (record == null)

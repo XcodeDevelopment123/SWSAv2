@@ -6,7 +6,7 @@
     ViewData["Title"] = "Landing";
 }
 
-<h3> Landing (Sec Dept)</h3>
+<h3>D1. Sec dept task templete</h3>
 
 <div class="row">
     <div class="col-md-12">
@@ -120,7 +120,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="companyType">Company Type</label>
                                 <select id="companyType" name="companyType" class="form-control">
@@ -132,7 +132,22 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                       
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="yearInput">Year Input</label>
+                                <select id="yearInput" name="yearInput" class="form-control">
+                                    <option value="">-- Select --</option>
+                                    <option value="2 years">2 years</option>
+                                    <option value="Others">Others</option>
+                                    <option value="Those in range">Those in range</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEndMonth">Year End</label>
                                 <select id="yearEndMonth" name="yearEndMonth" class="form-control">
@@ -150,34 +165,6 @@
                                     <option value="November">November</option>
                                     <option value="December">December</option>
                                 </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="yearInput">Year Input</label>
-                                <select id="yearInput" name="yearInput" class="form-control">
-                                    <option value="">-- Select --</option>
-                                    <option value="2 years">2 years</option>
-                                    <option value="Others">Others</option>
-                                    <option value="Those in range">Those in range</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="incorpDate">Incorporation Date</label>
-                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" readonly />
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="first18Months">First 18 Months</label>
-                                <input type="text" id="first18Months" name="first18Months" class="form-control" readonly />
                             </div>
                         </div>
                     </div>
@@ -301,6 +288,22 @@
                             <div class="form-group">
                                 <label for="remarks">Remarks</label>
                                 <textarea id="remarks" name="remarks" class="form-control" rows="3" placeholder="Enter remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="incorpDate">Incorporation Date</label>
+                                <input type="text" id="incorpDate" name="incorpDate" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="first18Months">First 18 Months</label>
+                                <input type="text" id="first18Months" name="first18Months" class="form-control" readonly />
                             </div>
                         </div>
                     </div>

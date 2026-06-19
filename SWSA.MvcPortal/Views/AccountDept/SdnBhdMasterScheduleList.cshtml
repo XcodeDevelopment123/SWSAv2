@@ -67,16 +67,16 @@
                             <th>Code</th>
                             <th>Description</th>
 
-                            <th>Service Type</th>
                             <th>Co Status</th>
                             <th>Activity/size</th>
+                            <th>Credit Rating</th>
+                            <th>Staff(PIC)</th>
+                            <th>Month to do</th>
                             <th>Year to do</th>
                             <th>Due date to Audit dept</th>
 
                             <th>Date send to audit</th>
-                            <th>Month to do</th>
                             <th>Date Doc In</th>
-                            <th>Staff(Pic)</th>
                             <th>Allocate to Wk Sch</th>
                             <th>Completed/Backlog</th>
                         </tr>
@@ -276,7 +276,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="staff">Staff</label>
+                                <label for="staff">Staff(PIC)</label>
                                 <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
                             </div>
                         </div>
@@ -459,7 +459,7 @@
             function initializeDataTable() {
                 dataTable = $('#taskDatatable').DataTable({
                     paging: true, lengthChange: false, searching: true, ordering: true, info: true,
-                    autoWidth: false, responsive: true,
+                    autoWidth: false, scrollX: true,
                     dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     ajax: {
@@ -483,15 +483,15 @@
                         { data: 'tiNnumber' },
                         { data: 'code' },
                         { data: 'description' },
-                        { data: 'serviceType' },
                         { data: 'coStatus' },
                         { data: 'activeCoActivitySize' },
+                        { data: 'creditRating', defaultContent: '-' },
+                        { data: 'staff' },
+                        { data: 'esTmthToDo' },
                         { data: 'yEtodo' },
                         { data: 'auditDeptMth' },
                         { data: 'dueDate', render: d => d ? formatDate(d) : '' },
-                        { data: 'esTmthToDo' },
                         { data: 'dateDocIn', render: d => d ? formatDate(d) : '' },
-                        { data: 'staff' },
                         { data: 'allocateToWkSch' },
                         { data: 'completed' },
                         {

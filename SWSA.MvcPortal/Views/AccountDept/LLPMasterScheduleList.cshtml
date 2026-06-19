@@ -22,8 +22,9 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap">
                     <thead>
                         <!-- 第一行：主标题 -->
                         <tr>
@@ -45,12 +46,12 @@
                             <th colspan="2">Tax Reference</th>
                             <th colspan="2">MISC Code</th>
 
-                            <th colspan="4">Work Allocation Info</th>
+                            <th colspan="3">Work Allocation Info</th>
+                            <th rowspan="2">Credit Rating</th>
                             <th colspan="2">SSM</th>
-                            <th rowspan="2">Due Date</th>
+                            <th rowspan="2">Date Doc In</th>
                             <th rowspan="2">Month to do</th>
                             <th rowspan="2">Staff</th>
-                            <th rowspan="2">Date Doc In</th>
                             <th rowspan="2">Allocate to Wk Sch</th>
                             <th rowspan="2">Complete/Backlog</th>
                         </tr>
@@ -67,19 +68,18 @@
                             <th>Description</th>
 
                             <th>Service Type</th>
-                            <th>Co Status</th>
                             <th>Activity/size</th>
                             <th>Year to do</th>
 
-                            <th>Credit Rating</th>
+                            <th>Due Date</th>
                             <th>Extension Date</th>
-
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Data will be loaded dynamically -->
                     </tbody>
                 </table>
+            </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -232,7 +232,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="extensionDate">SSM Extension Date</label>
-                                <input type="text" id="extensionDate" name="extensionDate" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="extensionDate" name="extensionDate" class="form-control datepicker" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         @* <div class="col-md-6">
@@ -244,7 +244,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="aDdueDate">SSM Due Date</label>
-                                <input type="text" id="aDdueDate" name="aDdueDate" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="aDdueDate" name="aDdueDate" class="form-control datepicker" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -441,7 +441,7 @@
             function initializeDataTable() {
                 dataTable = $('#taskDatatable').DataTable({
                     paging: true, lengthChange: false, searching: true, ordering: true, info: true,
-                    autoWidth: false, responsive: true,
+                    autoWidth: false, scrollX: true,
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     ajax: {
                         url: '/api/bp22/get-all',
@@ -456,7 +456,6 @@
                     columns: [
                         { data: 'grouping' },
                         { data: 'refferal' },
-                        { data: 'fileNo' },
                         { data: 'companyName' },
                         { data: 'yearEnd' },
                         { data: 'incorpDate', render: d => d ? formatDate(d) : '' },
@@ -468,7 +467,7 @@
                         { data: 'servicesType' },           // LLP 这版字段叫 servicesType
                         { data: 'activeCoActivitySize' },
                         { data: 'yEtodo' },
-                        { data: 'auditDeptMth' },
+                        { data: 'creditRating', defaultContent: '-' },
                         { data: 'aDdueDate', render: d => d ? formatDate(d) : '' },
                         { data: 'extensionDate', render: d => d ? formatDate(d) : '' },
                         { data: 'dateDocIn', render: d => d ? formatDate(d) : '' },

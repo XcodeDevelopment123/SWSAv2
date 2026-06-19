@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "StrikeOffTaxWork";
 }
 
@@ -22,44 +22,52 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th rowspan="3">No</th>
-                            <th rowspan="3">Company Name</th>
-                            <th rowspan="3">Year End</th>
-                            <th rowspan="3">Date S/Off</th>
-                            <th rowspan="3">Date received fr Sec Dept</th>
-                            <th colspan="8">Admin</th>
-                            <th rowspan="3">Actions</th>
-                        </tr>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th rowspan="3">No</th>
+                                <th rowspan="3">Company Name</th>
+                                <th rowspan="3">Year End</th>
+                                <th rowspan="3">Date S/Off</th>
+                                <th rowspan="3">Date received fr Sec Dept</th>
+                                <th colspan="7">Admin</th>
+                                <th colspan="4">Penalties</th>
+                                <th colspan="2">IRB Submission Date</th>
+                                <th colspan="4">Billing</th>
+                                <th rowspan="3">Actions</th>
+                            </tr>
 
-                        <tr>
-                            <th>Staff</th>
-                            <th>Date Start</th>
-                            <th>Date End</th>
-                            <th>N or Y days</th>
-                            <th>Review</th>
-                            <th colspan="2">Client</th>
-                            <th>Job completed date</th>
-                        </tr>
+                            <tr>
+                                <th rowspan="2">Staff</th>
+                                <th rowspan="2">Date Start</th>
+                                <th rowspan="2">Date End</th>
+                                <th rowspan="2">N or Y days</th>
+                                <th rowspan="2">Review</th>
+                                <th colspan="2">Client</th>
+                                <th rowspan="2">IRB Appeal Date</th>
+                                <th rowspan="2">Payment Date</th>
+                                <th rowspan="2">notes/remark</th>
+                                <th rowspan="2">Acc wk done?</th>
+                                <th rowspan="2">Form C submitted date</th>
+                                <th rowspan="2">Form E submitted date</th>
+                                <th rowspan="2">Invoice Date</th>
+                                <th rowspan="2">Amount RM</th>
+                                <th rowspan="2">Clients copy sent</th>
+                                <th rowspan="2">Job completed date</th>
+                            </tr>
 
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>Date Sent</th>
-                            <th>Date Received</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be loaded dynamically -->
-                    </tbody>
-                </table>
+                            <tr>
+                                <th>Date Sent</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -104,7 +112,9 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="form-info-label col-12">
+                        <label>Sec Dept Information</label>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -178,11 +188,89 @@
                         </div>
                     </div>
 
-                    <!-- Completion -->
+                    <!-- Penalties -->
                     <div class="form-info-label col-12">
-                        <label>Completion</label>
+                        <label>Penalties Information</label>
                     </div>
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="appealDate">Appeal Date</label>
+                                <input type="text" id="appealDate" name="appealDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="paymentDate">Payment Date</label>
+                                <input type="text" id="paymentDate" name="paymentDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-info-label col-12">
+                        <label>Additional Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="noteRemark">notes/remark</label>
+                                <input type="text" id="noteRemark" name="noteRemark" class="form-control" placeholder="Enter notes/remark" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="accWkDone">Acc wk done?</label>
+                                <input type="text" id="accWkDone" name="accWkDone" class="form-control" placeholder="e.g. Yes/No" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IRB Submission Date -->
+                    <div class="form-info-label col-12">
+                        <label>IRB Submission Date</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formCsubmitDate">Form C submitted date</label>
+                                <input type="text" id="formCsubmitDate" name="formCsubmitDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="formEsubmitDate">Form E submitted date</label>
+                                <input type="text" id="formEsubmitDate" name="formEsubmitDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing -->
+                    <div class="form-info-label col-12">
+                        <label>Billing</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="invoiceDate">Invoice Date</label>
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="amountRM">Amount RM</label>
+                                <input type="text" id="amountRM" name="amountRM" class="form-control" placeholder="Enter amount" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-info-label col-12">
+                        <label>Completion Information</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientCopySent">Clients copy sent</label>
+                                <input type="text" id="clientCopySent" name="clientCopySent" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="jobCompletedDate">Job completed date</label>
@@ -283,7 +371,8 @@
                     "ordering": true,
                     "info": true,
                     "autoWidth": false,
-                    "responsive": true,
+                    "responsive": false,
+                    "scrollX": true,
                     "ajax": {
                         "url": "/api/tx4/get-all",
                         "type": "GET",
@@ -329,6 +418,15 @@
                         { "data": "review", "defaultContent": "" },
                         { "data": "clientDateSent", "defaultContent": "" },
                         { "data": "clientDateReceived", "defaultContent": "" },
+                        { "data": "appealDate", "defaultContent": "" },
+                        { "data": "paymentDate", "defaultContent": "" },
+                        { "data": "noteRemark", "defaultContent": "" },
+                        { "data": "accWkDone", "defaultContent": "" },
+                        { "data": "formCsubmitDate", "defaultContent": "" },
+                        { "data": "formEsubmitDate", "defaultContent": "" },
+                        { "data": "invoiceDate", "defaultContent": "" },
+                        { "data": "amountRM", "defaultContent": "" },
+                        { "data": "clientCopySent", "defaultContent": "" },
                         {
                             "data": "jobCompletedDate",
                             "render": function(data, type, row) {
@@ -397,6 +495,15 @@
                     review: $('#review').val(),
                     clientDateSent: $('#clientDateSent').val(),
                     clientDateReceived: $('#clientDateReceived').val(),
+                    appealDate: $('#appealDate').val(),
+                    paymentDate: $('#paymentDate').val(),
+                    noteRemark: $('#noteRemark').val(),
+                    accWkDone: $('#accWkDone').val(),
+                    formCsubmitDate: $('#formCsubmitDate').val(),
+                    formEsubmitDate: $('#formEsubmitDate').val(),
+                    invoiceDate: $('#invoiceDate').val(),
+                    amountRM: $('#amountRM').val(),
+                    clientCopySent: $('#clientCopySent').val(),
                     jobCompletedDate: $('#jobCompletedDate').val(),
 
                     referral: $('#referral').val(),
@@ -483,7 +590,16 @@
                         $('#review').val(record.review || '');
                         $('#clientDateSent').val(record.clientDateSent || '');
                         $('#clientDateReceived').val(record.clientDateReceived || '');
-                        $('#jobCompletedDate').val(record.jobCompletedDate);
+                        $('#appealDate').val(record.appealDate || '');
+                        $('#paymentDate').val(record.paymentDate || '');
+                        $('#noteRemark').val(record.noteRemark || '');
+                        $('#accWkDone').val(record.accWkDone || '');
+                        $('#formCsubmitDate').val(record.formCsubmitDate || '');
+                        $('#formEsubmitDate').val(record.formEsubmitDate || '');
+                        $('#invoiceDate').val(record.invoiceDate || '');
+                        $('#amountRM').val(record.amountRM || '');
+                        $('#clientCopySent').val(record.clientCopySent || '');
+                        $('#jobCompletedDate').val(record.jobCompletedDate || '');
 
                         $('#modalTitle').text('Edit Strike Off Tax Work Record');
                         $('#taskModal').modal('show');
