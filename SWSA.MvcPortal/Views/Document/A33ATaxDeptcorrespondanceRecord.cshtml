@@ -1,4 +1,4 @@
-﻿@model List<SWSA.MvcPortal.Models.Clients.A32a> // 这里假设 Model 类型可能复用，或者您有特定的 A33a 模型
+@model List<SWSA.MvcPortal.Models.Clients.A32a> // 这里假设 Model 类型可能复用，或者您有特定的 A33a 模型
 @{
     ViewData["Title"] = "A33ATaxDeptcorrespondanceRecord";
 }
@@ -172,11 +172,11 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <partial name="_DatatablesB5ScriptsPartial" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
