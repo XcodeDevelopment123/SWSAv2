@@ -2,6 +2,8 @@
     ViewData["Title"] = "FormEMasterSchedule";
 }
 
+
+
 <h1>F1.6 Form E List</h1>
 
 <div class="row">
@@ -19,8 +21,8 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body" style="overflow-x:auto; overflow-y:visible;">
+                <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th colspan="12" class="text-center">Admin</th>
@@ -33,7 +35,7 @@
                             <th rowspan="2" style="vertical-align: middle;">Year End</th>
                             <th colspan="1" class="text-center">Tax Reference</th>
                             <th colspan="7" class="text-center">Login Info</th>
-@*                             <th colspan="5" class="text-center">Acc Dept</th> *@
+                            @*                             <th colspan="5" class="text-center">Acc Dept</th> *@
                         </tr>
                         <tr>
                             <th>E number</th>
@@ -82,7 +84,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                         @*    <div class="form-group">
+                            @*    <div class="form-group">
                                 <label for="fileNo">File No</label>
                                 <input type="text" id="fileNo" name="fileNo" class="form-control" placeholder="Auto-fill" readonly />
                             </div> *@
@@ -100,7 +102,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                           @*  <div class="form-group">
+                            @*  <div class="form-group">
                                 <label for="yearEnd">Year End</label>
                                 <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto-fill" readonly />
                             </div> *@
@@ -111,7 +113,7 @@
                         </div>
                     </div>
 
-                   @*  <div class="row">
+                    @*  <div class="row">
                         <div class="col-md-6">
                             
                         </div>
@@ -175,7 +177,7 @@
                                 <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                       @*  <div class="col-md-4">
+                        @*  <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mthTodo">Month to do</label>
                                 <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
@@ -229,9 +231,9 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <partial name="_DatatablesB5ScriptsPartial" />
-    
-    
+    <!-- DataTables CSS + JS (Bootstrap 5 integration, same partial as other pages
+         so Buttons / Column visibility render with identical styling) -->
+    <partial name="_DatatablesScriptsPartial" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
@@ -242,6 +244,8 @@
             let currentEditId = null;
             // 🟢 全局变量存 Dropdown 数据
             let companyOptionsMap = {};
+
+
 
             // 🟢 Helper: 格式化日期 dd/mm/yyyy
             function formatDdMMyyyy(d) {
@@ -413,7 +417,7 @@
                 });
             }
 
-            // 初始化 DataTable (保持你的原始逻辑)
+            // 初始化 DataTable (加上 Buttons 工具栏: Copy/CSV/Excel/PDF/Print/Column visibility)
             function initializeDataTable() {
                 try {
                     if ($.fn.DataTable.isDataTable('#taskDatatable')) {
@@ -433,6 +437,15 @@
                             "error": function(xhr, error, thrown) {
                                 showAlert('Failed to load data: ' + error, 'danger');
                             }
+                        },
+                        "dom": '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                        "language": {
+                            search: "Search:",
+                            emptyTable: "No records found. Click \"New Record\" to create one.",
+                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                            infoEmpty: "Showing 0 to 0 of 0 entries",
+                            paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
                         },
                         "columns": [
                             { "data": "grouping", "defaultContent": "" },
@@ -461,14 +474,17 @@
                                         </div>
                                     `;
                                 },
-                                "orderable": false
+                                "orderable": false,
+                                "searchable": false
                             }
                         ],
                         "order": [[0, 'desc']],
-                        "responsive": true,
+                        "responsive": false,
                         "searching": true,
                         "paging": true,
-                        "pageLength": 10
+                        "pageLength": 10,
+                        "lengthChange": false,
+                        "scrollX": true
                     });
                 } catch (error) {
                     console.error('DataTable initialization failed:', error);

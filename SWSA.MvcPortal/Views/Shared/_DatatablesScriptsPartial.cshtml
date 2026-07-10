@@ -46,8 +46,178 @@
         border-bottom-right-radius: 0.25rem !important;
         border-right: 1px solid rgba(255,255,255,.1) !important;
     }
+
+    /* Column Visibility dropdown ─ right vertical + bottom horizontal scrollbars */
+    .dt-button-collection {
+        z-index: 99999 !important;
+        max-height: 320px !important;
+        width: auto !important;            /* Allow container to shrink to content width */
+        max-width: 200px !important;       /* Cap width to trigger horizontal scrollbar on overflow */
+        overflow-y: auto !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important; /* Smooth touch scrolling on iOS */
+        overscroll-behavior: contain !important;      /* Prevent background page scrolling */
+        background: #fff !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
+    }
+
+    /* Force the inner menu container to expand to fit the widest button, triggering horizontal scroll on parent */
+    .dt-button-collection div.dropdown-menu,
+    .dt-button-collection [role="menu"] {
+        display: block !important;
+        overflow: visible !important;
+        min-width: 100% !important;
+        width: max-content !important;
+    }
+
+    /* Force buttons inside visibility collection to not wrap, guaranteeing horizontal overflow */
+    .dt-button-collection .dt-button,
+    .dt-button-collection .dropdown-item,
+    .dt-button-collection button,
+    .dt-button-collection a {
+        white-space: nowrap !important;
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: left !important;
+    }
+
+    .dt-button-background {
+        z-index: 99998 !important;
+        pointer-events: none !important;
+    }
+
+    /* Prevents parent card-body or responsive container from clipping the visibility dropdown vertically */
+    .dt-dropdown-open {
+        overflow: visible !important;
+    }
 </style>
 <script>
+    // ── 滚动隔离：拦截并阻止任何在 visibility 菜单内的滚动事件冒泡到页面 ──
+    function isolateScroll(el) {
+        if (el._scrollIsolated) return;
+        el._scrollIsolated = true;
+
+        // 鼠标滚轮事件隔离
+        el.addEventListener('wheel', function(e) {
+            el.scrollTop += e.deltaY;
+            el.scrollLeft += e.deltaX;
+            e.preventDefault();
+            e.stopPropagation();
+        }, { passive: false });
+
+        // 触控滑动事件隔离 (移动端 / 触摸板)
+        var touchStartY = 0;
+        var touchStartX = 0;
+
+        el.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 1) {
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+            }
+        }, { passive: true });
+
+        el.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 1) {
+                var deltaY = touchStartY - e.touches[0].clientY;
+                var deltaX = touchStartX - e.touches[0].clientX;
+
+                el.scrollTop += deltaY;
+                el.scrollLeft += deltaX;
+
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, { passive: false });
+    }
+
+    // MutationObserver: 当 DataTables 动态插入或更新 .dt-button-collection 的行内样式时，
+    // 强制覆盖以确保双向滚动条、容器限制宽度以及不遮挡。
+    var dtCollectionObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+            if (m.type === 'attributes' && m.target.classList && m.target.classList.contains('dt-button-collection')) {
+                var node = m.target;
+                if (node.style.display === 'none') {
+                    document.querySelectorAll('.dt-dropdown-open').forEach(function(el) {
+                        el.classList.remove('dt-dropdown-open');
+                    });
+                } else {
+                    node.style.setProperty('max-height', '320px', 'important');
+                    node.style.setProperty('width',      'auto',  'important');
+                    node.style.setProperty('max-width',  '200px', 'important');
+                    node.style.setProperty('overflow-y', 'auto',  'important');
+                    node.style.setProperty('overflow-x', 'auto',  'important');
+                    node.style.setProperty('z-index',    '99999', 'important');
+                    isolateScroll(node);
+                    
+                    // 递归向上查找所有可能限制溢出的父级容器，并全部应用可见样式
+                    var parent = node.parentElement;
+                    while (parent && parent !== document.body) {
+                        if (parent.classList.contains('card-body') || 
+                            parent.classList.contains('table-responsive') || 
+                            parent.classList.contains('dataTables_wrapper') || 
+                            parent.classList.contains('dataTables_scroll') || 
+                            parent.classList.contains('card') ||
+                            (parent.getAttribute('style') && parent.getAttribute('style').indexOf('overflow') !== -1)) {
+                            parent.classList.add('dt-dropdown-open');
+                        }
+                        parent = parent.parentElement;
+                    }
+                }
+            } else if (m.addedNodes) {
+                m.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.classList &&
+                        node.classList.contains('dt-button-collection')) {
+                        node.style.setProperty('max-height', '320px', 'important');
+                        node.style.setProperty('width',      'auto',  'important');
+                        node.style.setProperty('max-width',  '200px', 'important');
+                        node.style.setProperty('overflow-y', 'auto',  'important');
+                        node.style.setProperty('overflow-x', 'auto',  'important');
+                        node.style.setProperty('z-index',    '99999', 'important');
+                        isolateScroll(node);
+                        
+                        var parent = node.parentElement;
+                        while (parent && parent !== document.body) {
+                            if (parent.classList.contains('card-body') || 
+                                parent.classList.contains('table-responsive') || 
+                                parent.classList.contains('dataTables_wrapper') || 
+                                parent.classList.contains('dataTables_scroll') || 
+                                parent.classList.contains('card') ||
+                                (parent.getAttribute('style') && parent.getAttribute('style').indexOf('overflow') !== -1)) {
+                                parent.classList.add('dt-dropdown-open');
+                            }
+                            parent = parent.parentElement;
+                        }
+                    }
+                });
+            }
+
+            // 当节点被移除时，清除父级的溢出显示类
+            if (m.removedNodes) {
+                m.removedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.classList &&
+                        node.classList.contains('dt-button-collection')) {
+                        document.querySelectorAll('.dt-dropdown-open').forEach(function(el) {
+                            el.classList.remove('dt-dropdown-open');
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        dtCollectionObserver.observe(document.body, { 
+            childList: true, 
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    });
+
     $.fn.dataTable.moment('YYYY-MM-DD hh:mm A');
 
     // Global defaults for DataTables
