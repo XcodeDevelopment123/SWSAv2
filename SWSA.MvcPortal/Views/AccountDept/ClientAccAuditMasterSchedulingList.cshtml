@@ -1,6 +1,13 @@
 @{
     ViewData["Title"] = "ClientAccAuditMasterSchedulingList";
 }
+<style>
+    .dt-button-collection {
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+</style>
 
 <h1>F1.4 Advocate Clients'Acc</h1>
 
@@ -202,10 +209,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <partial name="_DatatablesB5ScriptsPartial" />
-    
-    
+    <partial name="_DatatablesScriptsPartial" />
+   @*  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> *@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
@@ -337,47 +344,93 @@
                 if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                     $('#taskDatatable').DataTable().destroy();
                 }
-
-                dataTable = $('#taskDatatable').DataTable({
-                    "ajax": {
-                        "url": "/api/bp24/get-all",
-                        "type": "GET",
-                        "dataSrc": function(res) { return res.success ? res.data : []; }
+                        dataTable = $('#taskDatatable').DataTable({
+            paging: true,
+            lengthChange: false,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            scrollX: true,
+            dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "ajax": {
+                "url": "/api/bp24/get-all",
+                "type": "GET",
+                "dataSrc": function(res) { return res.success ? res.data : []; }
+            },
+            "columns": [
+                { "data": "grouping", "defaultContent": "" },
+                { "data": "refferal", "defaultContent": "" },
+                { "data": "fileNo", "defaultContent": "" },
+                { "data": "companyName", "defaultContent": "" },
+                { "data": "yearEnd", "defaultContent": "" },
+                { "data": "servicesType", "defaultContent": "" },
+                { "data": "activeCoActivitSize", "defaultContent": "" },
+                { "data": "yEtodo", "defaultContent": "" },
+                {
+                    "data": "dateDocIn",
+                    "render": function(data) { return formatDate(data); },
+                    "defaultContent": ""
+                },
+                { "data": "mthTodo", "defaultContent": "" },
+                { "data": "staff", "defaultContent": "" },
+                { "data": "allocateToWkSch", "defaultContent": "" },
+                { "data": "completed", "defaultContent": "" },
+                {
+                    "data": "id",
+                    "render": function(data) {
+                        return `
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-warning edit-btn" data-id="${data}"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${data}"><i class="fas fa-trash"></i></button>
+                            </div>`;
                     },
-                    "columns": [
-                        { "data": "grouping", "defaultContent": "" },
-                        { "data": "refferal", "defaultContent": "" },
-                        { "data": "fileNo", "defaultContent": "" },
-                        { "data": "companyName", "defaultContent": "" },
-                        { "data": "yearEnd", "defaultContent": "" }, // 这里显示 DB 里存的字符串 (即 DD/MM/YYYY)
-                        { "data": "servicesType", "defaultContent": "" },
-                        { "data": "activeCoActivitSize", "defaultContent": "" },
-                        { "data": "yEtodo", "defaultContent": "" },
-                        {
-                            "data": "dateDocIn",
-                            "render": function(data) { return formatDate(data); },
-                            "defaultContent": ""
-                        },
-                        { "data": "mthTodo", "defaultContent": "" },
-                        { "data": "staff", "defaultContent": "" },
-                        { "data": "allocateToWkSch", "defaultContent": "" },
-                        { "data": "completed", "defaultContent": "" },
-                        {
-                            "data": "id",
-                            "render": function(data) {
-                                return `
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}"><i class="fas fa-trash"></i></button>
-                                    </div>`;
-                            },
-                            "orderable": false
-                        }
-                    ],
-                    "order": [[0, 'desc']],
-                    "responsive": true
-                });
-            }
+                    "orderable": false
+                }
+            ],
+            "order": [[0, 'desc']]
+        });
+            //     dataTable = $('#taskDatatable').DataTable({
+            //         "ajax": {
+            //             "url": "/api/bp24/get-all",
+            //             "type": "GET",
+            //             "dataSrc": function(res) { return res.success ? res.data : []; }
+            //         },
+            //         "columns": [
+            //             { "data": "grouping", "defaultContent": "" },
+            //             { "data": "refferal", "defaultContent": "" },
+            //             { "data": "fileNo", "defaultContent": "" },
+            //             { "data": "companyName", "defaultContent": "" },
+            //             { "data": "yearEnd", "defaultContent": "" }, // 这里显示 DB 里存的字符串 (即 DD/MM/YYYY)
+            //             { "data": "servicesType", "defaultContent": "" },
+            //             { "data": "activeCoActivitSize", "defaultContent": "" },
+            //             { "data": "yEtodo", "defaultContent": "" },
+            //             {
+            //                 "data": "dateDocIn",
+            //                 "render": function(data) { return formatDate(data); },
+            //                 "defaultContent": ""
+            //             },
+            //             { "data": "mthTodo", "defaultContent": "" },
+            //             { "data": "staff", "defaultContent": "" },
+            //             { "data": "allocateToWkSch", "defaultContent": "" },
+            //             { "data": "completed", "defaultContent": "" },
+            //             {
+            //                 "data": "id",
+            //                 "render": function(data) {
+            //                     return `
+            //                         <div class="btn-group">
+            //                             <button class="btn btn-sm btn-warning edit-btn" data-id="${data}"><i class="fas fa-edit"></i></button>
+            //                             <button class="btn btn-sm btn-danger delete-btn" data-id="${data}"><i class="fas fa-trash"></i></button>
+            //                         </div>`;
+            //                 },
+            //                 "orderable": false
+            //             }
+            //         ],
+            //         "order": [[0, 'desc']],
+            //         "responsive": true
+            //     });
+             }
 
             // 保存记录
             function saveBP24Record() {
