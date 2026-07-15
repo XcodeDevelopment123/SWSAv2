@@ -1,13 +1,18 @@
-﻿using NuGet.Packaging;
+using NuGet.Packaging;
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Entities.Backlogs;
 using SWSA.MvcPortal.Entities.Contacts;
+using SWSA.MvcPortal.Entities.Templates;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities.Clients;
 
 public abstract class BaseCompany : BaseClient
 {
+    [Key]
+    public int Id { get; set; }
     [SystemAuditLog("File Number")]
     public string? FileNo { get; set; } = null!; //User input
 
@@ -54,8 +59,22 @@ public abstract class BaseCompany : BaseClient
     [SystemAuditLog("Appointment Engagement")]
     public string? AppointmentEngagementData { get; set; }
 
+    public virtual ICollection<AEXBacklog> Aexbcklogs { get; set; } = new List<AEXBacklog>();
+
+    public virtual ICollection<AEXTemplate> Aextemplates { get; set; } = new List<AEXTemplate>();
+
+    public virtual ICollection<AuditBacklogSchedule> AuditBacklogSchedules { get; set; } = new List<AuditBacklogSchedule>();
+
+    public virtual ICollection<AuditTemplate> AuditTemplates { get; set; } = new List<AuditTemplate>();
+
     public virtual ICollection<CompanyOwner> Owners { get; set; } = [];
     public virtual ICollection<CompanyMsicCode> MsicCodes { get; set; } = [];
+    public virtual ICollection<SecDeptTaskTemplate> SecDeptTaskTemplates { get; set; } = new List<SecDeptTaskTemplate>();
+
+    public virtual ICollection<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; } = new List<SecStrikeOffTemplate>();
+
+    public virtual ICollection<TaxStrikeOffTemplate> TaxStrikeOffTemplates { get; set; } = new List<TaxStrikeOffTemplate>();
+
 
     [NotMapped]
     [SystemAuditLog("Msic Codes")]

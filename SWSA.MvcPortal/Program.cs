@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Middlewares;
-using SWSA.MvcPortal.Data;
 using SWSA.MvcPortal.Persistence;
 using SWSA.MvcPortal.Persistence.Seeders;
 
@@ -24,8 +23,7 @@ try
         .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables();
 
-    builder.Services.AddDbContext<QuartzContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SwsaConntection")));
+
 
     // 初始化 Serilog
     builder.Host.AddHostService();
@@ -100,6 +98,10 @@ try
 }
 catch (Exception ex)
 {
+    if (ex.GetType().Name == "HostAbortedException")
+    {
+        throw;
+    }
     Log.Fatal(ex, "应用程序启动失败");
     Console.WriteLine($"启动错误: {ex.Message}");
 }

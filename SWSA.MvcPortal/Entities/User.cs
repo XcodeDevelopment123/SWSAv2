@@ -1,9 +1,10 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Commons.Attributes;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Helpers;
 using SWSA.MvcPortal.Entities.Systems;
+using SWSA.MvcPortal.Entities.Templates;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace SWSA.MvcPortal.Entities;
 
@@ -37,7 +38,16 @@ public class User
     [SystemAuditLog("User Role")]
     public UserRole Role { get; set; } = UserRole.Staff;
 
+    public virtual ICollection<AEXTemplate> Aextemplates { get; set; } = new List<AEXTemplate>();
+
+    public virtual ICollection<AuditTemplate> AuditTemplates { get; set; } = new List<AuditTemplate>();
+
+    public virtual ICollection<DocumentRecord> DocumentRecords { get; set; } = new List<DocumentRecord>();
+
+
     public virtual ICollection<ScheduledJob> ScheduledJobs { get; set; }
+    public virtual ICollection<SecStrikeOffTemplate> SecStrikeOffTemplates { get; set; } = new List<SecStrikeOffTemplate>();
+
     public virtual ICollection<SystemAuditLog> SystemAuditLogs { get; set; }
 
     public void UpdateInfo(string staffId, string fullName, string phoneNumber, string email)

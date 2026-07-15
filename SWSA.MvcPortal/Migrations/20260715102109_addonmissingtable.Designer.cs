@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260715102109_addonmissingtable")]
+    partial class addonmissingtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2850,7 +2853,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Group");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S13a", b =>

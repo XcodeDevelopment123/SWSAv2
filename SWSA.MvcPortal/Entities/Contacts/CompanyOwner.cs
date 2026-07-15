@@ -10,7 +10,7 @@ public class CompanyOwner
 {
     [Key]
     public int Id { get; set; }
-    [ForeignKey(nameof(Company))]
+    [ForeignKey(nameof(ClientCompany))]
     public int ClientCompanyId { get; set; }
     [SystemAuditLog("Owner Name (per IC)")]
     public string NamePerIC { get; set; } = null!;
@@ -27,7 +27,7 @@ public class CompanyOwner
     [SystemAuditLog("Form BE submission")]
     public bool RequiresFormBESubmission { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public virtual BaseCompany Company { get; set; } = null!;
+    public virtual BaseCompany ClientCompany { get; set; } = null!;
 
     public void UpdateInfo(string name, string icOrPassport, PositionType position, string taxRef, string email, string phoneNumber, bool isRequireSubmitFormBE)
     {

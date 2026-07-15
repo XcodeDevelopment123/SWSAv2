@@ -1,10 +1,14 @@
 ﻿using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Entities.Clients;
 
 public class IndividualClient : BaseClient
 {
+    [Key]
+    public int Id { get; set; }
 
     [SystemAuditLog("IC or Passport Number")]
     public string ICOrPassportNumber { get; set; } = null!;

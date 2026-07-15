@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260715100017_fixtocoefirst")]
+    partial class fixtocoefirst
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -598,142 +601,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("A33B");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex12", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccSetup")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccSummary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Activity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AsAt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditCompletion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditExecution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditFee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditPlanning")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CommOfOathsDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateBilled")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateBinded")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateOfDirectorRept")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DatePassToSecDept")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateReceived")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateReceivedAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateReport")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentKuching")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentSigning")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentToKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DespatchDateToClient")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndDateKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndDateKuching")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Final")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FlwUpDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoOfDays")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PassToTax")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Pic")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProfitLoss")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuarterTodo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnderKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnderKuching")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Revenue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SsmdueDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxDueDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TotalPercent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Yetodo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AEX12");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex41", b =>
                 {
                     b.Property<int?>("Id")
@@ -799,49 +666,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AEX41");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex42", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AcctngWk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Activity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateDocIn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Grouping")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoveToActiveSch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuarterToDoAudit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonWhyBacklog")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YearEnd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YearToDo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AEX42");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex51", b =>
@@ -1044,148 +868,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.ToTable("AEX52");
                 });
 
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At11", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AcSummary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccSetup")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Activity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AsAt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditCompletion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditExecution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditFee")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditPlanning")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CommOfOathsDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateBilled")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateBinded")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateOfDirectorsRept")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateOfReport")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DatePassToSecDept")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateReceivedAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateReceivedSigning")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentSigning")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateSentToKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DespatchDateToClient")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndDateKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FlwUpDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoOfDays")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PassToTaxDept")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Pic")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProfitLoss")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuarterTodo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnderKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResultOverUnderKuching")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Revenue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SsmdueDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxDueDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TotalFieldWkDays")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TotalPercent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TotalReviewDaysKk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WhichDb")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Yetodo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AT11");
-                });
-
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At21", b =>
                 {
                     b.Property<int>("Id")
@@ -1251,49 +933,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AT21");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At22", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AcctngWk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Activity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateDocIn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Grouping")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoveToActiveAexSch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuarterToDoAudit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonWhyBacklog")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YearEnd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YearToDo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AT22");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At31", b =>
@@ -2752,105 +2391,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BP34");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.FormC", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CanTaxCompu")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateMgmtAccAvailable")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Despatch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DraftFormC")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EstQuarterTodo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Fees")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormC1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormCsubmitedDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InvDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobCompleted")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoOfDays")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PnLanalysis")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Printing")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Received")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxCompCa")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxDueDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxPayableRm")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxPaymentDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FormC");
-                });
-
-            modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Group", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S13a", b =>

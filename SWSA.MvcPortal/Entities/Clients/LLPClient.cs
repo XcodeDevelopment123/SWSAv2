@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Entities.Clients;
+namespace SWSA.MvcPortal.Entities.Clients;
 
 public class LLPClient : BaseCompany
 {

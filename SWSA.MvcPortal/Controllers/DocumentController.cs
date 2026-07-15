@@ -4,8 +4,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
-using SWSA.MvcPortal.Data;
-using SWSA.MvcPortal.Data.Models;
 using SWSA.MvcPortal.Models.AuditDeptModel;
 using SWSA.MvcPortal.Models.Clients;
 using SWSA.MvcPortal.Models.DocumentRecords;

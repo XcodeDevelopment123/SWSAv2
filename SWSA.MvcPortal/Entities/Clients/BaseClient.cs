@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Attributes;
+using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Entities.Contacts;
@@ -33,6 +33,8 @@ public abstract class BaseClient
     public bool IsActive { get; set; }  
 
     public virtual ICollection<OfficialContact> OfficialContacts { get; set; } = [];
+
+    public virtual ICollection<DocumentRecord> DocumentRecords { get; set; } = new List<DocumentRecord>();
     public virtual ICollection<CommunicationContact> CommunicationContacts { get; set; } = [];
 
     public void Deactivate()
