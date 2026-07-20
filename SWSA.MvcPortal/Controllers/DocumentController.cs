@@ -66,7 +66,7 @@ public class DocumentController(
                 await connection.OpenAsync();
                 Console.WriteLine("✅ Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[A32A] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A32A] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<A32a>(sql);
 
                 Console.WriteLine($"✅ Successfully loaded {records.Count()} records for page");
@@ -114,12 +114,12 @@ public class DocumentController(
                 await connection.OpenAsync();
 
                 // 先查询所有客户端，不限制 IsActive
-                var testSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[Clients]";
+                var testSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[Clients]";
                 var count = await connection.ExecuteScalarAsync<int>(testSql);
                 Console.WriteLine($"Total clients in database: {count}");
 
                 // 查询所有客户端，包括不活跃的
-                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz].[dbo].[Clients] ORDER BY Name";
+                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz2].[dbo].[Clients] ORDER BY Name";
                 var clients = await connection.QueryAsync<ClientModel>(sql);
 
                 Console.WriteLine($"Clients returned: {clients.Count()}");
@@ -146,7 +146,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz].[dbo].[Clients] WHERE Id = @Id";
+                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz2].[dbo].[Clients] WHERE Id = @Id";
                 var client = await connection.QueryFirstOrDefaultAsync<ClientModel>(sql, new { Id = id });
 
                 if (client == null)
@@ -167,7 +167,7 @@ public class DocumentController(
     {
         using (var connection = new SqlConnection(_connectionString))
         {
-            var sql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+            var sql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                         ([Clients], [YearEnded], [CoStatus], [DateDocFr], 
                          [DateReceived], [NoOfBoxBag], [ByWhom], [UploadLetter], 
                          [Remark], [Date], [NoOfbox], [ByWhom2], [UploadLetter2], [Remark2])
@@ -210,7 +210,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = $"SELECT Name FROM [Quartz].[dbo].[{clientTableName}] WHERE Id = @Id";
+                var sql = $"SELECT Name FROM [Quartz2].[dbo].[{clientTableName}] WHERE Id = @Id";
                 return await connection.QueryFirstOrDefaultAsync<string>(sql, new { Id = clientId });
             }
         }
@@ -232,7 +232,7 @@ public class DocumentController(
                 {
                     try
                     {
-                        var testSql = $"SELECT TOP 1 Id FROM [Quartz].[dbo].[{tableName}]";
+                        var testSql = $"SELECT TOP 1 Id FROM [Quartz2].[dbo].[{tableName}]";
                         await connection.ExecuteScalarAsync<int>(testSql);
                         return tableName;
                     }
@@ -263,7 +263,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz].[dbo].[A31A] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A31A] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<A31AModel>(sql);
                 return Json(new { success = true, data = records });
             }
@@ -281,7 +281,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz].[dbo].[A31A] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A31A] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<A31AModel>(sql, new { Id = id });
 
                 if (record == null)
@@ -303,7 +303,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                     ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
                      [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
                      [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -344,10 +344,10 @@ public class DocumentController(
             using (var connection = new SqlConnection(_connectionString))
             {
                 // 先获取旧的记录来检查 Date 字段是否变化
-                var oldRecordSql = "SELECT Date FROM [Quartz].[dbo].[A31A] WHERE Id = @Id";
+                var oldRecordSql = "SELECT Date FROM [Quartz2].[dbo].[A31A] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<A31AModel>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[A31A] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A31A] SET 
                     [Client] = @Client, [YearEnded] = @YearEnded, [DateReceived] = @DateReceived, 
                     [NoOfBagBox] = @NoOfBagBox, [ByWhom] = @ByWhom, [UploadLetter] = @UploadLetter, 
                     [Remark] = @Remark, [DateSendToAD] = @DateSendToAD, [Date] = @Date, 
@@ -381,7 +381,7 @@ public class DocumentController(
 
             using var connection = new SqlConnection(_connectionString);
 
-            var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+            var sql = @"INSERT INTO [Quartz2].[dbo].[AT31] 
                 ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
                  [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
                  [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
@@ -455,7 +455,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A31A] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A31A] WHERE Id = @Id";
                 await connection.ExecuteAsync(sql, new { Id = id });
                 return Json(new { success = true });
             }
@@ -477,7 +477,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz].[dbo].[A31B] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A31B] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<A31BModel>(sql);
                 return Json(new { success = true, data = records });
             }
@@ -495,7 +495,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz].[dbo].[A31B] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A31B] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<A31BModel>(sql, new { Id = id });
 
                 if (record == null)
@@ -517,7 +517,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                         ([Clients], [YearEnded], [CoStatus], [DateDocFr], 
                          [DateReceived], [NoOfBoxBag], [ByWhom], [UploadLetter], 
                          [Remark], [Date], [NoOfbox], [ByWhom2], [UploadLetter2], [Remark2])
@@ -544,7 +544,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [Quartz].[dbo].[A31B] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A31B] SET 
                         [Clients] = @Clients, [YearEnded] = @YearEnded, [CoStatus] = @CoStatus, 
                         [DateDocFr] = @DateDocFr, [DateReceived] = @DateReceived, [NoOfBoxBag] = @NoOfBoxBag, 
                         [ByWhom] = @ByWhom, [UploadLetter] = @UploadLetter, [Remark] = @Remark, 
@@ -569,7 +569,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A31B] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A31B] WHERE Id = @Id";
                 await connection.ExecuteAsync(sql, new { Id = id });
                 return Json(new { success = true });
             }
@@ -594,7 +594,7 @@ public class DocumentController(
                 await connection.OpenAsync();
                 Console.WriteLine("✅ Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[A32A] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A32A] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<A32a>(sql);
 
                 Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -622,7 +622,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz].[dbo].[A32A] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[A32A] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<A32a>(sql, new { Id = id });
 
                 if (record == null)
@@ -647,7 +647,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A32A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A32A] 
                         ([CaseNo], [DateReceived], [TypeIncoming], [Client], 
                          [YearAssessment], [Details], [Date], [BriefDescritions], 
                          [PIC], [Remark], [DoneOn])
@@ -691,7 +691,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [Quartz].[dbo].[A32A] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A32A] SET 
                         [CaseNo] = @CaseNo, [DateReceived] = @DateReceived, 
                         [TypeIncoming] = @TypeIncoming, [Client] = @Client, 
                         [YearAssessment] = @YearAssessment, [Details] = @Details, 
@@ -734,7 +734,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A32A] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A32A] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -776,7 +776,7 @@ public class DocumentController(
                         PIC,
                         Date,
                         Note
-                    FROM [Quartz].[dbo].[A32B] 
+                    FROM [Quartz2].[dbo].[A32B] 
                     ORDER BY Id DESC";
 
                 var records = await connection.QueryAsync<A32BModel>(sql);
@@ -819,7 +819,7 @@ public class DocumentController(
                         PIC,
                         Date,
                         Note
-                    FROM [Quartz].[dbo].[A32B] 
+                    FROM [Quartz2].[dbo].[A32B] 
                     WHERE Id = @Id";
 
                 var record = await connection.QueryFirstOrDefaultAsync<A32BModel>(sql, new { Id = id });
@@ -846,7 +846,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A32B] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A32B] 
                     ([CaseNo], [DateReceived], [Client], [OfficerInCharge], 
                      [TelExtension], [YearAssessment], [DateIRBemailLetter], [DetailsCorrepondence], 
                      [PIC], [Date], [Note])
@@ -877,7 +877,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [Quartz].[dbo].[A32B] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A32B] SET 
                     [CaseNo] = @CaseNo, 
                     [DateReceived] = @DateReceived, 
                     [Client] = @Client, 
@@ -912,7 +912,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A32B] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A32B] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -954,7 +954,7 @@ public class DocumentController(
                     PIC,
                     Remark,
                     DoneOn
-                FROM [Quartz].[dbo].[A33A] 
+                FROM [Quartz2].[dbo].[A33A] 
                 ORDER BY Id DESC";
 
                 var records = await connection.QueryAsync<A33AModel>(sql);
@@ -997,7 +997,7 @@ public class DocumentController(
                     PIC,
                     Remark,
                     DoneOn
-                FROM [Quartz].[dbo].[A33A] 
+                FROM [Quartz2].[dbo].[A33A] 
                 WHERE Id = @Id";
 
                 var record = await connection.QueryFirstOrDefaultAsync<A33AModel>(sql, new { Id = id });
@@ -1024,7 +1024,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A33A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A33A] 
                     ([CaseNo], [DateReceived], [TypeIncoming], [Client], 
                      [YearAssessment], [Details], [Date], [BriefDescritions], 
                      [PIC], [Remark], [DoneOn])
@@ -1055,7 +1055,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [Quartz].[dbo].[A33A] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A33A] SET 
                     [CaseNo] = @CaseNo, 
                     [DateReceived] = @DateReceived, 
                     [TypeIncoming] = @TypeIncoming, 
@@ -1090,7 +1090,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A33A] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A33A] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1132,7 +1132,7 @@ public class DocumentController(
                     PIC,
                     Date,
                     Note
-                FROM [Quartz].[dbo].[A33B] 
+                FROM [Quartz2].[dbo].[A33B] 
                 ORDER BY Id DESC";
 
                 var records = await connection.QueryAsync<A33BModel>(sql);
@@ -1175,7 +1175,7 @@ public class DocumentController(
                     PIC,
                     Date,
                     Note
-                FROM [Quartz].[dbo].[A33B] 
+                FROM [Quartz2].[dbo].[A33B] 
                 WHERE Id = @Id";
 
                 var record = await connection.QueryFirstOrDefaultAsync<A33BModel>(sql, new { Id = id });
@@ -1202,7 +1202,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Quartz].[dbo].[A33B] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A33B] 
                     ([CaseNo], [DateReceived], [Client], [OfficerInchrage], 
                      [TelExtension], [YearAssessment], [DateIRBemailLetter], 
                      [DetailsCorrepondence], [PIC], [Date], [Note])
@@ -1233,7 +1233,7 @@ public class DocumentController(
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [Quartz].[dbo].[A33B] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[A33B] SET 
                     [CaseNo] = @CaseNo, 
                     [DateReceived] = @DateReceived, 
                     [Client] = @Client, 
@@ -1268,7 +1268,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "DELETE FROM [Quartz].[dbo].[A33B] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[A33B] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)

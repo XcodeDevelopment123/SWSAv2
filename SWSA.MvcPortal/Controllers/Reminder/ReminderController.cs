@@ -65,7 +65,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B11] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B11] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B11>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -93,7 +93,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B11] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B11] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B11>(sql, new { Id = id });
 
                     if (record == null)
@@ -118,7 +118,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B11] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B11] 
                         ([Grouping], [File], [Company], [CompanyNo], 
                          [IncorporationDate], [YearEnd], [YMDueDate], [CirculationAFSDueDate], 
                          [ReminderDate], [EmailSend], [DateSent])
@@ -162,7 +162,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B11] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[B11] SET 
                         [Grouping] = @Grouping, [File] = @File, 
                         [Company] = @Company, [CompanyNo] = @CompanyNo, 
                         [IncorporationDate] = @IncorporationDate, [YearEnd] = @YearEnd, 
@@ -205,7 +205,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B11] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B11] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -234,7 +234,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
         CompanyName,
         YearEnd         AS YearEnd,
         First18mthdue   AS First18MthDue
-    FROM [Quartz].[dbo].[AT21]
+    FROM [Quartz2].[dbo].[AT21]
 
     UNION ALL
 
@@ -244,7 +244,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
         CompanyName,
         YearEnd         AS YearEnd,
         First18mthsDue  AS First18MthDue
-    FROM [Quartz].[dbo].[AEX41];";
+    FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B11SourceOption>(sql);
 
@@ -279,7 +279,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B2] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B2] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B2>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -307,7 +307,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B2] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B2] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B2>(sql, new { Id = id });
 
                     if (record == null)
@@ -332,7 +332,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B2] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B2] 
                         ([Grouping],[CompanyName],[ActiveStatus],[AEXstatus],[YearEnd]
                         ,[PIC],[SSM18MthDue],[SSM_TAX],[TargetedSendDate],[DateSend]
                         ,[TargetedReminder],[DateSend2],[DateReceived],[TargetedDate],[DateSent]
@@ -390,7 +390,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B2] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[B2] SET 
                       [Grouping] = @Grouping,[CompanyName] = @CompanyName,[ActiveStatus] = @ActiveStatus,
                       [AEXstatus] = @AEXstatus,[YearEnd] = @YearEnd,[PIC] = @PIC,
                       [SSM18MthDue] = @SSM18MthDue,[SSM_TAX] = @SSM_TAX,[TargetedSendDate] = @TargetedSendDate,
@@ -445,7 +445,7 @@ namespace SWSA.MvcPortal.Controllers.Reminder
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B2] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B2] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -475,7 +475,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -485,7 +485,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B2PicSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -522,7 +522,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)      AS YearEnd,      -- dd/MM/yyyy
     CONVERT(varchar(10), YrMthDueDate, 103) AS YrMthDueDate  -- dd/MM/yyyy
-FROM [Quartz].[dbo].[S13A];";
+FROM [Quartz2].[dbo].[S13A];";
 
                 var list = await connection.QueryAsync<B2Ssm18SourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -558,7 +558,7 @@ SELECT
     Client                                  AS CompanyName,
     CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
     CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
-FROM [Quartz].[dbo].[A31A];";
+FROM [Quartz2].[dbo].[A31A];";
 
                 var list = await connection.QueryAsync<B2InwardSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -593,7 +593,7 @@ FROM [Quartz].[dbo].[A31A];";
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B31] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B31] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B31>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -621,7 +621,7 @@ FROM [Quartz].[dbo].[A31A];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B31] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B31] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B31>(sql, new { Id = id });
 
                     if (record == null)
@@ -646,7 +646,7 @@ FROM [Quartz].[dbo].[A31A];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B31] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B31] 
                         ([Grouping],[CompanyName],[ActiveStatus],[AEXstatus]
                         ,[YearEnd],[PIC],[SSM18MthDue],[SSM_TAX],[T_startAccWk]
                         ,[T_Date],[DateSent],[T_Call],[DateRemind],[T_FinalText]
@@ -698,7 +698,7 @@ FROM [Quartz].[dbo].[A31A];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B31] SET
+                    var sql = @"UPDATE [Quartz2].[dbo].[B31] SET
                     [Grouping] = @Grouping,[CompanyName] = @CompanyName,[ActiveStatus] = @ActiveStatus,
                     [AEXstatus] = @AEXstatus,[YearEnd] = @YearEnd,[PIC] = @PIC,[SSM18MthDue] = @SSM18MthDue,
                     [SSM_TAX] = @SSM_TAX,[T_startAccWk] = @T_startAccWk,[T_Date] = @T_Date,[DateSent] = @DateSent,
@@ -748,7 +748,7 @@ FROM [Quartz].[dbo].[A31A];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B31] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B31] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -778,7 +778,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -788,7 +788,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B31PicSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -823,7 +823,7 @@ SELECT
     Client                                  AS CompanyName,
     CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
     CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
-FROM [Quartz].[dbo].[A31A];";
+FROM [Quartz2].[dbo].[A31A];";
 
                 var list = await connection.QueryAsync<B31InwardSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -879,7 +879,7 @@ FROM [Quartz].[dbo].[A31A];";
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B32] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B32] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B32>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -907,7 +907,7 @@ FROM [Quartz].[dbo].[A31A];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B32] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B32] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B32>(sql, new { Id = id });
 
                     if (record == null)
@@ -932,7 +932,7 @@ FROM [Quartz].[dbo].[A31A];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B32] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B32] 
                         ([Grouping],[CompanyName],[ActiveStatus],[AEXstatus]
                         ,[YearEnd],[PIC],[SSM18MthDue],[SSM_TAX],[T_startAccWk]
                         ,[T_Date],[DateSent],[T_Call],[DateRemind],[T_FinalText]
@@ -984,7 +984,7 @@ FROM [Quartz].[dbo].[A31A];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B32] SET
+                    var sql = @"UPDATE [Quartz2].[dbo].[B32] SET
                     [Grouping] = @Grouping,[CompanyName] = @CompanyName,[ActiveStatus] = @ActiveStatus,
                     [AEXstatus] = @AEXstatus,[YearEnd] = @YearEnd,[PIC] = @PIC,[SSM18MthDue] = @SSM18MthDue,
                     [SSM_TAX] = @SSM_TAX,[T_startAccWk] = @T_startAccWk,[T_Date] = @T_Date,[DateSent] = @DateSent,
@@ -1034,7 +1034,7 @@ FROM [Quartz].[dbo].[A31A];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B32] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B32] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -1064,7 +1064,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -1074,7 +1074,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B32PicSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -1109,7 +1109,7 @@ SELECT
     Clients                                  AS CompanyName,
     CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
     CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
-FROM [Quartz].[dbo].[A31B];";
+FROM [Quartz2].[dbo].[A31B];";
 
                 var list = await connection.QueryAsync<B32InwardSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -1143,7 +1143,7 @@ FROM [Quartz].[dbo].[A31B];";
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B34] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B34] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B34>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -1171,7 +1171,7 @@ FROM [Quartz].[dbo].[A31B];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B34] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B34] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B34>(sql, new { Id = id });
 
                     if (record == null)
@@ -1196,7 +1196,7 @@ FROM [Quartz].[dbo].[A31B];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B34]
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B34]
                         ([Grouping],[CompanyName],[SingleEntry],[FullSet],
                         [Reveiw],[TaxOnly],[PIC],[T_startAccWk],[T_Date],
                         [DateSent],[T_Call],[DateRemind],[T_FinalText],
@@ -1247,7 +1247,7 @@ FROM [Quartz].[dbo].[A31B];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B34]
+                    var sql = @"UPDATE [Quartz2].[dbo].[B34]
                         SET[Grouping] = @Grouping,[CompanyName] = @CompanyName,
                         [SingleEntry] = @SingleEntry,[FullSet] = @FullSet,
                         [Reveiw] = @Reveiw,[TaxOnly] = @TaxOnly,[PIC] = @PIC,
@@ -1297,7 +1297,7 @@ FROM [Quartz].[dbo].[A31B];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B34] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B34] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -1327,7 +1327,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -1337,7 +1337,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B34PicSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -1372,7 +1372,7 @@ SELECT
     Clients                                  AS CompanyName,
     CONVERT(varchar(10), YearEnded, 103)    AS YearEnd,      -- dd/MM/yyyy
     CONVERT(varchar(10), DateReceived, 103) AS DateReceived  -- dd/MM/yyyy
-FROM [Quartz].[dbo].[A31B];";
+FROM [Quartz2].[dbo].[A31B];";
 
                 var list = await connection.QueryAsync<B34InwardSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -1406,7 +1406,7 @@ FROM [Quartz].[dbo].[A31B];";
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B35] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B35>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -1434,7 +1434,7 @@ FROM [Quartz].[dbo].[A31B];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B35] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B35] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B35>(sql, new { Id = id });
 
                     if (record == null)
@@ -1459,7 +1459,7 @@ FROM [Quartz].[dbo].[A31B];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B35]
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B35]
     ([Grouping],[CompanyName],[YearEnd],[PIC],
      [T_startWk],[T_Date],[DateSent],[T_call],[DateRemind],
      [T_finalText],[DateText],[DateReceived],[Note])
@@ -1506,7 +1506,7 @@ FROM [Quartz].[dbo].[A31B];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B35]
+                    var sql = @"UPDATE [Quartz2].[dbo].[B35]
                     SET [Grouping] = @Grouping,[CompanyName] = @CompanyName,
                     [YearEnd] = @YearEnd,[PIC] = @PIC,[T_startWk] = @T_startWk,
                     [T_Date] = @T_Date,[DateSent] = @DateSent,[T_call] = @T_call,
@@ -1550,7 +1550,7 @@ FROM [Quartz].[dbo].[A31B];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B35] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B35] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -1579,7 +1579,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -1589,7 +1589,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B35PicSourceOption>(sql);
                 return Json(new { success = true, data = list });
@@ -1624,7 +1624,7 @@ FROM [Quartz].[dbo].[AEX41];";
                     await connection.OpenAsync();
                     Console.WriteLine("✅ Database connection successful");
 
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B36] ORDER BY Id DESC";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B36] ORDER BY Id DESC";
                     var records = await connection.QueryAsync<B36>(sql);
 
                     Console.WriteLine($"✅ Successfully retrieved {records.Count()} records");
@@ -1652,7 +1652,7 @@ FROM [Quartz].[dbo].[AEX41];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "SELECT * FROM [Quartz].[dbo].[B36] WHERE Id = @Id";
+                    var sql = "SELECT * FROM [Quartz2].[dbo].[B36] WHERE Id = @Id";
                     var record = await connection.QueryFirstOrDefaultAsync<B36>(sql, new { Id = id });
 
                     if (record == null)
@@ -1677,7 +1677,7 @@ FROM [Quartz].[dbo].[AEX41];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"INSERT INTO [Quartz].[dbo].[B36]
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[B36]
                     ([Grouping],[IndividualTaxPayer],[PIC],[T_startWk],
                     [T_Date],[DateSent],[T_Call],[DateRemind],[T_FinalText],
                     [DateText],[DateReceived],[Note])
@@ -1724,7 +1724,7 @@ FROM [Quartz].[dbo].[AEX41];";
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"UPDATE [Quartz].[dbo].[B36]
+                    var sql = @"UPDATE [Quartz2].[dbo].[B36]
                     SET[Grouping] = @Grouping,[IndividualTaxPayer] = @IndividualTaxPayer,
                     [PIC] = @PIC,[T_startWk] = @T_startWk,[T_Date] = @T_Date,
                     [DateSent] = @DateSent,[T_Call] = @T_Call,
@@ -1769,7 +1769,7 @@ FROM [Quartz].[dbo].[AEX41];";
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = "DELETE FROM [Quartz].[dbo].[B36] WHERE Id = @Id";
+                    var sql = "DELETE FROM [Quartz2].[dbo].[B36] WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                     if (affectedRows == 0)
@@ -1799,7 +1799,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     AuditStaff                          AS Pic         -- ★ AT21 用 AuditStaff
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -1809,7 +1809,7 @@ SELECT
     CompanyName,
     CONVERT(varchar(10), YearEnd, 103)  AS YearEnd,    -- dd/MM/yyyy
     Team                                AS Pic         -- ★ AEX41 用 Team
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = await connection.QueryAsync<B36PicSourceOption>(sql);
                 return Json(new { success = true, data = list });

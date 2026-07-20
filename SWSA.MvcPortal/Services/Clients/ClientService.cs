@@ -358,7 +358,7 @@ public class ClientService(
                 FROM (
                     SELECT Client, DateReceived, 
                            ROW_NUMBER() OVER (PARTITION BY Client ORDER BY Id DESC) as rn 
-                    FROM [Quartz].[dbo].[A31A]
+                    FROM [Quartz2].[dbo].[A31A]
                     WHERE Client IS NOT NULL AND Client <> ''
                 ) t 
                 WHERE rn = 1";

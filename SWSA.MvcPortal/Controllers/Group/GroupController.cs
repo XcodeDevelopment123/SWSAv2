@@ -238,7 +238,7 @@ SELECT
     c.[Name]                 AS CompanyName,        -- ← 对应 Name
     c.[TaxIdentificationNumber] AS RegistrationNumber, -- ← 对应 TaxIdentificationNumber
     c.[YearEndMonth]         AS YearEndMonth        -- ← 对应 YearEndMonth
-FROM [Quartz].[dbo].[Clients] c
+FROM [Quartz2].[dbo].[Clients] c
 WHERE c.[GroupId] = @GroupId
 ORDER BY c.[Name] ASC;";
 

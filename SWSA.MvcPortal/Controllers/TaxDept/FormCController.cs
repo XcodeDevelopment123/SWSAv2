@@ -57,7 +57,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[FormC] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[FormC] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<FormCModel>(sql);
 
                 return Json(new { success = true, data = records });
@@ -74,7 +74,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[FormC] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[FormC] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<FormCModel>(sql, new { Id = id });
 
                 if (record == null)
@@ -97,7 +97,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[FormC] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[FormC] 
                             ([YearEnd], [YearToDo], [TaxDueDate], [EstQuarterTodo], [DateMgmtAccAvailable], [StartDate], 
                              [EndDate], [NoOfDays], [PnLAnalysis], [CAnTaxCompu], [DraftFormC], 
                              [TaxPayableRM], [PenaltiesRM], [TaxCompCA], [FormC], [Sent], [Received], 
@@ -129,7 +129,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[FormC] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[FormC] SET 
                             [YearEnd] = @YearEnd, [YearToDo] = @YearToDo,
                             [TaxDueDate] = @TaxDueDate, [EstQuarterTodo] = @EstQuarterTodo, 
                             [DateMgmtAccAvailable] = @DateMgmtAccAvailable, [StartDate] = @StartDate, 
@@ -162,7 +162,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[FormC] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[FormC] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -184,7 +184,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX2] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX2] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<TX2Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -201,7 +201,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX2] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX2] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<TX2Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -224,7 +224,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[TX2] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[TX2] 
                             ([CompanyName], [Activity], [AEXOT], [RAKC], [BTM], 
                              [YearEnd], [TaxDueDate], [EstMthTodo], [TransferToWIPTX3], 
                              [Revenue], [NetProfit], [StartDate], [TotalPercent], 
@@ -254,7 +254,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[TX2] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[TX2] SET 
                             [CompanyName] = @CompanyName, [Activity] = @Activity, 
                             [AEXOT] = @AEXOT, [RAKC] = @RAKC, [BTM] = @BTM, 
                             [YearEnd] = @YearEnd, [TaxDueDate] = @TaxDueDate, 
@@ -283,7 +283,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[TX2] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[TX2] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -304,7 +304,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT Id, CompanyName, DocInwardsDate FROM [Quartz].[dbo].[AT31] ORDER BY CompanyName";
+                var sql = "SELECT Id, CompanyName, DocInwardsDate FROM [Quartz2].[dbo].[AT31] ORDER BY CompanyName";
                 var records = await connection.QueryAsync<dynamic>(sql);
 
                 return Json(new { success = true, data = records });
@@ -323,7 +323,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX3] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX3] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<TX3Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -340,7 +340,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX3] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX3] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<TX3Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -363,7 +363,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[TX3] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[TX3] 
                     ([CompanyName], [Active], [AEXOT], [RAKC], [BTM], 
                      [YearEnd], [TaxDueDate], [StartDate], [EndDate], [NoOfDays], 
                      [Completed], [PnLAnalysis], [CaTaxCompu], [DraftForm], 
@@ -397,7 +397,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[TX3] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[TX3] SET 
                     [CompanyName] = @CompanyName, [Active] = @Active, 
                     [AEXOT] = @AEXOT, [RAKC] = @RAKC, [BTM] = @BTM, 
                     [YearEnd] = @YearEnd, [TaxDueDate] = @TaxDueDate, 
@@ -430,7 +430,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[TX3] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[TX3] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -452,7 +452,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX4] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX4] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<TX4Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -469,7 +469,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX4] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX4] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<TX4Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -494,7 +494,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 1. 先插入 TX4 记录
-                var sql = @"INSERT INTO [Quartz].[dbo].[TX4] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[TX4] 
                     ([CompanyName], [YearEnd], [SSMsubmissionDate], [DateSOff], 
                      [DateReceiveFrSecDept], [IRBpenalties], [AppealDate], [PaymentDate], 
                      [NoteRemark], [AccWkDone], [FormCsubmitDate], [FormEsubmitDate], 
@@ -534,7 +534,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 1. 更新 TX4 记录
-                var sql = @"UPDATE [Quartz].[dbo].[TX4] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[TX4] SET 
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd, 
                     [SSMsubmissionDate] = @SSMsubmissionDate, [DateSOff] = @DateSOff, 
                     [DateReceiveFrSecDept] = @DateReceiveFrSecDept, [IRBpenalties] = @IRBpenalties, 
@@ -569,7 +569,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[TX4] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[TX4] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -601,7 +601,7 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
         //    Id,
         //    [Name]           AS CompanyName,
         //    YearEndMonth
-        //FROM [Quartz].[dbo].[Clients]
+        //FROM [Quartz2].[dbo].[Clients]
         //ORDER BY [Name];";
 
         //                var list = await connection.QueryAsync<ClientOptionForTx4>(sql);
@@ -633,14 +633,14 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
             var incorpDate = tx4Model.IncorporationDate ?? string.Empty;    // 对应 S16.[IncorpDate]
 
             // 1) 判断 S16 是否已有该公司
-            var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[S16] WHERE CompanyName = @CompanyName";
+            var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[S16] WHERE CompanyName = @CompanyName";
             var exists = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName });
 
             if (exists > 0)
             {
                 // 2) 已存在 → 更新
                 var updateSql = @"
-UPDATE [Quartz].[dbo].[S16]
+UPDATE [Quartz2].[dbo].[S16]
 SET
     [SSMsubmitDate]     = @SSMsubmitDate,
     [SSMstrikeoffDate]  = @SSMstrikeoffDate,
@@ -690,7 +690,7 @@ WHERE CompanyName = @CompanyName;";
             {
                 // 3) 不存在 → 新增一条记录
                 var insertSql = @"
-INSERT INTO [Quartz].[dbo].[S16]
+INSERT INTO [Quartz2].[dbo].[S16]
     ([Ref],
      [CompanyName],
      [CompanyNo],
@@ -738,7 +738,7 @@ VALUES
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX5] ORDER BY Id DESC"; 
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX5] ORDER BY Id DESC"; 
                 var records = await connection.QueryAsync<TX5>(sql);
                 return Json(new { success = true, data = records });
             }
@@ -754,7 +754,7 @@ VALUES
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[TX5] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[TX5] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<TX5>(sql, new { Id = id });
 
                 if (record == null)
@@ -778,7 +778,7 @@ VALUES
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"
-                INSERT INTO [Quartz].[dbo].[TX5] 
+                INSERT INTO [Quartz2].[dbo].[TX5] 
                 (
                     [CompanyName], [TaxReferenceNo], [YearEnd], [CompanyType], [CompanyStatus], [YearToDo], [PersonInCharge], [PastYearTaxEstimate],
                     [Cp204OneMonthBeforeYE], [Cp204ReminderDate], [Cp204ClientResponse], [Cp204CurrentETP], [Cp204DateSubmitIRB],
@@ -817,7 +817,7 @@ VALUES
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"
-                UPDATE [Quartz].[dbo].[TX5] SET 
+                UPDATE [Quartz2].[dbo].[TX5] SET 
                     [CompanyName] = @CompanyName, 
                     [TaxReferenceNo] = @TaxReferenceNo, 
                     [YearEnd] = @YearEnd, 
@@ -871,7 +871,7 @@ VALUES
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[TX5] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[TX5] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)

@@ -76,7 +76,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S16] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S16] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<S16Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -93,7 +93,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S16] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S16] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<S16Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -116,7 +116,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[S16] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[S16] 
                             ([Ref], [CompanyName], [CompanyNo], [IncorpDate], [YearEnd], 
                              [StartDate], [CompleteDate], [DoneBy], [CompletedDate], 
                              [PenaltiesRM], [RevisedPenalties], [AppealDate], [PaymentDate], 
@@ -148,7 +148,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[S16] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[S16] SET 
                             [Ref] = @Ref, [CompanyName] = @CompanyName, [CompanyNo] = @CompanyNo, 
                             [IncorpDate] = @IncorpDate, [YearEnd] = @YearEnd, 
                             [StartDate] = @StartDate, [CompleteDate] = @CompleteDate, 
@@ -180,7 +180,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[S16] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[S16] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -203,7 +203,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
                                    DatePassToTaxDept, FormCSubmitDate 
-                            FROM [Quartz].[dbo].[S16] 
+                            FROM [Quartz2].[dbo].[S16] 
                             ORDER BY CompanyName";
                 var records = await connection.QueryAsync<S16CompanyModel>(sql);
 
@@ -241,7 +241,7 @@ SELECT
     CONVERT(varchar(10), DateSOff, 103)   AS SsmStrikeOffDate,    -- dd/MM/yyyy
     CONVERT(varchar(10), DateReceiveFrSecDept, 103) AS DatePassToTaxDept,   -- dd/MM/yyyy
     CONVERT(varchar(10), FormCsubmitDate, 103) AS FormCSubmissionDate      -- dd/MM/yyyy
-FROM [Quartz].[dbo].[TX4]
+FROM [Quartz2].[dbo].[TX4]
 ORDER BY CompanyName, YearEnd DESC;
 ";
 
@@ -265,7 +265,7 @@ ORDER BY CompanyName, YearEnd DESC;
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S13A] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S13A] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<S13A>(sql);
 
                 return Json(new { success = true, data = records });
@@ -282,7 +282,7 @@ ORDER BY CompanyName, YearEnd DESC;
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S13A] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S13A] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<S13A>(sql, new { Id = id });
 
                 if (record == null)
@@ -305,7 +305,7 @@ ORDER BY CompanyName, YearEnd DESC;
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[S13A]
+                var sql = @"INSERT INTO [Quartz2].[dbo].[S13A]
             ([Grouping], [Referral], [SecFileNo], [CompanyName], [CompanyType], 
              [YearEnd], [CompanyStatus], [ActiveCoActivitySize], [YEtoDo], 
              [ACCmthTodo], [AuditMthTodo], [YrMthDueDate], [Circulation], 
@@ -349,7 +349,7 @@ ORDER BY CompanyName, YearEnd DESC;
                 using var connection = new SqlConnection(_connectionString);
                 await connection.OpenAsync();
 
-                var sql = @"UPDATE [Quartz].[dbo].[S13A] SET
+                var sql = @"UPDATE [Quartz2].[dbo].[S13A] SET
             [Grouping] = @Grouping,
             [Referral] = @Referral,
             [SecFileNo] = @SecFileNo,
@@ -390,7 +390,7 @@ ORDER BY CompanyName, YearEnd DESC;
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[S13A] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[S13A] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -419,7 +419,7 @@ SELECT
     CONVERT(varchar(50), YearEnd, 113)       AS YearEnd,        -- 先随便转成字串
     CONVERT(varchar(50), First18mthdue, 113) AS First18MthsDue,
     CONVERT(varchar(50), AFSdueDate, 113)    AS AfsDueDate
-FROM [Quartz].[dbo].[AT21]
+FROM [Quartz2].[dbo].[AT21]
 
 UNION ALL
 
@@ -430,7 +430,7 @@ SELECT
     CONVERT(varchar(50), YearEnd, 113)       AS YearEnd,
     CONVERT(varchar(50), First18mthsDue, 113)AS First18MthsDue,
     CONVERT(varchar(50), AuditedAccDueDate, 113) AS AfsDueDate
-FROM [Quartz].[dbo].[AEX41];";
+FROM [Quartz2].[dbo].[AEX41];";
 
                 var list = (await connection.QueryAsync<S13ASourceOption>(sql)).ToList();
 
@@ -502,12 +502,12 @@ DECLARE @Action nvarchar(10);
 
 IF EXISTS (
     SELECT 1
-    FROM [Quartz].[dbo].[S14B]
+    FROM [Quartz2].[dbo].[S14B]
     WHERE FileNo = @FileNo
       AND YearEnd = @YearEnd
 )
 BEGIN
-    UPDATE [Quartz].[dbo].[S14B]
+    UPDATE [Quartz2].[dbo].[S14B]
     SET CompanyName   = @CompanyName,
         CompanyNo     = CASE WHEN CompanyNo IS NULL OR CompanyNo = '' THEN @CompanyNo ELSE CompanyNo END,
         IncorpDate    = CASE WHEN (IncorpDate IS NULL OR IncorpDate = '') AND @IncorpDate <> '' THEN @IncorpDate ELSE IncorpDate END,
@@ -522,7 +522,7 @@ BEGIN
 END
 ELSE
 BEGIN
-    INSERT INTO [Quartz].[dbo].[S14B]
+    INSERT INTO [Quartz2].[dbo].[S14B]
         ([FileNo],
          [CompanyName],
          [CompanyNo],
@@ -608,7 +608,7 @@ SELECT @Action;
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S14A] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S14A] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<S14A>(sql);
 
                 return Json(new { success = true, data = records });
@@ -625,7 +625,7 @@ SELECT @Action;
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S14A] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S14A] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<S14A>(sql, new { Id = id });
 
                 if (record == null)
@@ -648,7 +648,7 @@ SELECT @Action;
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[S14A]
+                var sql = @"INSERT INTO [Quartz2].[dbo].[S14A]
 ([FileNo], [CompanyName], [CompanyNo], [IncorpDate], [CompanyStatus],
  [AnniversaryDate], [ARdueDate], [ReminderDate], [DateOfAR],
  [ARsubmitDate], [DateSendtoClient], [DateReturned], [JobCompleted],
@@ -681,7 +681,7 @@ SELECT CAST(SCOPE_IDENTITY() AS int);";
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[S14A] SET
+                var sql = @"UPDATE [Quartz2].[dbo].[S14A] SET
  [FileNo] = @FileNo,
  [CompanyName] = @CompanyName,
  [CompanyNo] = @CompanyNo,
@@ -718,7 +718,7 @@ WHERE Id = @Id";
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[S14A] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[S14A] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -741,7 +741,7 @@ WHERE Id = @Id";
         //        using var connection = new SqlConnection(_connectionString);
         //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
         //                           DatePassToTaxDept, FormCSubmitDate 
-        //                    FROM [Quartz].[dbo].[S13A] 
+        //                    FROM [Quartz2].[dbo].[S13A] 
         //                    ORDER BY CompanyName";
         //        var records = await connection.QueryAsync<S13A>(sql);
 
@@ -761,7 +761,7 @@ WHERE Id = @Id";
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S14B] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S14B] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<S14B>(sql);
 
                 return Json(new { success = true, data = records });
@@ -778,7 +778,7 @@ WHERE Id = @Id";
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S14B] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S14B] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<S14B>(sql, new { Id = id });
 
                 if (record == null)
@@ -801,7 +801,7 @@ WHERE Id = @Id";
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[S14B]
+                var sql = @"INSERT INTO [Quartz2].[dbo].[S14B]
 		([FileNo], [CompanyName], [CompanyNo], [IncorpDate], [YearEnd],
  		[CompanyStatus], [ReportType], [AuditExemption],
  		[YrMthdueDate], [CirculationAFSduedate],
@@ -834,7 +834,7 @@ WHERE Id = @Id";
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[S14B] SET
+                var sql = @"UPDATE [Quartz2].[dbo].[S14B] SET
  		[FileNo] = @FileNo,
  		[CompanyName] = @CompanyName,
  		[CompanyNo] = @CompanyNo,
@@ -871,7 +871,7 @@ WHERE Id = @Id";
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[S14B] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[S14B] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -898,7 +898,7 @@ SELECT
     'AT31' AS SourceType,
     CompanyName,
     CONVERT(varchar(50), DateReceiveBack, 113) AS MbrsReceivedDate
-FROM [Quartz].[dbo].[AT31];
+FROM [Quartz2].[dbo].[AT31];
 ";
 
                 var list = (await connection.QueryAsync<S14BMbrsSourceOption>(sql)).ToList();
@@ -933,7 +933,7 @@ FROM [Quartz].[dbo].[AT31];
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S15] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S15] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<S15>(sql);
 
                 return Json(new { success = true, data = records });
@@ -950,7 +950,7 @@ FROM [Quartz].[dbo].[AT31];
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[S15] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[S15] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<S15>(sql, new { Id = id });
 
                 if (record == null)
@@ -973,7 +973,7 @@ FROM [Quartz].[dbo].[AT31];
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[S15]
+                var sql = @"INSERT INTO [Quartz2].[dbo].[S15]
                 ([SecFileNo], [CompanyName], [YearEnd], [IncorpDate], [Co],
                 [CompanyStatus], [ActiveCoActivitySize], [SSMextensionDateforAcc],
                 [ADdueDate], [ADsubmitDate], [DateSendtoClient], [DateReturned], [JobCompleted])
@@ -1001,7 +1001,7 @@ FROM [Quartz].[dbo].[AT31];
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[S15] SET
+                var sql = @"UPDATE [Quartz2].[dbo].[S15] SET
                 [SecFileNo] = @SecFileNo,
                 [CompanyName] = @CompanyName,
                 [YearEnd] = @YearEnd,
@@ -1037,7 +1037,7 @@ FROM [Quartz].[dbo].[AT31];
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[S15] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[S15] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1060,7 +1060,7 @@ FROM [Quartz].[dbo].[AT31];
         //        using var connection = new SqlConnection(_connectionString);
         //        var sql = @"SELECT Id, CompanyName, YearEnd, SSMsubmitDate, SSMstrikeoffDate, 
         //                           DatePassToTaxDept, FormCSubmitDate 
-        //                    FROM [Quartz].[dbo].[S13A] 
+        //                    FROM [Quartz2].[dbo].[S13A] 
         //                    ORDER BY CompanyName";
         //        var records = await connection.QueryAsync<S13A>(sql);
 

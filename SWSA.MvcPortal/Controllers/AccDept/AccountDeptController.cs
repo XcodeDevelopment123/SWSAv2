@@ -103,7 +103,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP21] b
+                    FROM [Quartz2].[dbo].[BP21] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     ORDER BY b.Id DESC";
@@ -145,7 +145,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP21] b
+                    FROM [Quartz2].[dbo].[BP21] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     WHERE b.Id = @Id";
@@ -180,7 +180,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP21 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP21] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP21] 
             ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
              [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
              [Description], [ServiceType], [CoStatus], [ActiveCoActivitySize],
@@ -240,11 +240,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP21] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP21] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP21Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP21 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP21] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP21] SET 
             [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
             [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
             [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -299,13 +299,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing DateDocIn to A31B for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFrAccDept 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                          SET [DateDocFr] = @DateDocIn 
                          WHERE Clients = @CompanyName";
 
@@ -320,7 +320,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP21')";
@@ -349,7 +349,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP21] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP21] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -387,7 +387,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP22] b
+                    FROM [Quartz2].[dbo].[BP22] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     ORDER BY b.Id DESC";
@@ -429,7 +429,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP22] b
+                    FROM [Quartz2].[dbo].[BP22] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     WHERE b.Id = @Id";
@@ -464,7 +464,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP22 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP22] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP22] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
                      [Description], [ServicesType], [ActiveCoActivitySize], [YEtodo],
@@ -524,11 +524,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP22] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP22] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP22Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP22 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP22] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP22] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -582,13 +582,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -603,7 +603,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP22')";
@@ -632,7 +632,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP22] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP22] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -670,7 +670,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP23] b
+                    FROM [Quartz2].[dbo].[BP23] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     ORDER BY b.Id DESC";
@@ -712,7 +712,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Poor' 
                                ELSE '' 
                            END AS CreditRating
-                    FROM [Quartz].[dbo].[BP23] b
+                    FROM [Quartz2].[dbo].[BP23] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     LEFT JOIN [dbo].[BaseCompanies] c ON c.Id = cl.Id
                     WHERE b.Id = @Id";
@@ -747,7 +747,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP23 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP23] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP23] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [RegistrationDate], [CO], [Enumber], [TINnumber], [Login],
                      [Password], [Code], [Description], [JobService], [ActiveCoActivitySize],
@@ -805,11 +805,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP23] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP23] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP23Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP23 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP23] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP23] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [RegistrationDate] = @RegistrationDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -863,13 +863,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -884,7 +884,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP23')";
@@ -914,7 +914,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP23] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP23] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -943,7 +943,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP24] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP24] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP24Model>(sql);
@@ -973,7 +973,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP24] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP24] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP24Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1005,7 +1005,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP24 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP24] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP24] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [ServicesType], [ActiveCoActivitSize], [YEtodo], [DateDocIn], 
                      [MthTodo], [Staff], [AllocateToWkSch], [Completed])
@@ -1061,11 +1061,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP24] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP24] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP24Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP24 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP24] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP24] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [ServicesType] = @ServicesType, [ActiveCoActivitSize] = @ActiveCoActivitSize,
@@ -1116,13 +1116,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -1137,7 +1137,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP24')";
@@ -1167,7 +1167,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP24] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP24] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1196,7 +1196,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP25] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP25] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP25Model>(sql);
@@ -1226,7 +1226,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP25] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP25] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP25Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1258,7 +1258,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP25 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP25] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP25] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [Enumber], [TinNumber], [Login], [Password], [Code],
                      [Description], [JobServices], [YEtodo], [DateDocIn], 
@@ -1316,11 +1316,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP25] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP25] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP25Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP25 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP25] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP25] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [Enumber] = @Enumber, [TinNumber] = @TinNumber, [Login] = @Login,
@@ -1372,13 +1372,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -1393,7 +1393,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP25')";
@@ -1423,7 +1423,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP25] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP25] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1452,7 +1452,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP26] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP26] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP26Model>(sql);
@@ -1482,7 +1482,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP26] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP26] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP26Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1514,7 +1514,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP26 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP26] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP26] 
                     ([Grouping], [Refferal], [FileNo], [CompanyName], [YearEnd],
                      [Enumber], [TinNumber], [Login], [Password], [Code],
                      [Description], [JobServices], [YEtodo], [DateDocIn], 
@@ -1572,11 +1572,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP26] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP26] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP26Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP26 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP26] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP26] SET 
                     [Grouping] = @Grouping, [Refferal] = @Refferal, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [Enumber] = @Enumber, [TinNumber] = @TinNumber, [Login] = @Login,
@@ -1629,13 +1629,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -1650,7 +1650,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP26')";
@@ -1679,7 +1679,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP26] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP26] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1708,7 +1708,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP31] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP31] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP31Model>(sql);
@@ -1738,7 +1738,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP31] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP31] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP31Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1770,7 +1770,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 插入 BP31 记录
-                    var sql = @"INSERT INTO [Quartz].[dbo].[BP31] 
+                    var sql = @"INSERT INTO [Quartz2].[dbo].[BP31] 
                     ([Grouping], [Referral], [FileNo], [CompanyName], [YearEnd],
                      [IncorpDate], [CO], [Enumber], [TINnumber], [Code],
                      [Description], [ServicesType], [CoStatus], [ActiveCoActivitySize],
@@ -1828,11 +1828,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 try
                 {
                     // 1. 先获取旧的记录来检查 DateDocIn 字段是否变化
-                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz].[dbo].[BP31] WHERE Id = @Id";
+                    var oldRecordSql = "SELECT DateDocIn, CompanyName FROM [Quartz2].[dbo].[BP31] WHERE Id = @Id";
                     var oldRecord = await connection.QueryFirstOrDefaultAsync<BP31Model>(oldRecordSql, new { Id = model.Id }, transaction);
 
                     // 2. 更新 BP31 记录
-                    var sql = @"UPDATE [Quartz].[dbo].[BP31] SET 
+                    var sql = @"UPDATE [Quartz2].[dbo].[BP31] SET 
                     [Grouping] = @Grouping, [Referral] = @Referral, [FileNo] = @FileNo,
                     [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
                     [IncorpDate] = @IncorpDate, [CO] = @CO, [Enumber] = @Enumber,
@@ -1886,13 +1886,13 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 Console.WriteLine($"Syncing BP22 DateDocIn to A31B DateDocFr for company: {companyName}, Date: {dateDocIn}");
 
                 // 首先检查 A31B 表中是否存在对应公司的记录
-                var checkSql = "SELECT COUNT(*) FROM [Quartz].[dbo].[A31B] WHERE Clients = @CompanyName";
+                var checkSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[A31B] WHERE Clients = @CompanyName";
                 var recordCount = await connection.ExecuteScalarAsync<int>(checkSql, new { CompanyName = companyName }, transaction);
 
                 if (recordCount > 0)
                 {
                     // 如果存在记录，则更新 DateDocFr 字段
-                    var updateSql = @"UPDATE [Quartz].[dbo].[A31B] 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[A31B] 
                              SET [DateDocFr] = @DateDocIn 
                              WHERE Clients = @CompanyName";
 
@@ -1907,7 +1907,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 else
                 {
                     // 如果不存在记录，则创建新的 A31B 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[A31B] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[A31B] 
                             ([Clients], [DateDocFr], [CoStatus], [Remark])
                             VALUES 
                             (@CompanyName, @DateDocIn, 'Active', 'Auto-created from BP31')";
@@ -1937,7 +1937,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP31] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP31] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1975,7 +1975,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Individual' 
                                ELSE '' 
                            END AS JobType
-                    FROM [Quartz].[dbo].[BP32] b
+                    FROM [Quartz2].[dbo].[BP32] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     ORDER BY b.Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
@@ -2016,7 +2016,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                                WHEN 3 THEN 'Individual' 
                                ELSE '' 
                            END AS JobType
-                    FROM [Quartz].[dbo].[BP32] b
+                    FROM [Quartz2].[dbo].[BP32] b
                     LEFT JOIN [dbo].[Clients] cl ON cl.Name = b.CompanyName
                     WHERE b.Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP32Model>(sql, new { Id = id });
@@ -2041,7 +2041,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP32 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP32] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[BP32] 
             ([FileNo], [CompanyName], [YearEnd], [JobServices], [CoStatus],
              [ActiveCoActivitySize], [YEtodo], [MthTodo], [DocReceivedDate], [TaxARdueDate],
              [Staff], [StartDate], [EndDate], [TimeTaken], [DatePassToAudit], [DateTaxSubmited],
@@ -2077,7 +2077,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP32] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[BP32] SET 
             [FileNo] = @FileNo, [CompanyName] = @CompanyName, [YearEnd] = @YearEnd,
             [JobServices] = @JobServices, [CoStatus] = @CoStatus,
             [ActiveCoActivitySize] = @ActiveCoActivitySize, [YEtodo] = @YEtodo,
@@ -2113,7 +2113,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP32] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP32] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -2146,15 +2146,15 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 var checkColumnSql = @"
                     IF NOT EXISTS (
                         SELECT * FROM sys.columns 
-                        WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP33]') 
+                        WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP33]') 
                         AND name = 'InvoiceAmount'
                     )
                     BEGIN
-                        ALTER TABLE [Quartz].[dbo].[BP33] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
+                        ALTER TABLE [Quartz2].[dbo].[BP33] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
                     END";
                 await connection.ExecuteAsync(checkColumnSql);
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP33] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP33] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP33Model>(sql);
@@ -2184,7 +2184,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP33] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP33] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP33Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -2207,7 +2207,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP33 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP33] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[BP33] 
                     ([Item], [Grouping], [CompanyName], [DraftTaxCompleted], [ReviewTax],
                      [FinalTax], [TaxComFinalSignByClient], [AmountofTaxPay], [EFileDraft],
                      [EFileFinal], [TaxReferennceNo], [Login], [Password], [TypeofForm],
@@ -2237,7 +2237,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP33] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[BP33] SET 
                     [Item] = @Item, [Grouping] = @Grouping, [CompanyName] = @CompanyName,
                     [DraftTaxCompleted] = @DraftTaxCompleted, [ReviewTax] = @ReviewTax,
                     [FinalTax] = @FinalTax, [TaxComFinalSignByClient] = @TaxComFinalSignByClient,
@@ -2268,7 +2268,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP33] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP33] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -2299,20 +2299,20 @@ namespace SWSA.MvcPortal.Controllers.AccDept
 
                 // Auto-create new columns if they do not exist
                 var checkColumnsSql = @"
-                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'ReviewTaxComplete')
-                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [ReviewTaxComplete] NVARCHAR(MAX) NULL;
-                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'FinalTaxComplete')
-                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [FinalTaxComplete] NVARCHAR(MAX) NULL;
-                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'AmountTaxPayable')
-                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [AmountTaxPayable] NVARCHAR(MAX) NULL;
-                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'InvoiceDate')
-                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [InvoiceDate] NVARCHAR(MAX) NULL;
-                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz].[dbo].[BP34]') AND name = 'InvoiceAmount')
-                        ALTER TABLE [Quartz].[dbo].[BP34] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP34]') AND name = 'ReviewTaxComplete')
+                        ALTER TABLE [Quartz2].[dbo].[BP34] ADD [ReviewTaxComplete] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP34]') AND name = 'FinalTaxComplete')
+                        ALTER TABLE [Quartz2].[dbo].[BP34] ADD [FinalTaxComplete] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP34]') AND name = 'AmountTaxPayable')
+                        ALTER TABLE [Quartz2].[dbo].[BP34] ADD [AmountTaxPayable] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP34]') AND name = 'InvoiceDate')
+                        ALTER TABLE [Quartz2].[dbo].[BP34] ADD [InvoiceDate] NVARCHAR(MAX) NULL;
+                    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[BP34]') AND name = 'InvoiceAmount')
+                        ALTER TABLE [Quartz2].[dbo].[BP34] ADD [InvoiceAmount] NVARCHAR(MAX) NULL;
                 ";
                 await connection.ExecuteAsync(checkColumnsSql);
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP34] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP34] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<BP34Model>(sql);
@@ -2342,7 +2342,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[BP34] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[BP34] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<BP34Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -2365,7 +2365,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             {
                 Console.WriteLine("Creating new BP34 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[BP34] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[BP34] 
                     ([Item], [Grouping], [CompanyName], [DraftTaxCompleted], [ReviewTax],
                      [FinalTax], [TaxComFinalSignbyClient], [AmountTaxPay], [EFileDraft],
                      [EFileFinal], [TaxRefferanceNo], [Login], [Password], [TypeofForm],
@@ -2397,7 +2397,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[BP34] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[BP34] SET 
                     [Item] = @Item, [Grouping] = @Grouping, [CompanyName] = @CompanyName,
                     [DraftTaxCompleted] = @DraftTaxCompleted, [ReviewTax] = @ReviewTax,
                     [FinalTax] = @FinalTax, [TaxComFinalSignbyClient] = @TaxComFinalSignbyClient,
@@ -2430,7 +2430,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[BP34] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[BP34] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)

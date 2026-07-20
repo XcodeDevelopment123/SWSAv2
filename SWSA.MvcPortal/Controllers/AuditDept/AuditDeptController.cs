@@ -104,7 +104,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT11] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT11] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT11Model>(sql);
@@ -134,7 +134,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT11] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT11] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT11Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -157,7 +157,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine("Creating new AT11 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT11] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT11] 
             ([CompanyName], [Activity], [WhichDB], [YEtodo], [QuarterTodo], [PIC], [Status],
              [Revenue], [ProfitLoss], [AuditFee], [DateBilled], [StartDate], [AsAt], [NoOfDays],
              [TotalFieldWkDays], [ResultOverUnder], [AccSetup], [AcSummary], [AuditPlanning],
@@ -197,7 +197,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[AT11] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT11] SET 
             [CompanyName] = @CompanyName, [Activity] = @Activity, [WhichDB] = @WhichDB,
             [YEtodo] = @YEtodo, [QuarterTodo] = @QuarterTodo, [PIC] = @PIC, [Status] = @Status,
             [Revenue] = @Revenue, [ProfitLoss] = @ProfitLoss, [AuditFee] = @AuditFee,
@@ -238,7 +238,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT11] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT11] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -267,7 +267,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT21] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT21] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT21Model>(sql);
@@ -297,7 +297,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT21] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT21] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT21Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -320,7 +320,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AT21 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT21] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT21] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -357,7 +357,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 // 更详细的日志记录
                 Console.WriteLine($"Model data: {System.Text.Json.JsonSerializer.Serialize(model)}");
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT21] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT21] 
         ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
          [YearToDo], [CompanyStatus], [AuditStatus], [MovetoAEX], [MovetoBacklog],
          [First18mthdue], [AFSdueDate], [CoSec], [AuditStaff], [DateDocIn],
@@ -407,10 +407,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 DateDocIn 是否变化
-                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AT21] WHERE Id = @Id";
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz2].[dbo].[AT21] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT21Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AT21] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT21] SET 
         [Grouping] = @Grouping, 
         [CompanyName] = @CompanyName, 
         [QuartertoAudit] = @QuartertoAudit, 
@@ -469,7 +469,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                 ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
                  [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
                  [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -520,7 +520,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT22] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT22] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT22Model>(sql);
@@ -550,7 +550,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT22] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT22] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT22Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -576,7 +576,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 Console.WriteLine("Creating new AT22 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT22] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT22] 
             ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
              [YearToDo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningFirm],
              [MoveToActiveAexSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
@@ -616,10 +616,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 DateDocIn 是否变化
-                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AT22] WHERE Id = @Id";
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz2].[dbo].[AT22] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT22Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AT22] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT22] SET 
             [Grouping] = @Grouping, 
             [CompanyName] = @CompanyName, 
             [QuarterToDoAudit] = @QuarterToDoAudit, 
@@ -665,7 +665,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                 ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
                  [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
                  [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -709,7 +709,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT22] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT22] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -738,7 +738,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT31] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT31] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT31Model>(sql);
@@ -768,7 +768,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT31] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT31] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT31Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -794,7 +794,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 Console.WriteLine("Creating new AT31 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT31] 
             ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
              [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
              [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
@@ -833,7 +833,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"UPDATE [Quartz].[dbo].[AT31] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT31] SET 
             [CompanyName] = @CompanyName, [Activity] = @Activity, [YEtoDo] = @YEtoDo,
             [QuartertoDo] = @QuartertoDo, [PIC] = @PIC, [MthDue] = @MthDue, [Status] = @Status,
             [DocInwardsDate] = @DocInwardsDate, [Revenue] = @Revenue, [Profit] = @Profit,
@@ -870,7 +870,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT31] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT31] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -899,7 +899,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT32] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT32] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT32Model>(sql);
@@ -929,7 +929,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT32] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT32] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT32Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -955,7 +955,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 Console.WriteLine("Creating new AT32 record...");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT32] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT32] 
             ([CompanyName], [Activity], [YeartoDo], [Quartertodo], [PIC], [Status],
              [AuditFee], [DateBilled], [StartDate], [EndDate], [NoOfDays], [TotalFieldwkDays],
              [FinalResultOverUnder], [AccSetup], [Assummary], [AuditPlanning], [AuditExecution],
@@ -1002,10 +1002,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 // 先获取旧的记录来检查字段是否变化
                 var oldRecordSql = @"SELECT StartDate, EndDate, NoOfDays, TotalPercent, ReviewDateSent, KKdateSent 
-                           FROM [Quartz].[dbo].[AT32] WHERE Id = @Id";
+                           FROM [Quartz2].[dbo].[AT32] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT32Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AT32] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT32] SET 
             [CompanyName] = @CompanyName, [Activity] = @Activity, [YeartoDo] = @YeartoDo,
             [Quartertodo] = @Quartertodo, [PIC] = @PIC, [Status] = @Status, [AuditFee] = @AuditFee,
             [DateBilled] = @DateBilled, [StartDate] = @StartDate, [EndDate] = @EndDate,
@@ -1052,7 +1052,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT31] 
         ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
          [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
@@ -1126,7 +1126,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT32] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT32] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -1155,7 +1155,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT33] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT33] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT33Model>(sql);
@@ -1199,7 +1199,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT33] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT33Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1226,7 +1226,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine("Creating new AT33 record...");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT33] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT33] 
         ([CompanyName], [YearEnd], [YEtodo], [PIC], [Active], [AEX], 
          [AuditExemption], [DateReviewed], [DateSentToKK], [SigningFirm], 
          [DateofAFS], [DateofDirectorsRept], [MBRSgenerated], [MBRSdateend], [Remark])
@@ -1272,10 +1272,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 MBRSdateend 是否变化
-                var oldRecordSql = "SELECT MBRSdateend FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
+                var oldRecordSql = "SELECT MBRSdateend FROM [Quartz2].[dbo].[AT33] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT33Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AT33] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT33] SET 
         [CompanyName] = @CompanyName, 
         [YearEnd] = @YearEnd, 
         [YEtodo] = @YEtodo, 
@@ -1328,7 +1328,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT31] 
                 ([CompanyName], [Activity], [YEtoDo], [QuartertoDo], [PIC], [MthDue], [Status],
                  [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate],
                  [EndDate], [DaysDone], [DonePercent], [Completed], [DateSent], [DateSent1_6],
@@ -1404,7 +1404,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AT33 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT33] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT33] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -1440,7 +1440,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT34] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT34] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AT34Model>(sql);
@@ -1470,7 +1470,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AT34] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AT34] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AT34Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1497,7 +1497,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine("Creating new AT34 record...");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AT34] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AT34] 
         ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
          [DateSent], [FlwUpDates], [First18mthDate], [DateReceived], [CommofOathsDate])
         VALUES 
@@ -1541,10 +1541,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 DateSent 和 DateReceived 是否变化
-                var oldRecordSql = "SELECT DateSent, DateReceived FROM [Quartz].[dbo].[AT34] WHERE Id = @Id";
+                var oldRecordSql = "SELECT DateSent, DateReceived FROM [Quartz2].[dbo].[AT34] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AT34Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AT34] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AT34] SET 
         [CompanyName] = @CompanyName, 
         [YEtodo] = @YEtodo, 
         [PIC] = @PIC, 
@@ -1599,12 +1599,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 首先检查是否已存在相同公司名的 AT31 记录
-                var checkSql = "SELECT Id FROM [Quartz].[dbo].[AT31] WHERE CompanyName = @CompanyName";
+                var checkSql = "SELECT Id FROM [Quartz2].[dbo].[AT31] WHERE CompanyName = @CompanyName";
                 var existingId = await connection.ExecuteScalarAsync<int?>(checkSql, new { CompanyName = at34Model.CompanyName });
 
                 if (existingId.HasValue)
                 {
-                    var updateSql = @"UPDATE [Quartz].[dbo].[AT31] SET 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[AT31] SET 
                             [DateSenttoClient] = @DateSenttoClient,
                             [DateReceiveBack] = @DateReceiveBack,
                             [Binded] = @Binded
@@ -1623,7 +1623,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 }
                 else
                 {
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[AT31] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[AT31] 
                             ([CompanyName], [DateSenttoClient], [DateReceiveBack], [DateSent1_6], [EndDate1_7], [Days1_8], [TotalReviewDays], [Metric421], [Binded])
                             VALUES 
                             (@CompanyName, @DateSenttoClient, @DateReceiveBack, NULL, NULL, NULL, NULL, NULL, @Binded)";
@@ -1656,7 +1656,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AT34 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AT34] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AT34] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -1692,7 +1692,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX12] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX12] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AEX11Model>(sql);
@@ -1722,7 +1722,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX12] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX12] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AEX11Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1749,7 +1749,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine("Creating new AEX12 record...");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX12] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AEX12] 
             ([CompanyName], [Activity], [YEtodo], [QuarterTodo], [PIC], [Status],
              [Revenue], [ProfitLoss], [AuditFee], [DateBilled], [StartDate], [AsAt],
              [NoOfDays], [ResultOverUnder], [AccSetup], [AccSummary], [AuditPlanning],
@@ -1799,7 +1799,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine($"Updating AEX12 record with ID: {model.Id}");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"UPDATE [Quartz].[dbo].[AEX12] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AEX12] SET 
             [CompanyName] = @CompanyName, 
             [Activity] = @Activity, 
             [YEtodo] = @YEtodo, 
@@ -1871,7 +1871,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AEX12 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX12] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AEX12] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -1907,7 +1907,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX41] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX41] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AEX41Model>(sql);
@@ -1937,7 +1937,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX41] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX41] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AEX41Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -1964,7 +1964,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine("Creating new AEX41 record...");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX41] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AEX41] 
         ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
          [Yeattodo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningPages],
          [MovetoActiveSch], [MovetoBacklog], [First18mthsdue], 
@@ -2014,10 +2014,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 DateDocIn 是否变化
-                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AEX41] WHERE Id = @Id";
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz2].[dbo].[AEX41] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX41Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AEX41] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AEX41] SET 
         [Grouping] = @Grouping, 
         [CompanyName] = @CompanyName, 
         [QuartertoAudit] = @QuartertoAudit, 
@@ -2077,7 +2077,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                 ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
                  [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
                  [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -2122,7 +2122,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AEX41 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX41] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AEX41] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -2158,7 +2158,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 await connection.OpenAsync();
                 Console.WriteLine("Database connection successful");
 
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX42] ORDER BY Id DESC";
                 Console.WriteLine($"Executing SQL: {sql}");
 
                 var records = await connection.QueryAsync<AEX42Model>(sql);
@@ -2188,7 +2188,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX42] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AEX42Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -2215,7 +2215,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 Console.WriteLine("Creating new AEX42 record...");
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX42] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AEX42] 
         ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
          [YearToDo], [MoveToActiveSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
         VALUES 
@@ -2259,10 +2259,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 先获取旧的记录来检查 DateDocIn 是否变化
-                var oldRecordSql = "SELECT DateDocIn FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var oldRecordSql = "SELECT DateDocIn FROM [Quartz2].[dbo].[AEX42] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX42Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AEX42] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AEX42] SET 
         [Grouping] = @Grouping, 
         [CompanyName] = @CompanyName, 
         [QuarterToDoAudit] = @QuarterToDoAudit, 
@@ -2310,7 +2310,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 using var connection = new SqlConnection(_connectionString);
 
-                var sql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                 ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
                  [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
                  [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -2354,7 +2354,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine($"Deleting AEX42 record with ID: {id}");
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX42] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AEX42] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 Console.WriteLine($"Affected rows: {affectedRows}");
@@ -2385,7 +2385,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX51] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX51] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<AEX51Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -2403,7 +2403,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX51] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX51] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AEX51Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -2427,7 +2427,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX51] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AEX51] 
         ([CompanyName], [Activity], [YEtodo], [Quartertodo], [PIC], [First18mthDue], [Status],
          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate], [EndDate],
          [DonePercent], [ResultOverUnder], [Completed], [Days1_3], [TotalFieldWorksDays1_4],
@@ -2469,10 +2469,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 // 先获取旧的记录来检查字段是否变化
                 var oldRecordSql = @"SELECT DocInwardsDate, DateSentClient, DateReceivedBack, PasstoTaxDept 
-                           FROM [Quartz].[dbo].[AEX51] WHERE Id = @Id";
+                           FROM [Quartz2].[dbo].[AEX51] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX51Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AEX51] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AEX51] SET 
         [CompanyName] = @CompanyName, 
         [Activity] = @Activity, 
         [YEtodo] = @YEtodo, 
@@ -2581,7 +2581,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 {
                     var convertedDocInwardsDate = ConvertDateFormat(aex51Model.DocInwardsDate);
 
-                    var a31aSql = @"INSERT INTO [Quartz].[dbo].[A31A] 
+                    var a31aSql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
             ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
              [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
              [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
@@ -2616,7 +2616,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 {
                     var convertedDateSentClient = ConvertDateFormat(aex51Model.DateSentClient);
 
-                    var at34Sql = @"INSERT INTO [Quartz].[dbo].[AT34] 
+                    var at34Sql = @"INSERT INTO [Quartz2].[dbo].[AT34] 
             ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
              [DateSent], [FlwUpDates], [First18mthDate], [DateReceived], [CommofOathsDate])
             VALUES 
@@ -2646,12 +2646,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 {
                     var convertedDateReceivedBack = ConvertDateFormat(aex51Model.DateReceivedBack);
 
-                    var checkAt34Sql = "SELECT Id FROM [Quartz].[dbo].[AT34] WHERE CompanyName = @CompanyName";
+                    var checkAt34Sql = "SELECT Id FROM [Quartz2].[dbo].[AT34] WHERE CompanyName = @CompanyName";
                     var existingAt34Id = await connection.ExecuteScalarAsync<int?>(checkAt34Sql, new { CompanyName = aex51Model.CompanyName });
 
                     if (existingAt34Id.HasValue)
                     {
-                        var updateAt34Sql = @"UPDATE [Quartz].[dbo].[AT34] SET 
+                        var updateAt34Sql = @"UPDATE [Quartz2].[dbo].[AT34] SET 
                         [CommofOathsDate] = @CommofOathsDate
                         WHERE CompanyName = @CompanyName";
 
@@ -2664,7 +2664,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     }
                     else
                     {
-                        var insertAt34Sql = @"INSERT INTO [Quartz].[dbo].[AT34] 
+                        var insertAt34Sql = @"INSERT INTO [Quartz2].[dbo].[AT34] 
                         ([CompanyName], [YEtodo], [PIC], [Active], [AEX], 
                          [DateSent], [FlwUpDates], [First18mthDate], [DateReceived], [CommofOathsDate])
                         VALUES 
@@ -2702,7 +2702,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                         Console.WriteLine($"Attempting to insert into TX2 with CompanyName: {aex51Model.CompanyName}, AEXOT: {convertedPassToTax}");
 
                         var tx2Sql = @"
-                INSERT INTO [Quartz].[dbo].[TX2] 
+                INSERT INTO [Quartz2].[dbo].[TX2] 
                 ([CompanyName], [Activity], [AEXOT], [RAKC], [BTM], [YearEnd], 
                  [TaxDueDate], [EstMthTodo], [TransferToWIPTX3], [Revenue], 
                  [NetProfit], [StartDate], [TotalPercent], [DocPassFrAuditDept], 
@@ -2744,7 +2744,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                         {
                             Console.WriteLine("🔄 Trying simplified TX2 insert...");
                             var simpleTx2Sql = @"
-                    INSERT INTO [Quartz].[dbo].[TX2] 
+                    INSERT INTO [Quartz2].[dbo].[TX2] 
                     ([CompanyName], [AEXOT])
                     VALUES 
                     (@CompanyName, @AEXOT)";
@@ -2781,7 +2781,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX51] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AEX51] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
@@ -2804,7 +2804,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX52] ORDER BY Id DESC";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX52] ORDER BY Id DESC";
                 var records = await connection.QueryAsync<AEX52Model>(sql);
 
                 return Json(new { success = true, data = records });
@@ -2822,7 +2822,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "SELECT * FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                var sql = "SELECT * FROM [Quartz2].[dbo].[AEX52] WHERE Id = @Id";
                 var record = await connection.QueryFirstOrDefaultAsync<AEX52Model>(sql, new { Id = id });
 
                 if (record == null)
@@ -2846,7 +2846,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                     return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 using var connection = new SqlConnection(_connectionString);
-                var sql = @"INSERT INTO [Quartz].[dbo].[AEX52] 
+                var sql = @"INSERT INTO [Quartz2].[dbo].[AEX52] 
         ([CompanyName], [Activity], [Yeartodo], [Quartertodo], [PIC], [Status],
          [AuditFee], [DateBilled], [StartDate], [EndDate], [NoofDays], [ResultOverUnder],
          [AccSetup], [AccSummary], [AuditPlanning], [AuditExecution], [AuditCompletion], [TotalPercent],
@@ -2884,10 +2884,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 // 先获取旧的记录来检查字段是否变化
                 var oldRecordSql = @"SELECT NoofDays, ResultOverUnder, ReviewDateSent 
-                           FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                           FROM [Quartz2].[dbo].[AEX52] WHERE Id = @Id";
                 var oldRecord = await connection.QueryFirstOrDefaultAsync<AEX52Model>(oldRecordSql, new { Id = model.Id });
 
-                var sql = @"UPDATE [Quartz].[dbo].[AEX52] SET 
+                var sql = @"UPDATE [Quartz2].[dbo].[AEX52] SET 
         [CompanyName] = @CompanyName, 
         [Activity] = @Activity, 
         [Yeartodo] = @Yeartodo, 
@@ -2951,13 +2951,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
 
                 // 首先检查是否已存在相同公司名的 AEX51 记录
-                var checkSql = "SELECT Id FROM [Quartz].[dbo].[AEX51] WHERE CompanyName = @CompanyName";
+                var checkSql = "SELECT Id FROM [Quartz2].[dbo].[AEX51] WHERE CompanyName = @CompanyName";
                 var existingId = await connection.ExecuteScalarAsync<int?>(checkSql, new { CompanyName = aex52Model.CompanyName });
 
                 if (existingId.HasValue)
                 {
                     // 更新已存在的 AEX51 记录
-                    var updateSql = @"UPDATE [Quartz].[dbo].[AEX51] SET 
+                    var updateSql = @"UPDATE [Quartz2].[dbo].[AEX51] SET 
                         [DonePercent] = @DonePercent,
                         [ResultOverUnder] = @ResultOverUnder,
                         [DateSent] = @DateSent,
@@ -2980,7 +2980,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 else
                 {
                     // 创建新的 AEX51 记录
-                    var insertSql = @"INSERT INTO [Quartz].[dbo].[AEX51] 
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[AEX51] 
                         ([CompanyName], [Activity], [YEtodo], [Quartertodo], [PIC], [First18mthDue], [Status],
                          [DocInwardsDate], [Revenue], [Profit], [AuditFee], [DateBilled], [StartDate], [EndDate],
                          [DonePercent], [ResultOverUnder], [Completed], [DateSent], [DateSenttoKK], [ReviewResult],
@@ -3047,7 +3047,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
-                var sql = "DELETE FROM [Quartz].[dbo].[AEX52] WHERE Id = @Id";
+                var sql = "DELETE FROM [Quartz2].[dbo].[AEX52] WHERE Id = @Id";
                 var affectedRows = await connection.ExecuteAsync(sql, new { Id = id });
 
                 if (affectedRows == 0)
