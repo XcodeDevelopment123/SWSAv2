@@ -11,8 +11,6 @@ namespace SWSA.MvcPortal.Entities.Clients;
 
 public abstract class BaseCompany : BaseClient
 {
-    [Key]
-    public int Id { get; set; }
     [SystemAuditLog("File Number")]
     public string? FileNo { get; set; } = null!; //User input
 

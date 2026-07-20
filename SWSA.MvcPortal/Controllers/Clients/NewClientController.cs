@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Models.Companies;
@@ -15,10 +15,12 @@ public class NewClientController(
 {
 
     [Route("sdnbhd")]
-    public IActionResult CreateSdnBhd()
+    public async Task<IActionResult> CreateSdnBhd()
     {
         ViewData["client-type"] = ClientType.SdnBhd;
-        return View();
+        var codes = await _msicCodeService.GetMsicCodeAsync();
+        var vm = new CompanyCreatePageVM(codes);
+        return View(vm);
     }
 
     [Route("llp")]

@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     let queryId = getQueryParam("id");
     if (queryId) {
         loadClientData(queryId);
@@ -11,8 +11,11 @@
 
     function loadClientData(id) {
         if ($("#clientId")?.val() == id) {
-            Toast_Fire(ICON_INFO, "Client already selected");
-            return;
+            const loadedName = $("#detailCompanyName").val() || $("#individualName").val();
+            if (loadedName && loadedName.trim() !== "") {
+                Toast_Fire(ICON_INFO, "Client already selected");
+                return;
+            }
         }
 
         $.ajax({
@@ -135,13 +138,33 @@
 
             $('#detailFileNo').val(data.fileNo || '');
             $('#detailCompanyName').val(data.name || '');
-            $('#detailCompanyType').val(data.companyType || '').trigger('change');
+            if (data.companyType) {
+                const companyTypeMap = {
+                    "Sdn Bhd": "SdnBhd",
+                    "LLP": "LLP",
+                    "Partnership": "Partnership",
+                    "Sole Proprietorships": "SoleProprietorships",
+                    "Bhd": "Bhd",
+                    "Enterprise": "Enterprise",
+                    "Advocate": "Advocate",
+                    "Resign": "Resign"
+                };
+                const mappedType = companyTypeMap[data.companyType] || data.companyType;
+                $('#detailCompanyType').val(mappedType).trigger('change');
+            } else {
+                $('#detailCompanyType').val('').trigger('change');
+            }
             $('#detailRegNumber').val(data.registrationNumber || '');
             $('#detailENumber').val(data.employerNumber || '');
             $('#detailTinNumber').val(data.taxIdentificationNumber || '');
 
             if (data.incorporationDate) {
-                $('#detailIncorpDate').val(ConvertTimeFormat(data.incorporationDate, "YYYY-MM-DD"));
+                const incFp = document.getElementById("detailIncorpDate")?._flatpickr;
+                if (incFp) {
+                    incFp.setDate(ConvertTimeFormat(data.incorporationDate, "YYYY-MM-DD"), true);
+                } else {
+                    $('#detailIncorpDate').val(ConvertTimeFormat(data.incorporationDate, "YYYY-MM-DD"));
+                }
             }
             if (data.yearEndMonth) {
                 const monthNum = getMonthNumber(data.yearEndMonth);
@@ -149,15 +172,45 @@
                     const now = new Date();
                     const year = now.getFullYear();
                     const lastDay = new Date(year, monthNum, 0);
-                    $('#detailYearEnd').val(ConvertTimeFormat(lastDay, "YYYY-MM-DD"));
+                    const fp = document.getElementById("detailYearEnd")?._flatpickr;
+                    if (fp) {
+                        fp.setDate(lastDay, true);
+                    } else {
+                        $('#detailYearEnd').val(ConvertTimeFormat(lastDay, "YYYY-MM-DD"));
+                    }
                 }
             }
 
             if (data.activitySize !== undefined && data.activitySize !== null) {
-                $('#detailActivitySize').val(data.activitySize.toString()).trigger('change');
+                const activitySizeMap = {
+                    "D": "D",
+                    "1": "One",
+                    "2": "Two",
+                    "3": "Three",
+                    "4": "Four",
+                    "5": "Five",
+                    "6": "Six",
+                    "One": "One",
+                    "Two": "Two",
+                    "Three": "Three",
+                    "Four": "Four",
+                    "Five": "Five",
+                    "Six": "Six"
+                };
+                const mappedVal = activitySizeMap[data.activitySize.toString()] || data.activitySize.toString();
+                $('#detailActivitySize').val(mappedVal).trigger('change');
             }
             if (data.companyStatus !== undefined && data.companyStatus !== null) {
-                $('#detailCompanyStatus').val(data.companyStatus.toString()).trigger('change');
+                const companyStatusMap = {
+                    "Active": "Active",
+                    "Dormant": "Dormant",
+                    "StrikeOff": "StrikeOff",
+                    "Strike-off": "StrikeOff",
+                    "Liquidation": "Liquidation",
+                    "Resign": "Resign"
+                };
+                const statusVal = companyStatusMap[data.companyStatus.toString()] || data.companyStatus.toString();
+                $('#detailCompanyStatus').val(statusVal).trigger('change');
             }
             $('#detailCompanyStatusReason').val(data.companyStatusReason || '');
             if (data.creditRating !== undefined && data.creditRating !== null) {
@@ -181,9 +234,17 @@
                 $('#detailForeignOwned').val('');
             }
             if (data.appointmentEngagementData) {
-                apptEngData = typeof data.appointmentEngagementData === 'string' ? JSON.parse(data.appointmentEngagementData) : data.appointmentEngagementData;
-                updateApptEngText();
+                try {
+                    apptEngData = typeof data.appointmentEngagementData === 'string' ? JSON.parse(data.appointmentEngagementData) : data.appointmentEngagementData;
+                } catch (e) {
+                    console.error("Failed to parse appointmentEngagementData", e);
+                    apptEngData = {};
+                }
             }
+            if (!apptEngData) {
+                apptEngData = {};
+            }
+            updateApptEngText();
             updateNoteReferences(data);
             updateMsicCodeTable(data.msicCodes);
             updateOwnerTable(data.owners);
@@ -224,7 +285,9 @@
         if (data && data.length > 0) {
             $.each(data, function (i, item) {
                 const code = item.msicCode;
-                msicCodeTable.row.add([code.code, code.description]);
+                if (code) {
+                    msicCodeTable.row.add([code.code || '', code.description || '']);
+                }
             });
         }
         msicCodeTable.draw();
@@ -416,9 +479,14 @@
         var yearEndMonth = null;
         const yearEndVal = $('#detailYearEnd').val();
         if (yearEndVal) {
-            const d = new Date(yearEndVal);
-            if (!isNaN(d)) {
-                yearEndMonth = d.getMonth() + 1;
+            const parsedNum = parseInt(yearEndVal);
+            if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= 12 && !yearEndVal.includes("-")) {
+                yearEndMonth = parsedNum;
+            } else {
+                const d = new Date(yearEndVal);
+                if (!isNaN(d)) {
+                    yearEndMonth = d.getMonth() + 1;
+                }
             }
         }
 
@@ -486,7 +554,10 @@
             instance.setDate(lastDay, true);
         },
         onReady: function (selectedDates, dateStr, instance) {
-            instance.calendarContainer.querySelector(".flatpickr-months").style["display"] = "none";
+            const monthsEl = instance.calendarContainer.querySelector(".flatpickr-months");
+            if (monthsEl) {
+                monthsEl.style["display"] = "none";
+            }
             if (!selectedDates.length) return;
             const selectedDate = selectedDates[0];
             var lastDay = getLastDay(selectedDate);
