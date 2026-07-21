@@ -608,8 +608,8 @@
                 completeDate: $('#completeDate').val(),
                 doneBy: $('#doneBy').val(),
                 completedDate: $('#completedDate').val(),
-                penaltiesRM: $('#penaltiesRM').val() ? parseFloat($('#penaltiesRM').val()) : null,
-                revisedPenalties: $('#revisedPenalties').val() ? parseFloat($('#revisedPenalties').val()) : null,
+                penaltiesRM: $('#penaltiesRM').val() || null,
+                revisedPenalties: $('#revisedPenalties').val() || null,
                 appealDate: $('#appealDate').val(),
                 paymentDate: $('#paymentDate').val(),
                 s_OffDocsendtoClient: $('#s_OffDocsendtoClient').val(),
@@ -645,8 +645,10 @@
                         showAlert('Error: ' + errorMsg, 'danger');
                     }
                 },
-                error: function(xhr) { showAlert('Error: ' + xhr.statusText, 'danger'); },
-                complete: function() { $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save'); }
+                complete: function() { 
+                    stopLoading();
+                    $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save'); 
+                }
             });
         }
 

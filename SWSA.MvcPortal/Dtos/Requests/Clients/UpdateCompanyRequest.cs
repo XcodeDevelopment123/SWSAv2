@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Enums;
 
 namespace SWSA.MvcPortal.Dtos.Requests.Clients;
 
@@ -23,6 +23,6 @@ public class UpdateCompanyRequest
     public string? PrincipalActivity { get; set; }
     public bool? ForeignOwned { get; set; }
     public string? AppointmentEngagementData { get; set; }
-    public List<int> MsicCodeIds { get; set; } = [];
+    public List<int>? MsicCodeIds { get; set; }
     public ClientCategoryRequest CategoryInfo { get; set; }
 }

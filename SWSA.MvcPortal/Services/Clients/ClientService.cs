@@ -247,7 +247,19 @@ public class ClientService(
         entity.UpdateCompanyInfo(req.CompanyName, req.RegistrationNumber,req.ActivitySize, req.TaxIdentificationNumber, req.EmployerNumber, req.YearEndMonth, req.IncorporationDate);
         entity.GroupId = req.CategoryInfo?.GroupId;
         entity.UpdateAdminInfo(groupName, req.CategoryInfo?.Referral, req.CategoryInfo?.FileNo);
-        entity.SyncMsicCode(req.MsicCodeIds);
+        
+        if (req.MsicCodeIds != null)
+        {
+            entity.SyncMsicCode(req.MsicCodeIds);
+            var currentMsicCodesId = entity.MsicCodes.Select(m => m.MsicCodeId).ToList();
+            var validIds = await _msicCodeds
+                     .Where(m => currentMsicCodesId.Contains(m.Id))
+                     .Select(m => m.Id)
+                     .ToListAsync();
+
+            if (validIds.Count != currentMsicCodesId.Count)
+                throw new BusinessLogicException("Invalid MSIC Code(s) provided");
+        }
 
         if (req.CompanyType.HasValue)
             entity.CompanyType = req.CompanyType.Value;
@@ -262,15 +274,6 @@ public class ClientService(
         entity.PrincipalActivity = req.PrincipalActivity;
         entity.ForeignOwned = req.ForeignOwned;
         entity.AppointmentEngagementData = req.AppointmentEngagementData;
-
-        var currentMsicCodesId = entity.MsicCodes.Select(m => m.MsicCodeId).ToList();
-        var validIds = await _msicCodeds
-                 .Where(m => currentMsicCodesId.Contains(m.Id))
-                 .Select(m => m.Id)
-                 .ToListAsync();
-
-        if (validIds.Count != currentMsicCodesId.Count)
-            throw new BusinessLogicException("Invalid MSIC Code(s) provided");
 
         db.Update(entity);
         await db.SaveChangesAsync();

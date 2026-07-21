@@ -536,10 +536,8 @@
                             showAlert('Error saving record: ' + response.message, 'danger');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        showAlert('Error saving record: ' + error, 'danger');
-                    },
                     complete: function() {
+                        stopLoading();
                         // 恢复保存按钮状态
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     }

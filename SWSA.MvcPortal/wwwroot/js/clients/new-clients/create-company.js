@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     //#region Admin Form
     const $adminForm = $("#adminForm");
     const adminFormInputs = {
@@ -144,6 +144,14 @@
         const companyData = getFormData(companyFormInputs);
         companyData.yearEndMonth = extractNumbers(companyData.yearEndMonth);
         companyData.categoryInfo = adminInfo;
+
+        if (Array.isArray(companyData.msicCodeIds)) {
+            const ids = companyData.msicCodeIds;
+            delete companyData.msicCodeIds;
+            ids.forEach((id, index) => {
+                companyData[`msicCodeIds[${index}]`] = id;
+            });
+        }
 
         console.log('Submitting data:', companyData);
 

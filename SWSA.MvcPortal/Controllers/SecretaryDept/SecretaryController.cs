@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Dapper;
@@ -120,7 +120,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                             ([Ref], [CompanyName], [CompanyNo], [IncorpDate], [YearEnd], 
                              [StartDate], [CompleteDate], [DoneBy], [CompletedDate], 
                              [PenaltiesRM], [RevisedPenalties], [AppealDate], [PaymentDate], 
-                             [S_OffDocsendtoClient], [SSMsubmitDate], [SSMstrikeoffDate], 
+                             [SOffDocsendtoClient], [SSMsubmitDate], [SSMstrikeoffDate], 
                              [Remark], [Action], [DatePassToTaxDept], [FormCSubmitDate], [JobCompleted])
                             VALUES 
                             (@Ref, @CompanyName, @CompanyNo, @IncorpDate, @YearEnd, 
@@ -155,7 +155,7 @@ namespace SWSA.MvcPortal.Controllers.SecretaryDept
                             [DoneBy] = @DoneBy, [CompletedDate] = @CompletedDate, 
                             [PenaltiesRM] = @PenaltiesRM, [RevisedPenalties] = @RevisedPenalties, 
                             [AppealDate] = @AppealDate, [PaymentDate] = @PaymentDate, 
-                            [S_OffDocsendtoClient] = @S_OffDocsendtoClient, 
+                            [SOffDocsendtoClient] = @S_OffDocsendtoClient, 
                             [SSMsubmitDate] = @SSMsubmitDate, [SSMstrikeoffDate] = @SSMstrikeoffDate, 
                             [Remark] = @Remark, [Action] = @Action, 
                             [DatePassToTaxDept] = @DatePassToTaxDept, 
