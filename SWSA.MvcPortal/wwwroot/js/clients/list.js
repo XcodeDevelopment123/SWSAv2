@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     let firstLoad = true;
     const clientDatatable = $("#clientDatatable").DataTable({
         "paging": true,
@@ -211,6 +211,12 @@
         })
 
         clientDatatable.draw();
+
+        // Re-apply selection highlight if any client details are loaded
+        const currentClientId = $("#clientId").val();
+        if (currentClientId) {
+            $(`.cp-item[data-id="${currentClientId}"]`).addClass("table-primary active");
+        }
     }
 
     function getOptionRequest() {

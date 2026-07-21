@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Helpers
 @using System.Linq
 @model ClientType
@@ -9,7 +9,7 @@
 
     var showResign = ViewData["ShowResign"] as bool? == true;
     var companyTypeList = SelectHelper.GetEnumSelectList<CompanyType>(null, "")
-        .Where(x => x.Value is "SdnBhd" or "LLP" or "Bhd" or "Enterprise" or "Advocate" || (showResign && x.Value == "Resign")).ToList();
+        .Where(x => x.Value is "SdnBhd" or "LLP" or "Partnership" or "SoleProprietorships" or "Bhd" or "Enterprise" or "Advocate" || (showResign && x.Value == "Resign")).ToList();
     var activitySizeList = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null, "")
         .Where(x => x.Value != "D").ToList();
     var companyStatusList = SelectHelper.GetEnumSelectList<CompanyStatus>(null, "")

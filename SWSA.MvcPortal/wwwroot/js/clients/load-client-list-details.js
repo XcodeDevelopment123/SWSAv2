@@ -1,7 +1,7 @@
 $(function () {
     let queryId = getQueryParam("id");
-    if (queryId) {
-        loadClientData(queryId);
+    if (queryId && !isNaN(queryId) && parseInt(queryId) > 0) {
+        loadClientData(parseInt(queryId));
     }
 
     $(document).on("click", ".cp-item", function () {
@@ -14,9 +14,14 @@ $(function () {
             const loadedName = $("#detailCompanyName").val() || $("#individualName").val();
             if (loadedName && loadedName.trim() !== "") {
                 Toast_Fire(ICON_INFO, "Client already selected");
+                $(".cp-item").removeClass("table-primary active");
+                $(`.cp-item[data-id="${id}"]`).addClass("table-primary active");
                 return;
             }
         }
+
+        $(".cp-item").removeClass("table-primary active");
+        $(`.cp-item[data-id="${id}"]`).addClass("table-primary active");
 
         $.ajax({
             url: `${urls.client}/${id}`,
