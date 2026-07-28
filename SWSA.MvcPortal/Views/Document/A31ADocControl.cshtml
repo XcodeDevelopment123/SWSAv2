@@ -90,8 +90,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="yearEnd">Year End</label>
-                                <select id="coStatus" name="coStatus" class="form-control" required>
+                                <label for="yearEndMonth">Year End</label>
+                                <select id="yearEndMonth" name="yearEndMonth" class="form-control" required>
                                     <option value="">Select Month</option>
                                     <option value="Jan">Jan</option>
                                     <option value="Feb">Feb</option>
@@ -110,10 +110,9 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="yearEnd">Years</label>
-                                <select id="coStatus" name="coStatus" class="form-control" required>
-                                    <option value="">Select Year</option>
-                                </select>
+                                <label for="yearSelect">Years</label>
+                                <input type="text" id="yearSelect" name="yearSelect" class="form-control" placeholder="Select or type year" list="yearsList" required />
+                                <datalist id="yearsList"></datalist>
                             </div>
                         </div>
                     </div>
@@ -169,11 +168,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ackUploadLetter">Upload letter</label>
-                                <select id="ackUploadLetter" name="ackUploadLetter" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <div class="input-group">
+                                    <input type="text" id="ackUploadLetter" name="ackUploadLetter" class="form-control" placeholder="Select status or attach letter" />
+                                    <input type="file" id="ackUploadLetterFile" class="d-none" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+                                    <button class="btn btn-outline-secondary" type="button" onclick="$('#ackUploadLetterFile').click()"><i class="fas fa-paperclip me-1"></i>Attach</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -237,11 +236,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="outwardUploadLetter">Upload letter</label>
-                                <select id="outwardUploadLetter" name="outwardUploadLetter" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <div class="input-group">
+                                    <input type="text" id="outwardUploadLetter" name="outwardUploadLetter" class="form-control" placeholder="Select status or attach letter" />
+                                    <input type="file" id="outwardUploadLetterFile" class="d-none" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+                                    <button class="btn btn-outline-secondary" type="button" onclick="$('#outwardUploadLetterFile').click()"><i class="fas fa-paperclip me-1"></i>Attach</button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -325,15 +324,22 @@
                 dataTableInitialized = false;
             }
 
-            // Load records and clients on page load
+            // Load records, clients, and initialize year dropdown on page load
+            initYearDropdown();
             loadA31ARecords();
             loadClients();
 
-            // Initialize datepicker
+            // Initialize datepicker & calculate metrics on change
             $('.datepicker').datepicker({
                 format: 'dd/mm/yyyy',
                 autoclose: true
+            }).on('changeDate change', function() {
+                calculateMetrics();
             });
+
+            // File upload handlers
+            $('#ackUploadLetterFile').change(function() { handleFileUpload('ackUploadLetterFile', 'ackUploadLetter'); });
+            $('#outwardUploadLetterFile').change(function() { handleFileUpload('outwardUploadLetterFile', 'outwardUploadLetter'); });
 
             // Client selection change event
             $('#clientId').change(function() {
@@ -342,7 +348,8 @@
                 if (selectedClientId) {
                     loadClientDetails(selectedClientId);
                 } else {
-                    $('#yearEnd').val('');
+                    $('#yearEndMonth').val('');
+                    $('#grouping').val('');
                 }
             });
 
@@ -356,36 +363,120 @@
                 $('#taskForm')[0].reset();
                 $('#editId').val('');
                 $('#modalTitle').text('Add New A31A Doc Control Record');
+                $('#metric').val('');
+                $('#grouping').val('');
             });
         });
+
+        // Initialize Year Datalist
+        function initYearDropdown() {
+            var currentYear = new Date().getFullYear();
+            var $list = $('#yearsList');
+            $list.empty();
+            for (var y = currentYear - 10; y <= currentYear + 10; y++) {
+                $list.append('<option value="' + y + '">');
+            }
+        }
+
+        // Handle File Upload via AJAX
+        function handleFileUpload(fileInputId, textInputId) {
+            var fileInput = $('#' + fileInputId)[0];
+            if (fileInput.files && fileInput.files[0]) {
+                var formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                showLoading('Uploading letter...');
+                $.ajax({
+                    url: '/documents/upload-letter',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        hideLoading();
+                        if (res.success) {
+                            $('#' + textInputId).val(res.url);
+                            showSuccess('Letter attached successfully!');
+                        } else {
+                            showError('Upload failed: ' + res.message);
+                        }
+                    },
+                    error: function(err) {
+                        hideLoading();
+                        showError('Upload failed');
+                    }
+                });
+            }
+        }
+
+        // Calculate Metrics
+        function calculateMetrics() {
+            var dateRecStr = $('#dateReceived').val();
+            var outwardDateStr = $('#outwardDate').val();
+
+            if (!dateRecStr) {
+                $('#metric').val('');
+                return;
+            }
+
+            var partsRec = dateRecStr.split('/');
+            if (partsRec.length !== 3) {
+                $('#metric').val('');
+                return;
+            }
+            var dateRec = new Date(partsRec[2], partsRec[1] - 1, partsRec[0]);
+
+            var endDate = new Date();
+            if (outwardDateStr) {
+                var partsOut = outwardDateStr.split('/');
+                if (partsOut.length === 3) {
+                    endDate = new Date(partsOut[2], partsOut[1] - 1, partsOut[0]);
+                }
+            }
+
+            var diffTime = endDate.getTime() - dateRec.getTime();
+            var diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+            if (diffDays < 0) diffDays = 0;
+
+            $('#metric').val(diffDays + ' days');
+        }
 
         // Load clients from database
         function loadClients() {
             console.log('Loading clients...');
 
             $.ajax({
-                url: '/documents/get-clients',
+                url: '/clients/selections?type=SdnBhd&type=LLP&type=Enterprise&type=Individual',
                 type: 'GET',
                 success: function(response) {
-                    console.log('Clients API response:', response);
-
-                    if (response.success) {
-                        console.log('Clients data:', response.data);
-                        populateClientDropdown(response.data);
+                    console.log('Clients selections response:', response);
+                    var clientList = Array.isArray(response) ? response : (response && response.data ? response.data : []);
+                    if (clientList.length > 0) {
+                        populateClientDropdown(clientList);
                     } else {
-                        console.error('Failed to load clients:', response.message);
-                        showError('Failed to load clients list: ' + response.message);
+                        fetchClientsFallback();
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error loading clients:', error);
-                    console.error('XHR response:', xhr.responseText);
-                    showError('Error loading clients list: ' + error);
+                    console.error('Error loading clients selections:', error);
+                    fetchClientsFallback();
                 }
             });
         }
 
-        // Load client details including year end
+        function fetchClientsFallback() {
+            $.ajax({
+                url: '/documents/get-clients',
+                type: 'GET',
+                success: function(response) {
+                    if (response && response.success && response.data) {
+                        populateClientDropdown(response.data);
+                    }
+                }
+            });
+        }
+
+        // Load client details including year end and grouping
         function loadClientDetails(clientId) {
             console.log('Loading client details for ID:', clientId);
 
@@ -396,12 +487,19 @@
                     console.log('Client details response:', response);
 
                     if (response.success) {
+                        // Auto-fill grouping
+                        if (response.data.group) {
+                            $('#grouping').val(response.data.group);
+                        }
+
                         // Auto-fill year end based on client's YearEndMonth
                         if (response.data.yearEndMonth) {
-                            var currentYear = new Date().getFullYear();
-                            var yearEnd = '31 ' + getMonthName(response.data.yearEndMonth) + ' ' + currentYear;
-                            $('#yearEnd').val(yearEnd);
-                            console.log('Auto-filled year end:', yearEnd);
+                            var monthName = getMonthName(response.data.yearEndMonth);
+                            $('#yearEndMonth').val(monthName);
+                            if (!$('#yearSelect').val()) {
+                                $('#yearSelect').val(new Date().getFullYear());
+                            }
+                            console.log('Auto-filled year end month:', monthName);
                         }
                     } else {
                         console.error('Failed to load client details:', response.message);
@@ -432,8 +530,11 @@
 
             if (clients && clients.length > 0) {
                 clients.forEach(function(client) {
-                    console.log('Adding client to dropdown:', client.id, client.name);
-                    dropdown.append('<option value="' + client.id + '">' + client.name + '</option>');
+                    var cid = client.id !== undefined ? client.id : (client.clientId !== undefined ? client.clientId : (client.Id !== undefined ? client.Id : client.ClientId));
+                    var cname = client.name || client.Name || client.companyName || client.CompanyName;
+                    if (cid !== undefined && cname) {
+                        dropdown.append('<option value="' + cid + '">' + cname + '</option>');
+                    }
                 });
                 console.log('Dropdown populated with ' + clients.length + ' clients');
             } else {
@@ -472,6 +573,14 @@
             });
         }
 
+        function formatUploadLetter(val) {
+            if (!val) return 'N/A';
+            if (val.indexOf('/uploads/') !== -1) {
+                return '<a href="' + val + '" target="_blank" class="btn btn-xs btn-outline-info text-nowrap"><i class="fas fa-file-alt me-1"></i>View Letter</a>';
+            }
+            return val;
+        }
+
         // Populate table with records (via DataTable API so Buttons/Search work correctly)
         function populateTable(records) {
             console.log('Populating table with records:', records);
@@ -493,11 +602,11 @@
                         record.dateReceived || 'N/A',
                         record.noOfBagBox || 'N/A',
                         record.byWhom || 'N/A',
-                        record.uploadLetter || 'N/A',
+                        formatUploadLetter(record.uploadLetter),
                         record.remark || 'N/A',
                         record.noOfBoxBag || 'N/A',
                         record.byWhoam2 || 'N/A',
-                        record.uploadLetter2 || 'N/A',
+                        formatUploadLetter(record.uploadLetter2),
                         record.remark2 || 'N/A',
                         '<button class="btn btn-sm btn-warning me-1 edit-btn" data-id="' + record.id + '" title="Edit"><i class="fas fa-edit"></i></button>' +
                         '<button class="btn btn-sm btn-danger delete-btn" data-id="' + record.id + '" title="Delete"><i class="fas fa-trash"></i></button>'
@@ -527,11 +636,11 @@
                     '<td>' + (record.dateReceived || 'N/A') + '</td>' +
                     '<td>' + (record.noOfBagBox || 'N/A') + '</td>' +
                     '<td>' + (record.byWhom || 'N/A') + '</td>' +
-                    '<td>' + (record.uploadLetter || 'N/A') + '</td>' +
+                    '<td>' + formatUploadLetter(record.uploadLetter) + '</td>' +
                     '<td>' + (record.remark || 'N/A') + '</td>' +
                     '<td>' + (record.noOfBoxBag || 'N/A') + '</td>' +
                     '<td>' + (record.byWhoam2 || 'N/A') + '</td>' +
-                    '<td>' + (record.uploadLetter2 || 'N/A') + '</td>' +
+                    '<td>' + formatUploadLetter(record.uploadLetter2) + '</td>' +
                     '<td>' + (record.remark2 || 'N/A') + '</td>' +
                     '<td class="text-nowrap">' +
                     '<button class="btn btn-sm btn-warning me-1" onclick="editRecord(' + record.id + ')" title="Edit">' +
@@ -560,12 +669,16 @@
             var selectedClientId = $('#clientId').val();
             var selectedClientName = $('#clientId option:selected').text();
 
+            var m = $('#yearEndMonth').val() || '';
+            var y = $('#yearSelect').val() || '';
+            var yearEndedVal = (m && y) ? (m + ' ' + y) : (m || y);
+
             console.log('Saving record with client:', selectedClientId, selectedClientName);
 
             var formData = {
                 Id: $('#editId').val() ? parseInt($('#editId').val()) : 0,
                 Client: selectedClientName,
-                YearEnded: $('#yearEnd').val(),
+                YearEnded: yearEndedVal,
                 DateReceived: $('#dateReceived').val(),
                 NoOfBagBox: $('#numberOfBagsBox').val() ? parseInt($('#numberOfBagsBox').val()) : null,
                 ByWhom: $('#ackByWhom').val(),
@@ -588,19 +701,19 @@
             }
 
             if (!formData.YearEnded) {
-                alert('Please ensure Year End is filled (it should auto-fill when client is selected)');
+                alert('Please select or key-in Year End month and Year');
                 return;
             }
 
             // Show loading
             $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
 
-            // 根据是否有 ID 使用不同的 HTTP 方法
+            // Determine HTTP method based on Id
             const isUpdate = formData.Id > 0;
             const url = isUpdate ? '/documents/update-a31a' : '/documents/create-a31a';
             const method = isUpdate ? 'PUT' : 'POST';
 
-            console.log(`Making ${method} request to: ${url}`);
+            console.log('Making ' + method + ' request to: ' + url);
 
             $.ajax({
                 url: url,
@@ -686,11 +799,25 @@
                                     return false;
                                 }
                             });
+                        }
 
-                            if (!clientExists) {
-                                // If client doesn't exist in dropdown, just set the year end
-                                $('#yearEnd').val(record.yearEnded);
+                        if (record.yearEnded) {
+                            var parts = record.yearEnded.split(' ');
+                            if (parts.length >= 2) {
+                                var lastPart = parts[parts.length - 1];
+                                if (/^\d{4}$/.test(lastPart)) {
+                                    $('#yearSelect').val(lastPart);
+                                    $('#yearEndMonth').val(parts[parts.length - 2]);
+                                } else {
+                                    $('#yearEndMonth').val(parts[0]);
+                                }
+                            } else {
+                                $('#yearEndMonth').val(record.yearEnded);
                             }
+                        }
+
+                        if (record.grouping) {
+                            $('#grouping').val(record.grouping);
                         }
 
                         $('#dateReceived').val(record.dateReceived);
@@ -704,6 +831,8 @@
                         $('#outwardByWhom').val(record.byWhoam2);
                         $('#outwardUploadLetter').val(record.uploadLetter2);
                         $('#outwardRemark').val(record.remark2);
+
+                        calculateMetrics();
 
                         $('#modalTitle').text('Edit A31A Record');
                         $('#taskModal').modal('show');

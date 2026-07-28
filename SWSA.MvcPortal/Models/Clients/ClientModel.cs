@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.Clients
+namespace SWSA.MvcPortal.Models.Clients
 {
     public class ClientModel
     {
@@ -16,6 +16,8 @@
     {
         public int Id { get; set; }
         public string Client { get; set; } // 直接存储客户端名称
+        public string Grouping { get; set; } //爲了找到Data在Client表中对应的Group
+
         public string YearEnded { get; set; }
         public string DateReceived { get; set; }
         public int? NoOfBagBox { get; set; }
@@ -34,6 +36,7 @@
     {
         public int Id { get; set; }
         public string Clients { get; set; }
+        public string Grouping { get; set; }
         public string YearEnded { get; set; }
         public string CoStatus { get; set; }
         public string DateDocFr { get; set; }

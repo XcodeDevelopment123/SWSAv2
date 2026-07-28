@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -108,34 +108,40 @@ public class DocumentController(
     {
         try
         {
+            var allTypes = new List<ClientType>
+            {
+                ClientType.SdnBhd,
+                ClientType.LLP,
+                ClientType.Enterprise,
+                ClientType.Individual
+            };
+
+            var list = await _clientService.GetClientSelectionVM(allTypes);
+            if (list != null && list.Count > 0)
+            {
+                var data = list.Select(c => new { id = c.ClientId, name = c.Name });
+                return Json(new { success = true, data = data });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GetClientSelectionVM error: {ex.Message}");
+        }
+
+        try
+        {
             using (var connection = new SqlConnection(_connectionString))
             {
-                // 先检查连接是否成功
                 await connection.OpenAsync();
-
-                // 先查询所有客户端，不限制 IsActive
-                var testSql = "SELECT COUNT(*) FROM [Quartz2].[dbo].[Clients]";
-                var count = await connection.ExecuteScalarAsync<int>(testSql);
-                Console.WriteLine($"Total clients in database: {count}");
-
-                // 查询所有客户端，包括不活跃的
-                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz2].[dbo].[Clients] ORDER BY Name";
-                var clients = await connection.QueryAsync<ClientModel>(sql);
-
-                Console.WriteLine($"Clients returned: {clients.Count()}");
-                foreach (var client in clients)
-                {
-                    Console.WriteLine($"Client: {client.Id} - {client.Name} - IsActive: {client.IsActive}");
-                }
-
+                var sql = "SELECT Id AS id, Name AS name, [Group] AS [group], YearEndMonth AS yearEndMonth FROM [Quartz2].[dbo].[Clients] WHERE Name IS NOT NULL AND Name <> '' ORDER BY Name";
+                var clients = await connection.QueryAsync(sql);
                 return Json(new { success = true, data = clients });
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error in GetClients: {ex.Message}");
-            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-            return Json(new { success = false, message = ex.Message, data = new List<ClientModel>() });
+            return Json(new { success = false, message = ex.Message, data = new List<object>() });
         }
     }
 
@@ -144,16 +150,74 @@ public class DocumentController(
     {
         try
         {
+            var clientEntity = await _clientService.GetClientWithDetailByIdAsync(id);
+            if (clientEntity != null)
+            {
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        id = clientEntity.Id,
+                        name = clientEntity.Name,
+                        group = clientEntity.Group,
+                        yearEndMonth = clientEntity.YearEndMonth
+                    }
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GetClientWithDetailByIdAsync error: {ex.Message}");
+        }
+
+        try
+        {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT Id, Name, YearEndMonth FROM [Quartz2].[dbo].[Clients] WHERE Id = @Id";
-                var client = await connection.QueryFirstOrDefaultAsync<ClientModel>(sql, new { Id = id });
+                await connection.OpenAsync();
+                var sql = "SELECT Id AS id, Name AS name, [Group] AS [group], YearEndMonth AS yearEndMonth FROM [Quartz2].[dbo].[Clients] WHERE Id = @Id";
+                var client = await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
 
                 if (client == null)
+                {
                     return Json(new { success = false, message = "Client not found" });
+                }
 
                 return Json(new { success = true, data = client });
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetClientDetails: {ex.Message}");
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("upload-letter")]
+    public async Task<IActionResult> UploadLetter(IFormFile file)
+    {
+        try
+        {
+            if (file == null || file.Length == 0)
+                return Json(new { success = false, message = "No file selected." });
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "letters");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativeUrl = $"/uploads/letters/{uniqueFileName}";
+            return Json(new { success = true, url = relativeUrl, fileName = file.FileName });
         }
         catch (Exception ex)
         {
@@ -263,7 +327,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz2].[dbo].[A31A] ORDER BY Id DESC";
+                var sql = "SELECT a.*, c.[Group] AS Grouping FROM [Quartz2].[dbo].[A31A] a LEFT JOIN [Quartz2].[dbo].[Clients] c ON a.Client = c.Name ORDER BY a.Id DESC";
                 var records = await connection.QueryAsync<A31AModel>(sql);
                 return Json(new { success = true, data = records });
             }
@@ -477,7 +541,7 @@ public class DocumentController(
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var sql = "SELECT * FROM [Quartz2].[dbo].[A31B] ORDER BY Id DESC";
+                var sql = "SELECT b.*, c.[Group] AS Grouping FROM [Quartz2].[dbo].[A31B] b LEFT JOIN [Quartz2].[dbo].[Clients] c ON b.Clients = c.Name ORDER BY b.Id DESC";
                 var records = await connection.QueryAsync<A31BModel>(sql);
                 return Json(new { success = true, data = records });
             }
