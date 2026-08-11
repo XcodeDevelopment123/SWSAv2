@@ -28,15 +28,17 @@
                             <th colspan="2">Activity</th>
                             <th colspan="2">PIC</th>
                             <th rowspan="2">Year Ended</th>
+                            <th rowspan="2">Year to do</th>
                             <th rowspan="2">Tax Due Dates</th>
+                            <th rowspan="2">Date Mgmt Acc Available</th>
                             <th colspan="4">Tax WIP</th>
-                            <th colspan="4">Tax Work Process</th>
+                            <th colspan="5">Tax Work Process</th>
                             <th colspan="2">Review by MC</th>
                             <th colspan="2">Draft to Client</th>
                             <th rowspan="2">Tax Payment Date</th>
                             <th rowspan="2">Form C Submitted Date</th>
                             <th colspan="2">Billing</th>
-                            <th colspan="2">Binding</th>
+                            <th colspan="3">Binding</th>
                             <th rowspan="2">Actions</th>
                         </tr>
 
@@ -53,6 +55,7 @@
                             <th>CA & Tax Compu</th>
                             <th>Draft Form C</th>
                             <th>Tax Payable</th>
+                            <th>Penalties RM</th>
                             <th>Tax comp/CA</th>
                             <th>Form C</th>
                             <th>Sent</th>
@@ -60,6 +63,7 @@
                             <th>Inv Date</th>
                             <th>Fees</th>
                             <th>Printing</th>
+                            <th>MITRS Submitted</th>
                             <th>Despatch</th>
                         </tr>
                     </thead>
@@ -112,7 +116,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="aexOt">AEX/OT</label>
                                 <select id="aexOt" name="aexOt" class="form-control">
@@ -122,10 +126,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearEnd">Year Ended</label>
                                 <input type="text" id="yearEnd" name="yearEnd" class="form-control datepicker" placeholder="Auto Fill" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="yearToDo">Year to do</label>
+                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Auto Fill" />
                             </div>
                         </div>
                     </div>
@@ -152,7 +162,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxDueDate">Tax Due Date</label>
-                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="Select date" />
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control datepicker" placeholder="7 mths + Year End (Auto)" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dateMgmtAccAvailable">Date Mgmt Acc Available</label>
+                                <input type="text" id="dateMgmtAccAvailable" name="dateMgmtAccAvailable" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                     </div>
@@ -213,16 +229,22 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="draftForm">Draft Form C</label>
                                 <input type="text" id="draftForm" name="draftForm" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="taxPayable">Tax Payable (RM)</label>
                                 <input type="number" id="taxPayable" name="taxPayable" class="form-control" placeholder="Enter amount" step="0.01" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="penaltiesRM">Penalties (RM)</label>
+                                <input type="number" id="penaltiesRM" name="penaltiesRM" class="form-control" placeholder="Enter penalties" step="0.01" />
                             </div>
                         </div>
                     </div>
@@ -303,13 +325,19 @@
                         <label>Binding</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="printing">Printing</label>
                                 <input type="text" id="printing" name="printing" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="mitrsSubmitted">MITRS Submitted</label>
+                                <input type="text" id="mitrsSubmitted" name="mitrsSubmitted" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="despatch">Despatch</label>
                                 <input type="text" id="despatch" name="despatch" class="form-control datepicker" placeholder="Select date" />
@@ -388,21 +416,30 @@
                 });
             }
 
-            // Monitor Dropdown Change to Auto-Fill Year End
+            // Monitor Dropdown Change to Auto-Fill Year End & Tax Due Date
             $('#clientSelect').on('change', function () {
                 const $opt = $(this).find('option:selected');
                 const companyName = $(this).val();
 
-                // 1. Fill Hidden Company Name Input (for Saving)
                 $('#companyName').val(companyName);
 
-                // 2. Auto Fill Year End Date
-                const yeMonth = $opt.data('yearendmonth') || '';   // e.g. "December"
-                const yeDate = yearEndMonthToDateString(yeMonth); // Convert to dd/MM/yyyy
+                const yeMonth = $opt.data('yearendmonth') || '';
+                const yeDate = yearEndMonthToDateString(yeMonth);
 
-                // Only update Year End if it's empty or we are creating new
-                // Remove if() check if you want it to always overwrite
                 $('#yearEnd').val(yeDate).trigger('change');
+
+                if (yeDate) {
+                    const parts = yeDate.split('/');
+                    if (parts.length === 3) {
+                        $('#yearToDo').val(parts[2]);
+                        // Auto calculate Tax Due Date: Year End + 7 Months
+                        const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
+                        dtYE.setMonth(dtYE.getMonth() + 7);
+                        // End of that 7th month
+                        const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
+                        $('#taxDueDate').val(formatDdMMyyyy(dtDue));
+                    }
+                }
             });
 
             // Helper: Convert Month Name to Date String
@@ -480,8 +517,9 @@
                         { "data": "rakc", "render": function(data) { return data || '-'; } },
                         { "data": "btm", "render": function(data) { return data || '-'; } },
                         { "data": "yearEnd", "render": function(data) { return data || '-'; } },
+                        { "data": "yearToDo", "render": function(data) { return data || '-'; } },
                         { "data": "taxDueDate", "render": function(data) { return data || '-'; } },
-                        // ... (Other Tax WIP columns same as before) ...
+                        { "data": "dateMgmtAccAvailable", "render": function(data) { return data || '-'; } },
                         { "data": "startDate", "render": function(data) { return data || '-'; } },
                         { "data": "endDate", "render": function(data) { return data || '-'; } },
                         { "data": "noOfDays", "render": function(data) { return data || '-'; } },
@@ -491,6 +529,12 @@
                         { "data": "draftForm", "render": function(data) { return data || '-'; } },
                         {
                             "data": "taxPayable",
+                            "render": function(data) {
+                                return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                            }
+                        },
+                        {
+                            "data": "penaltiesRM",
                             "render": function(data) {
                                 return data ? 'RM ' + parseFloat(data).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
                             }
@@ -509,6 +553,7 @@
                             }
                         },
                         { "data": "printing", "render": function(data) { return data || '-'; } },
+                        { "data": "mitrsSubmitted", "render": function(data) { return data || '-'; } },
                         { "data": "despatch", "render": function(data) { return data || '-'; } },
                         {
                             "data": "id",
@@ -553,12 +598,14 @@
                 }
 
                 const formData = {
-                    companyName: coName, // Changed to use the logic above
+                    companyName: coName,
                     active: $('#active').val(),
                     aexOT: $('#aexOt').val(),
                     rakc: $('#rakc').val(),
                     btm: $('#btm').val(),
                     yearEnd: $('#yearEnd').val(),
+                    yearToDo: $('#yearToDo').val(),
+                    dateMgmtAccAvailable: $('#dateMgmtAccAvailable').val(),
                     taxDueDate: $('#taxDueDate').val(),
                     startDate: $('#startDate').val(),
                     endDate: $('#endDate').val(),
@@ -568,6 +615,7 @@
                     caTaxCompu: $('#caTaxCompu').val(),
                     draftForm: $('#draftForm').val(),
                     taxPayable: $('#taxPayable').val(),
+                    penaltiesRM: $('#penaltiesRM').val(),
                     taxCompCA: $('#taxCompCA').val(),
                     formC: $('#formC').val(),
                     sent: $('#sent').val(),
@@ -577,6 +625,7 @@
                     invDate: $('#invDate').val(),
                     fees: $('#fees').val(),
                     printing: $('#printing').val(),
+                    mitrsSubmitted: $('#mitrsSubmitted').val(),
                     despatch: $('#despatch').val()
                 };
 
@@ -639,6 +688,8 @@
                         $('#rakc').val(record.rakc);
                         $('#btm').val(record.btm);
                         $('#yearEnd').val(record.yearEnd);
+                        $('#yearToDo').val(record.yearToDo);
+                        $('#dateMgmtAccAvailable').val(record.dateMgmtAccAvailable);
                         $('#taxDueDate').val(record.taxDueDate);
                         $('#startDate').val(record.startDate);
                         $('#endDate').val(record.endDate);
@@ -648,6 +699,7 @@
                         $('#caTaxCompu').val(record.caTaxCompu);
                         $('#draftForm').val(record.draftForm);
                         $('#taxPayable').val(record.taxPayable);
+                        $('#penaltiesRM').val(record.penaltiesRM);
                         $('#taxCompCA').val(record.taxCompCA);
                         $('#formC').val(record.formC);
                         $('#sent').val(record.sent);
@@ -657,6 +709,7 @@
                         $('#invDate').val(record.invDate);
                         $('#fees').val(record.fees);
                         $('#printing').val(record.printing);
+                        $('#mitrsSubmitted').val(record.mitrsSubmitted);
                         $('#despatch').val(record.despatch);
 
                         $('#modalTitle').text('Edit Tax Work Logbook Record');

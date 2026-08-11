@@ -30,8 +30,8 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th colspan="2"  class="text-center">Admin</th>
@@ -407,7 +407,7 @@
                     { "data": "yEtodo", "defaultContent": "" },
                     {
                         "data": "dateDocIn",
-                        "render": function(data) { return formatDate(data); },
+                        "render": function(data) { return data || '-'; },
                         "defaultContent": ""
                     },
                     { "data": "mthTodo", "defaultContent": "" },

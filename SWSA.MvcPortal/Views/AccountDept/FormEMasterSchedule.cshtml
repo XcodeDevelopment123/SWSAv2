@@ -458,7 +458,12 @@
                             { "data": "yEtodo", "defaultContent": "" },
                             {
                                 "data": "dateDocIn",
-                                "render": function(data) { return data ? formatDate(data) : ''; },
+                                "render": function(data, type, row) {
+                                    if (!data) return '';
+                                    const formatted = formatDate(data);
+                                    const name = encodeURIComponent(row.companyName || '');
+                                    return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank" title="Go to Backlog">${formatted}</a>`;
+                                },
                                 "defaultContent": ""
                             },
                             { "data": "staff", "defaultContent": "" },

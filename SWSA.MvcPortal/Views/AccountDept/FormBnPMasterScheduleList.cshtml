@@ -395,7 +395,12 @@
                     { "data": "staff" },
                     {
                         "data": "dateDocIn",
-                        "render": function(data) { return formatDate(data); }
+                        "render": function(data, type, row) {
+                            if (!data) return '';
+                            const formatted = formatDate(data);
+                            const name = encodeURIComponent(row.companyName || '');
+                            return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank" title="Go to Form B&P Backlog (F2.3)">${formatted}</a>`;
+                        }
                     },
                     { "data": "allocateToWkSch" },
                     { "data": "completed" },
@@ -474,6 +479,14 @@
                 $('#co').val(c.companyNo || '');
                 $('#enumber').val(c.employerNumber || '');
                 $('#tINnumber').val(c.taxIdentificationNumber || '');
+                $('#createRating').val(c.creditRating || c.rating || '');
+
+                if (formattedYearEnd) {
+                    const parts = formattedYearEnd.split('/');
+                    if (parts.length === 3) {
+                        $('#yEtoDo').val(parts[2]);
+                    }
+                }
 
                 if (c.incorporationDate) {
                     $('#registrationDate').datepicker('update', new Date(c.incorporationDate));

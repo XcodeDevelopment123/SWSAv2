@@ -17,11 +17,14 @@
         <div id="alertContainer"></div>
 
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">
-                    <i class="fas fa-file-invoice-dollar me-2"></i> BP32 Records (Sdn Bhd)
+                    <i class="fas fa-file-invoice-dollar me-2"></i> BP32 Records (Work In Progress - Accounts)
                 </h3>
-                <div class="card-tools">
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mb-0 fw-bold me-1">Report as at:</label>
+                    <input type="text" id="reportAsAtDate" class="form-control form-control-sm datepicker" style="width: 130px;" placeholder="Select Date" />
+                    <button type="button" class="btn btn-info btn-sm me-3" id="filterReportBtn"><i class="fas fa-filter me-1"></i>Filter</button>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
                         <i class="fas fa-plus me-2"></i>New Record
                     </button>
@@ -417,10 +420,29 @@
                 $('#companyName').val(c.companyName || '');
                 $('#fileNo').val(c.fileNo || '');
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
-                $('#yearEnd').val(yearEndMonthToDateString(rawYearEnd));
+                const formattedYearEnd = yearEndMonthToDateString(rawYearEnd);
+                $('#yearEnd').val(formattedYearEnd);
                 if (c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activeCoActivitySize);
                 if (c.coStatus) $('#coStatus').val(c.coStatus);
                 if (c.jobServices) $('#jobServices').val(c.jobServices);
+
+                // Auto calculate Tax Due Date (YE + 7 months) & Target Date to Audit (YE + 5 months)
+                if (formattedYearEnd) {
+                    const parts = formattedYearEnd.split('/');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0]);
+                        const month = parseInt(parts[1]) - 1; // 0-indexed
+                        const year = parseInt(parts[2]);
+
+                        // YE + 7 months
+                        const taxDueDateObj = new Date(year, month + 7 + 1, 0);
+                        $('#taxARdueDate').val(formatDdMMyyyy(taxDueDateObj));
+
+                        // YE + 5 months (Target Audit Date)
+                        const targetAuditObj = new Date(year, month + 5 + 1, 0);
+                        $('#targetDateToAudit').val(formatDdMMyyyy(targetAuditObj));
+                    }
+                }
             });
 
             function initializeDataTable() {
@@ -464,13 +486,31 @@
                         { data: "activeCoActivitySize", defaultContent: "" },
                         { data: "yEtodo", defaultContent: "" },
                         { data: "mthTodo", defaultContent: "" },
-                        { data: "docReceivedDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { 
+                            data: "docReceivedDate", 
+                            render: function(d, type, row) { 
+                                if (!d) return '';
+                                const formatted = formatDate(d);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank">${formatted}</a>`;
+                            }, 
+                            defaultContent: "" 
+                        },
                         { data: "taxARdueDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
                         { data: "staff", defaultContent: "" },
                         { data: "startDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
                         { data: "endDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
                         { data: "timeTaken", defaultContent: "" },
-                        { data: "datePassToAudit", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
+                        { 
+                            data: "datePassToAudit", 
+                            render: function(d, type, row) { 
+                                if (!d) return '';
+                                const formatted = formatDate(d);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AuditDept/AT31AuditMasterLogBook?company=${name}" target="_blank">${formatted}</a>`;
+                            }, 
+                            defaultContent: "" 
+                        },
                         { data: "targetDateToAudit", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
                         { data: "timelinesMatric", defaultContent: "" },
                         { data: "dateTaxSubmited", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
@@ -514,7 +554,44 @@
             }
 
             function initializeDatePickers() {
-                $('.datepicker').datepicker({ format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true });
+                $('.datepicker').datepicker({ format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true })
+                .on('changeDate', function() {
+                    calculateDatesAndMetrics();
+                });
+            }
+
+            // Calculation rules for Time Taken & Timeliness Metric
+            function calculateDatesAndMetrics() {
+                const startStr = $('#startDate').val();
+                const endStr = $('#endDate').val();
+                if (startStr && endStr) {
+                    const start = new Date(startStr);
+                    const end = new Date(endStr);
+                    if (!isNaN(start) && !isNaN(end)) {
+                        const diffTime = end - start;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        $('#timeTaken').val(diffDays >= 0 ? diffDays : 0);
+                    }
+                }
+
+                const passAuditStr = $('#datePassToAudit').val();
+                const targetAuditStr = $('#targetDateToAudit').val();
+                if (passAuditStr && targetAuditStr) {
+                    const pass = new Date(passAuditStr);
+                    const targetParts = targetAuditStr.split('/');
+                    let targetDate;
+                    if (targetParts.length === 3) {
+                        targetDate = new Date(targetParts[2], targetParts[1] - 1, targetParts[0]);
+                    } else {
+                        targetDate = new Date(targetAuditStr);
+                    }
+
+                    if (!isNaN(pass) && !isNaN(targetDate)) {
+                        const diffTime = pass - targetDate;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        $('#timelinesMatric').val(diffDays + ' days');
+                    }
+                }
             }
 
             function formatDate(dateString) {

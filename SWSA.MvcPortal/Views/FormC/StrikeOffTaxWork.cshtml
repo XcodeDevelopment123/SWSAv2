@@ -30,10 +30,11 @@
                                 <th rowspan="3">No</th>
                                 <th rowspan="3">Company Name</th>
                                 <th rowspan="3">Year End</th>
+                                <th rowspan="3">SSM Submission Date</th>
                                 <th rowspan="3">Date S/Off</th>
                                 <th rowspan="3">Date received fr Sec Dept</th>
                                 <th colspan="7">Admin</th>
-                                <th colspan="4">Penalties</th>
+                                <th colspan="5">Penalties</th>
                                 <th colspan="2">IRB Submission Date</th>
                                 <th colspan="4">Billing</th>
                                 <th rowspan="3">Actions</th>
@@ -46,6 +47,7 @@
                                 <th rowspan="2">N or Y days</th>
                                 <th rowspan="2">Review</th>
                                 <th colspan="2">Client</th>
+                                <th rowspan="2">IRB Penalties</th>
                                 <th rowspan="2">IRB Appeal Date</th>
                                 <th rowspan="2">Payment Date</th>
                                 <th rowspan="2">notes/remark</th>
@@ -116,13 +118,19 @@
                         <label>Sec Dept Information</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ssmSubmissionDate">SSM Submission Date</label>
+                                <input type="text" id="ssmSubmissionDate" name="ssmSubmissionDate" class="form-control datepicker" placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateSOff">Date S/Off</label>
                                 <input type="text" id="dateSOff" name="dateSOff" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateReceiveFrSecDept">Date received fr Sec Dept</label>
                                 <input type="text" id="dateReceiveFrSecDept" name="dateReceiveFrSecDept" class="form-control datepicker" placeholder="Select date" />
@@ -193,6 +201,12 @@
                         <label>Penalties Information</label>
                     </div>
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="irbPenalties">IRB Penalties (RM)</label>
+                                <input type="text" id="irbPenalties" name="irbPenalties" class="form-control" placeholder="Enter amount" />
+                            </div>
+                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="appealDate">Appeal Date</label>
@@ -395,6 +409,7 @@
                         },
                         { "data": "companyName" },
                         { "data": "yearEnd" },
+                        { "data": "ssMsubmissionDate", "defaultContent": "" },
                         {
                             "data": "dateSOff",
                             "render": function(data, type, row) {
@@ -418,6 +433,7 @@
                         { "data": "review", "defaultContent": "" },
                         { "data": "clientDateSent", "defaultContent": "" },
                         { "data": "clientDateReceived", "defaultContent": "" },
+                        { "data": "irbpenalties", "defaultContent": "" },
                         { "data": "appealDate", "defaultContent": "" },
                         { "data": "paymentDate", "defaultContent": "" },
                         { "data": "noteRemark", "defaultContent": "" },
@@ -486,8 +502,10 @@
                 const formData = {
                     companyName: $('#companyName').val(),
                     yearEnd: $('#yearEnd').val(),
+                    sSMsubmissionDate: $('#ssmSubmissionDate').val(),
                     dateSOff: $('#dateSOff').val(),
                     dateReceiveFrSecDept: $('#dateReceiveFrSecDept').val(),
+                    iRBpenalties: $('#irbPenalties').val(),
                     staff: $('#staff').val(),
                     dateStart: $('#dateStart').val(),
                     dateEnd: $('#dateEnd').val(),
@@ -579,8 +597,10 @@
 
                         // YearEnd 直接用记录里的值
                         $('#yearEnd').val(record.yearEnd);
+                        $('#ssmSubmissionDate').val(record.ssMsubmissionDate || record.sSMsubmissionDate || '');
                         $('#dateSOff').val(record.dateSOff);
                         $('#dateReceiveFrSecDept').val(record.dateReceiveFrSecDept);
+                        $('#irbPenalties').val(record.irbpenalties || record.iRBpenalties || '');
                         $('#staff').val(record.staff || '');
                         $('#dateStart').val(record.dateStart || '');
                         $('#dateEnd').val(record.dateEnd || '');

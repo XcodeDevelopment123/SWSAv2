@@ -117,9 +117,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="reviewTax">Review Form E</label>
-                                @*   <input type="text" id="reviewTax" name="reviewTax" class="form-control datepicker" placeholder="Select date" /> *@
-                                <select id="reviewTax" class="form-control">
+                                <label for="reviewFormE">Review Form E</label>
+                                <select id="reviewFormE" class="form-control">
                                     <option value="">Select Y/N</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
@@ -129,16 +128,9 @@
                     </div>
 
                     <div class="row">
-                        @*  <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="finalTax">Final Tax</label>
-                                <input type="text" id="finalTax" name="finalTax" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div> *@
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="formESignByClient">form E Sign By Client</label>
-                                @* <input type="text" id="taxComFinalSignByClient" name="taxComFinalSignByClient" class="form-control datepicker" placeholder="Select date" /> *@
+                                <label for="formESignByClient">Form E Sign By Client</label>
                                 <select id="formESignByClient" class="form-control">
                                     <option value="">Select Y/N</option>
                                     <option value="Yes">Yes</option>
@@ -211,8 +203,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="typeofForm">Type of Form E</label>
-                                @* <input type="text" id="typeofForm" name="typeofForm" class="form-control" placeholder="Enter type of form" /> *@
-                                <select id="draftFormE" class="form-control">
+                                <select id="typeofForm" class="form-control">
                                     <option value="">Select Type</option>
                                     <option value="Dormant">Dormant</option>
                                     <option value="Active">Active</option>
@@ -440,11 +431,9 @@
                     item: $('#item').val(),
                     grouping: $('#grouping').val(),
                     companyName: $('#companyName').val(),
-                    draftTaxCompleted: $('#draftTaxCompleted').val(),
-                    reviewTax: $('#reviewTax').val(),
-                    finalTax: $('#finalTax').val(),
-                    taxComFinalSignByClient: $('#taxComFinalSignByClient').val(),
-                    amountofTaxPay: $('#amountofTaxPay').val(),
+                    draftTaxCompleted: $('#draftFormE').val(),
+                    reviewTax: $('#reviewFormE').val(),
+                    taxComFinalSignByClient: $('#formESignByClient').val(),
                     eFileDraft: $('#eFileDraft').val(),
                     eFileFinal: $('#eFileFinal').val(),
                     taxReferennceNo: $('#taxReferennceNo').val(),

@@ -26,8 +26,8 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th colspan="2" class="text-center">Admin</th>
@@ -332,11 +332,13 @@
                 $('#fileNo').val(c.fileNo || '');
                 $('#companyName').val(c.companyName || '');
 
-                // ★★★ 修改了这里：调用转换函数 ★★★
-                // 之前是: $('#yearEnd').val(c.yearEndMonth || '');
-                // 现在是:
-                const formattedYearEnd = yearEndMonthToDateString(c.yearEndMonth || '');
+                // Advocate Client 的 Year End 恒定为 6 月 30 日 (30/06/YYYY)
+                const today = new Date();
+                let year = today.getFullYear();
+                if (today.getMonth() > 5) { year += 1; }
+                const formattedYearEnd = `30/06/${year}`;
                 $('#yearEnd').val(formattedYearEnd);
+                if ($('#yEtodo').length > 0) { $('#yEtodo').val(year); }
             });
 
             // 初始化 DataTable

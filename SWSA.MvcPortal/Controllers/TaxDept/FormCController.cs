@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using SWSA.MvcPortal.Models.Clients;
@@ -365,18 +365,18 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz2].[dbo].[TX3] 
                     ([CompanyName], [Active], [AEXOT], [RAKC], [BTM], 
-                     [YearEnd], [TaxDueDate], [StartDate], [EndDate], [NoOfDays], 
+                     [YearEnd], [YearToDo], [DateMgmtAccAvailable], [TaxDueDate], [StartDate], [EndDate], [NoOfDays], 
                      [Completed], [PnLAnalysis], [CaTaxCompu], [DraftForm], 
-                     [TaxPayable], [TaxCompCA], [FormC], [Sent], [Received], 
+                     [TaxPayable], [PenaltiesRM], [TaxCompCA], [FormC], [Sent], [Received], 
                      [TaxPaymentDate], [FormCSubmited], [InvDate], [Fees], 
-                     [Printing], [Despatch])
+                     [Printing], [MITRSSubmitted], [Despatch])
                     VALUES 
                     (@CompanyName, @Active, @AEXOT, @RAKC, @BTM, 
-                     @YearEnd, @TaxDueDate, @StartDate, @EndDate, @NoOfDays, 
+                     @YearEnd, @YearToDo, @DateMgmtAccAvailable, @TaxDueDate, @StartDate, @EndDate, @NoOfDays, 
                      @Completed, @PnLAnalysis, @CaTaxCompu, @DraftForm, 
-                     @TaxPayable, @TaxCompCA, @FormC, @Sent, @Received, 
+                     @TaxPayable, @PenaltiesRM, @TaxCompCA, @FormC, @Sent, @Received, 
                      @TaxPaymentDate, @FormCSubmited, @InvDate, @Fees, 
-                     @Printing, @Despatch);
+                     @Printing, @MITRSSubmitted, @Despatch);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -400,16 +400,17 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
                 var sql = @"UPDATE [Quartz2].[dbo].[TX3] SET 
                     [CompanyName] = @CompanyName, [Active] = @Active, 
                     [AEXOT] = @AEXOT, [RAKC] = @RAKC, [BTM] = @BTM, 
-                    [YearEnd] = @YearEnd, [TaxDueDate] = @TaxDueDate, 
+                    [YearEnd] = @YearEnd, [YearToDo] = @YearToDo,
+                    [DateMgmtAccAvailable] = @DateMgmtAccAvailable, [TaxDueDate] = @TaxDueDate, 
                     [StartDate] = @StartDate, [EndDate] = @EndDate, 
                     [NoOfDays] = @NoOfDays, [Completed] = @Completed, 
                     [PnLAnalysis] = @PnLAnalysis, [CaTaxCompu] = @CaTaxCompu, 
                     [DraftForm] = @DraftForm, [TaxPayable] = @TaxPayable, 
-                    [TaxCompCA] = @TaxCompCA, [FormC] = @FormC, 
-                    [Sent] = @Sent, [Received] = @Received, 
+                    [PenaltiesRM] = @PenaltiesRM, [TaxCompCA] = @TaxCompCA, 
+                    [FormC] = @FormC, [Sent] = @Sent, [Received] = @Received, 
                     [TaxPaymentDate] = @TaxPaymentDate, [FormCSubmited] = @FormCSubmited, 
                     [InvDate] = @InvDate, [Fees] = @Fees, 
-                    [Printing] = @Printing, [Despatch] = @Despatch
+                    [Printing] = @Printing, [MITRSSubmitted] = @MITRSSubmitted, [Despatch] = @Despatch
                     WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);

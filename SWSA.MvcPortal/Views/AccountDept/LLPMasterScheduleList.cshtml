@@ -424,6 +424,19 @@
                 $('#co').val(c.companyNo || '');
                 $('#enumber').val(c.employerNumber || '');
                 $('#tINnumber').val(c.taxIdentificationNumber || '');
+                $('#createRating').val(c.creditRating || c.rating || '');
+
+                // 自动计算 SSM Due Date: YE + 3 months
+                if (yearEndText) {
+                    const parts = yearEndText.split('/');
+                    if (parts.length === 3) {
+                        const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
+                        dtYE.setMonth(dtYE.getMonth() + 3);
+                        const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
+                        $('#aDdueDate').val(formatDdMMyyyy(dtDue));
+                        $('#yEtodo').val(parts[2]);
+                    }
+                }
             });
 
             // === DataTable ===
@@ -470,7 +483,15 @@
                         { data: 'creditRating', defaultContent: '-' },
                         { data: 'aDdueDate', render: d => d ? formatDate(d) : '' },
                         { data: 'extensionDate', render: d => d ? formatDate(d) : '' },
-                        { data: 'dateDocIn', render: d => d ? formatDate(d) : '' },
+                        {
+                            data: 'dateDocIn',
+                            render: function(d, type, row) {
+                                if (!d) return '';
+                                const formatted = formatDate(d);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AccountDept/LLPBacklog?company=${name}" target="_blank" title="Go to LLP Backlog (F2.2)">${formatted}</a>`;
+                            }
+                        },
                         { data: 'mthToDo' },
                         { data: 'staff' },
                         { data: 'allocateToWkSch' },

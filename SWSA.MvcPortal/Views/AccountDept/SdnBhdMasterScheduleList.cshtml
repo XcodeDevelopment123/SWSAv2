@@ -30,8 +30,8 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive text-center">
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped text-center w-100">
                     <thead>
                         <!-- 第一行：主标题 -->
                         <tr class="text-center">
@@ -204,8 +204,8 @@
                                 <label for="serviceType">Service Type</label>
                                 <select id="serviceType" name="serviceType" class="form-control">
                                     <option value="">Select a type</option>
-                                    <option value="">Accounting</option>
-                                    <option value="">E-Invoice</option>
+                                    <option value="Accounting">Accounting</option>
+                                    <option value="E-Invoice">E-Invoice</option>
                                 </select>
                             </div>
                         </div>
@@ -218,13 +218,19 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="activeCoActivitySize">Activity/size</label>
                                 <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Auto" readonly />
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto fill" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yEtodo">Year to do</label>
                                 <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter YE to do" />
@@ -440,6 +446,19 @@
                 $('#co').val(c.companyNo || '');
                 $('#enumber').val(c.employerNumber || '');
                 $('#tINnumber').val(c.taxIdentificationNumber || '');
+                $('#creditRating').val(c.creditRating || c.rating || '');
+
+                // 自动计算 Due date to pass to Audit: YE + 5 months
+                if (yearEndText) {
+                    const parts = yearEndText.split('/');
+                    if (parts.length === 3) {
+                        const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
+                        dtYE.setMonth(dtYE.getMonth() + 5);
+                        const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
+                        $('#auditDeptMth').val(formatDdMMyyyy(dtDue));
+                        $('#yEtodo').val(parts[2]);
+                    }
+                }
             });
 
             // ========= DataTable =========
@@ -487,11 +506,34 @@
                         { data: 'activeCoActivitySize' },
                         { data: 'creditRating', defaultContent: '-' },
                         { data: 'staff' },
-                        { data: 'esTmthToDo' },
+                        {
+                            data: 'esTmthToDo',
+                            render: function(d, type, row) {
+                                if (!d) return '-';
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AuditDept/AT31AuditMasterLogBook?company=${name}" target="_blank" title="Go to Audit Master Logbook">${d}</a>`;
+                            }
+                        },
                         { data: 'yEtodo' },
                         { data: 'auditDeptMth' },
-                        { data: 'dueDate', render: d => d ? formatDate(d) : '' },
-                        { data: 'dateDocIn', render: d => d ? formatDate(d) : '' },
+                        {
+                            data: 'dueDate',
+                            render: function(d, type, row) {
+                                if (!d) return '';
+                                const formatted = formatDate(d);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AccountDept/SdnBhdBacklog?company=${name}" target="_blank" title="Go to Sdn Bhd Backlog (F2.1)">${formatted}</a>`;
+                            }
+                        },
+                        {
+                            data: 'dateDocIn',
+                            render: function(d, type, row) {
+                                if (!d) return '';
+                                const formatted = formatDate(d);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/AccountDept/SdnBhdBacklog?company=${name}" target="_blank" title="Go to Sdn Bhd Backlog">${formatted}</a>`;
+                            }
+                        },
                         { data: 'allocateToWkSch' },
                         { data: 'completed' },
                         {
@@ -540,6 +582,7 @@
                     tiNnumber: $('#tINnumber').val(),
                     code: $('#code').val(),
                     description: $('#description').val(),
+                    creditRating: $('#creditRating').val(),
                     serviceType: $('#serviceType').val(),
                     coStatus: $('#coStatus').val(),
                     activeCoActivitySize: $('#activeCoActivitySize').val(),
@@ -637,6 +680,7 @@
                     $('#tINnumber').val(record.tiNnumber);
 
                     // 其余
+                    $('#creditRating').val(record.creditRating || '');
                     $('#code').val(record.code);
                     $('#description').val(record.description);
                     $('#serviceType').val(record.serviceType);

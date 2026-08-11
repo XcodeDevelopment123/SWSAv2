@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -19,6 +19,10 @@ public partial class Tx3
 
     public string? YearEnd { get; set; }
 
+    public string? YearToDo { get; set; }
+
+    public string? DateMgmtAccAvailable { get; set; }
+
     public string? TaxDueDate { get; set; }
 
     public string? StartDate { get; set; }
@@ -37,6 +41,8 @@ public partial class Tx3
 
     public string? TaxPayable { get; set; }
 
+    public string? PenaltiesRm { get; set; }
+
     public string? TaxCompCa { get; set; }
 
     public string? FormC { get; set; }
@@ -54,6 +60,8 @@ public partial class Tx3
     public string? Fees { get; set; }
 
     public string? Printing { get; set; }
+
+    public string? Mitrssubmitted { get; set; }
 
     public string? Despatch { get; set; }
 }
