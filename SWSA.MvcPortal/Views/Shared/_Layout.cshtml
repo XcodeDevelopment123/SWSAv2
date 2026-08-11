@@ -1095,10 +1095,10 @@
                         @*	</ul>
 						 </li> *@
 
-                        @{
+                       @* @{
                             var templateController = new List<string> { "TaxStrikeOffTemplate", "AEXTemplate", "AuditTemplate", "SecretaryStrikeOff" };
                         }
-                        <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                         <li class="nav-item @(templateController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
                             <a href="#" class="nav-link @(templateController.Contains(currentController.Name) ? "active" : "")">
                                 <span class="nav-icon">5</span>
                                 <p>
@@ -1165,11 +1165,11 @@
 
 
                             </ul>
-                        </li>
+                        </li>*@
                         @{
                             var backlogController = new List<string> { "AuditLogSchedule", "AEXBacklog" };
                         }
-                        <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
+                        @*<li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
                             <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">
                                 <span class="nav-icon">7</span>
                                 <p>
@@ -1198,7 +1198,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> *@
 
                         <li class="nav-item @(backlogController.Contains(currentController.Name) ? "menu-is-opening menu-open" : "")">
                             <a href="#" class="nav-link @(backlogController.Contains(currentController.Name) ? "active" : "")">

@@ -2,7 +2,7 @@
     ViewData["Title"] = "ActiveAuditBacklog";
 }
 
-<h1>Active Audit Backlog</h1>
+<h1>E3.1 Active Audit Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -18,20 +18,20 @@
                 </div>
             </div>
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th>Group</th>
                             <th>Company Name</th>
                             <th>Quarter to Do Audit</th>
                             <th>Activity</th>
-                            <th>Year End</th>
-                            <th>Year to do</th>
                             <th>Co.Status</th>
                             <th>Audit exemption</th>
                             <th>Co.Sec</th>
                             <th>Credit Rating</th>
                             <th>Signing Firm</th>
+                            <th>Year End</th>
+                            <th>Year to do</th>
                             <th>Move to Active/AEX Sch</th>
                             <th>Date Doc in</th>
                             <th>Acctng wk?</th>
@@ -65,7 +65,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Group</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter group" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -94,7 +94,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="date" id="yearEnd" name="yearEnd" class="form-control" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -249,8 +249,8 @@
 
                                 // 存储客户数据用于自动填充
                                 clientDataMap[name] = {
-                                    grouping: client.Grouping || client.grouping || '',
-                                    activitySize: '', // 目前无此字段
+                                    grouping: client.Grouping || client.grouping || client.Group || client.group || '',
+                                    activitySize: client.ActivitySize || client.activitySize || '',
                                     yearEndMonth: client.YearEndMonth || client.yearEndMonth || '',
                                     companyStatus: client.CompanyStatus || client.companyStatus || '',
                                     creditRating: client.CreditRating || client.creditRating || '',
@@ -266,28 +266,49 @@
             });
         }
 
+        function calculateYearEndDateForInput(monthName) {
+            if (!monthName) return '';
+            const months = {
+                "january": 0, "february": 1, "march": 2, "april": 3, "may": 4, "june": 5,
+                "july": 6, "august": 7, "september": 8, "october": 9, "november": 10, "december": 11
+            };
+            const cleanName = monthName.trim().toLowerCase();
+            const monthIndex = months[cleanName];
+            if (monthIndex === undefined) return monthName;
+            const currentYear = new Date().getFullYear();
+            const date = new Date(currentYear, monthIndex + 1, 0);
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            return `${dd}/${mm}/${date.getFullYear()}`;
+        }
+
         // 公司选择变更时自动填充
         $(document).on('change', '#companyName', function() {
             const selectedName = $(this).val();
             if (selectedName && clientDataMap[selectedName]) {
                 const data = clientDataMap[selectedName];
-                $('#grouping').val(data.grouping);
-                $('#companyStatus').val(data.companyStatus);
-                $('#auditExemption').val(data.auditExemption);
-                $('#creditRating').val(data.creditRating);
+                if (data.grouping) $('#grouping').val(data.grouping);
+                if (data.companyStatus) $('#companyStatus').val(data.companyStatus);
+                if (data.auditExemption) $('#auditExemption').val(data.auditExemption);
+                if (data.creditRating) $('#creditRating').val(data.creditRating);
+                if (data.activitySize) $('#activity').val(data.activitySize);
                 if (data.yearEndMonth) {
-                    // 尝试将 YearEndMonth 填写到 yearEnd 输入框（格式为 YYYY-MM）
-                    // 或者仅显示月份名
+                    const yearEndVal = calculateYearEndDateForInput(data.yearEndMonth);
+                    $('#yearEnd').val(yearEndVal);
                 }
-                if (data.activitySize) {
-                    $('#activity').val(data.activitySize);
-                }
+            } else if (!selectedName) {
+                $('#grouping').val('');
+                $('#companyStatus').val('');
+                $('#auditExemption').val('');
+                $('#creditRating').val('');
+                $('#activity').val('');
+                $('#yearEnd').val('');
             }
         });
 
         function initializeDataTable() {
-            if (dataTable) {
-                dataTable.destroy();
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().destroy();
             }
 
             dataTable = $('#taskDatatable').DataTable({
@@ -297,7 +318,10 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": true,
+                "responsive": false,
+                "scrollX": true,
+                "dom": '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                 "language": {
                     "emptyTable": "No audit backlog records found",
                     "loadingRecords": "Loading...",
@@ -308,16 +332,16 @@
                     { "data": "companyName" },
                     { "data": "quarterToDoAudit" },
                     { "data": "activity" },
-                    {
-                        "data": "yearEnd",
-                        "render": function(data) { return formatDate(data); }
-                    },
-                    { "data": "yearToDo" },
                     { "data": "companyStatus" },
                     { "data": "auditExemption" },
                     { "data": "coSec" },
                     { "data": "creditRating" },
                     { "data": "signingFirm" },
+                    {
+                        "data": "yearEnd",
+                        "render": function(data) { return formatDate(data); }
+                    },
+                    { "data": "yearToDo" },
                     { "data": "moveToActiveAexSch" },
                     {
                         "data": "dateDocIn",

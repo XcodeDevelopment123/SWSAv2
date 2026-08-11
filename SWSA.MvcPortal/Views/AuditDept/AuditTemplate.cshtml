@@ -200,8 +200,10 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                <label for="pic">PIC/Staff</label>
+                                <select id="pic" name="pic" class="form-control select2" style="width:100%">
+                                    <option value="">-- Select PIC --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -226,11 +228,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="reportType">Report Type</label>
-                                <select id="reportType" class="form-control">
-                                    <option value="">Select Report Type</option>
-                                    <option value="AFS">AFS</option>
-                                    <option value="UFS">UFS</option>
-                                </select>
+                                <input type="text" id="reportType" name="reportType" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -496,7 +494,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="taxDueDate">SSM Due Date</label>
-                                <input type="date" id="taxDueDate" name="taxDueDate" class="form-control" />
+                                <input type="text" id="taxDueDate" name="taxDueDate" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -511,7 +509,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ssmDueDate">Target Tax Work Date</label>
-                                <input type="date" id="ssmDueDate" name="ssmDueDate" class="form-control" />
+                                <input type="text" id="ssmDueDate" name="ssmDueDate" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -574,12 +572,20 @@
         let dataTable;
         let dataTableInitialized = false;
         let isSubmitting = false;
+        let clientDataMap = {};
 
         // ✅ Select2 初始化
         function initSelect2() {
             $('#companyName').select2({
                 theme: 'bootstrap4',
                 placeholder: '-- Select Company --',
+                allowClear: true,
+                dropdownParent: $('#taskModal')
+            });
+
+            $('#pic').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Select PIC --',
                 allowClear: true,
                 dropdownParent: $('#taskModal')
             });
@@ -601,12 +607,20 @@
                     if (res && res.success && res.data) {
                         const $select = $('#companyName');
                         $select.find('option:not(:first)').remove();
+                        clientDataMap = {};
                         res.data.forEach(client => {
                             const name = client.CompanyName || client.companyName || client.Name || client.name;
                             const type = client.ClientType || client.clientType || '';
                             if (name) {
                                 let displayText = type ? `${name} (${type})` : name;
                                 $select.append(`<option value="${name}">${displayText}</option>`);
+
+                                clientDataMap[name] = {
+                                    activity: client.ActivitySize || client.activitySize || '',
+                                    yearEnd: client.YearEndMonth || client.yearEndMonth || '',
+                                    status: client.CompanyStatus || client.companyStatus || '',
+                                    reportType: (type === 'SdnBhd' || type === 'Sdn Bhd') ? 'AFS' : (client.ReportType || client.reportType || '')
+                                };
                             }
                         });
                         // ✅ 数据加载完后刷新 Select2
@@ -617,6 +631,33 @@
                 },
                 error: function (err) {
                     console.error('Failed to load client list', err);
+                }
+            });
+        }
+
+        function loadPicOptions() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function (res) {
+                    if (res && Array.isArray(res)) {
+                        const $select = $('#pic');
+                        $select.find('option:not(:first)').remove();
+                        res.forEach(item => {
+                            const name = item.Name || item.name || '';
+                            const dept = item.Department || item.department || '';
+                            if (name) {
+                                const label = dept ? `${name} (${dept})` : name;
+                                $select.append(`<option value="${name}">${label}</option>`);
+                            }
+                        });
+                        if ($('#pic').hasClass('select2-hidden-accessible')) {
+                            $('#pic').trigger('change');
+                        }
+                    }
+                },
+                error: function (err) {
+                    console.error('Failed to load PIC list', err);
                 }
             });
         }
@@ -686,6 +727,7 @@
             $('#modalTitle').text('Add New Audit Template Record');
             // ✅ Select2 reset
             $('#companyName').val('').trigger('change');
+            $('#pic').val('').trigger('change');
             hideModalAlert();
             clearFieldErrors();
             resetSubmitState();
@@ -714,9 +756,23 @@
         }
 
         $(document).ready(function () {
-            // ✅ 先加载 client list，再 init Select2
+            // ✅ 先加载 client list 和 user list，再 init Select2
             loadClientOptions();
+            loadPicOptions();
             initSelect2();
+
+            // ✅ 选择 Company 时自动填充 Activity, Year End, Status, Report Type
+            $(document).on('change', '#companyName', function () {
+                const selectedName = $(this).val();
+                if (selectedName && clientDataMap[selectedName]) {
+                    const data = clientDataMap[selectedName];
+                    if (data.activity) $('#activity').val(data.activity);
+                    if (data.yearEnd) $('#yEnd').val(data.yearEnd);
+                    if (data.status) $('#status').val(data.status);
+                    if (data.reportType) $('#reportType').val(data.reportType);
+                    calculate7MonthsDueDate();
+                }
+            });
 
             // 初始化日期选择器
             try {
@@ -811,6 +867,44 @@
 
             $('#accSetup, #acSummary, #auditPlanning, #auditExecution, #auditCompletion').on('input change', calculateTotalPercent);
 
+            // ✅ Auto calculate Audit WIP No of Days (a. Start Date & b. As at)
+            function calculateAuditWipNoOfDays() {
+                const startDateVal = $('#startDate').val();
+                const asAtVal = $('#asAt').val();
+
+                if (!startDateVal || !asAtVal) {
+                    $('#noOfDays').val('');
+                    calculateTotalFieldWkDays();
+                    return;
+                }
+
+                const parseDate = (str) => {
+                    if (!str) return null;
+                    if (str.includes('/')) {
+                        const parts = str.split('/');
+                        if (parts.length === 3) {
+                            return new Date(parts[2], parts[1] - 1, parts[0]);
+                        }
+                    }
+                    const d = new Date(str);
+                    return isNaN(d.getTime()) ? null : d;
+                };
+
+                const startObj = parseDate(startDateVal);
+                const asAtObj = parseDate(asAtVal);
+
+                if (startObj && asAtObj && !isNaN(startObj) && !isNaN(asAtObj)) {
+                    const diffTime = asAtObj.getTime() - startObj.getTime();
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                    $('#noOfDays').val(diffDays);
+                } else {
+                    $('#noOfDays').val('');
+                }
+                calculateTotalFieldWkDays();
+            }
+
+            $(document).on('change changeDate input', '#startDate, #asAt', calculateAuditWipNoOfDays);
+
             // ✅ Auto calculate Kuching review days
             function calculateKuchingReviewDays() {
                 const dateSentVal = $('#dateSent').val();
@@ -818,6 +912,7 @@
                 
                 if (!dateSentVal || !endDateVal) {
                     $('#resultOverUnderKuching').val('');
+                    calculateTotalFieldWkDays();
                     return;
                 }
 
@@ -840,9 +935,93 @@
                 } else {
                     $('#resultOverUnderKuching').val('');
                 }
+                calculateTotalFieldWkDays();
             }
 
             $(document).on('change changeDate input', '#dateSent, #endDate', calculateKuchingReviewDays);
+
+            // ✅ Auto calculate Total Field Work Days (c. No of Days + Result Over/Under Kuching)
+            function calculateTotalFieldWkDays() {
+                const noOfDaysVal = parseFloat($('#noOfDays').val()) || 0;
+                const kuchingDaysVal = parseFloat($('#resultOverUnderKuching').val()) || 0;
+
+                if ($('#noOfDays').val() === '' && $('#resultOverUnderKuching').val() === '') {
+                    $('#totalFieldWkDays').val('');
+                } else {
+                    $('#totalFieldWkDays').val(noOfDaysVal + kuchingDaysVal);
+                }
+            }
+
+            $(document).on('change input', '#noOfDays, #resultOverUnderKuching', calculateTotalFieldWkDays);
+
+            // ✅ Auto calculate SSM Due Date & Target Tax Work Date (Year End + 7 months)
+            function calculate7MonthsDueDate() {
+                const yEtodoVal = ($('#yEtodo').val() || '').trim();
+                const yEndVal = ($('#yEnd').val() || '').trim();
+
+                const val = yEtodoVal || yEndVal;
+                if (!val) return;
+
+                let yearEndObj = null;
+
+                // Try parsing DD/MM/YYYY or MM/YYYY
+                if (val.includes('/')) {
+                    const parts = val.split('/');
+                    if (parts.length === 3) {
+                        yearEndObj = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                    } else if (parts.length === 2) {
+                        const currentYear = new Date().getFullYear();
+                        yearEndObj = new Date(currentYear, parseInt(parts[0]) - 1, 1);
+                        yearEndObj = new Date(yearEndObj.getFullYear(), yearEndObj.getMonth() + 1, 0);
+                    }
+                } else if (val.includes('-')) {
+                    const parts = val.split('-');
+                    if (parts.length === 3) {
+                        yearEndObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    }
+                }
+
+                // If month name like "December" or "Dec" or "December 2025"
+                if (!yearEndObj || isNaN(yearEndObj.getTime())) {
+                    const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+                    const shortMonths = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+                    
+                    const lowerVal = val.toLowerCase();
+                    let foundMonth = -1;
+                    months.forEach((m, idx) => {
+                        if (lowerVal.includes(m)) foundMonth = idx;
+                    });
+                    if (foundMonth === -1) {
+                        shortMonths.forEach((m, idx) => {
+                            if (lowerVal.includes(m)) foundMonth = idx;
+                        });
+                    }
+
+                    if (foundMonth !== -1) {
+                        const yearMatch = val.match(/\d{4}/);
+                        const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+                        yearEndObj = new Date(year, foundMonth + 1, 0);
+                    }
+                }
+
+                if (yearEndObj && !isNaN(yearEndObj.getTime())) {
+                    const targetMonth = yearEndObj.getMonth() + 7;
+                    const targetYear = yearEndObj.getFullYear() + Math.floor(targetMonth / 12);
+                    const monthInYear = targetMonth % 12;
+
+                    const resultDate = new Date(targetYear, monthInYear + 1, 0);
+
+                    const dd = String(resultDate.getDate()).padStart(2, '0');
+                    const mm = String(resultDate.getMonth() + 1).padStart(2, '0');
+                    const yyyy = resultDate.getFullYear();
+                    const formattedDate = `${dd}/${mm}/${yyyy}`;
+
+                    $('#taxDueDate').val(formattedDate).trigger('change');
+                    $('#ssmDueDate').val(formattedDate).trigger('change');
+                }
+            }
+
+            $(document).on('change input', '#yEtodo, #yEnd', calculate7MonthsDueDate);
 
             // ✅ Auto calculate KK review days
             function calculateKKReviewDays() {
@@ -1070,7 +1249,12 @@
                         $('#whichDB').val(getVal(d, 'WhichDB'));
                         $('#yEtodo').val(getVal(d, 'YEtodo'));
                         $('#quarterTodo').val(getVal(d, 'QuarterTodo'));
-                        $('#pic').val(getVal(d, 'PIC'));
+                        const existingPic = getVal(d, 'PIC');
+                        const $picSelect = $('#pic');
+                        if ($picSelect.find(`option[value="${existingPic}"]`).length === 0 && existingPic) {
+                            $picSelect.append(`<option value="${existingPic}">${existingPic}</option>`);
+                        }
+                        $picSelect.val(existingPic).trigger('change');
                         $('#status').val(getVal(d, 'Status'));
                         $('#revenue').val(getVal(d, 'Revenue'));
                         $('#profitLoss').val(getVal(d, 'ProfitLoss'));

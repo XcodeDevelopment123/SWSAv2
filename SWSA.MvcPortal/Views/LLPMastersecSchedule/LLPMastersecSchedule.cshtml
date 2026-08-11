@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "LLPMastersecSchedule";
 }
 
@@ -360,7 +360,11 @@
             function addMonthsToDate(dateStr, months) {
                 const d = parseToDate(dateStr);
                 if (!d) return null;
+                const originalDay = d.getDate();
                 d.setMonth(d.getMonth() + months);
+                if (d.getDate() !== originalDay) {
+                    d.setDate(0);
+                }
                 return d;
             }
 
@@ -436,6 +440,20 @@
                 const yearEndText = formatYearEndText(yearEndMonth);
                 $("#yearEnd").val(yearEndText);
 
+                if (yearEndText) {
+                    const accMthDate = addMonthsToDate(yearEndText, 3);
+                    if (accMthDate) {
+                        $("#acCmthTodo").val(monthNameFromDate(accMthDate));
+                    }
+                    const adDueDate = addMonthsToDate(yearEndText, 3);
+                    if (adDueDate) {
+                        $("#aDdueDate").val(toDisplayDDMMYYYY(adDueDate));
+                    }
+                }
+            });
+
+            $("#yearEnd").on("input change", function () {
+                const yearEndText = $(this).val();
                 if (yearEndText) {
                     const accMthDate = addMonthsToDate(yearEndText, 3);
                     if (accMthDate) {
@@ -552,7 +570,7 @@
                 $('#taskForm')[0].reset();
                 $('#recordId').val('0');
                 isEditMode = false;
-                $('#modalTitle').text('Add New Record');
+                $('#modalTitle').text('Add New Record LLP');
                 $('#companyName').val('');
                 $('#incorpDate').val('');
                 $('#incorpDateDisplay').val('');

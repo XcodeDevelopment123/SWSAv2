@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "SdnBhdMasterSecSchedule";
 }
 
@@ -74,7 +74,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Sdn Bhd Master Sec Record</span>
+                    <span id="modalTitle">Add New Record Sdn Bhd</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -141,9 +141,9 @@
                                 <select id="companyName" name="companyName" class="form-control">
                                     <option value="">-- Select company --</option>
                                 </select>
-                                <small class="text-muted">
+                              @*   <small class="text-muted">
                                     Grouping, Referral, File No, Credit Rating, Co Status, Activity Size will be filled automatically.
-                                </small>
+                                </small> *@
                             </div>
                         </div>
           
@@ -391,27 +391,46 @@
             return parts[2];
         }
 
-        function populateYearToDoDropdown(incorpDateStr) {
+        function initDefaultYearToDoDropdown() {
             const $sel = $('#yearToDo');
+            const currVal = $sel.val();
             $sel.empty().append('<option value="">-- Select Year --</option>');
-            if (!incorpDateStr) return;
-            const yr = getYrFromDdMmYyyy(incorpDateStr);
-            if (!yr) return;
-            const startYr = parseInt(yr, 10);
-            if (isNaN(startYr)) return;
-            for (let y = startYr; y <= startYr + 10; y++) {
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear - 10; y <= currentYear + 10; y++) {
                 $sel.append(`<option value="${y}">${y}</option>`);
             }
+            if (currVal) $sel.val(currVal);
+        }
+
+        function populateYearToDoDropdown(incorpDateStr) {
+            const $sel = $('#yearToDo');
+            const currVal = $sel.val();
+            $sel.empty().append('<option value="">-- Select Year --</option>');
+            let startYr = new Date().getFullYear() - 10;
+            if (incorpDateStr) {
+                const yr = getYrFromDdMmYyyy(incorpDateStr);
+                if (yr && !isNaN(parseInt(yr, 10))) {
+                    startYr = parseInt(yr, 10);
+                }
+            }
+            const endYr = Math.max(startYr + 15, new Date().getFullYear() + 10);
+            for (let y = startYr; y <= endYr; y++) {
+                $sel.append(`<option value="${y}">${y}</option>`);
+            }
+            if (currVal) $sel.val(currVal);
         }
 
         function populateYearToDoDropdownFromYear(yearStr) {
             const $sel = $('#yearToDo');
+            const currVal = $sel.val();
             $sel.empty().append('<option value="">-- Select Year --</option>');
-            const startYr = parseInt(yearStr, 10);
-            if (isNaN(startYr)) return;
-            for (let y = startYr; y <= startYr + 10; y++) {
+            let startYr = parseInt(yearStr, 10);
+            if (isNaN(startYr)) startYr = new Date().getFullYear() - 10;
+            const endYr = Math.max(startYr + 15, new Date().getFullYear() + 10);
+            for (let y = startYr; y <= endYr; y++) {
                 $sel.append(`<option value="${y}">${y}</option>`);
             }
+            if (currVal) $sel.val(currVal);
         }
 
         function monthNameToNumber(monthName) {
@@ -557,6 +576,7 @@
         }
 
         $(document).ready(function () {
+            initDefaultYearToDoDropdown();
 
             $('#dbSource').on('change', function () {
                 const dbType = $(this).val();
@@ -618,9 +638,10 @@
                 }
             });
 
+            const excludedDateIds = ['yearEnd', 'firstYearDueDate', 'circulationDueDate', 'arDueDate'];
             $('input[type="text"]').filter(function () {
                 const id = $(this).attr('id') || '';
-                return id.includes('Date') || id.includes('date') || id.includes('yearEnd');
+                return (id.includes('Date') || id.includes('date')) && !excludedDateIds.includes(id);
             }).datepicker({
                 format: 'dd/mm/yyyy',
                 autoclose: true,

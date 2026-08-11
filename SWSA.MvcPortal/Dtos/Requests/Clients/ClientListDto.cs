@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Dtos.Requests.Clients
+namespace SWSA.MvcPortal.Dtos.Requests.Clients
 {
     // 建议放在 Dtos 文件夹中
     public class ClientListDto
@@ -19,5 +19,6 @@
         public string CompanyStatus { get; set; } = "";
         public string CreditRating { get; set; } = "";
         public string AuditExemption { get; set; } = "";
+        public string ActivitySize { get; set; } = "";
     }
 }

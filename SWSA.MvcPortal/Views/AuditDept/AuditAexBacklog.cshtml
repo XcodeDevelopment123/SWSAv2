@@ -18,7 +18,7 @@
     }
 </style>
 
-<h1>Audit Aex Backlog</h1>
+<h1>E3.2 AEX Audit Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -35,9 +35,8 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <!-- No overflow on card-body: DataTables scrollX wraps the table internally -->
-            <div class="card-body">
-                <table id="taskDatatable" class="table table-bordered table-striped w-100">
+            <div class="card-body" style="overflow:auto">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th>Actions</th>
@@ -45,6 +44,11 @@
                             <th>Company Name</th>
                             <th>Quarter to Do Audit</th>
                             <th>Activity</th>
+                            <th>Co. Status</th>
+                            <th>Audit Exemption</th>
+                            <th>Co. Sec</th>
+                            <th>Credit Rating</th>
+                            <th>Signing Firm</th>
                             <th>Year End</th>
                             <th>Year to do</th>
                             <th>Move to Active Sch</th>
@@ -189,40 +193,11 @@
     <partial name="_DatatablesScriptsPartial" />
 
     <script>
-        let dataTable;
-        let dataTableInitialized = false;
+        let dataTable = null;
         let currentEditId = null;
 
         $(document).ready(function() {
-            // Initialize DataTable with Buttons toolbar (Copy/CSV/Excel/PDF/Print/Column visibility)
-            try {
-                dataTable = $('#taskDatatable').DataTable({
-                    responsive: false,
-                    ordering: true,
-                    autoWidth: true,
-                    pageLength: 10,
-                    lengthChange: false,
-                    dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
-                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                    language: {
-                        search: "Search:",
-                        emptyTable: "No records found. Click \"New Record\" to create one.",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        infoEmpty: "Showing 0 to 0 of 0 entries",
-                        paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
-                    },
-                    columnDefs: [
-                        { targets: '_all', defaultContent: '' },
-                        { targets: 0, orderable: false, searchable: false }
-                    ],
-                    scrollX: true
-                });
-                dataTableInitialized = true;
-            } catch (error) {
-                console.error('DataTable initialization error:', error);
-                dataTableInitialized = false;
-            }
-
+            initializeDataTable();
             loadData();
 
             // 保存按钮点击事件
@@ -248,89 +223,126 @@
             dtCollectionObserver.observe(document.body, { childList: true, subtree: true });
         });
 
+        function initializeDataTable() {
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().destroy();
+            }
+
+            dataTable = $('#taskDatatable').DataTable({
+                paging: true,
+                lengthChange: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                responsive: false,
+                scrollX: true,
+                dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                language: {
+                    search: "Search:",
+                    emptyTable: "No audit AEX backlog records found",
+                    loadingRecords: "Loading...",
+                    zeroRecords: "No matching records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries"
+                },
+                columns: [
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${row.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${row.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            `;
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    { data: "grouping" },
+                    { data: "companyName" },
+                    { data: "quarterToDoAudit" },
+                    { data: "activity" },
+                    { data: "companyStatus" },
+                    { data: "auditExemption" },
+                    { data: "coSec" },
+                    { data: "creditRating" },
+                    { data: "signingFirm" },
+                    { data: "yearEnd" },
+                    { data: "yearToDo" },
+                    { data: "moveToActiveSch" },
+                    {
+                        data: "dateDocIn",
+                        render: function(data) { return formatDate(data); }
+                    },
+                    { data: "acctngWk" },
+                    { data: "reasonWhyBacklog" }
+                ]
+            });
+        }
+
         function loadData() {
             $.ajax({
                 url: '/api/auditdept/aex42/get-all',
                 type: 'GET',
+                cache: false,
                 success: function(response) {
-                    if (response.success) {
+                    if (response.success && response.data) {
                         populateTable(response.data);
                     } else {
                         console.error('Error loading data:', response.message);
-                        alert('Error loading data: ' + response.message);
+                        if (dataTable) dataTable.clear().draw();
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error loading data:', error);
-                    alert('Error loading data: ' + error);
+                    if (dataTable) dataTable.clear().draw();
                 }
             });
         }
 
-        // Populate table with records (via DataTable API so Buttons/Search work correctly)
         function populateTable(data) {
-            if (!dataTableInitialized) {
-                manualPopulateTable(data);
-                return;
-            }
-
-            dataTable.clear();
-
             if (data && data.length > 0) {
-                data.forEach(function(item) {
-                    dataTable.row.add([
-                        '<button class="btn btn-sm btn-warning me-1 edit-btn" data-id="' + item.id + '" title="Edit"><i class="fas fa-edit"></i></button>' +
-                        '<button class="btn btn-sm btn-danger delete-btn" data-id="' + item.id + '" title="Delete"><i class="fas fa-trash"></i></button>',
-                        escapeHtml(item.grouping) || '',
-                        escapeHtml(item.companyName) || '',
-                        escapeHtml(item.quarterToDoAudit) || '',
-                        escapeHtml(item.activity) || '',
-                        escapeHtml(item.yearEnd) || '',
-                        escapeHtml(item.yearToDo) || '',
-                        escapeHtml(item.moveToActiveSch) || '',
-                        item.dateDocIn ? new Date(item.dateDocIn).toLocaleDateString() : '',
-                        escapeHtml(item.acctngWk) || '',
-                        escapeHtml(item.reasonWhyBacklog) || ''
-                    ]);
+                const formattedData = data.map(function(item) {
+                    return {
+                        id: item.id || item.Id,
+                        grouping: escapeHtml(item.grouping || item.Grouping || ''),
+                        companyName: escapeHtml(item.companyName || item.CompanyName || ''),
+                        quarterToDoAudit: escapeHtml(item.quarterToDoAudit || item.QuarterToDoAudit || ''),
+                        activity: escapeHtml(item.activity || item.Activity || ''),
+                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || ''),
+                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || ''),
+                        coSec: escapeHtml(item.coSec || item.CoSec || ''),
+                        creditRating: escapeHtml(item.creditRating || item.CreditRating || ''),
+                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || ''),
+                        yearEnd: escapeHtml(item.yearEnd || item.YearEnd || ''),
+                        yearToDo: escapeHtml(item.yearToDo || item.YearToDo || ''),
+                        moveToActiveSch: escapeHtml(item.moveToActiveSch || item.MoveToActiveSch || ''),
+                        dateDocIn: item.dateDocIn || item.DateDocIn,
+                        acctngWk: escapeHtml(item.acctngWk || item.AcctngWk || ''),
+                        reasonWhyBacklog: escapeHtml(item.reasonWhyBacklog || item.ReasonWhyBacklog || '')
+                    };
                 });
-            }
 
-            dataTable.draw();
+                dataTable.clear();
+                dataTable.rows.add(formattedData).draw();
+            } else {
+                dataTable.clear().draw();
+            }
         }
 
-        // Fallback manual population if DataTable failed to initialize
-        function manualPopulateTable(data) {
-            const tbody = $('#taskDatatable tbody');
-            tbody.empty();
-
-            if (data && data.length > 0) {
-                data.forEach(function(item) {
-                    const row = `
-                        <tr>
-                            <td>
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                            <td>${escapeHtml(item.grouping) || ''}</td>
-                            <td>${escapeHtml(item.companyName) || ''}</td>
-                            <td>${escapeHtml(item.quarterToDoAudit) || ''}</td>
-                            <td>${escapeHtml(item.activity) || ''}</td>
-                            <td>${escapeHtml(item.yearEnd) || ''}</td>
-                            <td>${escapeHtml(item.yearToDo) || ''}</td>
-                            <td>${escapeHtml(item.moveToActiveSch) || ''}</td>
-                            <td>${item.dateDocIn ? new Date(item.dateDocIn).toLocaleDateString() : ''}</td>
-                            <td>${escapeHtml(item.acctngWk) || ''}</td>
-                            <td>${escapeHtml(item.reasonWhyBacklog) || ''}</td>
-                        </tr>
-                    `;
-                    tbody.append(row);
-                });
-            } else {
-                tbody.append('<tr><td colspan="11" class="text-center">No records found</td></tr>');
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '';
+                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY
+            } catch (e) {
+                return '';
             }
         }
 

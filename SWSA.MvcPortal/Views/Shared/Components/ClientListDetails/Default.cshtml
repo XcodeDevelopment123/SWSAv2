@@ -9,7 +9,7 @@
 
     var showResign = ViewData["ShowResign"] as bool? == true;
     var companyTypeList = SelectHelper.GetEnumSelectList<CompanyType>(null, "")
-        .Where(x => x.Value is "SdnBhd" or "LLP" or "Partnership" or "SoleProprietorships" or "Bhd" or "Enterprise" or "Advocate" || (showResign && x.Value == "Resign")).ToList();
+        .Where(x => x.Value is "SdnBhd" or "LLP" or/*  "Partnership" or "SoleProprietorships" or */ "Bhd" or "Enterprise" or "Advocate" || (showResign && x.Value == "Resign")).ToList();
     var activitySizeList = SelectHelper.GetEnumSelectList<CompanyActivityLevel>(null, "")
         .Where(x => x.Value != "D").ToList();
     var companyStatusList = SelectHelper.GetEnumSelectList<CompanyStatus>(null, "")
@@ -233,7 +233,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="detailPrincipalActivity">MSIC Code</label>
+                            <label for="detailPrincipalActivity">MSIC Code (Principal Activity)</label>
                             <input type="text" class="form-control" id="detailPrincipalActivity" placeholder="MSIC Code">
                         </div>
                     </div>
@@ -244,6 +244,20 @@
                                 <option value="">-- Select --</option>
                                 <option value="true">Yes</option>
                                 <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="detailServiceSelected">Service Selected</label>
+                            <select class="form-control" id="detailServiceSelected" name="detailServiceSelected">
+                                <option value="">-- Select --</option>
+                                <option value="Sec">Sec</option>
+                                <option value="Tax">Tax</option>
+                                <option value="Audit">Audit</option>
+                                <option value="Acc">Acc</option>
+                                <option value="Form E">Form E</option>
+                                <option value="HR">HR</option>
                             </select>
                         </div>
                     </div>
@@ -360,7 +374,7 @@
                                     <th>Tax Ref No.</th>
                                     <th>Telephone</th>
                                     <th>Email</th>
-                                    <th>Action</th>
+                                    <th>Remark</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

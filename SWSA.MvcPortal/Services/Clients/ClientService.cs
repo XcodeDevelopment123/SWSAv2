@@ -561,7 +561,10 @@ public class ClientService(
             CreditRating = (c as BaseCompany).CreditRating.HasValue
                 ? (c as BaseCompany).CreditRating.Value.ToString()
                 : "",
-            AuditExemption = ""
+            AuditExemption = "",
+            ActivitySize = (c as BaseCompany) != null
+                ? (c as BaseCompany).ActivitySize.ToString()
+                : ""
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();

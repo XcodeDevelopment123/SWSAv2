@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Entities.Templates
 @model List<SecDeptTaskTemplate>
 
@@ -32,24 +32,23 @@
                         <tr>
                             <th rowspan="3" class="sideways-lr">Sec File No</th>
                             <th rowspan="2" colspan="3">Co Information</th>
-                            <th rowspan="3">Incorp Date</th>
-                            <th colspan="4">Sdn Bhd Annual Return</th>
+                            <th colspan="5">Sdn Bhd Annual Return</th>
                             <th colspan="4">LLP Annual Declaration</th>
                             <th rowspan="3">Remarks</th>
                             <th rowspan="3">Action</th>
                         </tr>
                         <tr>
-                            <th>AR Due date (anniversary mth)</th>
+                            <th>Incorporation</th>
                             <th colspan="2">Actual submission dates</th>
-                            <th>Sign And Return</th>
-                            <th>AD Due Date</th>
-                            <th>Actual submission dates</th>
+                            <th colspan="2">Sign And Return</th>
+                            <th colspan="2">Actual submission dates</th>
                             <th colspan="2">AD Sign and return</th>
                         </tr>
                         <tr>
                             <th>Co Name</th>
                             <th>Co Type</th>
                             <th>Year End</th>
+                            <th>Incorp Date</th>
                             <th>AR Due date(anniversary mth)</th>
                             <th>Date AR Submitted</th>
                             <th>Date Send to client</th>
@@ -291,8 +290,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-info-label col-12">
+                        <label>New Incorporation</label>
+                        </div>
                     <div class="row">
-
+                      
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="incorpDate">Incorporation Date</label>

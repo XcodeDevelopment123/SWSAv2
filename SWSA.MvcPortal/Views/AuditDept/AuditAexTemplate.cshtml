@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Audit Aex Template";
 }
 
@@ -103,14 +103,16 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" required />
+                                <label for="companyName">Company Name (Link From Client List)</label>
+                                <select id="companyName" name="companyName" class="form-control select2" style="width:100%" required>
+                                    <option value="">-- Select Company --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -186,11 +188,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="reportType">Report Type</label>
-                                <select id="reportType" class="form-control">
-                                    <option value="">Select Report Type</option>
-                                    <option value="AFS">AFS</option>
-                                    <option value="UFS">UFS</option>
-                                </select>
+                                <input type="text" id="reportType" name="reportType" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -524,13 +522,87 @@
     <!-- Use the SAME DataTables partial as E1.1 Audit Template so Buttons/Column visibility
          render with identical Bootstrap 5 styling (blue-highlighted dropdown items, no checkmarks) -->
     <partial name="_DatatablesScriptsPartial" />
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
+    <script src="~/admin-lte/plugins/select2/js/select2.min.js"></script>
 
     <script>
         let dataTable;
         let currentEditId = null;
+        let clientDataMap = {};
+
+        function initSelect2() {
+            $('#companyName').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Select Company --',
+                allowClear: true,
+                dropdownParent: $('#taskModal')
+            });
+
+            $('#companyName').on('select2:open', function () {
+                setTimeout(function () {
+                    $('.select2-container--open .select2-search--dropdown .select2-search__field')
+                        .attr('placeholder', 'Search by company name...');
+                }, 10);
+            });
+        }
+
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/auditdept/clients/get-list',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success && res.data) {
+                        const $select = $('#companyName');
+                        $select.find('option:not(:first)').remove();
+                        clientDataMap = {};
+                        res.data.forEach(client => {
+                            const name = client.CompanyName || client.companyName || client.Name || client.name;
+                            const type = client.ClientType || client.clientType || '';
+                            if (name) {
+                                let displayText = type ? `${name} (${type})` : name;
+                                $select.append(`<option value="${name}">${displayText}</option>`);
+
+                                clientDataMap[name] = {
+                                    activity: client.ActivitySize || client.activitySize || '',
+                                    yearEnd: client.YearEndMonth || client.yearEndMonth || '',
+                                    status: client.CompanyStatus || client.companyStatus || '',
+                                    reportType: (type === 'SdnBhd' || type === 'Sdn Bhd') ? 'AFS' : (client.ReportType || client.reportType || '')
+                                };
+                            }
+                        });
+                        if ($('#companyName').hasClass('select2-hidden-accessible')) {
+                            $('#companyName').trigger('change');
+                        }
+                    }
+                },
+                error: function (err) {
+                    console.error('Failed to load client list', err);
+                }
+            });
+        }
 
         $(document).ready(function() {
+            loadClientOptions();
+            initSelect2();
             initializeDataTable();
+
+            // 选择 Company 时自动填充 Activity, Year End, Status, Report Type
+            $(document).on('change', '#companyName', function () {
+                const selectedName = $(this).val();
+                if (selectedName && clientDataMap[selectedName]) {
+                    const data = clientDataMap[selectedName];
+                    if (data.activity) $('#activity').val(data.activity);
+                    if (data.yearEnd) $('#yEnd').val(data.yearEnd);
+                    if (data.status) $('#status').val(data.status);
+                    if (data.reportType) $('#reportType').val(data.reportType);
+                } else if (!selectedName) {
+                    $('#activity').val('');
+                    $('#yEnd').val('');
+                    $('#status').val('');
+                    $('#reportType').val('');
+                }
+            });
 
             // 计算总百分比
             calculateTotalPercentage();
@@ -644,6 +716,7 @@
             $('#recordId').val('');
             currentEditId = null;
             $('#modalTitle').text('Add New Audit AEX Template Record');
+            $('#companyName').val('').trigger('change');
         }
 
         function editRecord(id) {
@@ -660,12 +733,18 @@
                         $('#recordId').val(record.id);
 
                         // 填充表单
-                        $('#companyName').val(record.companyName || '');
+                        const existingCompany = record.companyName || record.CompanyName || '';
+                        const $select = $('#companyName');
+                        if ($select.find(`option[value="${existingCompany}"]`).length === 0 && existingCompany) {
+                            $select.append(`<option value="${existingCompany}">${existingCompany} (Archived)</option>`);
+                        }
+                        $select.val(existingCompany).trigger('change');
                         $('#activity').val(record.activity || '');
                         $('#yEtodo').val(record.yEtodo || '');
                         $('#quarterTodo').val(record.quarterTodo || '');
                         $('#pic').val(record.pic || '');
                         $('#status').val(record.status || '');
+                        $('#reportType').val(record.reportType || '');
                         $('#revenue').val(record.revenue || '');
                         $('#profitLoss').val(record.profitLoss || '');
                         $('#auditFee').val(record.auditFee || '');
@@ -715,6 +794,7 @@
                 quarterTodo: $('#quarterTodo').val() || null,
                 pic: $('#pic').val().trim() || null,
                 status: $('#status').val() || null,
+                reportType: $('#reportType').val() || null,
                 revenue: $('#revenue').val().trim() || null,
                 profitLoss: $('#profitLoss').val().trim() || null,
                 auditFee: $('#auditFee').val().trim() || null,

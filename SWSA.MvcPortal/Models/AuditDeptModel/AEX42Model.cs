@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWSA.MvcPortal.Models.AuditDeptModel
@@ -33,6 +33,21 @@ namespace SWSA.MvcPortal.Models.AuditDeptModel
 
         [Display(Name = "Acctng Wk")]
         public string? AcctngWk { get; set; }
+
+        [Display(Name = "Company Status")]
+        public string? CompanyStatus { get; set; }
+
+        [Display(Name = "Audit Exemption")]
+        public string? AuditExemption { get; set; }
+
+        [Display(Name = "Co Sec")]
+        public string? CoSec { get; set; }
+
+        [Display(Name = "Credit Rating")]
+        public string? CreditRating { get; set; }
+
+        [Display(Name = "Signing Firm")]
+        public string? SigningFirm { get; set; }
 
         [Display(Name = "Reason Why Backlog")]
         public string? ReasonWhyBacklog { get; set; }

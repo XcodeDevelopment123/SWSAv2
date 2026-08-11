@@ -26,21 +26,21 @@
                 </div>
             </div>
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th rowspan="2">Grouping</th>
                             <th rowspan="2">Company Name</th>
                             <th>Quarter</th>
                             <th>Staff</th>
+                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Audit Exemption?</th>
                             <th rowspan="2">Co. Status</th>
-                            <th rowspan="2">Audit Execution</th>
-                            <th rowspan="2">Co. Sec</th>
                             <th rowspan="2">Credit Rating</th>
                             <th rowspan="2">Signing Form</th>
-                            <th rowspan="2">Account Work?</th>
                             <th rowspan="2">Acc dept mth to do</th>
-                            <th rowspan="2">Activity</th>
+                            <th rowspan="2">Co. Sec</th>
+                            <th rowspan="2">Account Work?</th>
                             <th rowspan="2">Year End</th>
                             <th rowspan="2">Year to do</th>
                             <th rowspan="2">Audit Status</th>
@@ -48,7 +48,6 @@
                             <th rowspan="2">Move to Backlog</th>
                             <th rowspan="2">1st 18mths due</th>
                             <th>AFS/UFS</th>
-                            <th rowspan="2">Co. Sec</th>
                             <th>Fr Acc</th>
                             <th rowspan="2">EST Rev('000)</th>
                             <th rowspan="2">NP/(loss)'000</th>
@@ -406,18 +405,24 @@
                 // A. 自动填入 Grouping
                 $('#grouping').val(clientData.grouping || '');
 
-                // B. 自动填入 Company Name (隐藏字段，用于 Save)
+                // B. 自动填入 Activity
+                $('#activity').val(clientData.activitySize || clientData.activity || '');
+
+                // C. 自动填入 Co Status
+                $('#companyStatus').val(clientData.companyStatus || '');
+
+                // D. 自动填入 Company Name (隐藏字段，用于 Save)
                 $('#companyName').val(clientData.companyName);
                 $('#client').val(clientData.companyName);
                 $('#clientId').val(clientData.id);
 
-                // C. 自动计算 Year End Date
+                // E. 自动计算 Year End Date
                 if (clientData.yearEndMonth) {
                     const yearEndDate = calculateYearEndDateForInput(clientData.yearEndMonth);
                     $('#yearEnd').val(yearEndDate);
                 }
 
-                // D. 自动填充 Co. Sec (link from appointed B1)
+                // F. 自动填充 Co. Sec (link from appointed B1)
                 let coSecVal = 'No';
                 if (clientData.appointmentEngagementData) {
                     try {
@@ -438,7 +443,7 @@
                 }
                 $('#coSec').val(coSecVal);
 
-                // E. 自动填充 Acc Wk? (link from B1 "Service type")
+                // G. 自动填充 Acc Wk? (link from B1 "Service type")
                 let hasAcc = false;
                 if (clientData.serviceSelected) {
                     const services = clientData.serviceSelected.split(',').map(s => s.trim().toLowerCase());
@@ -446,7 +451,7 @@
                 }
                 $('select#acctngWk').val(hasAcc ? 'Yes' : 'No');
 
-                // F. 自动填充 Date doc in (link from c1-1)
+                // H. 自动填充 Date doc in (link from c1-1)
                 if (clientData.latestDateDocIn) {
                     $('#dateDocIn').val(convertDateToYmd(clientData.latestDateDocIn));
                 } else {
@@ -455,6 +460,8 @@
             } else {
                 // 清空逻辑
                 $('#grouping').val('');
+                $('#activity').val('');
+                $('#companyStatus').val('');
                 $('#yearEnd').val('');
                 $('#companyName').val('');
                 $('#client').val('');
@@ -693,54 +700,21 @@
         }
 
         // DataTable Logic (Standard)
-         function initializeDataTable() {
-            if (dataTable) {
-                dataTable.destroy();
-                $('#taskDatatable').empty();
+        function initializeDataTable() {
+            if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                $('#taskDatatable').DataTable().destroy();
             }
-            const tableHtml = `
-                <thead>
-                    <tr>
-                        <th rowspan="2">Grouping</th>
-                            <th rowspan="2">Company Name</th>
-                            <th>Quarter</th>
-                            <th>Staff</th>
-                            <th rowspan="2">Activity</th>
-                            <th rowspan="2">Co. Status</th>
-                            <th rowspan="2">Audit Exemption</th>
-                            <th rowspan="2">Co. Sec</th>
-                            <th rowspan="2">Credit Rating</th>
-                            <th rowspan="2">Signing Firm</th>
-                            <th rowspan="2">Account Work?</th>
-                            <th rowspan="2">Acc dept mth to do</th>
-                            <th rowspan="2">Year End</th>
-                            <th rowspan="2">Year to do</th>
-                            <th rowspan="2">Audit Status</th>
-                            <th rowspan="2">Move to AEX Sch</th>
-                            <th rowspan="2">Move to Backlog</th>
-                            <th rowspan="2">1st 18mths due</th>
-                            <th>AFS/UFS</th>
-                            <th>Fr Acc</th>
-                            <th rowspan="2">EST Rev('000)</th>
-                            <th rowspan="2">NP/(loss)'000</th>
-                            <th rowspan="2">Remark</th>
-                            <th rowspan="2">Actions</th>
-                    </tr>
-                    <tr>
-                        <th>to Audit</th>
-                        <th>(PIC)</th>
-                        <th>AFS due date</th>
-                        <th>Date Doc in</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            `;
-            $('#taskDatatable').html(tableHtml);
             populateTableBody(currentData);
 
             dataTable = $('#taskDatatable').DataTable({
-                paging: true, lengthChange: false, searching: true, ordering: true,
-                info: true, autoWidth: false, responsive: true,
+                paging: true,
+                lengthChange: false,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                responsive: false,
+                scrollX: true,
                 dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
                 buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                 language: { emptyTable: "No records found", zeroRecords: "No matching records found" }
@@ -759,21 +733,25 @@
                             <td>${escapeHtml(item.quartertoAudit || '')}</td>
                             <td>${escapeHtml(item.auditStaff || '')}</td>
                             <td>${escapeHtml(item.activity || '')}</td>
+                            <td>${escapeHtml(item.auditExemption || '')}</td>
+                            <td>${escapeHtml(item.companyStatus || '')}</td>
+                            <td>${escapeHtml(item.creditRating || '')}</td>
+                            <td>${escapeHtml(item.signingForm || '')}</td>
+                            <td>${escapeHtml(item.accDeptMthToDo || '')}</td>
+                            <td>${escapeHtml(item.coSec || '')}</td>
+                            <td>${escapeHtml(item.acctngWk || '')}</td>
                             <td>${formatDate(item.yearEnd)}</td>
                             <td>${escapeHtml(item.yearTodo || '')}</td>
-                            <td>${escapeHtml(item.companyStatus || '')}</td>
                             <td>${escapeHtml(item.auditStatus || '')}</td>
                             <td>${escapeHtml(item.movetoAEX || '')}</td>
                             <td>${escapeHtml(item.movetoBacklog || '')}</td>
                             <td>${formatDate(item.first18mthdue)}</td>
                             <td>${formatDate(item.afSdueDate)}</td>
-                            <td>${escapeHtml(item.coSec || '')}</td>
                             <td>${formatDate(item.dateDocIn)}</td>
                             <td>${escapeHtml(item.estRev || '')}</td>
-                            <td>${escapeHtml(item.acctngWk || '')}</td>
                             <td>${escapeHtml(item.jobCompleted || '')}</td>
                             <td>${escapeHtml(item.remark || '')}</td>
-                            <td>
+                            <td class="text-nowrap">
                                 <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})"><i class="fas fa-trash"></i></button>
                             </td>
@@ -785,7 +763,7 @@
 
         function loadData() {
             const tbody = $('#tableBody');
-            tbody.html('<tr><td colspan="20" class="text-center">Loading...</td></tr>');
+            tbody.html('<tr><td colspan="24" class="text-center">Loading...</td></tr>');
             $.ajax({
                 url: '/api/auditdept/at21/get-all', type: 'GET',
                 success: function(response) {

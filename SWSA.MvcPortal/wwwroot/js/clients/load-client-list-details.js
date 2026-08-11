@@ -1,4 +1,9 @@
 $(function () {
+    const clientType = $("#clientType").val();
+    if (clientType) {
+        loadDetailOptions(clientType);
+    }
+
     let queryId = getQueryParam("id");
     if (queryId && !isNaN(queryId) && parseInt(queryId) > 0) {
         loadClientData(parseInt(queryId));
@@ -91,7 +96,7 @@ $(function () {
     });
 
     // Load options for detail panel dropdowns
-    function loadDetailOptions(clientType) {
+    function loadDetailOptions(clientType, targetGroup, targetReferral) {
         $.ajax({
             url: `${urls.client}/options`,
             method: "POST",
@@ -104,23 +109,27 @@ $(function () {
             },
             success: function (res) {
                 if (!res) return;
+
                 if (res.groups && res.groups.length > 0) {
                     const $sel = $('#detailGroup');
+                    const currentVal = targetGroup !== undefined ? targetGroup : ($sel.val() || '');
                     $sel.find('option:not(:first)').remove();
                     $.each(res.groups, function (i, item) {
                         if (item && item.trim() !== "")
                             $sel.append(`<option value="${item}">${item}</option>`);
                     });
-                    $sel.trigger('change');
+                    $sel.val(currentVal || '').trigger('change');
                 }
+
                 if (res.referrals && res.referrals.length > 0) {
                     const $sel = $('#detailReferral');
+                    const currentVal = targetReferral !== undefined ? targetReferral : ($sel.val() || '');
                     $sel.find('option:not(:first)').remove();
                     $.each(res.referrals, function (i, item) {
                         if (item && item.trim() !== "")
                             $sel.append(`<option value="${item}">${item}</option>`);
                     });
-                    $sel.trigger('change');
+                    $sel.val(currentVal || '').trigger('change');
                 }
             }
         });
@@ -133,13 +142,8 @@ $(function () {
         $("#clientId").val(data.id);
 
         if (data.clientType !== "Individual") {
-            // Populate dropdowns with loaded options first
-            loadDetailOptions(data.clientType);
-            // Need slight delay for options to load before setting values
-            setTimeout(function () {
-                $('#detailGroup').val(data.group || '').trigger('change');
-                $('#detailReferral').val(data.referral || '').trigger('change');
-            }, 300);
+            // Populate dropdowns with loaded options and set client values
+            loadDetailOptions(data.clientType, data.group, data.referral);
 
             $('#detailFileNo').val(data.fileNo || '');
             $('#detailCompanyName').val(data.name || '');
@@ -227,8 +231,8 @@ $(function () {
             serviceSelectedValues = [];
             if (data.serviceSelected) {
                 serviceSelectedValues = data.serviceSelected.split(',').map(s => s.trim()).filter(s => s);
-                updateServiceSelectedText();
             }
+            $('#detailServiceSelected').val(serviceSelectedValues).trigger('change');
 
             $('#detailPrincipalActivity').val(data.principalActivity || '');
             if (data.foreignOwned === true) {
@@ -312,10 +316,7 @@ $(function () {
                     4: item.taxReferenceNumber,
                     5: item.phoneNumber,
                     6: item.email,
-                    7: `<div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-warning btn-edit-owner mr-2" data-id="${item.id}" data-name="${item.namePerIC}" title="Edit"><i class="fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-sm btn-danger btn-delete-owner" data-id="${item.id}" data-name="${item.namePerIC}"><i class="fa fa-trash"></i></button>
-                        </div>`
+                    7: item.remark || ''
                 });
             });
         }
@@ -511,7 +512,7 @@ $(function () {
             companyStatusReason: $('#detailCompanyStatusReason').val() || '',
             creditRating: $('#detailCreditRating').val() || null,
             businessNature: $('#detailBusinessNature').val() || '',
-            serviceSelected: serviceSelectedValues.join(', '),
+            serviceSelected: ($('#detailServiceSelected').val() || []).join(', '),
             principalActivity: $('#detailPrincipalActivity').val() || '',
             foreignOwned: $('#detailForeignOwned').val() === 'true' ? true : ($('#detailForeignOwned').val() === 'false' ? false : null),
             appointmentEngagementData: JSON.stringify(apptEngData),
@@ -546,23 +547,12 @@ $(function () {
         plugins: [
             new monthSelectPlugin({
                 shorthand: false,
-                dateFormat: "m",
-                altFormat: "F"
+                dateFormat: "Y-m",
+                altFormat: "F Y"
             })
         ],
         altInput: true,
         onChange: function (selectedDates, dateStr, instance) {
-            if (!selectedDates.length) return;
-            const selectedDate = selectedDates[0];
-            var lastDay = getLastDay(selectedDate);
-            if (selectedDate.getTime() === lastDay.getTime()) return;
-            instance.setDate(lastDay, true);
-        },
-        onReady: function (selectedDates, dateStr, instance) {
-            const monthsEl = instance.calendarContainer.querySelector(".flatpickr-months");
-            if (monthsEl) {
-                monthsEl.style["display"] = "none";
-            }
             if (!selectedDates.length) return;
             const selectedDate = selectedDates[0];
             var lastDay = getLastDay(selectedDate);
