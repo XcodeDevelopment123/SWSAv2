@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;
@@ -61,6 +61,10 @@ public class AEXTemplateController(
         task.QuarterToDo = req.QuarterToDo;
         task.YearEndToDo = req.YearEndToDo;
 
+        task.AuditExemption = req.AuditExemption;
+        task.ReportType = req.ReportType;
+        task.SigningFirm = req.SigningFirm;
+
         task.Revenue = req.Revenue;
         task.Profit = req.Profit;
         task.AuditFee = req.AuditFee;
@@ -96,11 +100,13 @@ public class AEXTemplateController(
         task.DirectorCommOfOathsDate = req.DirectorCommOfOathsDate;
 
         task.TaxDueDate = req.TaxDueDate;
+        task.TargetTaxWorkDate = req.TargetTaxWorkDate;
         task.DatePassToTaxDept = req.DatePassToTaxDept;
 
         task.SecSSMDueDate = req.SecSSMDueDate;
         task.DatePassToSecDept = req.DatePassToSecDept;
 
+        task.IsPostAuditBinded = req.IsPostAuditBinded;
         task.PostAuditDateBinded = req.PostAuditDateBinded;
         task.PostAuditDespatchDateToClient = req.PostAuditDespatchDateToClient;
 

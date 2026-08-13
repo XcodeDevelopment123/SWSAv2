@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Extensions
+@using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Entities.Templates
 @model List<AEXTemplate>
@@ -7,6 +7,8 @@
     var resultVariantypes = SelectHelper.GetEnumSelectList<AuditVarianceType>(null);
     var database = SelectHelper.GetEnumSelectList<AuditDatabase>(null);
     var statusTypes = SelectHelper.GetEnumSelectList<AuditStatus>(null);
+    var reportTypes = SelectHelper.GetEnumSelectList<AuditReportType>(null);
+    var signingFirms = SelectHelper.GetEnumSelectList<AuditSigningFirm>(null);
 }
 
 
@@ -32,14 +34,12 @@
                 <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="11"></th>
-                            <th colspan="5"> Audit WIP (days)</th>
-                            <th colspan="6"> Audit work WIP (%)</th>
-                            <th colspan="7"> Review</th>
-                            <th colspan="4"> AT3.3 Audit Reports from KK</th>
+                            <th colspan="14"></th>
+                            <th colspan="4"> Audit WIP (days)</th>
+                            <th colspan="4"> Review</th>
+                            <th colspan="2"> AT3.3 Audit Reports from KK</th>
                             <th colspan="4"> AT3.4 Directors' Signing pages</th>
-                            <th colspan="2"> 5.Tax dept</th>
-                            <th colspan="2"> 6.Sec dept</th>
+                            <th colspan="5"> 6.Tax/Sec Dept</th>
                             <th colspan="2"> 7.Post Audit Work</th>
                             <th rowspan="3">Action</th>
                         </tr>
@@ -47,10 +47,14 @@
                             <th rowspan="2">Company Name</th>
                             <th rowspan="2">Activity</th>
                             <th rowspan="2">Which database?</th>
+                            <th rowspan="2">Year End</th>
                             <th rowspan="2">YE to do</th>
                             <th rowspan="2">Quarter to do</th>
                             <th rowspan="2">PIC</th>
                             <th rowspan="2">Status</th>
+                            <th rowspan="2">Audit Exemption</th>
+                            <th rowspan="2">Report Type</th>
+                            <th rowspan="2">Signing Firm</th>
 
 
                             <th colspan="2">Est current yr result '000'</th>
@@ -60,20 +64,13 @@
                             <th rowspan="2">b.As at</th>
                             <th rowspan="2">c.No of days</th>
                             <th rowspan="2">Total field work days</th>
-                            <th rowspan="2">result over/Under</th>
 
                             <!--Col 5-->
 
-                            <th colspan="2">A.prog tracker %</th>
-                            <th colspan="3">B.Task %</th>
-                            <th>A+B+C</th>
-
                             <th colspan="3">Kuching 1st Review</th>
-                            <th colspan="4">2nd Review KK</th>
 
+                            <th rowspan="2">2.Total Review days</th>
 
-                            <th rowspan="2">Date sent to KK</th>
-                            <th rowspan="2">Date received AR</th>
                             <th rowspan="2">Date of Report</th>
                             <th rowspan="2">Date of directors rept</th>
 
@@ -83,11 +80,14 @@
                             <th rowspan="2">Comm of Oaths date</th>
 
                             <th rowspan="2">Tax due date</th>
-                            <th rowspan="2">Pass to tax dept</th>
                             <th rowspan="2">SSM Due date</th>
                             <th rowspan="2">Date pass <br /> to sec dept  <br /> (MBRS)</th>
+                            <th rowspan="2">6a. Target Tax Work Date</th>
+                            <th rowspan="2">6b. Date pass to tax dept</th>
+                            <th rowspan="2">6c. Metric (# of days)</th>
+
+                            <th rowspan="2">Binded?</th>
                             <th rowspan="2">Date binded</th>
-                            <th rowspan="2">Despatch date to client</th>
                         </tr>
 
                         <tr>
@@ -96,23 +96,9 @@
                             <th>Audit Fee</th>
                             <th>Date billed</th>
 
-                            <th>a.Account setup <br />(J)</th>
-                            <th>b.Ac summary<br /> (J)</th>
-
-                            <th>c.audit planning <br />(PIC)</th>
-                            <th>d.audit execution</th>
-                            <th>e.execution <br /> audit completion <br />(PIC)</th>
-
-                            <th>Total %</th>
-
-                            <th>Date sent</th>
-                            <th>End date</th>
-                            <th>A.Result over/under</th>
-
-                            <th>Date sent</th>
-                            <th>End date</th>
-                            <th>B.Result over/under</th>
-                            <th>Final</th>
+                            <th>a.Date sent</th>
+                            <th>b.End date</th>
+                            <th>c.Review days</th>
 
                         </tr>
                     </thead>
@@ -125,6 +111,7 @@
                                     <td>@data.Client.Name</td>
                                     <td>@data.Client.ActivitySize.GetDisplayName()</td>
                                     <td>@data.Database.GetDisplayName()</td>
+                                    <td>@data.Client.YearEndMonth?.GetDisplayName()</td>
                                     <td>@data.YearEndToDo.ToFormattedString()</td>
                                     <td> @($"Q{data.QuarterToDo}") </td>
                                     <td>
@@ -141,6 +128,9 @@
 
                                     </td>
                                     <td>@data.Status.GetDisplayName()</td>
+                                    <td>@(data.AuditExemption.HasValue ? (data.AuditExemption.Value ? "Yes" : "No") : "")</td>
+                                    <td>@data.ReportType?.GetDisplayName()</td>
+                                    <td>@data.SigningFirm?.GetDisplayName()</td>
                                     <td>@data.Revenue</td>
                                     <td>@data.Profit</td>
                                     <td>@data.AuditFee</td>
@@ -149,22 +139,10 @@
                                     <td>@data.AuditEndDate.ToFormattedString()</td>
                                     <td>@data.NumberOfDays</td>
                                     <td>@data.TotalFieldWorkDays</td>
-                                    <td>@data.AuditWIPResult?.GetDisplayName()</td>
-                                    <td>@(data.IsAccSetupComplete ? "✓" : "")</td>
-                                    <td>@(data.IsAccSummaryComplete ? "✓" : "")</td>
-                                    <td>@(data.IsAuditPlanningComplete ? "✓" : "")</td>
-                                    <td>@(data.IsAuditExecutionComplete ? "✓" : "")</td>
-                                    <td>@(data.IsExecutionAuditComplete ? "✓" : "")</td>
-                                    <td>@data.ProgressInPercent</td>
                                     <td>@data.FirstReviewSendDate.ToFormattedString()</td>
                                     <td>@data.FirstReviewEndDate.ToFormattedString()</td>
-                                    <td>@data.FirstReviewResult?.GetDisplayName()</td>
-                                    <td>@data.SecondReviewSendDate.ToFormattedString()</td>
-                                    <td>@data.SecondReviewEndDate.ToFormattedString()</td>
-                                    <td>@data.SecondReviewResult?.GetDisplayName()</td>
-                                    <td>@data.SecondReviewFinal.ToFormattedString()</td>
-                                    <td>@data.KualaLumpurOfficeDateSent.ToFormattedString()</td>
-                                    <td>@data.KualaLumpurOfficeAuditReportReceivedDate.ToFormattedString()</td>
+                                    <td>@(data.FirstReviewSendDate.HasValue && data.FirstReviewEndDate.HasValue ? (data.FirstReviewEndDate.Value - data.FirstReviewSendDate.Value).Days.ToString() : "")</td>
+                                    <td>@( (data.FirstReviewSendDate.HasValue && data.FirstReviewEndDate.HasValue ? (data.FirstReviewEndDate.Value - data.FirstReviewSendDate.Value).Days : 0) )</td>
                                     <td>@data.KualaLumpurOfficeReportDate.ToFormattedString()</td>
                                     <td>@data.KualaLumpurOfficeDirectorsReportDate.ToFormattedString()</td>
                                     <td>@data.DirectorDateSent.ToFormattedString()</td>
@@ -172,11 +150,13 @@
                                     <td>@data.DirectorDateReceived.ToFormattedString()</td>
                                     <td>@data.DirectorCommOfOathsDate.ToFormattedString()</td>
                                     <td>@data.TaxDueDate.ToFormattedString()</td>
-                                    <td>@data.DatePassToTaxDept.ToFormattedString()</td>
                                     <td>@data.SecSSMDueDate.ToFormattedString()</td>
                                     <td>@data.DatePassToSecDept.ToFormattedString()</td>
+                                    <td>@data.TargetTaxWorkDate.ToFormattedString()</td>
+                                    <td>@data.DatePassToTaxDept.ToFormattedString()</td>
+                                    <td>@(data.DatePassToTaxDept.HasValue && data.TargetTaxWorkDate.HasValue ? (data.DatePassToTaxDept.Value - data.TargetTaxWorkDate.Value).Days.ToString() : "")</td>
+                                    <td>@(data.IsPostAuditBinded.HasValue ? (data.IsPostAuditBinded.Value ? "Yes" : "No") : "")</td>
                                     <td>@data.PostAuditDateBinded.ToFormattedString()</td>
-                                    <td>@data.PostAuditDespatchDateToClient.ToFormattedString()</td>
 
                                     <td>
 
@@ -222,9 +202,25 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="activity">Activity</label>
+                                <input type="text" id="activity" name="activity" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="database">Which database?</label>
                                 <select asp-items="database" id="database" name="database" class="form-control select2">
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="yearEnd">Year End</label>
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" readonly />
                             </div>
                         </div>
                     </div>
@@ -248,10 +244,10 @@
                                 <label for="quarterToDo">Quarter to do</label>
                                 <select id="quarterToDo" name="quarterToDo" class="form-control select2">
                                     <option selected disabled value="">Please select quarter</option>
-                                    <option value="1">Q1</option>
-                                    <option value="2">Q2</option>
-                                    <option value="3">Q3</option>
-                                    <option value="4">Q4</option>
+                                    <option value="1">1st Qtr</option>
+                                    <option value="2">2nd Qtr</option>
+                                    <option value="3">3rd Qtr</option>
+                                    <option value="4">4th Qtr</option>
                                 </select>
                             </div>
                         </div>
@@ -270,6 +266,35 @@
                             <div class="form-group">
                                 <label for="status">Status</label>
                                 <select asp-items="statusTypes" id="status" name="status" class="form-control select2">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="auditExemption">Audit Exemption</label>
+                                <select id="auditExemption" name="auditExemption" class="form-control select2">
+                                    <option value="">-- Select --</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="reportType">Report Type</label>
+                                <select asp-items="reportTypes" id="reportType" name="reportType" class="form-control select2">
+                                    <option value="">-- Select --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="signingFirm">Signing Firm</label>
+                                <select asp-items="signingFirms" id="signingFirm" name="signingFirm" class="form-control select2">
+                                    <option value="">-- Select --</option>
                                 </select>
                             </div>
                         </div>
@@ -327,7 +352,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="auditStartDate">Start date</label>
                                 <div class="input-group">
@@ -340,7 +365,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="asAtDate">As at</label>
                                 <div class="input-group">
@@ -353,95 +378,19 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="numberOfDays">No of days</label>
+                                <label for="numberOfDays">No of days (c)</label>
                                 <input readonly id="numberOfDays" name="numberOfDays" class="form-control" type="number" />
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="totalFieldWorkDays">Total field work days</label>
-                                <input id="totalFieldWorkDays" name="totalFieldWorkDays" class="form-control" type="number" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="auditWIPResult">Result over/Under</label>
-                                <select asp-items="resultVariantypes" id="auditWIPResult" name="auditWIPResult" class="form-control select2">
-                                </select>
-                            </div>
-                        </div>
                     </div>
 
-
-                    <!-- Collapsible Audit Work WIP Section -->
-                    <div class="form-info-label col-12">
-                        <label>
-                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#auditWorkWipSection" aria-expanded="false" aria-controls="auditWorkWipSection" style="text-decoration: none; color: inherit;">
-                                <i class="fas fa-chevron-right me-2" id="auditWorkWipChevron"></i>
-                                Audit work WIP (%)
-                            </button>
-                        </label>
-                    </div>
-                    <div class="collapse" id="auditWorkWipSection">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="isAccSetupComplete">Account setup (J)</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isAccSetupComplete" name="isAccSetupComplete" class="form-check-input audit-wip-prog" />
-                                        <label class="form-check-label" for="isAccSetupComplete">Complete</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="isAccSummaryComplete">Ac summary (J)</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isAccSummaryComplete" name="isAccSummaryComplete" class="form-check-input audit-wip-prog" />
-                                        <label class="form-check-label" for="isAccSummaryComplete">Complete</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="isAuditPlanningComplete">Audit planning (PIC)</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isAuditPlanningComplete" name="isAuditPlanningComplete" class="form-check-input audit-wip-prog" />
-                                        <label class="form-check-label" for="isAuditPlanningComplete">Complete</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="isAuditExecutionComplete">Audit execution</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isAuditExecutionComplete" name="isAuditExecutionComplete" class="form-check-input audit-wip-prog" />
-                                        <label class="form-check-label" for="isAuditExecutionComplete">Complete</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="isExecutionAuditComplete">Execution audit completion (PIC)</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isExecutionAuditComplete" name="isExecutionAuditComplete" class="form-check-input audit-wip-prog" />
-                                        <label class="form-check-label" for="isExecutionAuditComplete">Complete</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="totalPercent">Total %</label>
-                                    <input id="totalPercent" name="totalPercent" class="form-control" readonly />
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="totalFieldWorkDays">Total field work days (c + Rc)</label>
+                                <input readonly id="totalFieldWorkDays" name="totalFieldWorkDays" class="form-control" type="number" />
                             </div>
                         </div>
                     </div>
@@ -462,9 +411,9 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="firstReviewSendDate">Date sent</label>
+                                    <label for="firstReviewSendDate">Ra. Date sent</label>
                                     <div class="input-group">
                                         <input type="text" id="firstReviewSendDate" name="firstReviewSendDate" class="form-control" placeholder="Select date" />
                                         <div class="input-group-append">
@@ -475,9 +424,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="firstReviewEndDate">End date</label>
+                                    <label for="firstReviewEndDate">Rb. End date</label>
                                     <div class="input-group">
                                         <input type="text" id="firstReviewEndDate" name="firstReviewEndDate" class="form-control" placeholder="Select date" />
                                         <div class="input-group-append">
@@ -488,70 +437,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="firstReviewResult">Result over/under</label>
-                                    <select asp-items="resultVariantypes" id="firstReviewResult" name="firstReviewResult" class="form-control">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-info-label col-12">
-                            <label>Review - 2nd Review KK</label>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="secondReviewSendDate">Date sent</label>
-                                    <div class="input-group">
-                                        <input type="text" id="secondReviewSendDate" name="secondReviewSendDate" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="secondReviewEndDate">End date</label>
-                                    <div class="input-group">
-                                        <input type="text" id="secondReviewEndDate" name="secondReviewEndDate" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="secondReviewResult">Result over/under</label>
-                                    <select asp-items="resultVariantypes" id="secondReviewResult" name="secondReviewResult" class="form-control">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="secondReviewFinal">Final</label>
-                                    <div class="input-group">
-                                        <input type="text" id="secondReviewFinal" name="secondReviewFinal" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <label for="kuchingReviewDays">Rc. Kuching Review days</label>
+                                    <input id="kuchingReviewDays" readonly name="kuchingReviewDays" class="form-control" type="number" />
                                 </div>
                             </div>
                         </div>
@@ -568,35 +457,6 @@
                     </div>
 
                     <div class="collapse" id="at33Section">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dateSentToKK">Date sent to KK</label>
-                                    <div class="input-group">
-                                        <input type="text" id="dateSentToKK" name="dateSentToKK" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dateReceivedAR">Date received AR</label>
-                                    <div class="input-group">
-                                        <input type="text" id="dateReceivedAR" name="dateReceivedAR" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -697,17 +557,17 @@
                         </div>
                     </div>
 
-                    <!-- Collapsible Tax Dept Section -->
+                    <!-- Collapsible 6. Tax/Sec Dept Section -->
                     <div class="form-info-label col-12">
                         <label>
-                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#taxDeptSection" aria-expanded="false" aria-controls="taxDeptSection" style="text-decoration: none; color: inherit;">
-                                <i class="fas fa-chevron-right me-2" id="taxDeptChevron"></i>
-                                Tax dept
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#taxSecDeptSection" aria-expanded="false" aria-controls="taxSecDeptSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="taxSecDeptChevron"></i>
+                                6. Tax/Sec Dept
                             </button>
                         </label>
                     </div>
 
-                    <div class="collapse" id="taxDeptSection">
+                    <div class="collapse" id="taxSecDeptSection">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -724,35 +584,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="datePassToTaxDept">Pass to tax dept</label>
-                                    <div class="input-group">
-                                        <input type="text" id="datePassToTaxDept" name="datePassToTaxDept" class="form-control" placeholder="Select date" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Collapsible Sec Dept Section -->
-                    <div class="form-info-label col-12">
-                        <label>
-                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#secDeptSection" aria-expanded="false" aria-controls="secDeptSection" style="text-decoration: none; color: inherit;">
-                                <i class="fas fa-chevron-right me-2" id="secDeptChevron"></i>
-                                Sec dept
-                            </button>
-                        </label>
-                    </div>
-
-                    <div class="collapse" id="secDeptSection">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="secSSMDueDate">SSM Due date</label>
+                                    <label for="secSSMDueDate">SSM Due date (Auto YE+7m)</label>
                                     <div class="input-group">
                                         <input type="text" id="secSSMDueDate" name="secSSMDueDate" class="form-control" placeholder="Select date" />
                                         <div class="input-group-append">
@@ -763,6 +595,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="datePassToSecDept">Date pass to sec dept (MBRS)</label>
@@ -776,26 +611,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="targetTaxWorkDate">6a. Target Tax Work Date (Auto YE+7m)</label>
+                                    <div class="input-group">
+                                        <input type="text" id="targetTaxWorkDate" name="targetTaxWorkDate" class="form-control" placeholder="Select date" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Collapsible Post Audit Work Section -->
-                    <div class="form-info-label col-12">
-                        <label>
-                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#postAuditSection" aria-expanded="false" aria-controls="postAuditSection" style="text-decoration: none; color: inherit;">
-                                <i class="fas fa-chevron-right me-2" id="postAuditChevron"></i>
-                                Post Audit Work
-                            </button>
-                        </label>
-                    </div>
-
-                    <div class="collapse" id="postAuditSection">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="postAuditDateBinded">Date binded</label>
+                                    <label for="datePassToTaxDept">6b. Date pass to tax dept</label>
                                     <div class="input-group">
-                                        <input type="text" id="postAuditDateBinded" name="postAuditDateBinded" class="form-control" placeholder="Select date" />
+                                        <input type="text" id="datePassToTaxDept" name="datePassToTaxDept" class="form-control" placeholder="Select date" />
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="fa fa-calendar"></i>
@@ -806,9 +642,40 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="postAuditDespatchDateToClient">Despatch date to client</label>
+                                    <label for="timelinessMetric">6c. Metric (# of days)</label>
+                                    <input type="text" id="timelinessMetric" name="timelinessMetric" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible 7. Post Audit Work Section -->
+                    <div class="form-info-label col-12">
+                        <label>
+                            <button class="btn btn-link p-0 text-left w-100" type="button" data-bs-toggle="collapse" data-bs-target="#postAuditSection" aria-expanded="false" aria-controls="postAuditSection" style="text-decoration: none; color: inherit;">
+                                <i class="fas fa-chevron-right me-2" id="postAuditChevron"></i>
+                                7. Post Audit Work
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="collapse" id="postAuditSection">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="isPostAuditBinded">Binded?</label>
+                                    <select id="isPostAuditBinded" name="isPostAuditBinded" class="form-control select2">
+                                        <option value="">-- Select --</option>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="postAuditDateBinded">Date binded</label>
                                     <div class="input-group">
-                                        <input type="text" id="postAuditDespatchDateToClient" name="postAuditDespatchDateToClient" class="form-control" placeholder="Select date" />
+                                        <input type="text" id="postAuditDateBinded" name="postAuditDateBinded" class="form-control" placeholder="Select date" />
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="fa fa-calendar"></i>
@@ -837,22 +704,18 @@
     // Handle collapse chevron rotation
     document.addEventListener('DOMContentLoaded', function() {
         const collapseElements = [
-            '#auditWorkWipSection',
             '#reviewSection',
             '#at33Section',
             '#at34Section',
-            '#taxDeptSection',
-            '#secDeptSection',
+            '#taxSecDeptSection',
             '#postAuditSection'
         ];
 
         const chevronIds = [
-            '#auditWorkWipChevron',
             '#reviewChevron',
             '#at33Chevron',
             '#at34Chevron',
-            '#taxDeptChevron',
-            '#secDeptChevron',
+            '#taxSecDeptChevron',
             '#postAuditChevron'
         ];
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWSA.MvcPortal.Persistence;
 
@@ -11,9 +12,11 @@ using SWSA.MvcPortal.Persistence;
 namespace SWSA.MvcPortal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260812045722_E1.2AEXTemplete")]
+    partial class E12AEXTemplete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("AEXBcklogs", (string)null);
+                    b.ToTable("AEXBcklogs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Backlogs.AuditBacklogSchedule", b =>
@@ -73,7 +76,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("AuditBacklogSchedules", (string)null);
+                    b.ToTable("AuditBacklogSchedules");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseClient", b =>
@@ -111,7 +114,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
 
                     b.UseTptMappingStrategy();
                 });
@@ -136,7 +139,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("MsicCodeId");
 
-                    b.ToTable("CompanyMsicCodes", (string)null);
+                    b.ToTable("CompanyMsicCodes");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.CommunicationContact", b =>
@@ -175,7 +178,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("CommunicationContacts", (string)null);
+                    b.ToTable("CommunicationContacts");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.CompanyOwner", b =>
@@ -222,7 +225,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientCompanyId");
 
-                    b.ToTable("CompanyOwners", (string)null);
+                    b.ToTable("CompanyOwners");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Contacts.OfficialContact", b =>
@@ -258,7 +261,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("OfficialContacts", (string)null);
+                    b.ToTable("OfficialContacts");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.DocumentRecord", b =>
@@ -304,7 +307,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("HandledByStaffId");
 
-                    b.ToTable("DocumentRecords", (string)null);
+                    b.ToTable("DocumentRecords");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A31a", b =>
@@ -356,7 +359,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A31A", (string)null);
+                    b.ToTable("A31A");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A31b", b =>
@@ -411,7 +414,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A31B", (string)null);
+                    b.ToTable("A31B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A32a", b =>
@@ -457,7 +460,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A32A", (string)null);
+                    b.ToTable("A32A");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A32b", b =>
@@ -503,7 +506,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A32B", (string)null);
+                    b.ToTable("A32B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A33a", b =>
@@ -549,7 +552,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A33A", (string)null);
+                    b.ToTable("A33A");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.A33b", b =>
@@ -595,7 +598,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("A33B", (string)null);
+                    b.ToTable("A33B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex12", b =>
@@ -622,9 +625,6 @@ namespace SWSA.MvcPortal.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AuditExecution")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AuditExrmption")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AuditFee")
@@ -687,12 +687,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("FlwUpDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IsBinded")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("KuchingReviewDays")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NoOfDays")
                         .HasColumnType("nvarchar(max)");
 
@@ -708,9 +702,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("QuarterTodo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReportType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ResultOverUnder")
                         .HasColumnType("nvarchar(max)");
 
@@ -723,9 +714,6 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("Revenue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SigningFirm")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SsmdueDate")
                         .HasColumnType("nvarchar(max)");
 
@@ -735,22 +723,10 @@ namespace SWSA.MvcPortal.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TargetTaxWorkDate")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TaxDueDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TotalFieldWkDays")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TotalPercent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WhichDB")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("YEnd")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Yetodo")
@@ -758,7 +734,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AEX12", (string)null);
+                    b.ToTable("AEX12");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex41", b =>
@@ -825,7 +801,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AEX41", (string)null);
+                    b.ToTable("AEX41");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex42", b =>
@@ -868,7 +844,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AEX42", (string)null);
+                    b.ToTable("AEX42");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex51", b =>
@@ -980,7 +956,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AEX51", (string)null);
+                    b.ToTable("AEX51");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Aex52", b =>
@@ -1068,7 +1044,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AEX52", (string)null);
+                    b.ToTable("AEX52");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At11", b =>
@@ -1210,7 +1186,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT11", (string)null);
+                    b.ToTable("AT11");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At21", b =>
@@ -1277,7 +1253,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT21", (string)null);
+                    b.ToTable("AT21");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At22", b =>
@@ -1320,7 +1296,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT22", (string)null);
+                    b.ToTable("AT22");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At31", b =>
@@ -1438,7 +1414,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT31", (string)null);
+                    b.ToTable("AT31");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At32", b =>
@@ -1529,7 +1505,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT32", (string)null);
+                    b.ToTable("AT32");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At33", b =>
@@ -1581,7 +1557,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT33", (string)null);
+                    b.ToTable("AT33");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.At34", b =>
@@ -1624,7 +1600,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AT34", (string)null);
+                    b.ToTable("AT34");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B11", b =>
@@ -1670,7 +1646,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B11", (string)null);
+                    b.ToTable("B11");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B2", b =>
@@ -1746,7 +1722,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B2", (string)null);
+                    b.ToTable("B2");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B31", b =>
@@ -1810,7 +1786,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B31", (string)null);
+                    b.ToTable("B31");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B32", b =>
@@ -1874,7 +1850,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B32", (string)null);
+                    b.ToTable("B32");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B34", b =>
@@ -1932,7 +1908,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B34", (string)null);
+                    b.ToTable("B34");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B35", b =>
@@ -1984,7 +1960,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B35", (string)null);
+                    b.ToTable("B35");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.B36", b =>
@@ -2033,7 +2009,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("B36", (string)null);
+                    b.ToTable("B36");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp21", b =>
@@ -2109,7 +2085,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP21", (string)null);
+                    b.ToTable("BP21");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp22", b =>
@@ -2185,7 +2161,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP22", (string)null);
+                    b.ToTable("BP22");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp23", b =>
@@ -2261,7 +2237,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP23", (string)null);
+                    b.ToTable("BP23");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp24", b =>
@@ -2313,7 +2289,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP24", (string)null);
+                    b.ToTable("BP24");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp25", b =>
@@ -2380,7 +2356,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP25", (string)null);
+                    b.ToTable("BP25");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp26", b =>
@@ -2447,7 +2423,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP26", (string)null);
+                    b.ToTable("BP26");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp31", b =>
@@ -2517,7 +2493,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP31", (string)null);
+                    b.ToTable("BP31");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp32", b =>
@@ -2632,7 +2608,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP32", (string)null);
+                    b.ToTable("BP32");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp33", b =>
@@ -2699,7 +2675,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP33", (string)null);
+                    b.ToTable("BP33");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Bp34", b =>
@@ -2778,7 +2754,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BP34", (string)null);
+                    b.ToTable("BP34");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.FormC", b =>
@@ -2854,7 +2830,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FormC", (string)null);
+                    b.ToTable("FormC");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Group", b =>
@@ -2877,7 +2853,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S13a", b =>
@@ -2941,7 +2917,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S13A", (string)null);
+                    b.ToTable("S13A");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S13b", b =>
@@ -2999,7 +2975,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S13B", (string)null);
+                    b.ToTable("S13B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S14a", b =>
@@ -3054,7 +3030,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S14A", (string)null);
+                    b.ToTable("S14A");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S14b", b =>
@@ -3103,7 +3079,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S14B", (string)null);
+                    b.ToTable("S14B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S15", b =>
@@ -3155,7 +3131,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S15", (string)null);
+                    b.ToTable("S15");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.S16", b =>
@@ -3228,7 +3204,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("S16", (string)null);
+                    b.ToTable("S16");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Tx1", b =>
@@ -3301,7 +3277,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TX1", (string)null);
+                    b.ToTable("TX1");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Tx1b", b =>
@@ -3350,7 +3326,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TX1B", (string)null);
+                    b.ToTable("TX1B");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Tx2", b =>
@@ -3408,7 +3384,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TX2", (string)null);
+                    b.ToTable("TX2");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Tx3", b =>
@@ -3508,7 +3484,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TX3", (string)null);
+                    b.ToTable("TX3");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Models.Tx4", b =>
@@ -3569,7 +3545,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TX4", (string)null);
+                    b.ToTable("TX4");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.MsicCode", b =>
@@ -3594,7 +3570,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MsicCodes", (string)null);
+                    b.ToTable("MsicCodes");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.ScheduledJob", b =>
@@ -3659,7 +3635,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("JobGroup", "JobKey")
                         .IsUnique();
 
-                    b.ToTable("ScheduledJobs", (string)null);
+                    b.ToTable("ScheduledJobs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.SystemAuditLog", b =>
@@ -3702,7 +3678,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PerformedByUserId");
 
-                    b.ToTable("SystemAuditLogs", (string)null);
+                    b.ToTable("SystemAuditLogs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Systems.SystemNotificationLog", b =>
@@ -3736,7 +3712,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("CreatedAt", "Channel");
 
-                    b.ToTable("SystemNotificationLogs", (string)null);
+                    b.ToTable("SystemNotificationLogs");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AEXTemplate", b =>
@@ -3891,7 +3867,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PersonInChargeId");
 
-                    b.ToTable("AEXTemplates", (string)null);
+                    b.ToTable("AEXTemplates");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.AuditTemplate", b =>
@@ -4028,7 +4004,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("PersonInChargeId");
 
-                    b.ToTable("AuditTemplates", (string)null);
+                    b.ToTable("AuditTemplates");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecDeptTaskTemplate", b =>
@@ -4076,7 +4052,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("SecDeptTaskTemplates", (string)null);
+                    b.ToTable("SecDeptTaskTemplates");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.SecStrikeOffTemplate", b =>
@@ -4128,7 +4104,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("DoneByUserId");
 
-                    b.ToTable("SecStrikeOffTemplates", (string)null);
+                    b.ToTable("SecStrikeOffTemplates");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Templates.TaxStrikeOffTemplate", b =>
@@ -4178,7 +4154,7 @@ namespace SWSA.MvcPortal.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("TaxStrikeOffTemplates", (string)null);
+                    b.ToTable("TaxStrikeOffTemplates");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.User", b =>
@@ -4246,7 +4222,7 @@ namespace SWSA.MvcPortal.Migrations
                     b.HasIndex("StaffId")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SWSA.MvcPortal.Entities.Clients.BaseCompany", b =>

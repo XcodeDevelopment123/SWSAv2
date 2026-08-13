@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -130,4 +130,22 @@ public enum AuditDatabase
     [Display(Name = "AEX")]
     AEX,
     Backlog
+}
+
+public enum AuditReportType
+{
+    [Display(Name = "AFS")]
+    AFS,
+    [Display(Name = "UFS")]
+    UFS
+}
+
+public enum AuditSigningFirm
+{
+    [Display(Name = "BTM")]
+    BTM,
+    [Display(Name = "KT NG")]
+    KT_NG,
+    [Display(Name = "RAKC")]
+    RAKC
 }

@@ -1,10 +1,25 @@
-﻿$(function () {
+$(function () {
 
     initSelect2();
 
-    flatpickr("#dateBilled,#auditStartDate,#asAtDate,#firstReviewSendDate,#firstReviewEndDate,#secondReviewSendDate,#secondReviewEndDate,#secondReviewFinal,#dateSentToKK,#dateReceivedAR,#dateOfReport,#dateOfDirectorsReport,#directorDateSent,#directorFollowUpDate,#directorDateReceived,#directorCommOfOathsDate,#taxDueDate,#datePassToTaxDept,#secSSMDueDate,#datePassToSecDept,#postAuditDateBinded,#postAuditDespatchDateToClient", {
+    flatpickr("#dateBilled,#auditStartDate,#asAtDate,#firstReviewSendDate,#firstReviewEndDate,#dateOfReport,#dateOfDirectorsReport,#directorDateSent,#directorFollowUpDate,#directorDateReceived,#directorCommOfOathsDate,#taxDueDate,#secSSMDueDate,#datePassToSecDept,#targetTaxWorkDate,#datePassToTaxDept,#postAuditDateBinded", {
         allowInput: true
     });
+
+    // Auto calculate YE + 7 months for SSM Due Date & Target Tax Work Date
+    function addMonths(date, months) {
+        const d = new Date(date);
+        d.setMonth(d.getMonth() + months);
+        return d;
+    }
+
+    function formatDate(d) {
+        if (!d || isNaN(d.getTime())) return "";
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     const yearEndInstances = flatpickr("#yearEndToDo", {
         plugins: [
@@ -18,12 +33,20 @@
             if (!selectedDates.length) return;
 
             const selectedDate = selectedDates[0];
-
             var lastDay = getLastDay(selectedDate);
 
-            if (selectedDate.getTime() === lastDay.getTime()) return;
+            if (selectedDate.getTime() !== lastDay.getTime()) {
+                instance.setDate(lastDay, true);
+                return;
+            }
 
-            instance.setDate(lastDay, true);
+            // YE + 7 months
+            const ye7m = addMonths(lastDay, 7);
+            const ye7mStr = formatDate(ye7m);
+
+            $("#secSSMDueDate").val(ye7mStr);
+            $("#targetTaxWorkDate").val(ye7mStr);
+            calculateMetric();
         },
     });
 
@@ -31,9 +54,7 @@
     params.append('type', 'SdnBhd');
     params.append('type', 'LLP');
 
-    let modal_AuditWorkProgress = 0;
-    const modal_AuditTotalProgress = $(".audit-wip-prog").length;
-    const modal_AuditWorkProgressStep = 100 / modal_AuditTotalProgress;
+    let clientDataMap = {};
 
     $.ajax({
         method: "GET",
@@ -42,12 +63,99 @@
         success: function (res) {
             let html = "";
             $.each(res, function (index, item) {
+                clientDataMap[item.clientId] = item;
                 html += `<option value="${item.clientId}">${item.name}</option>`;
-            })
+            });
 
             $("#clientSelect").append(html);
         }
-    })
+    });
+
+    // Autofill client details when client is selected
+    $("#clientSelect").on("change", function () {
+        const clientId = $(this).val();
+        if (clientId && clientDataMap[clientId]) {
+            const client = clientDataMap[clientId];
+            $("#activity").val(client.activitySize || "");
+            if (client.financialYearEnd) {
+                $("#yearEnd").val(ConvertTimeFormat(client.financialYearEnd, "DD-MM-YYYY"));
+            } else {
+                $("#yearEnd").val("");
+            }
+            if (client.auditExemption !== undefined && client.auditExemption !== null) {
+                $("#auditExemption").val(client.auditExemption.toString()).trigger('change');
+            }
+            $("#status").val("Pending").trigger('change');
+        }
+    });
+
+    // Dynamic field calculations
+    function calculateDays() {
+        const startStr = $("#auditStartDate").val();
+        const asAtStr = $("#asAtDate").val();
+        let cDays = 0;
+
+        if (startStr && asAtStr) {
+            const startDate = new Date(startStr);
+            const asAtDate = new Date(asAtStr);
+            if (!isNaN(startDate) && !isNaN(asAtDate)) {
+                const diffTime = asAtDate - startDate;
+                cDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                $("#numberOfDays").val(cDays >= 0 ? cDays : 0);
+            }
+        } else {
+            $("#numberOfDays").val("");
+        }
+
+        calculateTotalFieldWorkDays(cDays);
+    }
+
+    function calculateReviewDays() {
+        const sendStr = $("#firstReviewSendDate").val();
+        const endStr = $("#firstReviewEndDate").val();
+        let rcDays = 0;
+
+        if (sendStr && endStr) {
+            const sendDate = new Date(sendStr);
+            const endDate = new Date(endStr);
+            if (!isNaN(sendDate) && !isNaN(endDate)) {
+                const diffTime = endDate - sendDate;
+                rcDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                $("#kuchingReviewDays").val(rcDays >= 0 ? rcDays : 0);
+            }
+        } else {
+            $("#kuchingReviewDays").val("");
+        }
+
+        const cDays = parseInt($("#numberOfDays").val()) || 0;
+        calculateTotalFieldWorkDays(cDays);
+    }
+
+    function calculateTotalFieldWorkDays(cDays) {
+        const rcDays = parseInt($("#kuchingReviewDays").val()) || 0;
+        $("#totalFieldWorkDays").val(cDays + rcDays);
+    }
+
+    function calculateMetric() {
+        const passTaxStr = $("#datePassToTaxDept").val();
+        const targetTaxStr = $("#targetTaxWorkDate").val();
+
+        if (passTaxStr && targetTaxStr) {
+            const passTaxDate = new Date(passTaxStr);
+            const targetTaxDate = new Date(targetTaxStr);
+            if (!isNaN(passTaxDate) && !isNaN(targetTaxDate)) {
+                const diffTime = passTaxDate - targetTaxDate;
+                const metricDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                $("#timelinessMetric").val(`${metricDays} days`);
+            }
+        } else {
+            $("#timelinessMetric").val("");
+        }
+    }
+
+    $("#auditStartDate, #asAtDate").on("change input", calculateDays);
+    $("#firstReviewSendDate, #firstReviewEndDate").on("change input", calculateReviewDays);
+    $("#datePassToTaxDept, #targetTaxWorkDate").on("change input", calculateMetric);
 
     $.ajax({
         method: "GET",
@@ -57,23 +165,11 @@
             let html = "";
             $.each(res, function (index, item) {
                 html += `<option value="${item.id}">${item.name} (Dept: ${item.department})</option>`;
-            })
+            });
 
             $("#personInCharge").append(html);
         }
-    })
-
-    $(".audit-wip-prog").on("change", function () {
-        const val = $(this).prop("checked");
-        if (val) {
-            modal_AuditWorkProgress += modal_AuditWorkProgressStep;
-        } else {
-            modal_AuditWorkProgress -= modal_AuditWorkProgressStep;
-        }
-
-        $("#totalPercent").val(`${modal_AuditWorkProgress}%`)
-
-    })
+    });
 
     const taskDatatable = $("#taskDatatable").DataTable({
         "paging": true,
@@ -84,7 +180,6 @@
         "autoWidth": true,
         "responsive": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-
     });
 
     taskDatatable.buttons().container().appendTo('#taskDatatable_wrapper .col-md-6:eq(0)');
@@ -101,6 +196,9 @@
         quarterToDo: $taskForm.find('select[name="quarterToDo"]'),
         personInChargeId: $taskForm.find('select[name="personInCharge"]'),
         status: $taskForm.find('select[name="status"]'),
+        auditExemption: $taskForm.find('select[name="auditExemption"]'),
+        reportType: $taskForm.find('select[name="reportType"]'),
+        signingFirm: $taskForm.find('select[name="signingFirm"]'),
         revenue: $taskForm.find('input[name="revenue"]'),
         profit: $taskForm.find('input[name="profitLoss"]'),
         auditFee: $taskForm.find('input[name="auditFee"]'),
@@ -108,21 +206,8 @@
         auditStartDate: $taskForm.find('input[name="auditStartDate"]'),
         auditEndDate: $taskForm.find('input[name="asAtDate"]'),
         totalFieldWorkDays: $taskForm.find('input[name="totalFieldWorkDays"]'),
-        auditWIPResult: $taskForm.find('select[name="auditWIPResult"]'),
-        isAccSetupComplete: $taskForm.find('input[name="isAccSetupComplete"]'),
-        isAccSummaryComplete: $taskForm.find('input[name="isAccSummaryComplete"]'),
-        isAuditPlanningComplete: $taskForm.find('input[name="isAuditPlanningComplete"]'),
-        isAuditExecutionComplete: $taskForm.find('input[name="isAuditExecutionComplete"]'),
-        isExecutionAuditComplete: $taskForm.find('input[name="isExecutionAuditComplete"]'),
         firstReviewSendDate: $taskForm.find('input[name="firstReviewSendDate"]'),
         firstReviewEndDate: $taskForm.find('input[name="firstReviewEndDate"]'),
-        firstReviewResult: $taskForm.find('select[name="firstReviewResult"]'),
-        secondReviewSendDate: $taskForm.find('input[name="secondReviewSendDate"]'),
-        secondReviewEndDate: $taskForm.find('input[name="secondReviewEndDate"]'),
-        secondReviewResult: $taskForm.find('select[name="secondReviewResult"]'),
-        secondReviewFinal: $taskForm.find('input[name="secondReviewFinal"]'),
-        kualaLumpurOfficeDateSent: $taskForm.find('input[name="dateSentToKK"]'),
-        kualaLumpurOfficeAuditReportReceivedDate: $taskForm.find('input[name="dateReceivedAR"]'),
         kualaLumpurOfficeReportDate: $taskForm.find('input[name="dateOfReport"]'),
         kualaLumpurOfficeDirectorsReportDate: $taskForm.find('input[name="dateOfDirectorsReport"]'),
         directorDateSent: $taskForm.find('input[name="directorDateSent"]'),
@@ -130,11 +215,12 @@
         directorDateReceived: $taskForm.find('input[name="directorDateReceived"]'),
         directorCommOfOathsDate: $taskForm.find('input[name="directorCommOfOathsDate"]'),
         taxDueDate: $taskForm.find('input[name="taxDueDate"]'),
-        datePassToTaxDept: $taskForm.find('input[name="datePassToTaxDept"]'),
         secSSMDueDate: $taskForm.find('input[name="secSSMDueDate"]'),
         datePassToSecDept: $taskForm.find('input[name="datePassToSecDept"]'),
-        postAuditDateBinded: $taskForm.find('input[name="postAuditDateBinded"]'),
-        postAuditDespatchDateToClient: $taskForm.find('input[name="postAuditDespatchDateToClient"]')
+        targetTaxWorkDate: $taskForm.find('input[name="targetTaxWorkDate"]'),
+        datePassToTaxDept: $taskForm.find('input[name="datePassToTaxDept"]'),
+        isPostAuditBinded: $taskForm.find('select[name="isPostAuditBinded"]'),
+        postAuditDateBinded: $taskForm.find('input[name="postAuditDateBinded"]')
     };
 
     let editId = 0;
@@ -157,12 +243,6 @@
             },
             quarterToDo: {
                 required: true
-            },
-            auditStartDate: {
-                required: true
-            },
-            asAtDate: {
-                required: true
             }
         },
         messages: {
@@ -180,12 +260,6 @@
             },
             quarterToDo: {
                 required: "Please select a quarter."
-            },
-            auditStartDate: {
-                required: "Please select audit start date."
-            },
-            asAtDate: {
-                required: "Please select audit end date."
             }
         },
         errorElement: 'span',
@@ -259,26 +333,32 @@
         const row = taskDatatable.row($(this).closest("tr"));
 
         $.ajax({
-            url: `${urls.aex_template}/${taskId}`, // Update with your actual URL
+            url: `${urls.aex_template}/${taskId}`,
             method: "GET",
             success: function (res) {
                 if (res) {
                     editId = taskId;
                     dataRow = row;
-                    // Populate form fields using taskFormInputs object
+
                     taskFormInputs.clientId.prop("disabled", true).val(res.clientId).trigger('change');
                     taskFormInputs.database.val(res.database).trigger('change');
                     yearEndInstances.setDate(ConvertTimeFormat(res.yearEndToDo, "MMMM YYYY"), true);
                     taskFormInputs.quarterToDo.val(res.quarterToDo).trigger('change');
                     taskFormInputs.personInChargeId.val(res.personInChargeId).trigger('change');
+
+                    if (res.auditExemption !== undefined && res.auditExemption !== null) {
+                        taskFormInputs.auditExemption.val(res.auditExemption.toString()).trigger('change');
+                    }
+                    taskFormInputs.reportType.val(res.reportType).trigger('change');
+                    taskFormInputs.signingFirm.val(res.signingFirm).trigger('change');
+
                     taskFormInputs.revenue.val(res.revenue);
                     taskFormInputs.profit.val(res.profit);
                     taskFormInputs.auditFee.val(res.auditFee);
                     taskFormInputs.dateBilled.val(ConvertTimeFormat(res.dateBilled, "YYYY-MM-DD"));
                     taskFormInputs.auditStartDate.val(ConvertTimeFormat(res.auditStartDate, "YYYY-MM-DD"));
                     taskFormInputs.auditEndDate.val(ConvertTimeFormat(res.auditEndDate, "YYYY-MM-DD"));
-                    $taskForm.find('input[name="numberOfDays"]').val(res.numberOfDays);
-                    taskFormInputs.totalFieldWorkDays.val(res.totalFieldWorkDays);
+                    calculateDays();
 
                     if (res.status === "Work In Progress") {
                         taskFormInputs.status.val("Audit_WIP").trigger('change');
@@ -288,50 +368,29 @@
                         taskFormInputs.status.val(res.status).trigger('change');
                     }
 
-                    taskFormInputs.auditWIPResult.val(res.auditWIPResult).trigger('change');
-                    // Set checkboxes
-                    taskFormInputs.isAccSetupComplete.prop('checked', res.isAccSetupComplete);
-                    taskFormInputs.isAccSummaryComplete.prop('checked', res.isAccSummaryComplete);
-                    taskFormInputs.isAuditPlanningComplete.prop('checked', res.isAuditPlanningComplete);
-                    taskFormInputs.isAuditExecutionComplete.prop('checked', res.isAuditExecutionComplete);
-                    taskFormInputs.isExecutionAuditComplete.prop('checked', res.isExecutionAuditComplete);
-
-                    // Calculate and set total percentage
-                    calculateTotalPercent();
-
-                    // Set review dates
                     taskFormInputs.firstReviewSendDate.val(ConvertTimeFormat(res.firstReviewSendDate, "YYYY-MM-DD"));
                     taskFormInputs.firstReviewEndDate.val(ConvertTimeFormat(res.firstReviewEndDate, "YYYY-MM-DD"));
-                    taskFormInputs.firstReviewResult.val(res.firstReviewResult).trigger('change');
-                    taskFormInputs.secondReviewSendDate.val(ConvertTimeFormat(res.secondReviewSendDate, "YYYY-MM-DD"));
-                    taskFormInputs.secondReviewEndDate.val(ConvertTimeFormat(res.secondReviewEndDate, "YYYY-MM-DD"));
-                    taskFormInputs.secondReviewResult.val(res.secondReviewResult).trigger('change');
-                    taskFormInputs.secondReviewFinal.val(res.secondReviewFinal).trigger('change');
-                    $taskForm.find('input[name="totalReviewDays"]').val(res.totalReviewDays);
+                    calculateReviewDays();
 
-                    // Set AT3.3 dates
-                    taskFormInputs.kualaLumpurOfficeDateSent.val(ConvertTimeFormat(res.kualaLumpurOfficeDateSent, "YYYY-MM-DD"));
-                    taskFormInputs.kualaLumpurOfficeAuditReportReceivedDate.val(ConvertTimeFormat(res.kualaLumpurOfficeAuditReportReceivedDate, "YYYY-MM-DD"));
                     taskFormInputs.kualaLumpurOfficeReportDate.val(ConvertTimeFormat(res.kualaLumpurOfficeReportDate, "YYYY-MM-DD"));
                     taskFormInputs.kualaLumpurOfficeDirectorsReportDate.val(ConvertTimeFormat(res.kualaLumpurOfficeDirectorsReportDate, "YYYY-MM-DD"));
 
-                    // Set AT3.4 dates
                     taskFormInputs.directorDateSent.val(ConvertTimeFormat(res.directorDateSent, "YYYY-MM-DD"));
                     taskFormInputs.directorFollowUpDate.val(ConvertTimeFormat(res.directorFollowUpDate, "YYYY-MM-DD"));
                     taskFormInputs.directorDateReceived.val(ConvertTimeFormat(res.directorDateReceived, "YYYY-MM-DD"));
                     taskFormInputs.directorCommOfOathsDate.val(ConvertTimeFormat(res.directorCommOfOathsDate, "YYYY-MM-DD"));
 
-                    // Set Tax dept dates
                     taskFormInputs.taxDueDate.val(ConvertTimeFormat(res.taxDueDate, "YYYY-MM-DD"));
-                    taskFormInputs.datePassToTaxDept.val(ConvertTimeFormat(res.datePassToTaxDept, "YYYY-MM-DD"));
-
-                    // Set Sec dept dates
                     taskFormInputs.secSSMDueDate.val(ConvertTimeFormat(res.secSSMDueDate, "YYYY-MM-DD"));
                     taskFormInputs.datePassToSecDept.val(ConvertTimeFormat(res.datePassToSecDept, "YYYY-MM-DD"));
+                    taskFormInputs.targetTaxWorkDate.val(ConvertTimeFormat(res.targetTaxWorkDate, "YYYY-MM-DD"));
+                    taskFormInputs.datePassToTaxDept.val(ConvertTimeFormat(res.datePassToTaxDept, "YYYY-MM-DD"));
+                    calculateMetric();
 
-                    // Set Post Audit Work dates
+                    if (res.isPostAuditBinded !== undefined && res.isPostAuditBinded !== null) {
+                        taskFormInputs.isPostAuditBinded.val(res.isPostAuditBinded.toString()).trigger('change');
+                    }
                     taskFormInputs.postAuditDateBinded.val(ConvertTimeFormat(res.postAuditDateBinded, "YYYY-MM-DD"));
-                    taskFormInputs.postAuditDespatchDateToClient.val(ConvertTimeFormat(res.postAuditDespatchDateToClient, "YYYY-MM-DD"));
 
                     $('#taskModal').modal('show');
                 }
@@ -342,12 +401,6 @@
             }
         });
     });
-
-    function calculateTotalPercent() {
-        var checkboxes = $(".audit-wip-prog:checked").length;
-        modal_AuditWorkProgress = checkboxes * modal_AuditWorkProgressStep;
-        $("#totalPercent").val(`${modal_AuditWorkProgress}%`)
-    }
 
     // Delete task
     $(document).on("click", ".delete-task", function () {
@@ -391,14 +444,14 @@
         $taskForm.find('select[name="quarterToDo"]').val(null).trigger('change');
         $taskForm.find('select[name="personInCharge"]').val(null).trigger('change');
         $taskForm.find('select[name="status"]').val(null).trigger('change');
-        $taskForm.find('select[name="auditWIPResult"]').val(null).trigger('change');
-        $taskForm.find('select[name="firstReviewResult"]').val(null).trigger('change');
-        $taskForm.find('select[name="secondReviewResult"]').val(null).trigger('change');
-        $('#totalPercent').val('');
-        modal_AuditWorkProgress = 0;
+        $taskForm.find('select[name="auditExemption"]').val(null).trigger('change');
+        $taskForm.find('select[name="reportType"]').val(null).trigger('change');
+        $taskForm.find('select[name="signingFirm"]').val(null).trigger('change');
+        $taskForm.find('select[name="isPostAuditBinded"]').val(null).trigger('change');
+        $("#activity,#yearEnd,#numberOfDays,#kuchingReviewDays,#totalFieldWorkDays,#timelinessMetric").val('');
         editId = 0;
         dataRow = null;
     }
 
     //#endregion
-})
+});

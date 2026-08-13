@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -1743,32 +1743,26 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         {
             try
             {
-                //if (!ModelState.IsValid)
-                //    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
                 Console.WriteLine("Creating new AEX12 record...");
                 using var connection = new SqlConnection(_connectionString);
 
                 var sql = @"INSERT INTO [Quartz2].[dbo].[AEX12] 
-            ([CompanyName], [Activity], [YEtodo], [QuarterTodo], [PIC], [Status],
-             [Revenue], [ProfitLoss], [AuditFee], [DateBilled], [StartDate], [AsAt],
-             [NoOfDays], [ResultOverUnder], [AccSetup], [AccSummary], [AuditPlanning],
-             [AuditExecution], [AuditCompletion], [TotalPercent], [DateSentKuching],
-             [EndDateKuching], [ResultOverUnderKuching], [DateSentKK], [EndDateKK],
-             [ResultOverUnderKK], [Final], [DateSentToKK], [DateReceivedAR], [DateReport],
-             [DateOfDirectorRept], [DateSentSigning], [FlwUpDate], [DateReceived],
-             [CommOfOathsDate], [TaxDueDate], [PassToTax], [SSMDueDate], [DatePassToSecDept],
-             [DateBinded], [DespatchDateToClient])
+            ([CompanyName], [Activity], [WhichDB], [YEnd], [YEtodo], [QuarterTodo], [PIC], [Status],
+             [AuditExrmption], [ReportType], [SigningFirm], [Revenue], [ProfitLoss], [AuditFee], [DateBilled],
+             [StartDate], [AsAt], [NoOfDays], [TotalFieldWkDays], [DateSentKuching], [EndDateKuching],
+             [KuchingReviewDays], [ResultOverUnderKuching], [DateReport], [DateOfDirectorRept],
+             [DateSentSigning], [FlwUpDate], [DateReceived], [CommOfOathsDate], [TaxDueDate],
+             [SSMDueDate], [DatePassToSecDept], [TargetTaxWorkDate], [PassToTax], [IsBinded], [DateBinded])
             VALUES 
-            (@CompanyName, @Activity, @YEtodo, @QuarterTodo, @PIC, @Status,
-             @Revenue, @ProfitLoss, @AuditFee, @DateBilled, @StartDate, @AsAt,
-             @NoOfDays, @ResultOverUnder, @AccSetup, @AccSummary, @AuditPlanning,
-             @AuditExecution, @AuditCompletion, @TotalPercent, @DateSentKuching,
-             @EndDateKuching, @ResultOverUnderKuching, @DateSentKK, @EndDateKK,
-             @ResultOverUnderKK, @Final, @DateSentToKK, @DateReceivedAR, @DateReport,
-             @DateOfDirectorRept, @DateSentSigning, @FlwUpDate, @DateReceived,
-             @CommOfOathsDate, @TaxDueDate, @PassToTax, @SSMDueDate, @DatePassToSecDept,
-             @DateBinded, @DespatchDateToClient);
+            (@CompanyName, @Activity, @WhichDB, @YEnd, @YEtodo, @QuarterTodo, @PIC, @Status,
+             @AuditExrmption, @ReportType, @SigningFirm, @Revenue, @ProfitLoss, @AuditFee, @DateBilled,
+             @StartDate, @AsAt, @NoOfDays, @TotalFieldWkDays, @DateSentKuching, @EndDateKuching,
+             @KuchingReviewDays, @ResultOverUnderKuching, @DateReport, @DateOfDirectorRept,
+             @DateSentSigning, @FlwUpDate, @DateReceived, @CommOfOathsDate, @TaxDueDate,
+             @SSMDueDate, @DatePassToSecDept, @TargetTaxWorkDate, @PassToTax, @IsBinded, @DateBinded);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -1802,10 +1796,15 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 var sql = @"UPDATE [Quartz2].[dbo].[AEX12] SET 
             [CompanyName] = @CompanyName, 
             [Activity] = @Activity, 
+            [WhichDB] = @WhichDB,
+            [YEnd] = @YEnd,
             [YEtodo] = @YEtodo, 
             [QuarterTodo] = @QuarterTodo, 
             [PIC] = @PIC, 
             [Status] = @Status,
+            [AuditExrmption] = @AuditExrmption,
+            [ReportType] = @ReportType,
+            [SigningFirm] = @SigningFirm,
             [Revenue] = @Revenue, 
             [ProfitLoss] = @ProfitLoss, 
             [AuditFee] = @AuditFee, 
@@ -1813,22 +1812,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [StartDate] = @StartDate, 
             [AsAt] = @AsAt,
             [NoOfDays] = @NoOfDays, 
-            [ResultOverUnder] = @ResultOverUnder, 
-            [AccSetup] = @AccSetup, 
-            [AccSummary] = @AccSummary, 
-            [AuditPlanning] = @AuditPlanning,
-            [AuditExecution] = @AuditExecution, 
-            [AuditCompletion] = @AuditCompletion, 
-            [TotalPercent] = @TotalPercent, 
+            [TotalFieldWkDays] = @TotalFieldWkDays,
             [DateSentKuching] = @DateSentKuching,
             [EndDateKuching] = @EndDateKuching, 
-            [ResultOverUnderKuching] = @ResultOverUnderKuching, 
-            [DateSentKK] = @DateSentKK, 
-            [EndDateKK] = @EndDateKK,
-            [ResultOverUnderKK] = @ResultOverUnderKK, 
-            [Final] = @Final, 
-            [DateSentToKK] = @DateSentToKK, 
-            [DateReceivedAR] = @DateReceivedAR, 
+            [KuchingReviewDays] = @KuchingReviewDays,
             [DateReport] = @DateReport,
             [DateOfDirectorRept] = @DateOfDirectorRept, 
             [DateSentSigning] = @DateSentSigning, 
@@ -1836,11 +1823,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [DateReceived] = @DateReceived,
             [CommOfOathsDate] = @CommOfOathsDate, 
             [TaxDueDate] = @TaxDueDate, 
-            [PassToTax] = @PassToTax, 
             [SSMDueDate] = @SSMDueDate, 
             [DatePassToSecDept] = @DatePassToSecDept,
-            [DateBinded] = @DateBinded, 
-            [DespatchDateToClient] = @DespatchDateToClient
+            [TargetTaxWorkDate] = @TargetTaxWorkDate,
+            [PassToTax] = @PassToTax, 
+            [IsBinded] = @IsBinded,
+            [DateBinded] = @DateBinded
             WHERE Id = @Id";
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);

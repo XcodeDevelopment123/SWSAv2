@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Entities.Templates;
 using SWSA.MvcPortal.Persistence;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -88,4 +88,22 @@ public partial class Aex12
     public string? DateBinded { get; set; }
 
     public string? DespatchDateToClient { get; set; }
+
+    public string? WhichDB { get; set; }
+
+    public string? YEnd { get; set; }
+
+    public string? AuditExrmption { get; set; }
+
+    public string? ReportType { get; set; }
+
+    public string? SigningFirm { get; set; }
+
+    public string? TotalFieldWkDays { get; set; }
+
+    public string? KuchingReviewDays { get; set; }
+
+    public string? TargetTaxWorkDate { get; set; }
+
+    public string? IsBinded { get; set; }
 }

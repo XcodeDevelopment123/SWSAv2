@@ -108,10 +108,10 @@
                                 <label for="quarterToAudit">Quarter to Audit</label>
                                 <select id="quarterToAudit" name="quarterToAudit" class="form-control">
                                     <option value="">Select Quarter</option>
-                                    <option value="Q1">Q1</option>
-                                    <option value="Q2">Q2</option>
-                                    <option value="Q3">Q3</option>
-                                    <option value="Q4">Q4</option>
+                                    <option value="1st Qtr">1st Qtr</option>
+                                    <option value="2nd Qtr">2nd Qtr</option>
+                                    <option value="3rd Qtr">3rd Qtr</option>
+                                    <option value="4th Qtr">4th Qtr</option>
                                 </select>
                             </div>
                         </div>
@@ -132,7 +132,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year" />
+                                <input type="date" id="yearToDo" name="yearToDo" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc in</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                                <input type="date" id="dateDocIn" name="dateDocIn" class="form-control" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -298,16 +298,7 @@
                 $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
             }
 
-            // 1. 初始化日期选择器 (重要：必须在所有逻辑之前)
-            // 注意：yearEnd 虽然是只读，但如果初始化了datepicker，就要用它的API赋值
-            $('#first18MonthsDue, #auditedAccDueDate, #dateDocIn, #yearEnd').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                enableOnReadonly: false // 确保 readonly 字段也能显示但不可选(视需求而定)
-            });
-
-            // 2. 加载数据和 Dropdown
+            // 1. 加载数据和 Dropdown
             loadClientOptions();
             loadPicOptions();
             initializeDataTable();
@@ -318,7 +309,7 @@
                 theme: 'bootstrap4',
                 placeholder: '-- Select Staff (PIC) --',
                 allowClear: true,
-                dropdownParent: $('#taskModal'),
+                dropdownParent: $('#taskModal .modal-content'),
                 width: '100%'
             });
 
@@ -363,11 +354,11 @@
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
                     const calculated7MonthsDueDate = calculate7MonthsDueDate(clientData.yearEndMonth);
 
-                    $('#yearEnd').datepicker('update', calculatedDate);
-                    $('#auditedAccDueDate').datepicker('update', calculated7MonthsDueDate);
+                    $('#yearEnd').val(calculatedDate);
+                    $('#auditedAccDueDate').val(calculated7MonthsDueDate);
                 } else {
-                    $('#yearEnd').val('').datepicker('update', '');
-                    $('#auditedAccDueDate').val('').datepicker('update', '');
+                    $('#yearEnd').val('');
+                    $('#auditedAccDueDate').val('');
                 }
             } else {
                 // 清空
@@ -375,8 +366,8 @@
                 $('#companyName').val('');
                 $('#clientId').val('');
                 $('#client').val('');
-                $('#yearEnd').val('').datepicker('update', '');
-                $('#auditedAccDueDate').val('').datepicker('update', '');
+                $('#yearEnd').val('');
+                $('#auditedAccDueDate').val('');
                 $('#activity').val('');
                 $('#companyStatus').val('');
                 $('#auditExemption').val('');
@@ -456,7 +447,9 @@
                         // 初始化 Select2
                         select.select2({
                             theme: 'bootstrap4',
-                            dropdownParent: $('#taskModal'),
+                            placeholder: '-- Select client --',
+                            allowClear: true,
+                            dropdownParent: $('#taskModal .modal-content'),
                             width: '100%'
                         });
                     }
@@ -478,6 +471,13 @@
                             const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
                             $picSelect.append(`<option value="${val}">${val}${dept}</option>`);
                         }
+                    });
+                    $picSelect.select2({
+                        theme: 'bootstrap4',
+                        placeholder: '-- Select Staff (PIC) --',
+                        allowClear: true,
+                        dropdownParent: $('#taskModal .modal-content'),
+                        width: '100%'
                     });
                 },
                 error: function (err) {
@@ -571,7 +571,6 @@
             $('#taskForm')[0].reset();
             $('#clientSelect').val('').trigger('change');
             $('#team').val('').trigger('change');
-            $('.datepicker').datepicker('update', ''); // 重置所有日期选择器
             $('#taskModal').modal('show');
         }
 
@@ -598,13 +597,12 @@
                         $('#quarterToAudit').val(data.quartertoAudit || '');
                         $('#activity').val(data.activity || '');
 
-                        // 【重要】日期字段用 datepicker('update')
-                        $('#yearEnd').datepicker('update', formatDate(data.yearEnd));
-                        $('#first18MonthsDue').datepicker('update', formatDate(data.first18mthsdue));
-                        $('#auditedAccDueDate').datepicker('update', formatDate(data.auditedAccDueDate));
-                        $('#dateDocIn').datepicker('update', formatDate(data.dateDocIn));
-
-                        $('#yearToDo').val(data.yeattodo || '');
+                        // 【重要】Auto fill 文本字段与 Date input 赋值
+                        $('#yearEnd').val(formatDate(data.yearEnd));
+                        $('#first18MonthsDue').val(formatDate(data.first18mthsdue));
+                        $('#auditedAccDueDate').val(formatDate(data.auditedAccDueDate));
+                        $('#dateDocIn').val(formatIsoForDateInput(data.dateDocIn));
+                        $('#yearToDo').val(formatIsoForDateInput(data.yeattodo) || data.yeattodo || '');
                         $('#companyStatus').val(data.companyStatus || '');
                         $('#auditExemption').val(data.auditExemption || '');
                         $('#creditRating').val(data.creditRating || '');
@@ -648,8 +646,7 @@
                 companyName: companyName,
                 quartertoAudit: $('#quarterToAudit').val(),
                 activity: $('#activity').val(),
-                // YearEnd 是自动计算并显示的，也要提交回去
-                yearEnd: convertDateToISO($('#yearEnd').val()),
+                yearEnd: convertDateToISO($('#yearEnd').val()) || $('#yearEnd').val(),
                 yeattodo: $('#yearToDo').val(),
                 companyStatus: $('#companyStatus').val(),
                 auditExemption: $('#auditExemption').val(),
@@ -657,11 +654,11 @@
                 signingPages: $('#signingPages').val(),
                 movetoActiveSch: $('#moveToActiveSch').val(),
                 movetoBacklog: $('#moveToBacklog').val(),
-                first18mthsdue: convertDateToISO($('#first18MonthsDue').val()),
-                auditedAccDueDate: convertDateToISO($('#auditedAccDueDate').val()),
+                first18mthsdue: convertDateToISO($('#first18MonthsDue').val()) || $('#first18MonthsDue').val(),
+                auditedAccDueDate: convertDateToISO($('#auditedAccDueDate').val()) || $('#auditedAccDueDate').val(),
                 coSec: $('#coSec').val(),
                 team: $('#team').val(),
-                dateDocIn: convertDateToISO($('#dateDocIn').val()),
+                dateDocIn: $('#dateDocIn').val(),
                 estRev: $('#estRev').val(),
                 estNetProfit: $('#estNetProfit').val(),
                 acctngWk: $('#acctngWk').val(),
@@ -709,6 +706,16 @@
             return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
         }
 
+        function formatIsoForDateInput(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
         function convertDateToISO(dateStr) {
             if (!dateStr) return null;
             const parts = dateStr.split('/');
@@ -734,6 +741,15 @@
 
         .btn-group .btn {
             margin-right: 5px;
+        }
+
+        /* Select2 Dropdown Modal Positioning Fix */
+        #taskModal .modal-content {
+            position: relative;
+        }
+
+        .select2-dropdown {
+            z-index: 1060 !important;
         }
     </style>
 }

@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Entities.Clients;
+using SWSA.MvcPortal.Entities.Clients;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +14,11 @@ public class AEXTemplate
     public AuditStatus Status { get; set; } = AuditStatus.Pending;
     public DateTime YearEndToDo { get; set; }
     public int QuarterToDo { get; set; }
+
+    //Basic Info Extensions
+    public bool? AuditExemption { get; set; }
+    public AuditReportType? ReportType { get; set; }
+    public AuditSigningFirm? SigningFirm { get; set; }
 
     //Est current yr result
     public decimal? Revenue { get; set; }
@@ -76,12 +81,15 @@ public class AEXTemplate
 
     //Tax Dept
     public DateTime? TaxDueDate { get; set; }
+    public DateTime? TargetTaxWorkDate { get; set; }
     public DateTime? DatePassToTaxDept { get; set; }
+
     //Sec Dept
     public DateTime? SecSSMDueDate { get; set; }
     public DateTime? DatePassToSecDept { get; set; }
 
     //POST Audit Work
+    public bool? IsPostAuditBinded { get; set; }
     public DateTime? PostAuditDateBinded { get; set; }
     public DateTime? PostAuditDespatchDateToClient { get; set; }
 
