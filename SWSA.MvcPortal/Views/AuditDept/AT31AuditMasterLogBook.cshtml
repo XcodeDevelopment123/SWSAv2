@@ -2,7 +2,13 @@
     ViewData["Title"] = "AT31AuditMasterLogBook";
 }
 
-<h1>AT 3.1 Audit Master Log Book</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>AT 3.1 Audit Master Log Book</h1>
+    <div class="d-flex align-items-center">
+        <label class="fw-bold me-2 mb-0">Report as At</label>
+        <input type="date" id="reportAsAt" class="form-control form-control-sm" style="width: 160px;" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -11,51 +17,67 @@
                 <h3 class="card-title">
                     <i class="fas fa-tasks me-2"></i>Audit Master Log Book Records
                 </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="openCreateModal()">
-                        <i class="fas fa-plus me-2"></i>New Task
-                    </button>
-                </div>
             </div>
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                <table id="taskDatatable" class="table table-bordered table-striped align-middle text-nowrap text-center" style="width:100%">
                     <thead>
+                        <!-- Row 1: Super Header -->
                         <tr>
-                            <th>No</th>
-                            <th>Company Name</th>
-                            <th>Activity</th>
-                            <th>YE to do</th>
-                            <th>Qtr to</th>
-                            <th>PIC</th>
-                            <th>Status</th>
-                            <th>Doc.Inwards Date</th>
+                            <th rowspan="2" class="align-middle">No</th>
+                            <th rowspan="2" class="align-middle">Company Name</th>
+                            <th rowspan="2" class="align-middle">Activity</th>
+                            <th rowspan="2" class="align-middle">YE to do</th>
+                            <th rowspan="2" class="align-middle">Qtr to</th>
+                            <th rowspan="2" class="align-middle">PIC</th>
+                            <th rowspan="2" class="align-middle">Status</th>
+                            <th rowspan="2" class="align-middle">Doc.Inwards Date</th>
+                            <th colspan="2" class="text-center">Current yr result '000</th>
+                            <th colspan="2" class="text-center">Billing</th>
+                            <th colspan="9" class="text-center">1. Audit WIP</th>
+                            <th colspan="5" class="text-center">2. Audit Report AFS</th>
+                            <th colspan="3" class="text-center">3. Directors Signing Pages</th>
+                            <th colspan="3" class="text-center">4. Tax Dept</th>
+                            <th colspan="2" class="text-center">5. Sec Dept</th>
+                            <th colspan="1" class="text-center">6. Post Audit Work</th>
+                            <th rowspan="2" class="align-middle">Actions</th>
+                        </tr>
+                        <!-- Row 2: Sub Header -->
+                        <tr>
+                            <!-- Current yr result '000 -->
                             <th>Revenue</th>
                             <th>Profit/(loss)</th>
+                            <!-- Billing -->
                             <th>Audit Fee</th>
                             <th>Date billed</th>
+                            <!-- 1. Audit WIP -->
                             <th>Start Date 1.1</th>
                             <th>Date End 1.2</th>
                             <th>Days Done 1.3</th>
                             <th>%Done 1.4</th>
                             <th>Completed? 1.5</th>
-                            <th>Date Sent 1.6</th>
+                            <th>Total Field Work Days</th>
+                            <th>Date sent 1.6</th>
                             <th>End Date 1.7</th>
                             <th># of days 1.8</th>
-                            <th>Date Sent to KIK 2.1</th>
-                            <th>KK Review</th>
+                            <!-- 2. Audit Report AFS -->
+                            <th>Date sent to KK 2.1</th>
                             <th>Review result(Final)# of days 2.2</th>
-                            <th>Date Received 2.3</th>
-                            <th>Total Review Days 2.4</th>
+                            <th># of days 2.3</th>
+                            <th>Date Received</th>
+                            <th>Total review Days 2.4</th>
+                            <!-- 3. Directors Signing Pages -->
                             <th>Client Meeting By 3.1</th>
                             <th>Date Sent to Client 3.2</th>
                             <th>Date Received Back 3.3</th>
+                            <!-- 4. Tax Dept -->
                             <th>Target Tax Work Date 4.1</th>
-                            <th>Date Pass to tax Dept 4.2</th>
-                            <th>Metric: 4.2-4.1</th>
+                            <th>Date Pass to Tax Dept 4.2</th>
+                            <th>Metric (4.2-4.1)</th>
+                            <!-- 5. Sec Dept -->
                             <th>SSM Due Date</th>
                             <th>Date pass to Sec (MBRS)</th>
-                            <th>Blinded?</th>
-                            <th>Actions</th>
+                            <!-- 6. Post Audit Work -->
+                            <th>Binded</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -66,408 +88,23 @@
     </div>
 </div>
 
-<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalLabel">
-                    <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Audit Master Log Book Record</span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="taskForm">
-                    <input type="hidden" id="recordId" value="">
-
-                    <!-- Basic Information -->
-                    <div class="form-info-label col-12">
-                        <label>Basic Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="clientSelect">Client <span class="text-danger">*</span></label>
-                                <select id="clientSelect" name="clientSelect" class="form-control" required>
-                                    <option value="">-- Select client --</option>
-                                </select>
-                                <small class="text-muted">Options are linked from the Sdn Bhd Client List.</small>
-                                <input type="hidden" id="client" name="client" />
-                                <input type="hidden" id="clientId" name="clientId" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="qtrTo">Qtr to</label>
-                                <select id="qtrTo" name="qtrTo" class="form-control">
-                                    <option value="">Select Quarter</option>
-                                    <option value="Q1">Q1</option>
-                                    <option value="Q2">Q2</option>
-                                    <option value="Q3">Q3</option>
-                                    <option value="Q4">Q4</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select id="status" name="status" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Not Started">Not Started</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="docInwardsDate">Doc.Inwards Date</label>
-                                <input type="date" id="docInwardsDate" name="docInwardsDate" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Financial Results & Billing -->
-                    <div class="form-info-label col-12">
-                        <label>Financial Results & Billing</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="revenue">Revenue ('000)</label>
-                                <input type="number" id="revenue" name="revenue" class="form-control" placeholder="Enter revenue" step="0.01" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="profitLoss">Profit/(loss) ('000)</label>
-                                <input type="number" id="profitLoss" name="profitLoss" class="form-control" placeholder="Enter profit/loss" step="0.01" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="auditFee">Audit Fee</label>
-                                <input type="number" id="auditFee" name="auditFee" class="form-control" placeholder="Enter audit fee" step="0.01" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="dateBilled">Date billed</label>
-                                <input type="date" id="dateBilled" name="dateBilled" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 1. Audit WIP -->
-                    <div class="form-info-label col-12">
-                        <label>1. Audit WIP</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="startDate">Start Date 1.1</label>
-                                <input type="date" id="startDate" name="startDate" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="dateEnd">Date End 1.2</label>
-                                <input type="date" id="dateEnd" name="dateEnd" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="daysDone">Days Done 1.3</label>
-                                <input type="number" id="daysDone" name="daysDone" class="form-control" placeholder="Enter days" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="percentDone">%Done 1.4</label>
-                                <input type="number" id="percentDone" name="percentDone" class="form-control" placeholder="Enter percentage" step="0.1" min="0" max="100" />
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="completed">Completed? 1.5</label>
-                                <select id="completed" name="completed" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dateSent1_6">Date Sent 1.6</label>
-                                <input type="date" id="dateSent1_6" name="dateSent1_6" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="endDate1_7">End Date 1.7</label>
-                                <input type="date" id="endDate1_7" name="endDate1_7" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="days1_8"># of days 1.8</label>
-                                <input type="number" id="days1_8" name="days1_8" class="form-control" placeholder="Enter # of days" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Audit Report AFS -->
-                    <div class="form-info-label col-12">
-                        <label>2. Audit Report AFS</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dateSentToKIK">Date Sent to KIK 2.1</label>
-                                <input type="date" id="dateSentToKIK" name="dateSentToKIK" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="kkReviewDate">KK Review (Date sent to KK)</label>
-                                <input type="date" id="kkReviewDate" name="kkReviewDate" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="reviewResult">Review result(Final)# of days 2.2</label>
-                                <input type="text" id="reviewResult" name="reviewResult" class="form-control" placeholder="Enter review result" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateReceived">Date Received 2.3</label>
-                                <input type="date" id="dateReceived" name="dateReceived" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="totalReviewDays">Total Review Days 2.4</label>
-                                <input type="number" id="totalReviewDays" name="totalReviewDays" class="form-control" placeholder="Enter total review days" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. Directors Signing Pages -->
-                    <div class="form-info-label col-12">
-                        <label>3. Directors Signing Pages</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="clientMeetingBy">Client Meeting By 3.1</label>
-                                <input type="text" id="clientMeetingBy" name="clientMeetingBy" class="form-control" placeholder="Enter details" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dateSentToClient">Date Sent to Client 3.2</label>
-                                <input type="date" id="dateSentToClient" name="dateSentToClient" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dateReceivedBack">Date Received Back 3.3</label>
-                                <input type="date" id="dateReceivedBack" name="dateReceivedBack" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. Tax Dept -->
-                    <div class="form-info-label col-12">
-                        <label>4. Tax Dept</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="targetTaxWorkDate">Target Tax Work Date 4.1</label>
-                                <input type="date" id="targetTaxWorkDate" name="targetTaxWorkDate" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="datePassToTaxDept">Date Pass to tax Dept 4.2</label>
-                                <input type="date" id="datePassToTaxDept" name="datePassToTaxDept" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="metric421">Metric: 4.2-4.1</label>
-                                <input type="text" id="metric421" name="metric421" class="form-control" readonly placeholder="Auto-calculated" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5. Sec Dept -->
-                    <div class="form-info-label col-12">
-                        <label>5. Sec Dept</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="ssmDueDate">SSM Due Date</label>
-                                <input type="date" id="ssmDueDate" name="ssmDueDate" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="datePassToSecDept">Date pass to Sec (MBRS)</label>
-                                <input type="date" id="datePassToSecDept" name="datePassToSecDept" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6. Post Audit Work -->
-                    <div class="form-info-label col-12">
-                        <label>6. Post Audit Work</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="blinded">Blinded?</label>
-                                <select id="blinded" name="blinded" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveRecord()">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <partial name="_DatatablesB5ScriptsPartial" />
-    
-    
-    
-    
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    
-    
-    
-    
-    
-    
-    
 
     <script>
-        let currentEditingId = null;
         let dataTable = null;
-        let clientNameMap = {};
-        let clientDataMap = {};
 
-        $(document).ready(function() {
-            if ($('#companyName').length === 0) {
-                $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
-            }
-            loadClientOptions();
+        $(document).ready(function () {
             loadData();
-            // Auto-calculate Metric 4.2-4.1
-            $('#datePassToTaxDept, #targetTaxWorkDate').on('change', calculateMetric);
-        });
-
-        function calculateMetric() {
-            const targetDate = $('#targetTaxWorkDate').val();
-            const passDate = $('#datePassToTaxDept').val();
-            if (targetDate && passDate) {
-                const d1 = new Date(targetDate);
-                const d2 = new Date(passDate);
-                const diffTime = Math.abs(d2 - d1);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                $('#metric421').val(diffDays + ' days');
-            } else {
-                $('#metric421').val('');
-            }
-        }
-
-        function loadClientOptions() {
-            $.ajax({
-                url: '/api/get/company-options',
-                type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        const select = $('#clientSelect');
-                        select.empty();
-                        select.append('<option value="">-- Select client --</option>');
-                        clientNameMap = {};
-                        clientDataMap = {};
-                        response.data.forEach(client => {
-                            if (client.companyName) {
-                                clientNameMap[client.companyName.trim()] = client.id;
-                            }
-                            clientDataMap[client.id] = client;
-                            select.append(`<option value="${client.id}">${client.companyName}</option>`);
-                        });
-                    }
-                }
-            });
-        }
-
-        $('#clientSelect').on('change', function() {
-            const selectedId = $(this).val();
-            const clientData = clientDataMap[selectedId];
-            if (clientData) {
-                $('#companyName').val(clientData.companyName);
-                $('#clientId').val(clientData.id);
-                $('#client').val(clientData.companyName);
-            } else {
-                $('#companyName').val('');
-                $('#clientId').val('');
-                $('#client').val('');
-            }
         });
 
         function initializeDataTable() {
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 dataTable.destroy();
-                $('#taskDatatable').empty();
             }
             dataTable = $('#taskDatatable').DataTable({
                 "paging": true,
@@ -476,7 +113,7 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": true,
+                "responsive": false,
                 "scrollX": true,
                 "dom": 'Bfrtip',
                 "buttons": [
@@ -485,49 +122,35 @@
                     { extend: 'excel', text: 'Excel' },
                     { extend: 'pdf', text: 'PDF' },
                     { extend: 'print', text: 'Print' },
-                    { extend: 'colvis', text: 'Columns' }
+                    { extend: 'colvis', text: 'Column visibility' }
                 ],
                 "language": {
                     "emptyTable": "No audit master log book records found",
                     "loadingRecords": "Loading...",
                     "zeroRecords": "No matching records found"
-                },
-                "initComplete": function() {
-                    var thead = $('#taskDatatable thead');
-                    if (thead.find('tr').length === 1) {
-                        var sections = [12, 8, 5, 3, 3, 2, 1, 1];
-                        var labels = ['Basic Info & Billing', '1. Audit WIP', '2. Audit Report AFS', '3. Directors Signing Pages', '4. Tax Dept', '5. Sec Dept', '6. Post Audit Work', ''];
-                        var row = $('<tr class="dt-section-header"></tr>');
-                        sections.forEach(function(c, i) {
-                            row.append('<th colspan="' + c + '" class="text-center" style="background:#f8f9fa;border-bottom:2px solid #dee2e6">' + labels[i] + '</th>');
-                        });
-                        thead.prepend(row);
-                    }
                 }
             });
         }
-
-
 
         function loadData() {
             const tbody = $('#tableBody');
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 $('#taskDatatable').DataTable().destroy();
             }
-            tbody.html('<tr><td colspan="35" class="text-center">Loading data...</td></tr>');
+            tbody.html('<tr><td colspan="36" class="text-center">Loading data...</td></tr>');
             $.ajax({
                 url: '/api/auditdept/at31/get-all',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     if (response.success && response.data) {
                         populateTable(response.data);
                     } else {
-                        tbody.html('<tr><td colspan="35" class="text-center">No data available</td></tr>');
+                        tbody.html('<tr><td colspan="36" class="text-center">No data available</td></tr>');
                         initializeDataTable();
                     }
                 },
-                error: function(xhr, status, error) {
-                    tbody.html('<tr><td colspan="35" class="text-center">Error loading data</td></tr>');
+                error: function (xhr, status, error) {
+                    tbody.html('<tr><td colspan="36" class="text-center">Error loading data</td></tr>');
                     showAlert('Error loading data: ' + error, 'danger');
                 }
             });
@@ -537,16 +160,23 @@
             const tbody = $('#tableBody');
             tbody.empty();
             if (data && data.length > 0) {
-                data.forEach(function(item, index) {
-                    // Compute Metric from dates if not stored
+                data.forEach(function (item, index) {
+                    // Formula: Metric 4.2-4.1
                     let metricVal = item.metric421 || '';
-                    if (!metricVal && item.datePassToTaxDept && item.targetTaxWorkDate) {
-                        const d1 = new Date(item.targetTaxWorkDate);
-                        const d2 = new Date(item.datePassToTaxDept);
-                        const diffTime = Math.abs(d2 - d1);
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        metricVal = diffDays + ' days';
+                    if (!metricVal && item.passtoDept && item.taxDueDate) {
+                        const d1 = new Date(item.taxDueDate);
+                        const d2 = new Date(item.passtoDept);
+                        if (!isNaN(d1.getTime()) && !isNaN(d2.getTime())) {
+                            const diffDays = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+                            metricVal = diffDays + ' days';
+                        }
                     }
+
+                    // Formula: Total Field Work Days = 1.3 + 2.3
+                    const daysDoneVal = parseFloat(item.daysDone) || 0;
+                    const days23Val = parseFloat(item.reviewResultofDays) || 0;
+                    const totalFieldWorkDays = (item.daysDone || item.reviewResultofDays) ? (daysDoneVal + days23Val) : '';
+
                     const row = `
                         <tr>
                             <td>${index + 1}</td>
@@ -566,11 +196,12 @@
                             <td>${item.daysDone || ''}</td>
                             <td>${formatPercentage(item.donePercent)}</td>
                             <td>${escapeHtml(item.completed || '')}</td>
+                            <td>${totalFieldWorkDays}</td>
                             <td>${formatDate(item.dateSent1_6)}</td>
                             <td>${formatDate(item.endDate1_7)}</td>
                             <td>${item.days1_8 || ''}</td>
-                            <td>${formatDate(item.dateSent)}</td>
                             <td>${formatDate(item.dateSentToKK)}</td>
+                            <td>${escapeHtml(item.reviewResultofDays || '')}</td>
                             <td>${escapeHtml(item.reviewResultofDays || '')}</td>
                             <td>${formatDate(item.dateReceiveFromKK)}</td>
                             <td>${item.totalReviewDays || ''}</td>
@@ -584,7 +215,6 @@
                             <td>${formatDate(item.datePasstoSecDept)}</td>
                             <td>${escapeHtml(item.binded || '')}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning me-1" onclick="editRecord(${item.id})" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteRecord(${item.id})" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
@@ -595,155 +225,12 @@
             initializeDataTable();
         }
 
-        function openCreateModal() {
-            currentEditingId = null;
-            $('#modalTitle').text('Add New Audit Master Log Book Record');
-            $('#taskForm')[0].reset();
-            $('#recordId').val('');
-            $('#clientSelect').val('');
-            $('#taskModal').modal('show');
-        }
-
-        function editRecord(id) {
-            $.ajax({
-                url: '/api/auditdept/at31/get/' + id,
-                type: 'GET',
-                success: function(response) {
-                    if (response.success) {
-                        const record = response.data;
-                        currentEditingId = record.id;
-                        $('#modalTitle').text('Edit Audit Master Log Book Record');
-                        $('#recordId').val(record.id);
-                        $('#companyName').val(record.companyName || '');
-                        if (record.clientId) {
-                            $('#clientSelect').val(record.clientId);
-                        } else if (record.companyName) {
-                            const foundId = clientNameMap[record.companyName.trim()];
-                            if (foundId) {
-                                $('#clientSelect').val(foundId);
-                            }
-                        }
-                        $('#activity').val(record.activity || '');
-                        $('#yeToDo').val(record.yEtoDo || '');
-                        $('#qtrTo').val(record.quartertoDo || '');
-                        $('#pic').val(record.pic || '');
-                        $('#status').val(record.status || '');
-                        $('#docInwardsDate').val(formatDateForInput(record.docInwardsDate));
-                        $('#revenue').val(record.revenue || '');
-                        $('#profitLoss').val(record.profit || '');
-                        $('#auditFee').val(record.auditFee || '');
-                        $('#dateBilled').val(formatDateForInput(record.dateBilled));
-                        $('#startDate').val(formatDateForInput(record.startDate));
-                        $('#dateEnd').val(formatDateForInput(record.endDate));
-                        $('#daysDone').val(record.daysDone || '');
-                        $('#percentDone').val(record.donePercent || '');
-                        $('#completed').val(record.completed || '');
-                        $('#dateSent1_6').val(formatDateForInput(record.dateSent1_6));
-                        $('#endDate1_7').val(formatDateForInput(record.endDate1_7));
-                        $('#days1_8').val(record.days1_8 || '');
-                        $('#dateSentToKIK').val(formatDateForInput(record.dateSent));
-                        $('#kkReviewDate').val(formatDateForInput(record.dateSentToKK));
-                        $('#reviewResult').val(record.reviewResultofDays || '');
-                        $('#dateReceived').val(formatDateForInput(record.dateReceiveFromKK));
-                        $('#totalReviewDays').val(record.totalReviewDays || '');
-                        $('#clientMeetingBy').val(record.whoMeetClientDate || '');
-                        $('#dateSentToClient').val(formatDateForInput(record.dateSenttoClient));
-                        $('#dateReceivedBack').val(formatDateForInput(record.dateReceiveBack));
-                        $('#targetTaxWorkDate').val(formatDateForInput(record.taxDueDate));
-                        $('#datePassToTaxDept').val(formatDateForInput(record.passtoDept));
-                        $('#metric421').val(record.metric421 || '');
-                        $('#ssmDueDate').val(formatDateForInput(record.ssMdueDate));
-                        $('#datePassToSecDept').val(formatDateForInput(record.datePasstoSecDept));
-                        $('#blinded').val(record.binded || '');
-                        calculateMetric();
-                        $('#taskModal').modal('show');
-                    } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    showAlert('Error loading record: ' + error, 'danger');
-                }
-            });
-        }
-
-        function saveRecord() {
-            const formData = {
-                companyName: $('#companyName').val(),
-                activity: $('#activity').val(),
-                yEtoDo: $('#yeToDo').val(),
-                quartertoDo: $('#qtrTo').val(),
-                pic: $('#pic').val(),
-                mthDue: null,
-                status: $('#status').val(),
-                docInwardsDate: $('#docInwardsDate').val() || null,
-                revenue: $('#revenue').val() || null,
-                profit: $('#profitLoss').val() || null,
-                auditFee: $('#auditFee').val() || null,
-                dateBilled: $('#dateBilled').val() || null,
-                startDate: $('#startDate').val() || null,
-                endDate: $('#dateEnd').val() || null,
-                daysDone: $('#daysDone').val() || null,
-                donePercent: $('#percentDone').val() || null,
-                completed: $('#completed').val(),
-                dateSent: $('#dateSentToKIK').val() || null,
-                dateSent1_6: $('#dateSent1_6').val() || null,
-                endDate1_7: $('#endDate1_7').val() || null,
-                days1_8: $('#days1_8').val() || null,
-                dateSentToKK: $('#kkReviewDate').val() || null,
-                reviewResultofDays: $('#reviewResult').val(),
-                dateReceiveFromKK: $('#dateReceived').val() || null,
-                totalReviewDays: $('#totalReviewDays').val() || null,
-                whoMeetClientDate: $('#clientMeetingBy').val(),
-                dateSenttoClient: $('#dateSentToClient').val() || null,
-                dateReceiveBack: $('#dateReceivedBack').val() || null,
-                taxDueDate: $('#targetTaxWorkDate').val() || null,
-                passtoDept: $('#datePassToTaxDept').val() || null,
-                metric421: $('#metric421').val() || null,
-                ssMdueDate: $('#ssmDueDate').val() || null,
-                datePasstoSecDept: $('#datePassToSecDept').val() || null,
-                binded: $('#blinded').val(),
-                despatchDateToClient: null
-            };
-
-            if (currentEditingId) {
-                formData.id = currentEditingId;
-            }
-
-            if (!formData.companyName) {
-                showAlert('Company Name is required (Please select a client)', 'warning');
-                return;
-            }
-
-            const url = currentEditingId ? '/api/auditdept/at31/update' : '/api/auditdept/at31/create';
-            const method = currentEditingId ? 'PUT' : 'POST';
-
-            $.ajax({
-                url: url,
-                type: method,
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function(response) {
-                    if (response.success) {
-                        showAlert(`Record ${currentEditingId ? 'updated' : 'created'} successfully!`, 'success');
-                        $('#taskModal').modal('hide');
-                        loadData();
-                    } else {
-                        showAlert('Error saving record: ' + response.message, 'danger');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    showAlert('Error saving record: ' + error, 'danger');
-                }
-            });
-        }
-
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
                 $.ajax({
                     url: '/api/auditdept/at31/delete/' + id,
                     type: 'DELETE',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             showAlert('Record deleted successfully!', 'success');
                             loadData();
@@ -751,7 +238,7 @@
                             showAlert('Error deleting record: ' + response.message, 'danger');
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         showAlert('Error deleting record: ' + error, 'danger');
                     }
                 });
@@ -763,14 +250,6 @@
             try {
                 const date = new Date(dateString);
                 return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-GB');
-            } catch (e) { return ''; }
-        }
-
-        function formatDateForInput(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
             } catch (e) { return ''; }
         }
 

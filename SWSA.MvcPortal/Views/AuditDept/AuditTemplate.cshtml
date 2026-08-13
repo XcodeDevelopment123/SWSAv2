@@ -415,8 +415,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="totalReviewDaysKK">Total # Review Days KK</label>
-                                <input type="number" id="totalReviewDaysKK" name="totalReviewDaysKK" class="form-control" placeholder="Enter days" />
+                                <input type="number" id="totalReviewDaysKK" name="totalReviewDaysKK" class="form-control" placeholder="Auto Calculate" readonly />
                             </div>
                         </div>
                     </div>
@@ -936,6 +935,7 @@
                     $('#resultOverUnderKuching').val('');
                 }
                 calculateTotalFieldWkDays();
+                calculateTotalReviewDaysKK();
             }
 
             $(document).on('change changeDate input', '#dateSent, #endDate', calculateKuchingReviewDays);
@@ -1052,9 +1052,49 @@
                 } else {
                     $('#resultOverUnderKK').val('');
                 }
+                calculateTotalReviewDaysKK();
             }
 
             $(document).on('change changeDate input', '#dateSentKK, #endDateKK', calculateKKReviewDays);
+
+            // ✅ Auto calculate Total Review Days KK (Rg = Rc + Re)
+            function calculateTotalReviewDaysKK() {
+                const rcStr = $('#resultOverUnderKuching').val();
+                const reStr = $('#resultOverUnderKK').val();
+                const rcVal = parseFloat(rcStr) || 0;
+                const reVal = parseFloat(reStr) || 0;
+                if (rcStr === '' && reStr === '') {
+                    $('#totalReviewDaysKK').val('');
+                } else {
+                    $('#totalReviewDaysKK').val(rcVal + reVal);
+                }
+            }
+            $(document).on('change input', '#resultOverUnderKuching, #resultOverUnderKK', calculateTotalReviewDaysKK);
+
+            // ✅ Auto calculate Metric 6c = 6b - 6a (Date Pass to Tax - Target Tax Work Date, in days)
+            function calculateMetric() {
+                const aVal = $('#ssmDueDate').val();
+                const bVal = $('#datePassToSecDept').val();
+                if (!aVal || !bVal) { $('#metric').val(''); return; }
+                const parseDate = (str) => {
+                    if (!str) return null;
+                    if (str.includes('/')) {
+                        const parts = str.split('/');
+                        if (parts.length === 3) return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                    }
+                    const d = new Date(str);
+                    return isNaN(d.getTime()) ? null : d;
+                };
+                const aObj = parseDate(aVal);
+                const bObj = parseDate(bVal);
+                if (aObj && bObj && !isNaN(aObj) && !isNaN(bObj)) {
+                    const diffDays = Math.round((bObj.getTime() - aObj.getTime()) / (1000 * 60 * 60 * 24));
+                    $('#metric').val(diffDays);
+                } else {
+                    $('#metric').val('');
+                }
+            }
+            $(document).on('change changeDate input', '#ssmDueDate, #datePassToSecDept', calculateMetric);
 
             loadRecordsFromDatabase();
         });
@@ -1191,7 +1231,10 @@
                 PassToTaxDept: ($('#passToTaxDept').val() || '').trim(),
                 SSMDueDate: ($('#ssmDueDate').val() || '').trim(),
                 DatePassToSecDept: ($('#datePassToSecDept').val() || '').trim(),
-                DateBinded: ($('#dateBinded').val() || '').trim(),
+                AuditExemption: ($('#auditExrmption').val() || '').trim(),
+                Metric: ($('#metric').val() || '').trim(),
+                Binded: ($('#binded').val() || '').trim(),
+                DateBinded: ($('#bindedDate').val() || '').trim(),
                 DespatchDateToClient: ($('#despatchDateToClient').val() || '').trim()
             };
 
@@ -1290,7 +1333,10 @@
                         $('#passToTaxDept').val(formatDateForInput(getVal(d, 'PassToTaxDept')));
                         $('#ssmDueDate').val(formatDateForInput(getVal(d, 'SSMDueDate')));
                         $('#datePassToSecDept').val(formatDateForInput(getVal(d, 'DatePassToSecDept')));
-                        $('#dateBinded').val(formatDateForInput(getVal(d, 'DateBinded')));
+                        $('#auditExrmption').val(getVal(d, 'AuditExemption'));
+                        $('#metric').val(getVal(d, 'Metric'));
+                        $('#binded').val(getVal(d, 'Binded'));
+                        $('#bindedDate').val(formatDateForInput(getVal(d, 'DateBinded')));
                         $('#despatchDateToClient').val(formatDateForInput(getVal(d, 'DespatchDateToClient')));
                         $('#taskModal').modal('show');
                     } else {
