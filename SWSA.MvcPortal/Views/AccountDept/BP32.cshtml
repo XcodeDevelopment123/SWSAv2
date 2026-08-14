@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <th colspan="4" class="text-center">Basic Information</th>
-                                <th colspan="5" class="text-center">Company Details</th>
+                                <th colspan="4" class="text-center">Company Details</th>
                                 <th colspan="10" class="text-center">Scheduling &amp; Timeline</th>
                                 <th colspan="10" class="text-center">Tax Process Steps</th>
                                 <th colspan="6" class="text-center">E-Filing &amp; Billing</th>
@@ -51,7 +51,6 @@
                                 <th>Co Status</th>
                                 <th>Activity Size</th>
                                 <th>YE to do</th>
-                                <th>Month to do</th>
                                 <th>Doc Received Date</th>
 
                                 <th>Tax Due Date</th>
@@ -217,7 +216,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -414,6 +415,7 @@
                     $('#companyName').val('');
                     $('#fileNo').val('');
                     $('#yearEnd').val('');
+                    $('#docReceivedDate').val('');
                     return;
                 }
                 const c = companyOptionsMap[selectedId];
@@ -422,9 +424,14 @@
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 const formattedYearEnd = yearEndMonthToDateString(rawYearEnd);
                 $('#yearEnd').val(formattedYearEnd);
-                if (c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activeCoActivitySize);
-                if (c.coStatus) $('#coStatus').val(c.coStatus);
+                if (c.activitySize || c.activeCoActivitySize) $('#activeCoActivitySize').val(c.activitySize || c.activeCoActivitySize);
+                if (c.companyStatus || c.coStatus) $('#coStatus').val(c.companyStatus || c.coStatus);
                 if (c.jobServices) $('#jobServices').val(c.jobServices);
+                if (c.latestDateDocIn) {
+                    $('#docReceivedDate').datepicker('update', new Date(c.latestDateDocIn));
+                } else {
+                    $('#docReceivedDate').val('');
+                }
 
                 // Auto calculate Tax Due Date (YE + 7 months) & Target Date to Audit (YE + 5 months)
                 if (formattedYearEnd) {
@@ -433,6 +440,8 @@
                         const day = parseInt(parts[0]);
                         const month = parseInt(parts[1]) - 1; // 0-indexed
                         const year = parseInt(parts[2]);
+
+                        $('#yEtodo').val(year);
 
                         // YE + 7 months
                         const taxDueDateObj = new Date(year, month + 7 + 1, 0);
@@ -444,6 +453,28 @@
                     }
                 }
             });
+
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
 
             function initializeDataTable() {
                 if ($.fn.DataTable.isDataTable('#taskDatatable')) {
@@ -485,7 +516,6 @@
                         { data: "coStatus", defaultContent: "" },
                         { data: "activeCoActivitySize", defaultContent: "" },
                         { data: "yEtodo", defaultContent: "" },
-                        { data: "mthTodo", defaultContent: "" },
                         { 
                             data: "docReceivedDate", 
                             render: function(d, type, row) { 
@@ -771,6 +801,7 @@
 
             initializeDatePickers();
             loadCompanyOptions();
+            loadStaffOptions();
             initializeDataTable();
         });
     </script>

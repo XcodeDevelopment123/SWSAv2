@@ -25,7 +25,6 @@
                             <tr>
                                 <th colspan="3" class="text-center">Basic Info</th>
                                 <th colspan="5" class="text-center">Tax Process & E-Filing</th>
-                                <th colspan="1" class="text-center">Tax</th>
                                 <th colspan="4" class="text-center">Login & Reference</th>
                                 <th colspan="2" class="text-center">Billing & Dispatch</th>
                                 <th rowspan="2" style="vertical-align: middle;">Actions</th>
@@ -40,17 +39,15 @@
                                 <th>Review Form E</th>
                                 <th>Form E Sign By Client</th>
                                 <th>E-File Draft</th>
-                                <th>E-File Final</th>
+                                <th>E-File Final (Submitted)</th>
 
-                                <th>Amount of Tax Pay</th>
-
-                                <th>Reference No</th>
+                                <th>Tax Reference No</th>
                                 <th>Login</th>
                                 <th>Password</th>
-                                <th>Type of Form</th>
+                                <th>Type of Form E</th>
 
-                                <th>Invoices No</th>
-                                <th>Invoice Amount</th>
+                                <th>Invoice Date</th>
+                                <th>Invoice Amount (RM)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -391,11 +388,6 @@
                         {
                             "data": "eFileFinal",
                             "render": function(data) { return data ? formatDate(data) : ''; },
-                            "defaultContent": ""
-                        },
-                        {
-                            "data": "amountofTaxPay",
-                            "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
                             "defaultContent": ""
                         },
                         { "data": "taxReferennceNo", "defaultContent": "" },
