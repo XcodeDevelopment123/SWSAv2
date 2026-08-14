@@ -2,14 +2,14 @@
     ViewData["Title"] = "SdnBhdBacklog";
 }
 
-<h1>F2.1 Sdn Bhd Backlog</h1>
+<h1>F2.1 ACC Sdn Bhd Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
         <div id="alertContainer"></div>
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-tasks me-2"></i>Sdn Bhd Backlog Records</h3>
+                <h3 class="card-title"><i class="fas fa-tasks me-2"></i>ACC Sdn Bhd Backlog Records</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
                         <i class="fas fa-plus me-2"></i>New Record
@@ -20,7 +20,7 @@
                 <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                            <th colspan="3">Admin</th>
+                            <th colspan="2">Admin</th>
                             <th colspan="8">Co Information</th>
                             <th colspan="9">Scheduling</th>
                             <th rowspan="3">Actions</th>
@@ -28,7 +28,6 @@
                         <tr>
                             <th rowspan="2">Grouping</th>
                             <th rowspan="2">Referral</th>
-                            <th rowspan="2">File No</th>
                             <th rowspan="2">Co Name</th>
                             <th rowspan="2">Year End</th>
                             <th colspan="2">Registration</th>
@@ -151,7 +150,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="code">MISC Code</label>
-                                <input type="text" id="code" name="code" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="code" name="code" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -174,7 +173,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="servicesType">Credit Rating</label>
+                                <label for="creditRating">Credit Rating</label>
                                 <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto fill" readonly/>
                             </div>
                         </div>
@@ -217,7 +216,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -327,6 +328,11 @@
                     $('#co').val('');
                     $('#enumber').val('');
                     $('#tINnumber').val('');
+                    $('#code').val('');
+                    $('#description').val('');
+                    $('#coStatus').val('');
+                    $('#activeCoActivitySize').val('');
+                    $('#creditRating').val('');
                     return;
                 }
 
@@ -352,7 +358,33 @@
                 $('#enumber').val(c.employerNumber || '');
                 $('#tINnumber').val(c.taxIdentificationNumber || '');
                 $('#creditRating').val(c.creditRating || c.rating || '');
+                $('#code').val(c.miscCode || '');
+                $('#description').val(c.miscDescription || '');
+                $('#coStatus').val(c.companyStatus || '');
+                $('#activeCoActivitySize').val(c.activitySize || '');
             });
+
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
 
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
@@ -433,11 +465,9 @@
                                 return response.success ? response.data : [];
                             }
                         },
-                        // ... 你的列定义完全保持原样 ...
                         "columns": [
                             { "data": "grouping", "defaultContent": "" },
                             { "data": "referral", "defaultContent": "" },
-                            { "data": "fileNo", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
                             { "data": "yearEnd", "defaultContent": "" },
                             { "data": "incorpDate", "render": function(data) { return data ? formatDate(data) : ''; }, "defaultContent": "" },
@@ -629,6 +659,7 @@
             console.log('Initializing Sdn Bhd Backlog application...');
             initializeDatePickers();
             loadCompanyOptions(); // 加载 Dropdown
+            loadStaffOptions();
             testApiConnection();
         });
     </script>

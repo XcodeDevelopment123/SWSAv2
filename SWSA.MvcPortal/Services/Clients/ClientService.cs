@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Commons.Exceptions;
+using SWSA.MvcPortal.Commons.Extensions;
 using SWSA.MvcPortal.Commons.Guards;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Entities.Clients;
@@ -409,7 +410,7 @@ public class ClientService(
                     : string.Empty,
                 TaxIdentificationNumber =c.TaxIdentificationNumber,
                 EmployerNumber = c.EmployerNumber,
-                ActivitySize = c.ActivitySize.ToString(),
+                ActivitySize = c.ActivitySize.GetDisplayName(),
                 CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
                 CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
                 AuditExemption = "",
@@ -451,7 +452,7 @@ public class ClientService(
                     : string.Empty,
                 TaxIdentificationNumber = c.TaxIdentificationNumber,
                 EmployerNumber = c.EmployerNumber,
-                ActivitySize = c.ActivitySize.ToString(),
+                ActivitySize = c.ActivitySize.GetDisplayName(),
                 CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
                 CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
                 AuditExemption = "",
@@ -494,6 +495,9 @@ public class ClientService(
                     : string.Empty,
                 TaxIdentificationNumber = c.TaxIdentificationNumber,
                 EmployerNumber = c.EmployerNumber,
+                ActivitySize = c.ActivitySize.GetDisplayName(),
+                CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
+                CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
                 LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,

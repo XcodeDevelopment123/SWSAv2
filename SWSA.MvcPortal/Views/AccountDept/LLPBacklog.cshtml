@@ -1,8 +1,8 @@
 @{
-    ViewData["Title"] = "ACC LLP Back log";
+    ViewData["Title"] = "ACC LLP Backlog";
 }
 
-<h1>F2.2 LLP Back log</h1>
+<h1>F2.2 ACC LLP Backlog</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -155,13 +155,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="miscCode">MISC Code</label>
-                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="miscDescription">MISC Description</label>
-                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Enter description" />
+                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -185,13 +185,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activitySize">Activity/size</label>
-                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Enter activity/size" />
+                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yeToDo">Year to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
+                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter Year to do" />
                             </div>
                         </div>
                     </div>
@@ -205,23 +205,23 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="estMonthToDo">Month to do</label>
-                                <input type="text" id="estMonthToDo" name="estMonthToDo" class="form-control" placeholder="Enter month" />
+                                <label for="staff">Staff</label>
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="allocateToWkSch">Allocate to Wk Sch</label>
-                                <input type="text" id="allocateToWkSch" name="allocateToWkSch" class="form-control" placeholder="Enter allocation" />
+                                <select id="allocateToWkSch" name="allocateToWkSch" class="form-control">
+                                    <option value="">Select Option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -331,13 +331,14 @@
                     $('#eNumber').val('');
                     $('#tinNumber').val('');
                     $('#incorpDate').val('');
+                    $('#miscCode').val('');
+                    $('#miscDescription').val('');
+                    $('#coStatus').val('');
+                    $('#activitySize').val('');
                     return;
                 }
 
                 const c = llpOptionsMap[selectedId];
-
-                // ⚠️ 注意：这里假设 API 返回的字段名是 camelCase
-                // 请检查 console.log(c) 确认后端返回的实际字段名是否一致
 
                 // 填入 Hidden Input (Co Name)
                 $('#coName').val(c.companyName || '');
@@ -358,8 +359,37 @@
                 // 处理 Incorporation Date
                 if (c.incorporationDate) {
                     $('#incorpDate').datepicker('update', new Date(c.incorporationDate));
+                } else {
+                    $('#incorpDate').val('');
                 }
+
+                $('#miscCode').val(c.miscCode || '');
+                $('#miscDescription').val(c.miscDescription || '');
+                $('#coStatus').val(c.companyStatus || '');
+                $('#activitySize').val(c.activitySize || '');
             });
+
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
 
             // 初始化日期选择器
             function initializeDatePickers() {
@@ -678,7 +708,8 @@
             // 初始化
             console.log('Initializing ACC LLP Back log application...');
             initializeDatePickers();
-            loadLlpCompanyOptions(); // 🟢 启动时加载 LLP Dropdown
+            loadLlpCompanyOptions(); // 🟢 启动时加载 Dropdown
+            loadStaffOptions();
             testApiConnection();
         });
     </script>

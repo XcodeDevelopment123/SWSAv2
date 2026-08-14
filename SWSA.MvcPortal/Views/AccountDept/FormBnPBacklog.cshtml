@@ -23,8 +23,7 @@
                     <thead>
                         <tr>
                             <th colspan="3" class="text-center">Admin</th>
-                            <th colspan="16" class="text-center">Co Information</th>
-                            @* <th colspan="8" class="text-center">Scheduling</th> *@
+                            <th colspan="15" class="text-center">Co Information</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
                         <tr>
@@ -40,13 +39,13 @@
                             <th colspan="3" class="text-center">Acc Dept</th>
                         </tr>
                         <tr>
-                            <th>Date</th>
-                            <th>Co #</th>
+                            <th>Registration Date</th>
+                            <th>Company #</th>
                             <th>E number</th>
                             <th>TIN number</th>
                             <th>Code</th>
                             <th>Description</th>
-                            <th>Sercives Type</th>
+                            <th>Services Type</th>
                             <th>Co Status</th>
                             <th>Activity/size</th>
                             <th>Year to do</th>
@@ -155,13 +154,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="miscCode">MISC Code</label>
-                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="miscCode" name="miscCode" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="miscDescription">MISC Description</label>
-                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Enter description" />
+                                <input type="text" id="miscDescription" name="miscDescription" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -176,7 +175,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -185,13 +184,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activitySize">Active Co:Activity/size</label>
-                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Enter activity/size" />
+                                <input type="text" id="activitySize" name="activitySize" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yeToDo">Year to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter YE to do" />
+                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter Year to do" />
                             </div>
                         </div>
                     </div>
@@ -200,7 +199,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc In</label>
-                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control" placeholder="Select date" />
+                                <input type="text" id="dateDocIn" name="dateDocIn" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -215,13 +214,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="allocateToWkSch">Allocate to Wk Sch</label>
-                                <input type="text" id="allocateToWkSch" name="allocateToWkSch" class="form-control" placeholder="Enter allocation" />
+                                <select id="allocateToWkSch" name="allocateToWkSch" class="form-control">
+                                    <option value="">Select Option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -325,6 +330,10 @@
                     $('#eNumber').val('');
                     $('#tinNumber').val('');
                     $('#incorpDate').val('');
+                    $('#miscCode').val('');
+                    $('#miscDescription').val('');
+                    $('#coStatus').val('');
+                    $('#activitySize').val('');
                     return;
                 }
 
@@ -343,8 +352,37 @@
 
                 if (c.incorporationDate) {
                     $('#incorpDate').datepicker('update', new Date(c.incorporationDate));
+                } else {
+                    $('#incorpDate').val('');
                 }
+
+                $('#miscCode').val(c.miscCode || '');
+                $('#miscDescription').val(c.miscDescription || '');
+                $('#coStatus').val(c.companyStatus || '');
+                $('#activitySize').val(c.activitySize || '');
             });
+
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
 
             function initializeDatePickers() {
                 $('.datepicker').datepicker({
@@ -498,7 +536,6 @@
                             { "data": "refferal", "defaultContent": "" },
                             { "data": "fileNo", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
-                            { "data": "yearEnd", "defaultContent": "" },
                             {
                                 "data": "registrationDate",
                                 "render": function(data) { return data ? formatDate(data) : ''; },
@@ -670,6 +707,7 @@
             console.log('Initializing ACC Form B & P Backlog application...');
             initializeDatePickers();
             loadEnterpriseOptions();
+            loadStaffOptions();
             testApiConnection();
         });
     </script>
