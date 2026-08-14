@@ -25,22 +25,21 @@
                 <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                            <th colspan="12" class="text-center">Admin</th>
+                            <th colspan="11" class="text-center">Admin</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">Grouping</th>
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
                             <th rowspan="2" style="vertical-align: middle;">Co Name</th>
-                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
                             <th colspan="1" class="text-center">Tax Reference</th>
                             <th colspan="7" class="text-center">Login Info</th>
-                            @*                             <th colspan="5" class="text-center">Acc Dept</th> *@
                         </tr>
                         <tr>
                             <th>E number</th>
                             <th>Login</th>
                             <th>Password</th>
+                            <th>Remark</th>
                             <th>Year to do</th>
                             <th>Date Doc In</th>
                             <th>Staff</th>
@@ -185,8 +184,10 @@
                         </div> *@
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                 <label for="staff">Staff</label>
+                                 <select id="staff" name="staff" class="form-control">
+                                     <option value="">-- Select Staff --</option>
+                                 </select>
                             </div>
                         </div>
                     </div>
@@ -451,10 +452,10 @@
                             { "data": "grouping", "defaultContent": "" },
                             { "data": "refferal", "defaultContent": "" },
                             { "data": "companyName", "defaultContent": "" },
-                            { "data": "yearEnd", "defaultContent": "" },
                             { "data": "enumber", "defaultContent": "" },
                             { "data": "login", "defaultContent": "" },
                             { "data": "password", "defaultContent": "" },
+                            { "data": "jobServices", "defaultContent": "" },
                             { "data": "yEtodo", "defaultContent": "" },
                             {
                                 "data": "dateDocIn",
@@ -462,7 +463,7 @@
                                     if (!data) return '';
                                     const formatted = formatDate(data);
                                     const name = encodeURIComponent(row.companyName || '');
-                                    return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank" title="Go to Backlog">${formatted}</a>`;
+                                    return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank" title="Go to Backlog (C1.2)">${formatted}</a>`;
                                 },
                                 "defaultContent": ""
                             },
@@ -549,7 +550,7 @@
                     password: $('#password').val(),
                     code: $('#code').val(),
                     description: $('#description').val(),
-                    jobServices: $('#jobServices').val(),
+                    jobServices: $('#remark').val(),
                     yEtodo: $('#yEtodo').val(),
                     dateDocIn: $('#dateDocIn').val(),
                     mthTodo: $('#mthTodo').val(),
@@ -618,7 +619,7 @@
                         $('#password').val(record.password || '');
                         $('#code').val(record.code || '');
                         $('#description').val(record.description || '');
-                        $('#jobServices').val(record.jobServices || '');
+                        $('#remark').val(record.jobServices || '');
                         $('#yEtodo').val(record.yEtodo || '');
                         $('#dateDocIn').val(record.dateDocIn ? record.dateDocIn.split('T')[0] : '');
                         $('#mthTodo').val(record.mthTodo || '');
@@ -679,10 +680,33 @@
                 saveBP26Record();
             });
 
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
+
             // 初始化
             console.log('Initializing Form E application...');
             initializeDatePickers();
             loadCompanyOptions(); // 🟢 启动时加载 Dropdown
+            loadStaffOptions();
             testApiConnection();
         });
     </script>

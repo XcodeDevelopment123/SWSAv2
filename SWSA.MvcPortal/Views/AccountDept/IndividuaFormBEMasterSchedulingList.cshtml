@@ -10,7 +10,7 @@
     }
 </style>
 
-<h1>F1.5 Individual Form BE Work List</h1>
+<h1>F1.5 Individual Form BE List</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -34,41 +34,28 @@
                 <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                            <th colspan="2"  class="text-center">Admin</th>
-                            <th colspan="9" class="text-center">Co Information</th>
-                            <th colspan="6" class="text-center">Scheduling</th>
+                            <th colspan="2" class="text-center">Admin</th>
+                            <th colspan="4" class="text-center">Co Information</th>
+                            <th colspan="3" class="text-center">Scheduling</th>
                             <th rowspan="3" style="vertical-align: middle;">Actions</th>
                         </tr>
 
                         <tr>
                             <th rowspan="2" style="vertical-align: middle;">Grouping</th>
                             <th rowspan="2" style="vertical-align: middle;">Referral</th>
-@*                             <th rowspan="2" style="vertical-align: middle;">File No</th> *@
 
                             <th rowspan="2" style="vertical-align: middle;">Individual Name</th>
-                            <th rowspan="2" style="vertical-align: middle;">Year End</th>
-                            <th colspan="2" class="text-center">Tax Reference</th>
+                            <th rowspan="2" style="vertical-align: middle;">TIN number</th>
                             <th colspan="2" class="text-center">Login Info</th>
-                            <th colspan="2" class="text-center">MISC Code</th>
-                            <th rowspan="2" style="vertical-align: middle;">Job Services</th>
 
-                            <th colspan="6" class="text-center">Acc Dept</th>
+                            <th colspan="3" class="text-center">Acc Dept</th>
                         </tr>
 
                         <tr>
-                            <th>E number</th>
-                            <th>TIN number</th>
-
                             <th>Login</th>
                             <th>Password</th>
 
-                            <th>Code</th>
-                            <th>Description</th>
-
-                            <th>YE to do</th>
                             <th>Date Doc In</th>
-                            <th>Month to do</th>
-                            <th>Staff</th>
                             <th>Allocate to Wk Sch</th>
                             <th>Completed/Backlog</th>
                         </tr>
@@ -396,22 +383,14 @@
                     { "data": "grouping", "defaultContent": "" },
                     { "data": "refferal", "defaultContent": "" },
                     { "data": "companyName", "defaultContent": "" },
-                    { "data": "yearEnd", "defaultContent": "" },
-                    { "data": "enumber", "defaultContent": "" },
                     { "data": "tinNumber", "defaultContent": "" },
                     { "data": "login", "defaultContent": "" },
                     { "data": "password", "defaultContent": "" },
-                    { "data": "code", "defaultContent": "" },
-                    { "data": "description", "defaultContent": "" },
-                    { "data": "jobServices", "defaultContent": "" },
-                    { "data": "yEtodo", "defaultContent": "" },
                     {
                         "data": "dateDocIn",
                         "render": function(data) { return data || '-'; },
                         "defaultContent": ""
                     },
-                    { "data": "mthTodo", "defaultContent": "" },
-                    { "data": "staff", "defaultContent": "" },
                     { "data": "allocateToWkSch", "defaultContent": "" },
                     { "data": "completed", "defaultContent": "" },
                     {

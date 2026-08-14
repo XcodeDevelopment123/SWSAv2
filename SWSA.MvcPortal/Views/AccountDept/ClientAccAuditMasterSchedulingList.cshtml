@@ -165,7 +165,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -372,7 +374,12 @@
                 { "data": "yEtodo", "defaultContent": "" },
                 {
                     "data": "dateDocIn",
-                    "render": function(data) { return formatDate(data); },
+                    "render": function(data, type, row) {
+                        if (!data) return '';
+                        const formatted = formatDate(data);
+                        const name = encodeURIComponent(row.companyName || '');
+                        return `<a href="/AccountDept/SdnBhdBacklog?company=${name}" target="_blank" title="Go to Backlog (C1.2)">${formatted}</a>`;
+                    },
                     "defaultContent": ""
                 },
                 { "data": "mthTodo", "defaultContent": "" },
@@ -546,9 +553,32 @@
                 $('#modalTitle').text('Add New Advocate Clients Acc Record');
             }
 
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
+
             // 初始化
             initializeDatePickers();
             loadCompanyOptions();
+            loadStaffOptions();
             initializeDataTable();
 
             $('#saveBtn').click(saveBP24Record);
