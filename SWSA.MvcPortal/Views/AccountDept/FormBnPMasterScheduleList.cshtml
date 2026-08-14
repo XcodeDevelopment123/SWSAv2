@@ -198,13 +198,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="code">MISC Code</label>
-                                <input type="text" id="code" name="code" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="code" name="code" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="description">MISC Description</label>
-                                <input type="text" id="description" name="description" class="form-control" placeholder="Enter description" />
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -260,7 +260,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -480,6 +482,9 @@
                 $('#enumber').val(c.employerNumber || '');
                 $('#tINnumber').val(c.taxIdentificationNumber || '');
                 $('#createRating').val(c.creditRating || c.rating || '');
+                $('#code').val(c.miscCode || '');
+                $('#description').val(c.miscDescription || '');
+                $('#activeCoActivitySize').val(c.activitySize || '');
 
                 if (formattedYearEnd) {
                     const parts = formattedYearEnd.split('/');
@@ -503,9 +508,37 @@
                 $('#co').val('');
                 $('#enumber').val('');
                 $('#tINnumber').val('');
+                $('#createRating').val('');
+                $('#code').val('');
+                $('#description').val('');
+                $('#activeCoActivitySize').val('');
                 $('#yearEnd').val('');
                 $('#registrationDate').val('');
+                $('#yEtoDo').val('');
             }
+
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#staff');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
+            loadStaffOptions();
 
             // 保存
             $('#saveBtn').click(function() {
@@ -600,6 +633,7 @@
                         $('#code').val(d.code);
                         $('#description').val(d.description);
                         $('#jobService').val(d.jobService);
+                        $('#createRating').val(d.creditRating || '');
                         $('#activeCoActivitySize').val(d.activeCoActivitySize);
                         $('#yEtoDo').val(d.yEtoDo);
                         $('#mthTodo').val(d.mthTodo);

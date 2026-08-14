@@ -2205,10 +2205,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var sql = @"INSERT INTO [Quartz2].[dbo].[AEX42] 
         ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
-         [YearToDo], [MoveToActiveSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
+         [YearToDo], [MoveToActiveSch], [DateDocIn], [AcctngWk], [CompanyStatus],
+         [AuditExemption], [CoSec], [CreditRating], [SigningFirm], [ReasonWhyBacklog])
         VALUES 
         (@Grouping, @CompanyName, @QuarterToDoAudit, @Activity, @YearEnd, 
-         @YearToDo, @MoveToActiveSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
+         @YearToDo, @MoveToActiveSch, @DateDocIn, @AcctngWk, @CompanyStatus,
+         @AuditExemption, @CoSec, @CreditRating, @SigningFirm, @ReasonWhyBacklog);
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -2260,6 +2262,11 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [MoveToActiveSch] = @MoveToActiveSch, 
         [DateDocIn] = @DateDocIn, 
         [AcctngWk] = @AcctngWk, 
+        [CompanyStatus] = @CompanyStatus,
+        [AuditExemption] = @AuditExemption,
+        [CoSec] = @CoSec,
+        [CreditRating] = @CreditRating,
+        [SigningFirm] = @SigningFirm,
         [ReasonWhyBacklog] = @ReasonWhyBacklog
         WHERE Id = @Id";
 

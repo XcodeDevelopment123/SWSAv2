@@ -1,8 +1,8 @@
-﻿@{
-    ViewData["Title"] = "AT33Audit";
+@{
+    ViewData["Title"] = "E5 AFS/UFS";
 }
 
-<h1>AT33 Audit</h1>
+<h1>E5 AFS/UFS</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -11,13 +11,8 @@
 
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>
+                    <i class="fas fa-tasks me-2"></i>E5 AFS/UFS Records
                 </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal">
-                        <i class="fas fa-plus me-2"></i>New Task
-                    </button>
-                </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
@@ -92,170 +87,6 @@
         </div>
         <!-- /.card -->
     </div>
-</div>
-
-<!-- 模态框部分 -->
-<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalLabel">
-                    <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New AT33 Audit Record</span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="taskForm">
-                    <input type="hidden" id="editIndex" value="">
-
-                    <!-- Basic Information -->
-                    <div class="form-info-label col-12">
-                        <label>Basic Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="yeToDo">YE to do</label>
-                                <input type="text" id="yeToDo" name="yeToDo" class="form-control" placeholder="Enter year end" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Information -->
-                    <div class="form-info-label col-12">
-                        <label>Activity Information</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="active">Active</label>
-                                <select id="active" name="active" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="aex">AEX</label>
-                                <select id="aex" name="aex" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- KK Review -->
-                    <div class="form-info-label col-12">
-                        <label>KK Review</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateSent">Date Sent</label>
-                                <input type="text" id="dateSent" name="dateSent" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateReviewed">Date Reviewed</label>
-                                <input type="text" id="dateReviewed" name="dateReviewed" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AFS from KK -->
-                    <div class="form-info-label col-12">
-                        <label>AFS from KK</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateSentToKK">Date sent to KK</label>
-                                <input type="text" id="dateSentToKK" name="dateSentToKK" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateReceivedAFS">Date received AFS</label>
-                                <input type="text" id="dateReceivedAFS" name="dateReceivedAFS" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateOfAFS">Date of AFS</label>
-                                <input type="text" id="dateOfAFS" name="dateOfAFS" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dateOfDirectorsRept">Date of Directors Rept</label>
-                                <input type="text" id="dateOfDirectorsRept" name="dateOfDirectorsRept" class="form-control" placeholder="Select date" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="mbrsGenerated">MBRS generated</label>
-                                <select id="mbrsGenerated" name="mbrsGenerated" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Remark -->
-                    <div class="form-info-label col-12">
-                        <label>Remark</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="remark">Remark</label>
-                                <textarea id="remark" name="remark" class="form-control" placeholder="Enter remarks" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 

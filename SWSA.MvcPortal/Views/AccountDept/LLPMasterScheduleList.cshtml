@@ -181,13 +181,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="code">MISC Code</label>
-                                <input type="text" id="code" name="code" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="code" name="code" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="description">MISC Description</label>
-                                <input type="text" id="description" name="description" class="form-control" placeholder="Enter description" />
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -211,13 +211,13 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="activeCoActivitySize">Activity/size</label>
-                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Enter activity/size" />
+                                <input type="text" id="activeCoActivitySize" name="activeCoActivitySize" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="createRating">Create Rating</label>
-                                <input type="text" id="createRating" name="createRating" class="form-control" placeholder="Enter Create Rating" />
+                                <label for="createRating">Credit Rating</label>
+                                <input type="text" id="createRating" name="createRating" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -269,7 +269,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="staff">Staff</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -407,6 +409,13 @@
                     $('#co').val('');
                     $('#enumber').val('');
                     $('#tINnumber').val('');
+                    $('#createRating').val('');
+                    $('#code').val('');
+                    $('#description').val('');
+                    $('#coStatus').val('');
+                    $('#activeCoActivitySize').val('');
+                    $('#aDdueDate').val('');
+                    $('#yEtodo').val('');
                     return;
                 }
 
@@ -421,30 +430,58 @@
                 $('#companyClientId').val(c.id);             // 隐藏 Client 主键
                 $('#yearEnd').val(yearEndText || '');
                 $('#incorpDate').val(incorpIso || '');
-                $('#co').val(c.companyNo || '');
-                $('#enumber').val(c.employerNumber || '');
-                $('#tINnumber').val(c.taxIdentificationNumber || '');
-                $('#createRating').val(c.creditRating || c.rating || '');
+                    $('#co').val(c.companyNo || '');
+                    $('#enumber').val(c.employerNumber || '');
+                    $('#tINnumber').val(c.taxIdentificationNumber || '');
+                    $('#createRating').val(c.creditRating || c.rating || '');
+                    $('#code').val(c.miscCode || '');
+                    $('#description').val(c.miscDescription || '');
+                    $('#coStatus').val(c.companyStatus || '');
+                    $('#activeCoActivitySize').val(c.activitySize || '');
 
-                // 自动计算 SSM Due Date: YE + 3 months
-                if (yearEndText) {
-                    const parts = yearEndText.split('/');
-                    if (parts.length === 3) {
-                        const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
-                        dtYE.setMonth(dtYE.getMonth() + 3);
-                        const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
-                        $('#aDdueDate').val(formatDdMMyyyy(dtDue));
-                        $('#yEtodo').val(parts[2]);
+                    // 自动计算 SSM Due Date: YE + 3 months
+                    if (yearEndText) {
+                        const parts = yearEndText.split('/');
+                        if (parts.length === 3) {
+                            const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
+                            dtYE.setMonth(dtYE.getMonth() + 3);
+                            const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
+                            $('#aDdueDate').val(formatDdMMyyyy(dtDue));
+                            $('#yEtodo').val(parts[2]);
+                        }
                     }
-                }
-            });
+                });
 
-            // === DataTable ===
-            initializeDataTable();
-            // === 日期选择器 ===
-            initializeDatePickers();
-            // === 载入公司选项 ===
-            loadCompanyOptions();
+                // === 载入 Staff 下拉 ===
+                function loadStaffOptions() {
+                    $.ajax({
+                        url: '/users/pic',
+                        type: 'GET',
+                        success: function (res) {
+                            const users = Array.isArray(res) ? res : (res?.data || []);
+                            const $staffSelect = $('#staff');
+                            $staffSelect.find('option:not(:first)').remove();
+                            users.forEach(user => {
+                                const val = user.name || user.Name || '';
+                                if (val) {
+                                    const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                    $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error('Failed to load staff options', xhr);
+                        }
+                    });
+                }
+
+                // === DataTable ===
+                initializeDataTable();
+                // === 日期选择器 ===
+                initializeDatePickers();
+                // === 载入公司选项与 Staff ===
+                loadCompanyOptions();
+                loadStaffOptions();
 
             // === 保存 ===
             $('#saveBtn').click(function () {
@@ -640,7 +677,9 @@
                     $('#code').val(record.code);
                     $('#description').val(record.description);
                     $('#servicesType').val(record.servicesType);
+                    $('#coStatus').val(record.coStatus || '');
                     $('#activeCoActivitySize').val(record.activeCoActivitySize);
+                    $('#createRating').val(record.creditRating || '');
                     $('#yEtodo').val(record.yEtodo);
                     $('#auditDeptMth').val(record.auditDeptMth);
                     $('#aDdueDate').val(record.aDdueDate ? record.aDdueDate.split('T')[0] : '');

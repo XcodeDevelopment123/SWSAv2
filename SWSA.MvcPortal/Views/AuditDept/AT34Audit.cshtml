@@ -1,8 +1,8 @@
-﻿@{
-    ViewData["Title"] = "AT34AADSP";
+@{
+    ViewData["Title"] = "E4 Directors' Report";
 }
 
-<h1>AT3.4 Directors Report</h1>
+<h1>E4 Directors' Report</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -11,11 +11,6 @@
                 <h3 class="card-title">
                     <i class="fas fa-tasks me-2"></i>Directors Report Records
                 </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
-                        <i class="fas fa-plus me-2"></i>New Record
-                    </button>
-                </div>
             </div>
             <div class="card-body" style="overflow:auto">
                 <div id="loadingMessage" class="text-center py-5">
@@ -29,7 +24,7 @@
                         <thead>
                             <tr>
                                 <th colspan="6"></th>
-                                <th colspan="5">Directors' signing pages</th>
+                                <th colspan="5">Directors' report</th>
                                 <th rowspan="3">Actions</th>
                             </tr>
                             <tr>
@@ -59,105 +54,6 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="taskModalLabel">
-                    <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add Directors Report</span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="taskForm">
-                    <input type="hidden" id="recordId" value="">
-
-                    <!-- Basic Information -->
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <h6 class="border-bottom pb-2">Basic Information</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="companyName" class="form-label">Company Name <span class="text-danger">*</span></label>
-                            <input type="text" id="companyName" class="form-control" placeholder="Enter company name" required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="yeToDo" class="form-label">YE to do</label>
-                            <input type="text" id="yeToDo" class="form-control" placeholder="Enter year" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="pic" class="form-label">PIC</label>
-                            <input type="text" id="pic" class="form-control" placeholder="Enter PIC name" />
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="active" class="form-label">Active</label>
-                            <select id="active" class="form-control">
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="aex" class="form-label">AEX</label>
-                            <select id="aex" class="form-control">
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Directors' Signing Pages -->
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <h6 class="border-bottom pb-2">Directors' Signing Pages</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="dateSent" class="form-label">Date Sent</label>
-                            <input type="date" id="dateSent" class="form-control" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="followUpDates" class="form-label">Follow up dates</label>
-                            <input type="text" id="followUpDates" class="form-control" placeholder="e.g., 03/02/2025, 10/02/2025" />
-                            <small class="form-text text-muted">Enter multiple dates separated by commas</small>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="first18MonthsDate" class="form-label">First 18 mths date</label>
-                            <input type="date" id="first18MonthsDate" class="form-control" />
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="dateReceived" class="form-label">Date received</label>
-                            <input type="date" id="dateReceived" class="form-control" />
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="commOfOathsDate" class="form-label">Comm of Oaths Date</label>
-                            <input type="date" id="commOfOathsDate" class="form-control" />
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBtn">
-                    <i class="fas fa-save me-2"></i>Save
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script>
         let isEditMode = false;
@@ -168,16 +64,7 @@
 
             // Load data immediately
             loadTableData();
-
-            // Add new button click
-            $('#addNewBtn').on('click', function() {
-                openModal(false);
-            });
-
-            // Save button click
-            $('#saveBtn').on('click', function() {
-                saveRecord();
-            });
+        });
 
             // Reset form when modal is hidden
             $('#taskModal').on('hidden.bs.modal', function() {

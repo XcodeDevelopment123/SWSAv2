@@ -283,7 +283,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff">Staff(PIC)</label>
-                                <input type="text" id="staff" name="staff" class="form-control" placeholder="Enter staff name" />
+                                <select id="staff" name="staff" class="form-control">
+                                    <option value="">-- Select Staff --</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -424,6 +426,13 @@
                     $('#co').val('');
                     $('#enumber').val('');
                     $('#tINnumber').val('');
+                    $('#creditRating').val('');
+                    $('#code').val('');
+                    $('#description').val('');
+                    $('#coStatus').val('');
+                    $('#activeCoActivitySize').val('');
+                    $('#auditDeptMth').val('');
+                    $('#yEtodo').val('');
                     return;
                 }
 
@@ -443,32 +452,60 @@
                 $('#companyClientId').val(c.id);                 // 关键：带上 Client 主键
                 $('#yearEnd').val(yearEndText || '');
                 $('#incorpDate').val(incorpIso || '');
-                $('#co').val(c.companyNo || '');
-                $('#enumber').val(c.employerNumber || '');
-                $('#tINnumber').val(c.taxIdentificationNumber || '');
-                $('#creditRating').val(c.creditRating || c.rating || '');
+                    $('#co').val(c.companyNo || '');
+                    $('#enumber').val(c.employerNumber || '');
+                    $('#tINnumber').val(c.taxIdentificationNumber || '');
+                    $('#creditRating').val(c.creditRating || c.rating || '');
+                    $('#code').val(c.miscCode || '');
+                    $('#description').val(c.miscDescription || '');
+                    $('#coStatus').val(c.companyStatus || '');
+                    $('#activeCoActivitySize').val(c.activitySize || '');
 
-                // 自动计算 Due date to pass to Audit: YE + 5 months
-                if (yearEndText) {
-                    const parts = yearEndText.split('/');
-                    if (parts.length === 3) {
-                        const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
-                        dtYE.setMonth(dtYE.getMonth() + 5);
-                        const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
-                        $('#auditDeptMth').val(formatDdMMyyyy(dtDue));
-                        $('#yEtodo').val(parts[2]);
+                    // 自动计算 Due date to pass to Audit: YE + 5 months
+                    if (yearEndText) {
+                        const parts = yearEndText.split('/');
+                        if (parts.length === 3) {
+                            const dtYE = new Date(parts[2], parts[1] - 1, parts[0]);
+                            dtYE.setMonth(dtYE.getMonth() + 5);
+                            const dtDue = new Date(dtYE.getFullYear(), dtYE.getMonth() + 1, 0);
+                            $('#auditDeptMth').val(formatDdMMyyyy(dtDue));
+                            $('#yEtodo').val(parts[2]);
+                        }
                     }
+                });
+
+                // ========= 载入 Staff 下拉选项 =========
+                function loadStaffOptions() {
+                    $.ajax({
+                        url: '/users/pic',
+                        type: 'GET',
+                        success: function (res) {
+                            const users = Array.isArray(res) ? res : (res?.data || []);
+                            const $staffSelect = $('#staff');
+                            $staffSelect.find('option:not(:first)').remove();
+                            users.forEach(user => {
+                                const val = user.name || user.Name || '';
+                                if (val) {
+                                    const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                    $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                                }
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error('Failed to load staff options', xhr);
+                        }
+                    });
                 }
-            });
 
-            // ========= DataTable =========
-            initializeDataTable();
+                // ========= DataTable =========
+                initializeDataTable();
 
-            // ========= Datepicker =========
-            initializeDatePickers();
+                // ========= Datepicker =========
+                initializeDatePickers();
 
-            // 初始载入公司下拉（打开页面就载一次；若你想在“新增”时再载，可改到模态框显示事件里）
-            loadCompanyOptions();
+                // 初始载入公司下拉与 Staff 下拉
+                loadCompanyOptions();
+                loadStaffOptions();
 
             // 保存
             $('#saveBtn').click(function () {

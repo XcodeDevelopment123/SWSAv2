@@ -26,5 +26,7 @@ namespace SWSA.MvcPortal.Dtos.Requests.Clients
         public string? AppointmentEngagementData { get; set; }
         public string? ServiceSelected { get; set; }
         public string? LatestDateDocIn { get; set; } // From A31A (C1-1)
+        public string? MiscCode { get; set; }
+        public string? MiscDescription { get; set; }
     }
 }

@@ -75,25 +75,30 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add New Audit AEX Backlog Record</span>
+                    <span id="modalTitle">Add New AEX Audit Backlog Record</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="taskForm">
                     <input type="hidden" id="recordId" value="">
+                    <input type="hidden" id="companyName" name="companyName" value="">
+                    <input type="hidden" id="clientId" name="clientId" value="">
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Group</label>
-                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Enter group" />
+                                <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto Fill" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Enter company name" />
+                                <label for="clientSelect">Company Name <span class="text-danger">*</span></label>
+                                <select id="clientSelect" name="clientSelect" class="form-control" required style="width:100%">
+                                    <option value="">-- Select Company from Client List --</option>
+                                </select>
+                                <small class="text-muted">Linked from Client List</small>
                             </div>
                         </div>
                     </div>
@@ -104,17 +109,53 @@
                                 <label for="quarterToDoAudit">Quarter to Do Audit</label>
                                 <select id="quarterToDoAudit" name="quarterToDoAudit" class="form-control">
                                     <option value="">Select Quarter</option>
-                                    <option value="Q1">Q1</option>
-                                    <option value="Q2">Q2</option>
-                                    <option value="Q3">Q3</option>
-                                    <option value="Q4">Q4</option>
+                                    <option value="1st Qtr">1st Qtr</option>
+                                    <option value="2nd Qtr">2nd Qtr</option>
+                                    <option value="3rd Qtr">3rd Qtr</option>
+                                    <option value="4th Qtr">4th Qtr</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="activity">Activity</label>
-                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Enter activity" />
+                                <input type="text" id="activity" name="activity" class="form-control" placeholder="Auto Fill" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="companyStatus">Co. Status</label>
+                                <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto Fill" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="auditExemption">Audit Exemption</label>
+                                <input type="text" id="auditExemption" name="auditExemption" class="form-control" placeholder="Auto Fill" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="coSec">Co. Sec</label>
+                                <input type="text" id="coSec" name="coSec" class="form-control" placeholder="Auto Fill" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="creditRating">Credit Rating</label>
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto Fill" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="signingFirm">Signing Firm</label>
+                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Enter signing firm" />
                             </div>
                         </div>
                     </div>
@@ -123,13 +164,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="e.g., Dec 2024" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill (e.g., Dec 2024)" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="e.g., 2024" />
+                                <input type="date" id="yearToDo" name="yearToDo" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -149,6 +190,7 @@
                             <div class="form-group">
                                 <label for="dateDocIn">Date Doc in</label>
                                 <input type="date" id="dateDocIn" name="dateDocIn" class="form-control" />
+                                <small class="text-muted">Link from C1-1 Inward Doc</small>
                             </div>
                         </div>
                     </div>
@@ -195,10 +237,17 @@
     <script>
         let dataTable = null;
         let currentEditId = null;
+        let clientNameMap = {};
+        let clientDataMap = {};
 
         $(document).ready(function() {
+            loadClientOptions();
             initializeDataTable();
             loadData();
+
+            $('#clientSelect').on('change', function() {
+                handleClientChange($(this).val());
+            });
 
             // 保存按钮点击事件
             $('#saveBtn').click(function() {
@@ -222,6 +271,127 @@
             });
             dtCollectionObserver.observe(document.body, { childList: true, subtree: true });
         });
+
+        function loadClientOptions() {
+            $.ajax({
+                url: '/api/get/company-options',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        const select = $('#clientSelect');
+                        select.empty();
+                        select.append('<option value="">-- Select Company from Client List --</option>');
+
+                        clientNameMap = {};
+                        clientDataMap = {};
+
+                        response.data.forEach(client => {
+                            if (client.companyName) {
+                                clientNameMap[client.companyName.trim()] = client.id;
+                            }
+                            clientDataMap[client.id] = client;
+                            select.append(`<option value="${client.id}">${escapeHtml(client.companyName)}</option>`);
+                        });
+
+                        if ($.fn.select2) {
+                            select.select2({
+                                theme: 'bootstrap4',
+                                placeholder: '-- Select Company from Client List --',
+                                allowClear: true,
+                                dropdownParent: $('#taskModal .modal-content'),
+                                width: '100%'
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading client options:', error);
+                }
+            });
+        }
+
+        function handleClientChange(selectedId) {
+            const clientData = clientDataMap[selectedId];
+
+            if (clientData) {
+                $('#grouping').val(clientData.grouping || '');
+                $('#companyName').val(clientData.companyName || '');
+                $('#clientId').val(clientData.id || '');
+
+                // Auto fill Activity
+                if (clientData.activitySize) {
+                    $('#activity').val(clientData.activitySize);
+                }
+
+                // Auto fill Company Status, Audit Exemption, Credit Rating
+                if (clientData.companyStatus) {
+                    $('#companyStatus').val(clientData.companyStatus);
+                }
+                if (clientData.auditExemption) {
+                    $('#auditExemption').val(clientData.auditExemption);
+                }
+                if (clientData.creditRating) {
+                    $('#creditRating').val(clientData.creditRating);
+                }
+
+                // Auto fill Year End
+                if (clientData.yearEndMonth) {
+                    const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
+                    $('#yearEnd').val(calculatedDate);
+                }
+
+                // Auto fill Date Doc in from C1-1 Inward Doc (A31A) if available
+                if (clientData.latestDateDocIn) {
+                    const isoDate = formatIsoForDateInput(clientData.latestDateDocIn);
+                    if (isoDate) {
+                        $('#dateDocIn').val(isoDate);
+                    }
+                }
+            } else {
+                $('#grouping').val('');
+                $('#companyName').val('');
+                $('#clientId').val('');
+                $('#activity').val('');
+                $('#companyStatus').val('');
+                $('#auditExemption').val('');
+                $('#creditRating').val('');
+                $('#yearEnd').val('');
+            }
+        }
+
+        function calculateYearEndDate(monthName) {
+            if (!monthName) return '';
+            const months = {
+                "january": 0, "february": 1, "march": 2, "april": 3, "may": 4, "june": 5,
+                "july": 6, "august": 7, "september": 8, "october": 9, "november": 10, "december": 11
+            };
+            const cleanName = monthName.trim().toLowerCase();
+            const monthIndex = months[cleanName];
+
+            if (monthIndex === undefined) return '';
+
+            const currentYear = new Date().getFullYear();
+            const date = new Date(currentYear, monthIndex + 1, 0);
+
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        }
+
+        function formatIsoForDateInput(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            } catch (e) {
+                return '';
+            }
+        }
 
         function initializeDataTable() {
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
@@ -368,8 +538,15 @@
         function clearForm() {
             currentEditId = null;
             $('#recordId').val('');
+            $('#companyName').val('');
+            $('#clientId').val('');
             $('#taskForm')[0].reset();
-            $('#modalTitle').text('Add New Audit AEX Backlog Record');
+            if ($.fn.select2) {
+                $('#clientSelect').val('').trigger('change.select2');
+            } else {
+                $('#clientSelect').val('');
+            }
+            $('#modalTitle').text('Add New AEX Audit Backlog Record');
         }
 
         function editRecord(id) {
@@ -382,28 +559,47 @@
                         currentEditId = record.id;
                         $('#recordId').val(record.id);
 
-                        // Populate form fields
-                        $('#grouping').val(record.grouping || '');
-                        $('#companyName').val(record.companyName || '');
-                        $('#quarterToDoAudit').val(record.quarterToDoAudit || '');
-                        $('#activity').val(record.activity || '');
-                        $('#yearEnd').val(record.yearEnd || '');
-                        $('#yearToDo').val(record.yearToDo || '');
-                        $('#moveToActiveSch').val(record.moveToActiveSch || '');
+                        const compName = record.companyName || record.CompanyName || '';
+                        $('#companyName').val(compName);
+                        if (compName && clientNameMap[compName.trim()]) {
+                            const foundId = clientNameMap[compName.trim()];
+                            $('#clientSelect').val(foundId);
+                            if ($.fn.select2) $('#clientSelect').trigger('change.select2');
+                        } else {
+                            $('#clientSelect').val('');
+                            if ($.fn.select2) $('#clientSelect').trigger('change.select2');
+                        }
 
-                        // Format date for date input
-                        if (record.dateDocIn) {
-                            const date = new Date(record.dateDocIn);
-                            const formattedDate = date.toISOString().split('T')[0];
-                            $('#dateDocIn').val(formattedDate);
+                        // Populate form fields
+                        $('#grouping').val(record.grouping || record.Grouping || '');
+                        $('#quarterToDoAudit').val(record.quarterToDoAudit || record.QuarterToDoAudit || '');
+                        $('#activity').val(record.activity || record.Activity || '');
+                        $('#companyStatus').val(record.companyStatus || record.CompanyStatus || '');
+                        $('#auditExemption').val(record.auditExemption || record.AuditExemption || '');
+                        $('#coSec').val(record.coSec || record.CoSec || '');
+                        $('#creditRating').val(record.creditRating || record.CreditRating || '');
+                        $('#signingFirm').val(record.signingFirm || record.SigningFirm || '');
+                        $('#yearEnd').val(record.yearEnd || record.YearEnd || '');
+
+                        const yVal = record.yearToDo || record.YearToDo;
+                        if (yVal) {
+                            $('#yearToDo').val(formatIsoForDateInput(yVal));
+                        } else {
+                            $('#yearToDo').val('');
+                        }
+                        $('#moveToActiveSch').val(record.moveToActiveSch || record.MoveToActiveSch || '');
+
+                        const dVal = record.dateDocIn || record.DateDocIn;
+                        if (dVal) {
+                            $('#dateDocIn').val(formatIsoForDateInput(dVal));
                         } else {
                             $('#dateDocIn').val('');
                         }
 
-                        $('#acctngWk').val(record.acctngWk || '');
-                        $('#reasonWhyBacklog').val(record.reasonWhyBacklog || '');
+                        $('#acctngWk').val(record.acctngWk || record.AcctngWk || '');
+                        $('#reasonWhyBacklog').val(record.reasonWhyBacklog || record.ReasonWhyBacklog || '');
 
-                        $('#modalTitle').text('Edit Audit AEX Backlog Record');
+                        $('#modalTitle').text('Edit AEX Audit Backlog Record');
                         $('#taskModal').modal('show');
                     } else {
                         alert('Error loading record: ' + response.message);
@@ -416,12 +612,24 @@
         }
 
         function saveRecord() {
+            const compName = $('#companyName').val() || ($('#clientSelect option:selected').val() ? $('#clientSelect option:selected').text() : '');
+
+            if (!compName || compName.startsWith('--')) {
+                alert('Company Name (Client) is required');
+                return;
+            }
+
             const formData = {
                 Id: $('#recordId').val() || 0,
                 Grouping: $('#grouping').val(),
-                CompanyName: $('#companyName').val(),
+                CompanyName: compName,
                 QuarterToDoAudit: $('#quarterToDoAudit').val(),
                 Activity: $('#activity').val(),
+                CompanyStatus: $('#companyStatus').val(),
+                AuditExemption: $('#auditExemption').val(),
+                CoSec: $('#coSec').val(),
+                CreditRating: $('#creditRating').val(),
+                SigningFirm: $('#signingFirm').val(),
                 YearEnd: $('#yearEnd').val(),
                 YearToDo: $('#yearToDo').val(),
                 MoveToActiveSch: $('#moveToActiveSch').val(),

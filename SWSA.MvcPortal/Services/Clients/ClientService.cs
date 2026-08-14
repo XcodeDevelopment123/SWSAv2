@@ -37,9 +37,9 @@ public class ClientService(
     {
         return type switch
         {
-            ClientType.SdnBhd => await _companies.OfType<SdnBhdClient>().ApplyFilter(request).ToListAsync(),
-            ClientType.LLP => await _companies.OfType<LLPClient>().ApplyFilter(request).ToListAsync(),
-            ClientType.Enterprise => await _companies.OfType<EnterpriseClient>().ApplyFilter(request).ToListAsync(),
+            ClientType.SdnBhd => await _companies.OfType<SdnBhdClient>().Include(c => c.MsicCodes).ThenInclude(m => m.MsicCode).ApplyFilter(request).ToListAsync(),
+            ClientType.LLP => await _companies.OfType<LLPClient>().Include(c => c.MsicCodes).ThenInclude(m => m.MsicCode).ApplyFilter(request).ToListAsync(),
+            ClientType.Enterprise => await _companies.OfType<EnterpriseClient>().Include(c => c.MsicCodes).ThenInclude(m => m.MsicCode).ApplyFilter(request).ToListAsync(),
             ClientType.Individual => await _individualClients.ApplyFilter(request).ToListAsync(),
             _ => throw new ArgumentException($"Unsupported client type: {type}")
         };
@@ -415,7 +415,9 @@ public class ClientService(
                 AuditExemption = "",
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
-                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
+                MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
+                MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : ""
             })
             .ToList();
     }
@@ -455,7 +457,9 @@ public class ClientService(
                 AuditExemption = "",
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
-                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
+                MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
+                MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : ""
             })
             .ToList();
     }
@@ -492,7 +496,9 @@ public class ClientService(
                 EmployerNumber = c.EmployerNumber,
                 AppointmentEngagementData = c.AppointmentEngagementData,
                 ServiceSelected = c.ServiceSelected,
-                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null
+                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
+                MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
+                MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : ""
             })
             .ToList();
     }
