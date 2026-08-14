@@ -137,7 +137,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="personInCharge">Person In Charge</label>
-                                <input type="text" id="personInCharge" name="personInCharge" class="form-control" />
+                                <select id="personInCharge" name="personInCharge" class="form-control">
+                                    <option value="">-- Select PIC / Staff --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -528,6 +530,28 @@
                 });
             }
 
+            function loadStaffOptions() {
+                $.ajax({
+                    url: '/users/pic',
+                    type: 'GET',
+                    success: function (res) {
+                        const users = Array.isArray(res) ? res : (res?.data || []);
+                        const $staffSelect = $('#personInCharge');
+                        $staffSelect.find('option:not(:first)').remove();
+                        users.forEach(user => {
+                            const val = user.name || user.Name || '';
+                            if (val) {
+                                const dept = (user.department || user.Department) ? ` (${user.department || user.Department})` : '';
+                                $staffSelect.append(`<option value="${val}">${val}${dept}</option>`);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Failed to load staff options', xhr);
+                    }
+                });
+            }
+
             // Dropdown Change
             $('#companySelect').change(function() {
                 const selectedId = $(this).val();
@@ -768,6 +792,7 @@
             // === 🟢 3. Init ===
             initializeDatePickers();
             loadClientOptions();
+            loadStaffOptions();
             initializeDataTable();
 
             $('#saveBtn').click(saveBP35Record);
