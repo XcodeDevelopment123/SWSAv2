@@ -10,7 +10,7 @@
     }
 </style>
 
-<h1>C1.1 Audit Dept inbound / Outbound</h1>
+<h1>C1.1 Audit Dept Inbound / Outbound</h1>
 
 <div class="row">
     <div class="col-md-12">
@@ -26,11 +26,11 @@
                 </div>
             </div>
             <div class="card-body table-responsive">
-                <table id="taskDatatable" class="table table-bordered table-striped">
+                <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-                            <th colspan="8">Receipt of Documents</th>
-                            <th colspan="5">Document Outward Control</th>
+                            <th colspan="9">Receipt of Documents</th>
+                            <th colspan="4">Document Outward Control</th>
                             <th></th>
                         </tr>
                         <tr>
@@ -39,6 +39,7 @@
                             <th>Active/AEX</th>
                             <th>Year End</th>
                             <th>Date Received</th>
+                            <th>Metrics</th>
                             <th># of bags/box</th>
                             <th>By Whom</th>
                             <th>Upload letter</th>
@@ -124,12 +125,13 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="grouping">Which Database?</label>
-                            <select id="" name="Active/AEX" class="form-control" required>
-                                <option value="">Active</option>
-                                <option value="">AEX</option>
-                                <!-- Clients will be loaded dynamically -->
-                            </select>
+                            <div class="form-group">
+                                <label for="activeAex">Which Database?</label>
+                                <select id="activeAex" name="activeAex" class="form-control" required>
+                                    <option value="Active">Active</option>
+                                    <option value="AEX">AEX</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -160,8 +162,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ackByWhom">By Whom</label>
-                                <select type="text" id="ackByWhom" name="ackByWhom" class="form-control" placeholder="Enter name">
-                                    <option value="">Select</option>
+                                <select id="ackByWhom" name="ackByWhom" class="form-control">
+                                    <option value="">Select Staff</option>
                                 </select>
                             </div>
                         </div>
@@ -177,10 +179,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="metric">Metrics</label>
-                                <input type="text" id="metric" name="metric" class="form-control" placeholder="Auto fill" readonly />
+                                <label for="metric">Metrics (No. of days)</label>
+                                <input type="text" id="metric" name="metric" class="form-control" placeholder="Auto Calculate" readonly />
+                                <small class="text-muted">Target doc inward = Year End + 5 mths (150 days)</small>
                             </div>
                         </div>
                     </div>
@@ -202,21 +205,6 @@
                     <div class="form-info-label col-12">
                         <label>Document Outward Control</label>
                     </div>
-                    @* <div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="dateSendToAuditDept">Date send to Audit Dept</label>
-								<input type="text" id="dateSendToAuditDept" name="dateSendToAuditDept" class="form-control datepicker" placeholder="Select date" />
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="outwardDate">Date</label>
-								<input type="text" id="outwardDate" name="outwardDate" class="form-control datepicker" placeholder="Select date" />
-							</div>
-						</div>
-					</div>
- *@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -227,7 +215,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="outwardByWhom">By Whom</label>
-                                <input type="text" id="outwardByWhom" name="outwardByWhom" class="form-control" placeholder="Enter name" />
+                                <select id="outwardByWhom" name="outwardByWhom" class="form-control">
+                                    <option value="">Select Staff</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -270,18 +260,6 @@
     <!-- DataTables CSS + JS (with Buttons extension) -->
     <partial name="_DatatablesScriptsPartial" />
 
-    <!-- If your _DatatablesScriptsPartial does NOT already include the Buttons extension,
-         uncomment the lines below -->
-    @* 
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
-    *@
-
     <!-- Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
@@ -295,7 +273,7 @@
         $(document).ready(function() {
             console.log('Page loaded, starting initialization...');
 
-            // Initialize DataTable with Buttons toolbar (Copy/CSV/Excel/PDF/Print/Column visibility)
+            // Initialize DataTable with Buttons toolbar
             try {
                 dataTable = $('#taskDatatable').DataTable({
                     responsive: false,
@@ -324,16 +302,22 @@
                 dataTableInitialized = false;
             }
 
-            // Load records, clients, and initialize year dropdown on page load
+            // Load records, clients, staff list, and initialize year dropdown on page load
             initYearDropdown();
             loadA31ARecords();
             loadClients();
+            loadStaffUsers();
 
             // Initialize datepicker & calculate metrics on change
             $('.datepicker').datepicker({
                 format: 'dd/mm/yyyy',
                 autoclose: true
             }).on('changeDate change', function() {
+                calculateMetrics();
+            });
+
+            // Recalculate metrics when year end changes
+            $('#yearEndMonth, #yearSelect').on('change input', function() {
                 calculateMetrics();
             });
 
@@ -350,6 +334,7 @@
                 } else {
                     $('#yearEndMonth').val('');
                     $('#grouping').val('');
+                    calculateMetrics();
                 }
             });
 
@@ -362,9 +347,10 @@
             $('#taskModal').on('hidden.bs.modal', function () {
                 $('#taskForm')[0].reset();
                 $('#editId').val('');
-                $('#modalTitle').text('Add New A31A Doc Control Record');
+                $('#modalTitle').text('Add Inbound / Outbound');
                 $('#metric').val('');
                 $('#grouping').val('');
+                $('#activeAex').val('Active');
             });
         });
 
@@ -376,6 +362,33 @@
             for (var y = currentYear - 10; y <= currentYear + 10; y++) {
                 $list.append('<option value="' + y + '">');
             }
+        }
+
+        // Load Staff Users for By Whom selects
+        function loadStaffUsers() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function(res) {
+                    const users = Array.isArray(res) ? res : (res?.data || []);
+                    const $ackSelect = $('#ackByWhom');
+                    const $outSelect = $('#outwardByWhom');
+
+                    $ackSelect.find('option:not(:first)').remove();
+                    $outSelect.find('option:not(:first)').remove();
+
+                    users.forEach(user => {
+                        const val = user.name || user.Name || '';
+                        if (val) {
+                            $ackSelect.append(`<option value="${val}">${val}</option>`);
+                            $outSelect.append(`<option value="${val}">${val}</option>`);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error('Error loading users:', err);
+                }
+            });
         }
 
         // Handle File Upload via AJAX
@@ -409,36 +422,104 @@
             }
         }
 
-        // Calculate Metrics
-        function calculateMetrics() {
-            var dateRecStr = $('#dateReceived').val();
-            var outwardDateStr = $('#outwardDate').val();
-
-            if (!dateRecStr) {
-                $('#metric').val('');
-                return;
-            }
-
-            var partsRec = dateRecStr.split('/');
-            if (partsRec.length !== 3) {
-                $('#metric').val('');
-                return;
-            }
-            var dateRec = new Date(partsRec[2], partsRec[1] - 1, partsRec[0]);
-
-            var endDate = new Date();
-            if (outwardDateStr) {
-                var partsOut = outwardDateStr.split('/');
-                if (partsOut.length === 3) {
-                    endDate = new Date(partsOut[2], partsOut[1] - 1, partsOut[0]);
+        // Helper to parse date string in dd/mm/yyyy or yyyy-mm-dd format
+        function parseDateString(dateStr) {
+            if (!dateStr) return null;
+            if (dateStr.indexOf('/') !== -1) {
+                var parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    var d = parseInt(parts[0], 10);
+                    var m = parseInt(parts[1], 10) - 1;
+                    var y = parseInt(parts[2], 10);
+                    return new Date(y, m, d);
+                }
+            } else if (dateStr.indexOf('-') !== -1) {
+                var parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+                    } else {
+                        return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                    }
                 }
             }
+            return null;
+        }
 
-            var diffTime = endDate.getTime() - dateRec.getTime();
-            var diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-            if (diffDays < 0) diffDays = 0;
+        // Helper to get last day of a month
+        function getLastDayOfMonth(year, monthIdx) {
+            return new Date(year, monthIdx + 1, 0);
+        }
 
-            $('#metric').val(diffDays + ' days');
+        const monthMap = {
+            'jan': 0, 'january': 0, 'feb': 1, 'february': 1, 'mar': 2, 'march': 2,
+            'apr': 3, 'april': 3, 'may': 4, 'jun': 5, 'june': 5,
+            'jul': 6, 'july': 6, 'aug': 7, 'august': 7, 'sep': 8, 'sept': 8, 'september': 8,
+            'oct': 9, 'october': 9, 'nov': 10, 'november': 10, 'dec': 11, 'december': 11
+        };
+
+        // Calculate Metrics based on Note 4:
+        // Target doc inward = YearEnd + 5 mths (150 days)
+        // Diff = (DateReceived - YearEnd in days) - 150 days
+        function calculateMetricsValue(yearEndedStr, dateReceivedStr) {
+            if (!yearEndedStr || !dateReceivedStr) return '';
+
+            var recDate = parseDateString(dateReceivedStr);
+            if (!recDate || isNaN(recDate.getTime())) return '';
+
+            // Parse YearEnded
+            var yeDate = null;
+            if (yearEndedStr.indexOf('-') !== -1 || yearEndedStr.indexOf('/') !== -1) {
+                yeDate = parseDateString(yearEndedStr);
+            }
+            
+            if (!yeDate || isNaN(yeDate.getTime())) {
+                var parts = yearEndedStr.trim().split(/\s+/);
+                var monthIdx = 11;
+                var yearVal = new Date().getFullYear();
+
+                if (parts.length >= 2) {
+                    var mStr = parts[0].toLowerCase();
+                    if (monthMap.hasOwnProperty(mStr)) {
+                        monthIdx = monthMap[mStr];
+                    }
+                    var yNum = parseInt(parts[1], 10);
+                    if (!isNaN(yNum)) yearVal = yNum;
+                } else if (parts.length === 1) {
+                    var p = parts[0].toLowerCase();
+                    if (monthMap.hasOwnProperty(p)) {
+                        monthIdx = monthMap[p];
+                    } else {
+                        var yNum = parseInt(p, 10);
+                        if (!isNaN(yNum)) yearVal = yNum;
+                    }
+                }
+                yeDate = getLastDayOfMonth(yearVal, monthIdx);
+            }
+
+            if (!yeDate || isNaN(yeDate.getTime())) return '';
+
+            var diffDaysFromYE = Math.floor((recDate.getTime() - yeDate.getTime()) / (1000 * 3600 * 24));
+            var varianceDays = diffDaysFromYE - 150;
+
+            if (varianceDays > 0) {
+                return '+' + varianceDays + ' days';
+            } else if (varianceDays < 0) {
+                return varianceDays + ' days';
+            } else {
+                return '0 days';
+            }
+        }
+
+        // Calculate Metrics for Form
+        function calculateMetrics() {
+            var dateRecStr = $('#dateReceived').val();
+            var m = $('#yearEndMonth').val() || '';
+            var y = $('#yearSelect').val() || '';
+            var yearEndedVal = (m && y) ? (m + ' ' + y) : (m || y);
+
+            var metricVal = calculateMetricsValue(yearEndedVal, dateRecStr);
+            $('#metric').val(metricVal);
         }
 
         // Load clients from database
@@ -501,6 +582,7 @@
                             }
                             console.log('Auto-filled year end month:', monthName);
                         }
+                        calculateMetrics();
                     } else {
                         console.error('Failed to load client details:', response.message);
                     }
@@ -559,7 +641,7 @@
                         console.error('Failed to load records:', response.message);
                         showError('Failed to load records: ' + response.message);
                         if (!dataTableInitialized) {
-                            $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+                            $('#recordsTableBody').html('<tr><td colspan="15" class="text-center text-muted py-4">Error loading records</td></tr>');
                         }
                     }
                 },
@@ -567,7 +649,7 @@
                     console.error('Error loading records:', error);
                     showError('Error loading records: ' + error);
                     if (!dataTableInitialized) {
-                        $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+                        $('#recordsTableBody').html('<tr><td colspan="15" class="text-center text-muted py-4">Error loading records</td></tr>');
                     }
                 }
             });
@@ -594,17 +676,20 @@
 
             if (records && records.length > 0) {
                 records.forEach(function(record) {
+                    var metricDisplay = calculateMetricsValue(record.yearEnded, record.dateReceived) || 'N/A';
+
                     dataTable.row.add([
                         record.grouping || 'N/A',
                         record.client || 'N/A',
-                        record.activeAex || 'N/A',
+                        record.activeAex || 'Active',
                         record.yearEnded || 'N/A',
                         record.dateReceived || 'N/A',
-                        record.noOfBagBox || 'N/A',
+                        metricDisplay,
+                        record.noOfBagBox != null ? record.noOfBagBox : 'N/A',
                         record.byWhom || 'N/A',
                         formatUploadLetter(record.uploadLetter),
                         record.remark || 'N/A',
-                        record.noOfBoxBag || 'N/A',
+                        record.noOfBoxBag != null ? record.noOfBoxBag : 'N/A',
                         record.byWhoam2 || 'N/A',
                         formatUploadLetter(record.uploadLetter2),
                         record.remark2 || 'N/A',
@@ -623,22 +708,25 @@
             tbody.empty();
 
             if (!records || records.length === 0) {
-                tbody.append('<tr><td colspan="14" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
+                tbody.append('<tr><td colspan="15" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
                 return;
             }
 
             records.forEach(function(record) {
+                var metricDisplay = calculateMetricsValue(record.yearEnded, record.dateReceived) || 'N/A';
+
                 var row = '<tr>' +
                     '<td>' + (record.grouping || 'N/A') + '</td>' +
                     '<td>' + (record.client || 'N/A') + '</td>' +
-                    '<td>' + (record.activeAex || 'N/A') + '</td>' +
+                    '<td>' + (record.activeAex || 'Active') + '</td>' +
                     '<td>' + (record.yearEnded || 'N/A') + '</td>' +
                     '<td>' + (record.dateReceived || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfBagBox || 'N/A') + '</td>' +
+                    '<td>' + metricDisplay + '</td>' +
+                    '<td>' + (record.noOfBagBox != null ? record.noOfBagBox : 'N/A') + '</td>' +
                     '<td>' + (record.byWhom || 'N/A') + '</td>' +
                     '<td>' + formatUploadLetter(record.uploadLetter) + '</td>' +
                     '<td>' + (record.remark || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfBoxBag || 'N/A') + '</td>' +
+                    '<td>' + (record.noOfBoxBag != null ? record.noOfBoxBag : 'N/A') + '</td>' +
                     '<td>' + (record.byWhoam2 || 'N/A') + '</td>' +
                     '<td>' + formatUploadLetter(record.uploadLetter2) + '</td>' +
                     '<td>' + (record.remark2 || 'N/A') + '</td>' +
@@ -678,14 +766,13 @@
             var formData = {
                 Id: $('#editId').val() ? parseInt($('#editId').val()) : 0,
                 Client: selectedClientName,
+                ActiveAex: $('#activeAex').val() || 'Active',
                 YearEnded: yearEndedVal,
                 DateReceived: $('#dateReceived').val(),
                 NoOfBagBox: $('#numberOfBagsBox').val() ? parseInt($('#numberOfBagsBox').val()) : null,
                 ByWhom: $('#ackByWhom').val(),
                 UploadLetter: $('#ackUploadLetter').val(),
                 Remark: $('#remark').val(),
-                DateSendToAD: $('#dateSendToAuditDept').val(),
-                Date: $('#outwardDate').val(),
                 NoOfBoxBag: $('#outwardNumberOfBagsBox').val() ? parseInt($('#outwardNumberOfBagsBox').val()) : null,
                 ByWhoam2: $('#outwardByWhom').val(),
                 UploadLetter2: $('#outwardUploadLetter').val(),
@@ -727,20 +814,6 @@
                     if (response.success) {
                         $('#taskModal').modal('hide');
                         showSuccess('Record saved successfully!');
-
-                        // 显示自动创建记录的信息
-                        let infoMessages = [];
-                        if (formData.DateSendToAD && !isUpdate) {
-                            infoMessages.push('A31B record has been automatically created with the date synchronized to "Date Doc fr Acc Dept"');
-                        }
-                        if (formData.Date && !isUpdate) {
-                            infoMessages.push('AT31 record has been automatically created with the date synchronized to "Doc Inwards Date"');
-                        }
-
-                        if (infoMessages.length > 0) {
-                            showInfo(infoMessages.join('\n'));
-                        }
-
                         loadA31ARecords();
                     } else {
                         showError('Save failed: ' + response.message);
@@ -794,7 +867,6 @@
                                 if ($(this).text() === record.client) {
                                     clientExists = true;
                                     $(this).prop('selected', true);
-                                    // Load client details to populate year end
                                     loadClientDetails($(this).val());
                                     return false;
                                 }
@@ -820,13 +892,17 @@
                             $('#grouping').val(record.grouping);
                         }
 
+                        if (record.activeAex) {
+                            $('#activeAex').val(record.activeAex);
+                        } else {
+                            $('#activeAex').val('Active');
+                        }
+
                         $('#dateReceived').val(record.dateReceived);
                         $('#numberOfBagsBox').val(record.noOfBagBox);
                         $('#ackByWhom').val(record.byWhom);
                         $('#ackUploadLetter').val(record.uploadLetter);
                         $('#remark').val(record.remark);
-                        $('#dateSendToAuditDept').val(record.dateSendToAD);
-                        $('#outwardDate').val(record.date);
                         $('#outwardNumberOfBagsBox').val(record.noOfBoxBag);
                         $('#outwardByWhom').val(record.byWhoam2);
                         $('#outwardUploadLetter').val(record.uploadLetter2);
@@ -834,7 +910,7 @@
 
                         calculateMetrics();
 
-                        $('#modalTitle').text('Edit A31A Record');
+                        $('#modalTitle').text('Edit Inbound / Outbound Record');
                         $('#taskModal').modal('show');
                     } else {
                         showError('Failed to load record: ' + response.message);

@@ -15,40 +15,41 @@ namespace SWSA.MvcPortal.Models.Clients
     public class A31AModel
     {
         public int Id { get; set; }
-        public string Client { get; set; } // 直接存储客户端名称
-        public string Grouping { get; set; } //爲了找到Data在Client表中对应的Group
+        public string? Client { get; set; } // 直接存储客户端名称
+        public string? Grouping { get; set; } //爲了找到Data在Client表中对应的Group
+        public string? ActiveAex { get; set; } // Active / AEX
 
-        public string YearEnded { get; set; }
-        public string DateReceived { get; set; }
+        public string? YearEnded { get; set; }
+        public string? DateReceived { get; set; }
         public int? NoOfBagBox { get; set; }
-        public string ByWhom { get; set; }
-        public string UploadLetter { get; set; }
-        public string Remark { get; set; }
-        public string DateSendToAD { get; set; }
-        public string Date { get; set; }
+        public string? ByWhom { get; set; }
+        public string? UploadLetter { get; set; }
+        public string? Remark { get; set; }
+        public string? DateSendToAD { get; set; }
+        public string? Date { get; set; }
         public int? NoOfBoxBag { get; set; }
-        public string ByWhoam2 { get; set; }
-        public string UploadLetter2 { get; set; }
-        public string Remark2 { get; set; }
+        public string? ByWhoam2 { get; set; }
+        public string? UploadLetter2 { get; set; }
+        public string? Remark2 { get; set; }
     }
 
     public class A31BModel
     {
         public int Id { get; set; }
-        public string Clients { get; set; }
-        public string Grouping { get; set; }
-        public string YearEnded { get; set; }
-        public string CoStatus { get; set; }
-        public string DateDocFr { get; set; }
-        public string DateReceived { get; set; }
+        public string? Clients { get; set; }
+        public string? Grouping { get; set; }
+        public string? YearEnded { get; set; }
+        public string? CoStatus { get; set; }
+        public string? DateDocFr { get; set; }
+        public string? DateReceived { get; set; }
         public string? NoOfBoxBag { get; set; }
-        public string ByWhom { get; set; }
-        public string UploadLetter { get; set; }
-        public string Remark { get; set; }
-        public string Date { get; set; }
+        public string? ByWhom { get; set; }
+        public string? UploadLetter { get; set; }
+        public string? Remark { get; set; }
+        public string? Date { get; set; }
         public string? NoOfbox { get; set; }
-        public string ByWhom2 { get; set; }
-        public string UploadLetter2 { get; set; }
-        public string Remark2 { get; set; }
+        public string? ByWhom2 { get; set; }
+        public string? UploadLetter2 { get; set; }
+        public string? Remark2 { get; set; }
     }
 }

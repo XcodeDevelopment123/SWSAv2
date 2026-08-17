@@ -29,17 +29,17 @@
                 <table id="taskDatatable" class="table table-bordered table-striped w-100">
                     <thead>
                         <tr>
-
-                            <th colspan="7">Receipt of Documents</th>
-                            <th colspan="6">Return of Documents</th>
+                            <th colspan="9">Receipt of Documents</th>
+                            <th colspan="5">Return of Documents</th>
                             <th></th>
-
                         </tr>
                         <tr>
                             <th>Grouping</th>
                             <th>Client</th>
+                            <th>Co Types</th>
                             <th>Year End</th>
                             <th>Date Received</th>
+                            <th>Metrics</th>
                             <th># of bags/box</th>
                             <th>By Whom</th>
                             <th>Upload letter</th>
@@ -68,7 +68,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="taskModalLabel">
                     <i class="fas fa-edit me-2"></i>
-                    <span id="modalTitle">Add Account Dept</span>
+                    <span id="modalTitle">Add Inbound / Outbound</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -81,7 +81,7 @@
                         <label>Basic Information</label>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="clientId">Client (Link From Client List)</label>
                                 <select id="clientId" name="clientId" class="form-control" required>
@@ -110,20 +110,22 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="yearSelect">Years</label>
                                 <input type="text" id="yearSelect" name="yearSelect" class="form-control" placeholder="Select or type year" list="yearsList" required />
                                 <datalist id="yearsList"></datalist>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="grouping">Grouping</label>
                                 <input type="text" id="grouping" name="grouping" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="coStatus">Co Type</label>
                                 <select id="coStatus" name="coStatus" class="form-control" required>
@@ -131,6 +133,7 @@
                                     <option value="Sdn Bhd">Sdn Bhd</option>
                                     <option value="LLP">LLP</option>
                                     <option value="Enterprise">Enterprise</option>
+                                    <option value="Advocate">Advocate</option>
                                 </select>
                             </div>
                         </div>
@@ -141,19 +144,13 @@
                         <label>Receipt of Documents</label>
                     </div>
                     <div class="row">
-                        @*  <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dateDocFr">Date Doc fr Acc dept</label>
-                                <input type="text" id="dateDocFr" name="dateDocFr" class="form-control datepicker" placeholder="Select date" />
-                            </div>
-                        </div> *@
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dateReceived">Date Received</label>
                                 <input type="text" id="dateReceived" name="dateReceived" class="form-control datepicker" placeholder="Select date" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="noOfBoxBag"># of bags/box</label>
                                 <input type="number" id="noOfBoxBag" name="noOfBoxBag" class="form-control" placeholder="Enter number" min="0" />
@@ -169,7 +166,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="byWhom">By Whom</label>
-                                <input type="text" id="byWhom" name="byWhom" class="form-control" placeholder="Enter name" />
+                                <select id="byWhom" name="byWhom" class="form-control">
+                                    <option value="">Select Staff</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -184,10 +183,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="metric">Metrics</label>
-                                <input type="text" id="metric" name="metric" class="form-control" placeholder="Auto fill" readonly />
+                                <label for="metric">Metrics (No. of days)</label>
+                                <input type="text" id="metric" name="metric" class="form-control" placeholder="Auto Calculate" readonly />
+                                <small class="text-muted">Target doc inward = Year End + 5 mths (150 days)</small>
                             </div>
                         </div>
                     </div>
@@ -225,7 +225,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="byWhom2">By Whom</label>
-                                <input type="text" id="byWhom2" name="byWhom2" class="form-control" placeholder="Enter name" />
+                                <select id="byWhom2" name="byWhom2" class="form-control">
+                                    <option value="">Select Staff</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -268,18 +270,6 @@
     <!-- DataTables CSS + JS (with Buttons extension) -->
     <partial name="_DatatablesScriptsPartial" />
 
-    <!-- If your _DatatablesScriptsPartial does NOT already include the Buttons extension,
-         uncomment the lines below -->
-    @*
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
-    *@
-
     <!-- Datepicker CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 
@@ -320,16 +310,22 @@
                 dataTableInitialized = false;
             }
 
-            // Load records, clients, and initialize year dropdown on page load
+            // Load records, clients, staff list, and initialize year dropdown on page load
             initYearDropdown();
             loadA31BRecords();
             loadClients();
+            loadStaffUsers();
 
             // Initialize datepicker & calculate metrics on change
             $('.datepicker').datepicker({
                 format: 'dd/mm/yyyy',
                 autoclose: true
             }).on('changeDate change', function() {
+                calculateMetrics();
+            });
+
+            // Recalculate metrics when year end changes
+            $('#yearEndMonth, #yearSelect').on('change input', function() {
                 calculateMetrics();
             });
 
@@ -345,6 +341,7 @@
                 } else {
                     $('#yearEndMonth').val('');
                     $('#grouping').val('');
+                    calculateMetrics();
                 }
             });
 
@@ -357,13 +354,13 @@
             $('#taskModal').on('hidden.bs.modal', function () {
                 $('#taskForm')[0].reset();
                 $('#editId').val('');
-                $('#modalTitle').text('Add Account Dept');
+                $('#modalTitle').text('Add Inbound / Outbound');
                 $('#metric').val('');
                 $('#grouping').val('');
             });
         });
 
-        // Initialize Year Datalist
+        // Initialize Year Datalist (allows +- 10 years plus manual entry)
         function initYearDropdown() {
             var currentYear = new Date().getFullYear();
             var $list = $('#yearsList');
@@ -371,6 +368,33 @@
             for (var y = currentYear - 10; y <= currentYear + 10; y++) {
                 $list.append('<option value="' + y + '">');
             }
+        }
+
+        // Load Staff Users for By Whom dropdowns
+        function loadStaffUsers() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function(res) {
+                    const users = Array.isArray(res) ? res : (res?.data || []);
+                    const $byWhomSelect = $('#byWhom');
+                    const $byWhom2Select = $('#byWhom2');
+
+                    $byWhomSelect.find('option:not(:first)').remove();
+                    $byWhom2Select.find('option:not(:first)').remove();
+
+                    users.forEach(user => {
+                        const val = user.name || user.Name || '';
+                        if (val) {
+                            $byWhomSelect.append(`<option value="${val}">${val}</option>`);
+                            $byWhom2Select.append(`<option value="${val}">${val}</option>`);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error('Error loading users:', err);
+                }
+            });
         }
 
         // Handle File Upload via AJAX
@@ -401,36 +425,104 @@
             }
         }
 
-        // Calculate Metrics
-        function calculateMetrics() {
-            var dateRecStr = $('#dateReceived').val();
-            var dateReturnStr = $('#date').val();
-
-            if (!dateRecStr) {
-                $('#metric').val('');
-                return;
-            }
-
-            var partsRec = dateRecStr.split('/');
-            if (partsRec.length !== 3) {
-                $('#metric').val('');
-                return;
-            }
-            var dateRec = new Date(partsRec[2], partsRec[1] - 1, partsRec[0]);
-
-            var endDate = new Date();
-            if (dateReturnStr) {
-                var partsRet = dateReturnStr.split('/');
-                if (partsRet.length === 3) {
-                    endDate = new Date(partsRet[2], partsRet[1] - 1, partsRet[0]);
+        // Helper to parse date string in dd/mm/yyyy or yyyy-mm-dd format
+        function parseDateString(dateStr) {
+            if (!dateStr) return null;
+            if (dateStr.indexOf('/') !== -1) {
+                var parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    var d = parseInt(parts[0], 10);
+                    var m = parseInt(parts[1], 10) - 1;
+                    var y = parseInt(parts[2], 10);
+                    return new Date(y, m, d);
+                }
+            } else if (dateStr.indexOf('-') !== -1) {
+                var parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+                    } else {
+                        return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                    }
                 }
             }
+            return null;
+        }
 
-            var diffTime = endDate.getTime() - dateRec.getTime();
-            var diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-            if (diffDays < 0) diffDays = 0;
+        // Helper to get last day of a month
+        function getLastDayOfMonth(year, monthIdx) {
+            return new Date(year, monthIdx + 1, 0);
+        }
 
-            $('#metric').val(diffDays + ' days');
+        const monthMap = {
+            'jan': 0, 'january': 0, 'feb': 1, 'february': 1, 'mar': 2, 'march': 2,
+            'apr': 3, 'april': 3, 'may': 4, 'jun': 5, 'june': 5,
+            'jul': 6, 'july': 6, 'aug': 7, 'august': 7, 'sep': 8, 'sept': 8, 'september': 8,
+            'oct': 9, 'october': 9, 'nov': 10, 'november': 10, 'dec': 11, 'december': 11
+        };
+
+        // Calculate Metrics based on Note 5:
+        // Target doc inward = YearEnd + 5 mths (150 days)
+        // Diff = (DateReceived - YearEnd in days) - 150 days
+        function calculateMetricsValue(yearEndedStr, dateReceivedStr) {
+            if (!yearEndedStr || !dateReceivedStr) return '';
+
+            var recDate = parseDateString(dateReceivedStr);
+            if (!recDate || isNaN(recDate.getTime())) return '';
+
+            // Parse YearEnded
+            var yeDate = null;
+            if (yearEndedStr.indexOf('-') !== -1 || yearEndedStr.indexOf('/') !== -1) {
+                yeDate = parseDateString(yearEndedStr);
+            }
+
+            if (!yeDate || isNaN(yeDate.getTime())) {
+                var parts = yearEndedStr.trim().split(/\s+/);
+                var monthIdx = 11;
+                var yearVal = new Date().getFullYear();
+
+                if (parts.length >= 2) {
+                    var mStr = parts[0].toLowerCase();
+                    if (monthMap.hasOwnProperty(mStr)) {
+                        monthIdx = monthMap[mStr];
+                    }
+                    var yNum = parseInt(parts[1], 10);
+                    if (!isNaN(yNum)) yearVal = yNum;
+                } else if (parts.length === 1) {
+                    var p = parts[0].toLowerCase();
+                    if (monthMap.hasOwnProperty(p)) {
+                        monthIdx = monthMap[p];
+                    } else {
+                        var yNum = parseInt(p, 10);
+                        if (!isNaN(yNum)) yearVal = yNum;
+                    }
+                }
+                yeDate = getLastDayOfMonth(yearVal, monthIdx);
+            }
+
+            if (!yeDate || isNaN(yeDate.getTime())) return '';
+
+            var diffDaysFromYE = Math.floor((recDate.getTime() - yeDate.getTime()) / (1000 * 3600 * 24));
+            var varianceDays = diffDaysFromYE - 150;
+
+            if (varianceDays > 0) {
+                return '+' + varianceDays + ' days';
+            } else if (varianceDays < 0) {
+                return varianceDays + ' days';
+            } else {
+                return '0 days';
+            }
+        }
+
+        // Calculate Metrics for Form
+        function calculateMetrics() {
+            var dateRecStr = $('#dateReceived').val();
+            var m = $('#yearEndMonth').val() || '';
+            var y = $('#yearSelect').val() || '';
+            var yearEndedVal = (m && y) ? (m + ' ' + y) : (m || y);
+
+            var metricVal = calculateMetricsValue(yearEndedVal, dateRecStr);
+            $('#metric').val(metricVal);
         }
 
         // Load clients from database
@@ -485,6 +577,19 @@
                                 $('#yearSelect').val(new Date().getFullYear());
                             }
                         }
+
+                        // Auto-fill Co Type if available
+                        if (response.data.clientType) {
+                            if (response.data.clientType === 1 || response.data.clientType === 'SdnBhd') {
+                                $('#coStatus').val('Sdn Bhd');
+                            } else if (response.data.clientType === 2 || response.data.clientType === 'LLP') {
+                                $('#coStatus').val('LLP');
+                            } else if (response.data.clientType === 3 || response.data.clientType === 'Enterprise') {
+                                $('#coStatus').val('Enterprise');
+                            }
+                        }
+
+                        calculateMetrics();
                     } else {
                         console.error('Failed to load client details:', response.message);
                     }
@@ -535,7 +640,7 @@
                         console.error('Failed to load records:', response.message);
                         showError('Failed to load records: ' + response.message);
                         if (!dataTableInitialized) {
-                            $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+                            $('#recordsTableBody').html('<tr><td colspan="16" class="text-center text-muted py-4">Error loading records</td></tr>');
                         }
                     }
                 },
@@ -543,7 +648,7 @@
                     console.error('Error loading records:', error);
                     showError('Error loading records: ' + error);
                     if (!dataTableInitialized) {
-                        $('#recordsTableBody').html('<tr><td colspan="14" class="text-center text-muted py-4">Error loading records</td></tr>');
+                        $('#recordsTableBody').html('<tr><td colspan="16" class="text-center text-muted py-4">Error loading records</td></tr>');
                     }
                 }
             });
@@ -568,17 +673,21 @@
 
             if (records && records.length > 0) {
                 records.forEach(function(record) {
+                    var metricDisplay = calculateMetricsValue(record.yearEnded, record.dateReceived) || 'N/A';
+
                     dataTable.row.add([
                         record.grouping || 'N/A',
                         record.clients || 'N/A',
+                        record.coStatus || 'N/A',
                         record.yearEnded || 'N/A',
                         record.dateReceived || 'N/A',
-                        record.noOfBoxBag || 'N/A',
+                        metricDisplay,
+                        record.noOfBoxBag != null ? record.noOfBoxBag : 'N/A',
                         record.byWhom || 'N/A',
                         formatUploadLetter(record.uploadLetter),
                         record.remark || 'N/A',
                         record.date || 'N/A',
-                        record.noOfbox || 'N/A',
+                        record.noOfbox != null ? record.noOfbox : 'N/A',
                         record.byWhom2 || 'N/A',
                         formatUploadLetter(record.uploadLetter2),
                         record.remark2 || 'N/A',
@@ -597,22 +706,26 @@
             tbody.empty();
 
             if (!records || records.length === 0) {
-                tbody.append('<tr><td colspan="14" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
+                tbody.append('<tr><td colspan="16" class="text-center text-muted py-4">No records found. Click "New Record" to create one.</td></tr>');
                 return;
             }
 
             records.forEach(function(record) {
+                var metricDisplay = calculateMetricsValue(record.yearEnded, record.dateReceived) || 'N/A';
+
                 var row = '<tr>' +
                     '<td>' + (record.grouping || 'N/A') + '</td>' +
                     '<td>' + (record.clients || 'N/A') + '</td>' +
+                    '<td>' + (record.coStatus || 'N/A') + '</td>' +
                     '<td>' + (record.yearEnded || 'N/A') + '</td>' +
                     '<td>' + (record.dateReceived || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfBoxBag || 'N/A') + '</td>' +
+                    '<td>' + metricDisplay + '</td>' +
+                    '<td>' + (record.noOfBoxBag != null ? record.noOfBoxBag : 'N/A') + '</td>' +
                     '<td>' + (record.byWhom || 'N/A') + '</td>' +
                     '<td>' + formatUploadLetter(record.uploadLetter) + '</td>' +
                     '<td>' + (record.remark || 'N/A') + '</td>' +
                     '<td>' + (record.date || 'N/A') + '</td>' +
-                    '<td>' + (record.noOfbox || 'N/A') + '</td>' +
+                    '<td>' + (record.noOfbox != null ? record.noOfbox : 'N/A') + '</td>' +
                     '<td>' + (record.byWhom2 || 'N/A') + '</td>' +
                     '<td>' + formatUploadLetter(record.uploadLetter2) + '</td>' +
                     '<td>' + (record.remark2 || 'N/A') + '</td>' +
@@ -652,7 +765,6 @@
                 Clients: selectedClientName,
                 YearEnded: yearEndedVal,
                 CoStatus: $('#coStatus').val(),
-                DateDocFr: $('#dateDocFr').val(),
                 DateReceived: $('#dateReceived').val(),
                 NoOfBoxBag: $('#noOfBoxBag').val() ? parseInt($('#noOfBoxBag').val()) : null,
                 ByWhom: $('#byWhom').val(),
@@ -677,7 +789,7 @@
             }
 
             if (!formData.CoStatus) {
-                alert('Please select Company Status');
+                alert('Please select Company Type');
                 return;
             }
 
@@ -749,7 +861,6 @@
                                 if ($(this).text() === record.clients) {
                                     clientExists = true;
                                     $(this).prop('selected', true);
-                                    // Load client details to populate year end
                                     loadClientDetails($(this).val());
                                     return false;
                                 }
@@ -776,7 +887,6 @@
                         }
 
                         $('#coStatus').val(record.coStatus);
-                        $('#dateDocFr').val(record.dateDocFr);
                         $('#dateReceived').val(record.dateReceived);
                         $('#noOfBoxBag').val(record.noOfBoxBag);
                         $('#byWhom').val(record.byWhom);
@@ -790,7 +900,7 @@
 
                         calculateMetrics();
 
-                        $('#modalTitle').text('Edit A31B Record');
+                        $('#modalTitle').text('Edit Inbound / Outbound Record');
                         $('#taskModal').modal('show');
                     } else {
                         showError('Failed to load record: ' + response.message);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -20,6 +20,8 @@ public partial class A31a
     public string? UploadLetter { get; set; }
 
     public string? Remark { get; set; }
+
+    public string? ActiveAex { get; set; }
 
     public string? DateSendToAd { get; set; }
 

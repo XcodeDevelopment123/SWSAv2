@@ -369,15 +369,18 @@ public class DocumentController(
             {
                 var sql = @"INSERT INTO [Quartz2].[dbo].[A31A] 
                     ([Client], [YearEnded], [DateReceived], [NoOfBagBox], 
-                     [ByWhom], [UploadLetter], [Remark], [DateSendToAD], 
+                     [ByWhom], [UploadLetter], [Remark], [ActiveAex], [DateSendToAD], 
                      [Date], [NoOfBoxBag], [ByWhoam2], [UploadLetter2], [Remark2])
                     VALUES 
                     (@Client, @YearEnded, @DateReceived, @NoOfBagBox, 
-                     @ByWhom, @UploadLetter, @Remark, @DateSendToAD, 
+                     @ByWhom, @UploadLetter, @Remark, @ActiveAex, @DateSendToAD, 
                      @Date, @NoOfBoxBag, @ByWhoam2, @UploadLetter2, @Remark2);
                     SELECT SCOPE_IDENTITY();";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                // Note 2: Auto-link DateReceived to E2.1 (Active - AT21) or E2.2 (AEX - AEX41)
+                await SyncToScheduleFromA31A(model);
 
                 // 如果填写了 Date 字段，则创建 AT31 记录
                 if (!string.IsNullOrEmpty(model.Date))
@@ -414,12 +417,15 @@ public class DocumentController(
                 var sql = @"UPDATE [Quartz2].[dbo].[A31A] SET 
                     [Client] = @Client, [YearEnded] = @YearEnded, [DateReceived] = @DateReceived, 
                     [NoOfBagBox] = @NoOfBagBox, [ByWhom] = @ByWhom, [UploadLetter] = @UploadLetter, 
-                    [Remark] = @Remark, [DateSendToAD] = @DateSendToAD, [Date] = @Date, 
+                    [Remark] = @Remark, [ActiveAex] = @ActiveAex, [DateSendToAD] = @DateSendToAD, [Date] = @Date, 
                     [NoOfBoxBag] = @NoOfBoxBag, [ByWhoam2] = @ByWhoam2, [UploadLetter2] = @UploadLetter2, 
                     [Remark2] = @Remark2 
                     WHERE Id = @Id";
 
                 await connection.ExecuteAsync(sql, model);
+
+                // Note 2: Auto-link DateReceived to E2.1 (Active - AT21) or E2.2 (AEX - AEX41)
+                await SyncToScheduleFromA31A(model);
 
                 // 检查 Date 字段是否从空变为有值，如果是则创建 AT31 记录
                 if (string.IsNullOrEmpty(oldRecord?.Date) && !string.IsNullOrEmpty(model.Date))
@@ -433,6 +439,64 @@ public class DocumentController(
         catch (Exception ex)
         {
             return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    private async Task SyncToScheduleFromA31A(A31AModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.Client) || string.IsNullOrWhiteSpace(model.DateReceived))
+            return;
+
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            if (string.Equals(model.ActiveAex, "Active", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to AT21 (E2.1 Active Schedule)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[AT21] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var at21Id = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Client });
+
+                if (at21Id.HasValue && at21Id.Value > 0)
+                {
+                    var updateSql = "UPDATE [Quartz2].[dbo].[AT21] SET DateDocIn = @DateReceived WHERE Id = @Id";
+                    await connection.ExecuteAsync(updateSql, new { DateReceived = model.DateReceived, Id = at21Id.Value });
+                    Console.WriteLine($"[A31A Sync] Updated AT21 (ID: {at21Id.Value}) DateDocIn to {model.DateReceived}");
+                }
+                else
+                {
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[AT21] 
+                        ([CompanyName], [YearEnd], [DateDocIn], [Activity], [AuditStatus]) 
+                        VALUES (@CompanyName, @YearEnd, @DateDocIn, 'Auto-created from A31A', 'Pending')";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Client, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                    Console.WriteLine($"[A31A Sync] Inserted new AT21 for {model.Client} with DateDocIn: {model.DateReceived}");
+                }
+            }
+            else if (string.Equals(model.ActiveAex, "AEX", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to AEX41 (E2.2 AEX Schedule)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[AEX41] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var aex41Id = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Client });
+
+                if (aex41Id.HasValue && aex41Id.Value > 0)
+                {
+                    var updateSql = "UPDATE [Quartz2].[dbo].[AEX41] SET DateDocIn = @DateReceived WHERE Id = @Id";
+                    await connection.ExecuteAsync(updateSql, new { DateReceived = model.DateReceived, Id = aex41Id.Value });
+                    Console.WriteLine($"[A31A Sync] Updated AEX41 (ID: {aex41Id.Value}) DateDocIn to {model.DateReceived}");
+                }
+                else
+                {
+                    var insertSql = @"INSERT INTO [Quartz2].[dbo].[AEX41] 
+                        ([CompanyName], [YearEnd], [DateDocIn], [Activity]) 
+                        VALUES (@CompanyName, @YearEnd, @DateDocIn, 'Auto-created from A31A')";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Client, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                    Console.WriteLine($"[A31A Sync] Inserted new AEX41 for {model.Client} with DateDocIn: {model.DateReceived}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[A31A Sync Error]: {ex.Message}");
         }
     }
 
@@ -592,6 +656,10 @@ public class DocumentController(
                         SELECT SCOPE_IDENTITY();";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                // Note 3: Auto-link DateReceived to F1.1 (BP21), F1.2 (BP22), F1.3 (BP23), F1.4 (BP24)
+                await SyncToScheduleFromA31B(model);
+
                 return Json(new { success = true, id = id });
             }
         }
@@ -617,12 +685,93 @@ public class DocumentController(
                         WHERE Id = @Id";
 
                 await connection.ExecuteAsync(sql, model);
+
+                // Note 3: Auto-link DateReceived to F1.1 (BP21), F1.2 (BP22), F1.3 (BP23), F1.4 (BP24)
+                await SyncToScheduleFromA31B(model);
+
                 return Json(new { success = true });
             }
         }
         catch (Exception ex)
         {
             return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    private async Task SyncToScheduleFromA31B(A31BModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.Clients) || string.IsNullOrWhiteSpace(model.DateReceived))
+            return;
+
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var coType = model.CoStatus?.Trim() ?? "";
+
+            if (coType.Equals("Sdn Bhd", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to BP21 (F1.1 Sdn Bhd Work List)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[BP21] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var bpId = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Clients });
+                if (bpId.HasValue && bpId.Value > 0)
+                {
+                    await connection.ExecuteAsync("UPDATE [Quartz2].[dbo].[BP21] SET DateDocIn = @DateReceived WHERE Id = @Id", new { DateReceived = model.DateReceived, Id = bpId.Value });
+                }
+                else
+                {
+                    var insertSql = "INSERT INTO [Quartz2].[dbo].[BP21] ([CompanyName], [YearEnd], [DateDocIn]) VALUES (@CompanyName, @YearEnd, @DateDocIn)";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Clients, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                }
+            }
+            else if (coType.Equals("LLP", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to BP22 (F1.2 LLP Work List)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[BP22] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var bpId = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Clients });
+                if (bpId.HasValue && bpId.Value > 0)
+                {
+                    await connection.ExecuteAsync("UPDATE [Quartz2].[dbo].[BP22] SET DateDocIn = @DateReceived WHERE Id = @Id", new { DateReceived = model.DateReceived, Id = bpId.Value });
+                }
+                else
+                {
+                    var insertSql = "INSERT INTO [Quartz2].[dbo].[BP22] ([CompanyName], [YearEnd], [DateDocIn]) VALUES (@CompanyName, @YearEnd, @DateDocIn)";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Clients, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                }
+            }
+            else if (coType.Equals("Enterprise", StringComparison.OrdinalIgnoreCase) || coType.Equals("Form B&P", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to BP23 (F1.3 Form B&P Work List)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[BP23] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var bpId = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Clients });
+                if (bpId.HasValue && bpId.Value > 0)
+                {
+                    await connection.ExecuteAsync("UPDATE [Quartz2].[dbo].[BP23] SET DateDocIn = @DateReceived WHERE Id = @Id", new { DateReceived = model.DateReceived, Id = bpId.Value });
+                }
+                else
+                {
+                    var insertSql = "INSERT INTO [Quartz2].[dbo].[BP23] ([CompanyName], [YearEnd], [DateDocIn]) VALUES (@CompanyName, @YearEnd, @DateDocIn)";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Clients, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                }
+            }
+            else if (coType.Equals("Advocate", StringComparison.OrdinalIgnoreCase) || coType.Equals("Client Acc", StringComparison.OrdinalIgnoreCase))
+            {
+                // Sync to BP24 (F1.4 Advocate Work List)
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[BP24] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var bpId = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.Clients });
+                if (bpId.HasValue && bpId.Value > 0)
+                {
+                    await connection.ExecuteAsync("UPDATE [Quartz2].[dbo].[BP24] SET DateDocIn = @DateReceived WHERE Id = @Id", new { DateReceived = model.DateReceived, Id = bpId.Value });
+                }
+                else
+                {
+                    var insertSql = "INSERT INTO [Quartz2].[dbo].[BP24] ([CompanyName], [YearEnd], [DateDocIn]) VALUES (@CompanyName, @YearEnd, @DateDocIn)";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.Clients, YearEnd = model.YearEnded, DateDocIn = model.DateReceived });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[A31B Sync Error]: {ex.Message}");
         }
     }
 
