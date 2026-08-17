@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
 
     initSelect2();
 
@@ -61,7 +61,7 @@
         return `${y}-${m}-${day}`;
     }
 
-    function autoCalculate(incorpDateStr) {
+    function autoCalculate(incorpDateStr, yearEndMonthName) {
         if (!incorpDateStr) {
             $('#incorpDate').val('');
             $('#first18Months').val('');
@@ -80,7 +80,27 @@
         const arDue = calcAnniversaryDate(incorp);
         $('#arDueDate').val(formatDate(arDue));
 
-        $('#adDueDate').val(formatDate(first18));
+        // Note 3b: AD Due Date = YE + 90 days (or if no YE, fallback to first 18 months)
+        let adDue = null;
+        if (yearEndMonthName) {
+            const months = {
+                'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
+                'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
+            };
+            const mIdx = months[yearEndMonthName.toString().trim().toLowerCase()];
+            if (mIdx !== undefined) {
+                const now = new Date();
+                let yeDate = new Date(now.getFullYear(), mIdx + 1, 0); // last day of YE month
+                // Add 90 days
+                adDue = new Date(yeDate.getTime() + (90 * 24 * 60 * 60 * 1000));
+            }
+        }
+
+        if (adDue && !isNaN(adDue.getTime())) {
+            $('#adDueDate').val(formatDate(adDue));
+        } else {
+            $('#adDueDate').val(formatDate(first18));
+        }
     }
 
     $("#clientSelect").on("change", function () {
@@ -96,13 +116,20 @@
                 if (res.incorporationDate) {
                     const d = new Date(res.incorporationDate);
                     const local = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-                    autoCalculate(local);
+                    autoCalculate(local, res.yearEndMonth);
                 } else {
-                    autoCalculate(null);
+                    autoCalculate(null, res.yearEndMonth);
                 }
             }
-        })
-    })
+        });
+    });
+
+    $("#yearEndMonth").on("change", function () {
+        const incorpVal = $("#incorpDate").val();
+        if (incorpVal) {
+            autoCalculate(incorpVal, $(this).val());
+        }
+    });
 
     const taskDatatable = $("#taskDatatable").DataTable({
         "paging": true,

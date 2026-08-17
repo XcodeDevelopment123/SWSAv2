@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using SWSA.MvcPortal.Models.SecDeptModel;
@@ -13,7 +13,6 @@ namespace SWSA.MvcPortal.Controllers.Templates
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
         private readonly IClientService _clientService;
-
 
         public LLPMastersecScheduleController(IConfiguration configuration, IClientService clientService)
         {
@@ -36,15 +35,17 @@ namespace SWSA.MvcPortal.Controllers.Templates
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"SELECT [Id], [Grouping], [Referral], [SecFileNo], 
-                                      [CompanyName], [YearEnd], [IncorpDate], 
-                                      [CompanyStatus], [ActiveCoActivitySize],
-                                      [CreditRating],
-                                      [YEtodo], [ACCmthTodo], [SSMextensionDate], 
-                                      [ADdueDate], [AccReady], [ADsubmitDate], 
-                                      [JobCompleted]
-                               FROM [dbo].[S13B]
-                               ORDER BY [Id] DESC";
+                    var sql = @"SELECT s.[Id], s.[Grouping], s.[Referral], s.[SecFileNo], 
+                                      s.[CompanyName], s.[YearEnd], s.[IncorpDate], 
+                                      s.[CompanyStatus], s.[ActiveCoActivitySize],
+                                      b.[CreditRating] AS [CreditRating],
+                                      s.[YEtodo], s.[ACCmthTodo], s.[SSMextensionDate], 
+                                      s.[ADdueDate], s.[AccReady], s.[ADsubmitDate], 
+                                      s.[JobCompleted]
+                               FROM [dbo].[S13B] s
+                               LEFT JOIN [dbo].[Clients] c ON s.[CompanyName] = c.[Name]
+                               LEFT JOIN [dbo].[BaseCompanies] b ON c.[Id] = b.[Id]
+                               ORDER BY s.[Id] DESC";
 
                     var records = await connection.QueryAsync<S13BModel>(sql);
                     return Json(new { success = true, data = records });
@@ -64,15 +65,17 @@ namespace SWSA.MvcPortal.Controllers.Templates
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    var sql = @"SELECT [Id], [Grouping], [Referral], [SecFileNo], 
-                                      [CompanyName], [YearEnd], [IncorpDate], 
-                                      [CompanyStatus], [ActiveCoActivitySize],
-                                      [CreditRating],
-                                      [YEtodo], [ACCmthTodo], [SSMextensionDate], 
-                                      [ADdueDate], [AccReady], [ADsubmitDate], 
-                                      [JobCompleted]
-                               FROM [dbo].[S13B]
-                               WHERE [Id] = @Id";
+                    var sql = @"SELECT s.[Id], s.[Grouping], s.[Referral], s.[SecFileNo], 
+                                      s.[CompanyName], s.[YearEnd], s.[IncorpDate], 
+                                      s.[CompanyStatus], s.[ActiveCoActivitySize],
+                                      b.[CreditRating] AS [CreditRating],
+                                      s.[YEtodo], s.[ACCmthTodo], s.[SSMextensionDate], 
+                                      s.[ADdueDate], s.[AccReady], s.[ADsubmitDate], 
+                                      s.[JobCompleted]
+                               FROM [dbo].[S13B] s
+                               LEFT JOIN [dbo].[Clients] c ON s.[CompanyName] = c.[Name]
+                               LEFT JOIN [dbo].[BaseCompanies] b ON c.[Id] = b.[Id]
+                               WHERE s.[Id] = @Id";
 
                     var record = await connection.QueryFirstOrDefaultAsync<S13BModel>(sql, new { Id = id });
 
@@ -101,20 +104,23 @@ namespace SWSA.MvcPortal.Controllers.Templates
                     var sql = @"INSERT INTO [dbo].[S13B] 
                                 ([Grouping], [Referral], [SecFileNo], [CompanyName], 
                                  [YearEnd], [IncorpDate], [CompanyStatus], 
-                                 [ActiveCoActivitySize], [CreditRating],
+                                 [ActiveCoActivitySize], 
                                  [YEtodo], [ACCmthTodo], 
                                  [SSMextensionDate], [ADdueDate], [AccReady], 
                                  [ADsubmitDate], [JobCompleted])
                                 VALUES 
                                 (@Grouping, @Referral, @SecFileNo, @CompanyName, 
                                  @YearEnd, @IncorpDate, @CompanyStatus, 
-                                 @ActiveCoActivitySize, @CreditRating,
+                                 @ActiveCoActivitySize, 
                                  @YEtodo, @ACCmthTodo, 
                                  @SSMextensionDate, @ADdueDate, @AccReady, 
                                  @ADsubmitDate, @JobCompleted);
                                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
                     var id = await connection.ExecuteScalarAsync<int>(sql, model);
+
+                    // Note 3: Auto-link SSMextensionDate to F1.2 (BP22.ExtensionDate)
+                    await SyncExtensionDateToBP22(model);
 
                     return Json(new { success = true, message = "Record created successfully", id = id });
                 }
@@ -142,7 +148,6 @@ namespace SWSA.MvcPortal.Controllers.Templates
                                     [IncorpDate] = @IncorpDate,
                                     [CompanyStatus] = @CompanyStatus,
                                     [ActiveCoActivitySize] = @ActiveCoActivitySize,
-                                    [CreditRating] = @CreditRating,
                                     [YEtodo] = @YEtodo,
                                     [ACCmthTodo] = @ACCmthTodo,
                                     [SSMextensionDate] = @SSMextensionDate,
@@ -159,12 +164,45 @@ namespace SWSA.MvcPortal.Controllers.Templates
                         return Json(new { success = false, message = "Record not found" });
                     }
 
+                    // Note 3: Auto-link SSMextensionDate to F1.2 (BP22.ExtensionDate)
+                    await SyncExtensionDateToBP22(model);
+
                     return Json(new { success = true, message = "Record updated successfully" });
                 }
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        private async Task SyncExtensionDateToBP22(S13BModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.CompanyName) || string.IsNullOrWhiteSpace(model.SSMextensionDate))
+                return;
+
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var checkSql = "SELECT TOP 1 Id FROM [Quartz2].[dbo].[BP22] WHERE CompanyName = @Client ORDER BY Id DESC";
+                var bpId = await connection.QueryFirstOrDefaultAsync<int?>(checkSql, new { Client = model.CompanyName });
+
+                if (bpId.HasValue && bpId.Value > 0)
+                {
+                    await connection.ExecuteAsync(
+                        "UPDATE [Quartz2].[dbo].[BP22] SET ExtensionDate = @ExtensionDate WHERE Id = @Id",
+                        new { ExtensionDate = model.SSMextensionDate, Id = bpId.Value }
+                    );
+                }
+                else
+                {
+                    var insertSql = "INSERT INTO [Quartz2].[dbo].[BP22] ([CompanyName], [YearEnd], [ExtensionDate]) VALUES (@CompanyName, @YearEnd, @ExtensionDate)";
+                    await connection.ExecuteAsync(insertSql, new { CompanyName = model.CompanyName, YearEnd = model.YearEnd, ExtensionDate = model.SSMextensionDate });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SyncExtensionDateToBP22 Error]: {ex.Message}");
             }
         }
 
@@ -207,6 +245,5 @@ namespace SWSA.MvcPortal.Controllers.Templates
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
     }
 }
