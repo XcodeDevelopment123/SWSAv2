@@ -234,7 +234,14 @@ $(function () {
             }
             $('#detailServiceSelected').val(serviceSelectedValues).trigger('change');
 
-            $('#detailPrincipalActivity').val(data.principalActivity || '');
+            let principalActVal = data.principalActivity || '';
+            if (!principalActVal && data.msicCodes && data.msicCodes.length > 0) {
+                const firstMsic = data.msicCodes[0]?.msicCode;
+                if (firstMsic) {
+                    principalActVal = firstMsic.code ? (firstMsic.code + (firstMsic.description ? ' - ' + firstMsic.description : '')) : (firstMsic.description || '');
+                }
+            }
+            $('#detailPrincipalActivity').val(principalActVal);
             if (data.foreignOwned === true) {
                 $('#detailForeignOwned').val('true');
             } else if (data.foreignOwned === false) {
