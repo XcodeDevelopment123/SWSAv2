@@ -458,14 +458,21 @@
             'oct': 9, 'october': 9, 'nov': 10, 'november': 10, 'dec': 11, 'december': 11
         };
 
-        // Calculate Metrics based on Note 4:
-        // Target doc inward = YearEnd + 5 mths (150 days)
-        // Diff = (DateReceived - YearEnd in days) - 150 days
-        function calculateMetricsValue(yearEndedStr, dateReceivedStr) {
-            if (!yearEndedStr || !dateReceivedStr) return '';
+        // Helper to format date object to dd/mm/yyyy
+        function formatDateToDDMMYYYY(date) {
+            if (!date || isNaN(date.getTime())) return '';
+            var d = ('0' + date.getDate()).slice(-2);
+            var m = ('0' + (date.getMonth() + 1)).slice(-2);
+            var y = date.getFullYear();
+            return d + '/' + m + '/' + y;
+        }
 
-            var recDate = parseDateString(dateReceivedStr);
-            if (!recDate || isNaN(recDate.getTime())) return '';
+        // Calculate Metrics based on:
+        // Target Date = YearEnd + 5 months (End of month, e.g., Jan 2026 + 5 mths -> 30/06/2026)
+        // If DateReceived is present, calculate variance days: (DateReceived - TargetDate)
+        // Format: "dd/mm/yyyy (+X days)" or "dd/mm/yyyy (-X days)" or "dd/mm/yyyy (0 days)" or just "dd/mm/yyyy" if no Date Received
+        function calculateMetricsValue(yearEndedStr, dateReceivedStr) {
+            if (!yearEndedStr) return '';
 
             // Parse YearEnded
             var yeDate = null;
@@ -499,16 +506,24 @@
 
             if (!yeDate || isNaN(yeDate.getTime())) return '';
 
-            var diffDaysFromYE = Math.floor((recDate.getTime() - yeDate.getTime()) / (1000 * 3600 * 24));
-            var varianceDays = diffDaysFromYE - 150;
+            // Target Date = YearEnd month + 5 months, at the end of that month
+            var targetYear = yeDate.getFullYear();
+            var targetMonthIdx = yeDate.getMonth() + 5;
+            var targetDate = getLastDayOfMonth(targetYear, targetMonthIdx);
+            var targetDateStr = formatDateToDDMMYYYY(targetDate);
 
-            if (varianceDays > 0) {
-                return '+' + varianceDays + ' days';
-            } else if (varianceDays < 0) {
-                return varianceDays + ' days';
-            } else {
-                return '0 days';
+            // If dateReceived is provided, compute variance days
+            if (dateReceivedStr) {
+                var recDate = parseDateString(dateReceivedStr);
+                if (recDate && !isNaN(recDate.getTime())) {
+                    var diffTime = recDate.getTime() - targetDate.getTime();
+                    var varianceDays = Math.round(diffTime / (1000 * 3600 * 24));
+                    var diffStr = varianceDays > 0 ? ('+' + varianceDays + ' days') : (varianceDays < 0 ? (varianceDays + ' days') : '0 days');
+                    return targetDateStr + ' (' + diffStr + ')';
+                }
             }
+
+            return targetDateStr;
         }
 
         // Calculate Metrics for Form

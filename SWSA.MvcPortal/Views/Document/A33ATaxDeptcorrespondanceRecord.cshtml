@@ -139,7 +139,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="pic">PIC</label>
-                                <input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" />
+                                <select id="pic" name="pic" class="form-control">
+                                    <option value="">Select Staff</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -212,10 +214,33 @@
             });
         }
 
+        // 加载 Staff Users
+        function loadStaffUsers() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function(res) {
+                    const users = Array.isArray(res) ? res : (res?.data || []);
+                    const $picSelect = $('#pic');
+                    $picSelect.find('option:not(:first)').remove();
+                    users.forEach(user => {
+                        const val = user.name || user.Name || '';
+                        if (val) {
+                            $picSelect.append(`<option value="${val}">${val}</option>`);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error('Error loading users:', err);
+                }
+            });
+        }
+
         $(document).ready(function() {
             console.log('A33A Page loaded, initializing...');
 
             loadClientOptions();
+            loadStaffUsers();
 
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
                 $('#taskDatatable').DataTable().destroy();

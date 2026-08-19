@@ -94,7 +94,14 @@
 
                     <div class="form-info-label col-12"><label>PIC and Remark</label></div>
                     <div class="row">
-                        <div class="col-md-6"><div class="form-group"><label for="pic">PIC</label><input type="text" id="pic" name="pic" class="form-control" placeholder="Enter PIC name" /></div></div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pic">PIC</label>
+                                <select id="pic" name="pic" class="form-control">
+                                    <option value="">Select Staff</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-6"><div class="form-group"><label for="remark">Remark</label><input type="text" id="remark" name="remark" class="form-control" placeholder="Enter remark" /></div></div>
                     </div>
 
@@ -148,8 +155,31 @@
             });
         }
 
+        // 加载 Staff Users
+        function loadStaffUsers() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function(res) {
+                    const users = Array.isArray(res) ? res : (res?.data || []);
+                    const $picSelect = $('#pic');
+                    $picSelect.find('option:not(:first)').remove();
+                    users.forEach(user => {
+                        const val = user.name || user.Name || '';
+                        if (val) {
+                            $picSelect.append(`<option value="${val}">${val}</option>`);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error('Error loading users:', err);
+                }
+            });
+        }
+
         $(document).ready(function() {
             loadClientOptions();
+            loadStaffUsers();
 
             // 2. 初始化 DataTable
             if ($.fn.DataTable.isDataTable('#taskDatatable')) {
