@@ -270,6 +270,9 @@ $(function () {
             $("#profession").val(data.profession);
         }
 
+        $("#detailGroup").val(data.group).trigger('change');
+        $("#detailReferral").val(data.referral).trigger('change');
+        $("#detailFileNo").val(data.fileNo || '');
         $("#grouping").val(data.group);
         $("#referral").val(data.referral);
         $("#yearEnd").val(formatMonthLabel(data.yearEndMonth));

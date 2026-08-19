@@ -1,0 +1,357 @@
+@{
+    ViewData["Title"] = "ReferralList";
+}
+
+<h1>Referral List</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-layer-group me-2"></i>Referrals
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-primary btn-sm" id="addNewBtn">
+                        <i class="fas fa-plus me-2"></i>New Referral
+                    </button>
+                    <button type="button" class="btn btn-info btn-sm ms-2" id="refreshBtn">
+                        <i class="fas fa-sync me-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body" style="overflow:auto">
+                <table id="referralDatatable" class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Referral Name</th>
+                            <th>Active</th>
+                            <th>Created At</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="referralModal" tabindex="-1" aria-labelledby="referralModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="referralModalLabel">
+                    <i class="fas fa-edit me-2"></i>
+                    <span id="modalTitle">Add New Referral</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 顶部提示框 -->
+                <div id="modalAlert" class="alert d-none" role="alert" tabindex="-1"></div>
+
+                <form id="referralForm">
+                    <input type="hidden" id="editId" value="">
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="referralName">Referral Name</label>
+                                <input type="text" id="referralName" name="referralName" class="form-control" placeholder="e.g. Referral A" />
+                                <small class="text-muted">Unique name.</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="isActive">Active</label>
+                                <select id="isActive" name="isActive" class="form-control">
+                                    <option value="true" selected>Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="saveBtn">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <partial name="_DatatablesB5ScriptsPartial" />
+
+    <script>
+        let dt;
+        let initialized = false;
+
+        function showAlert(message, type) {
+            const cls = type === 'success' ? 'alert-success'
+                : type === 'error' ? 'alert-danger'
+                    : type === 'warning' ? 'alert-warning' : 'alert-info';
+            const html = `<div class="alert ${cls} alert-dismissible fade show" role="alert">
+                                            ${message}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                          </div>`;
+            $('.card-header').after(html);
+            setTimeout(() => $('.alert').alert('close'), type === 'error' ? 5000 : 3000);
+        }
+
+        function showModalAlert(msg, type) {
+            const map = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+            const $box = $('#modalAlert');
+            $box.removeClass('d-none alert-success alert-danger alert-warning alert-info')
+                .addClass(map[type] || 'alert-info')
+                .html(msg);
+            const $body = $('#referralModal .modal-body');
+            $body.stop(true).animate({ scrollTop: 0 }, 200, function () {
+                $box.attr('tabindex', -1).focus();
+            });
+        }
+
+        function hideModalAlert() {
+            $('#modalAlert').addClass('d-none').empty();
+        }
+
+        function clearFieldErrors() {
+            $('#referralForm .is-invalid').removeClass('is-invalid');
+            $('#referralForm .invalid-feedback').remove();
+        }
+
+        function setFieldError(selector, message) {
+            const $f = $(selector);
+            if (!$f.length) return;
+            $f.addClass('is-invalid');
+            if ($f.next('.invalid-feedback').length === 0) $f.after('<div class="invalid-feedback"></div>');
+            $f.next('.invalid-feedback').text(message);
+        }
+
+        // ---------- DataTable ----------
+        function initTable() {
+            dt = $('#referralDatatable').DataTable({
+                responsive: true,
+                ordering: true,
+                autoWidth: false,
+                pageLength: 10,
+                order: [[0, 'asc']],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    emptyTable: "No records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+                },
+                columns: [
+                    { data: 'referralName' },
+                    {
+                        data: 'isActive',
+                        className: 'text-center',
+                        render: (val) => val ? 'Yes' : 'No'
+                    },
+                    {
+                        data: 'createdAt',
+                        className: 'text-nowrap',
+                        render: (s) => {
+                            if (!s) return '';
+                            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+                            return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: (row) => `
+                            <button class="btn btn-sm btn-warning me-1 edit-btn" data-id="${row.id}" title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}" title="Delete">
+                              <i class="fas fa-trash"></i>
+                            </button>`
+                    }
+                ]
+            });
+            initialized = true;
+        }
+
+        // ---------- Load ----------
+        function loadReferrals() {
+            $.ajax({
+                url: '/api/referrals/get-all',
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success) {
+                        const rows = res.data || [];
+                        if (!initialized) initTable();
+                        dt.clear();
+                        dt.rows.add(rows);
+                        dt.draw();
+                        showAlert('Loaded ' + rows.length + ' referrals.', 'success');
+                    } else {
+                        showAlert('Failed to load referrals: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Failed to load referrals: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Clear Form ----------
+        function clearForm() {
+            $('#referralForm')[0].reset();
+            $('#editId').val('');
+            $('#modalTitle').text('Add New Referral');
+            $('#referralName').val('');
+            $('#isActive').val('true');
+            hideModalAlert();
+            clearFieldErrors();
+        }
+
+        // ---------- Save (Create / Update) ----------
+        function saveReferral() {
+            hideModalAlert();
+            clearFieldErrors();
+
+            const editIdVal = $('#editId').val();
+            const id = editIdVal ? Number(editIdVal) : 0;
+
+            const formData = {
+                ReferralName: ($('#referralName').val() || '').trim(),
+                IsActive: ($('#isActive').val() === 'true')
+            };
+
+            if (id > 0) {
+                formData.Id = id;
+            }
+
+            let hasError = false;
+            if (!formData.ReferralName) {
+                setFieldError('#referralName', 'Required');
+                hasError = true;
+            }
+            if (hasError) {
+                showModalAlert('Please fix the highlighted fields.', 'error');
+                return;
+            }
+
+            const isUpdate = id > 0;
+            const url = isUpdate ? '/api/referrals/update' : '/api/referrals/create';
+
+            const $btn = $('#saveBtn');
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    if (res && res.success) {
+                        $('#referralModal').modal('hide');
+                        showAlert(isUpdate ? 'Updated successfully.' : 'Created successfully.', 'success');
+                        loadReferrals();
+                    } else {
+                        const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
+                        showModalAlert('Error: ' + msg, 'error');
+                    }
+                },
+                error: function (xhr) {
+                    $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
+                    showModalAlert('Error: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Edit ----------
+        function editReferral(id) {
+            clearForm();
+            $('#modalTitle').html('<i class="fas fa-spinner fa-spin me-2"></i>Loading...');
+            $('#referralModal').modal('show');
+
+            $.ajax({
+                url: '/api/referrals/get/' + id,
+                type: 'GET',
+                success: function (res) {
+                    if (res && res.success && res.data) {
+                        const item = res.data;
+                        $('#editId').val(item.id);
+                        $('#referralName').val(item.referralName || '');
+                        $('#isActive').val(item.isActive ? 'true' : 'false');
+                        $('#modalTitle').text('Edit Referral');
+                    } else {
+                        showModalAlert('Error loading referral: ' + (res?.message || 'Referral not found'), 'error');
+                        $('#modalTitle').text('Edit Referral');
+                    }
+                },
+                error: function (xhr) {
+                    showModalAlert('Error loading referral: ' + (xhr.statusText || 'Network error'), 'error');
+                    $('#modalTitle').text('Edit Referral');
+                }
+            });
+        }
+
+        // ---------- Delete ----------
+        function deleteReferral(id) {
+            if (!confirm('Delete this referral?')) return;
+
+            $.ajax({
+                url: '/api/referrals/delete?id=' + id,
+                type: 'POST',
+                success: function (res) {
+                    if (res && res.success) {
+                        showAlert('Deleted successfully.', 'success');
+                        loadReferrals();
+                    } else {
+                        showAlert('Delete failed: ' + (res?.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function (xhr) {
+                    showAlert('Delete failed: ' + (xhr.statusText || 'Network error'), 'error');
+                }
+            });
+        }
+
+        // ---------- Bind Events ----------
+        $(document).ready(function () {
+            initTable();
+            loadReferrals();
+
+            $('#refreshBtn').on('click', loadReferrals);
+            $('#saveBtn').on('click', saveReferral);
+
+            $('#addNewBtn').on('click', function () {
+                clearForm();
+                $('#referralModal').modal('show');
+            });
+
+            $('#referralModal').on('hidden.bs.modal', clearForm);
+
+            $(document).on('click', '.edit-btn', function () {
+                editReferral($(this).data('id'));
+            });
+            $(document).on('click', '.delete-btn', function () {
+                deleteReferral($(this).data('id'));
+            });
+        });
+    </script>
+}

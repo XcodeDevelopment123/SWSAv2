@@ -1,6 +1,8 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using SWSA.MvcPortal.Entities.Models;
 using SWSA.MvcPortal.Persistence;
 
 namespace SWSA.MvcPortal.Controllers.Group
@@ -9,14 +11,21 @@ namespace SWSA.MvcPortal.Controllers.Group
     {
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
+        private readonly AppDbContext _db;
 
-        public GroupController(IConfiguration configuration)
+        public GroupController(IConfiguration configuration, AppDbContext db)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("SwsaConntection");
+            _db = db;
         }
 
         public IActionResult GroupList()
+        {
+            return View();
+        }
+
+        public IActionResult ReferralList()
         {
             return View();
         }
@@ -251,6 +260,178 @@ ORDER BY c.[Name] ASC;";
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        #endregion
+
+        #region API ReferralList
+
+        public class ReferralCreateUpdateDto
+        {
+            public string ReferralName { get; set; } = string.Empty;
+            public bool IsActive { get; set; } = true;
+        }
+
+        public class ReferralUpdateDto : ReferralCreateUpdateDto
+        {
+            public int Id { get; set; }
+        }
+
+        // === TEMP DEBUG ===
+        [HttpGet("api/referrals/debug")]
+        public async Task<IActionResult> DebugReferrals()
+        {
+            try
+            {
+                var efConnStr = _db.Database.GetConnectionString();
+                var rawCount = await _db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS [Value] FROM dbo.Referrals").FirstOrDefaultAsync();
+                var efRows = await _db.Referrals.CountAsync();
+                return Json(new
+                {
+                    efConnectionString = efConnStr,
+                    dapperConnectionString = _connectionString,
+                    rawSqlCount = rawCount,
+                    efLinqCount = efRows
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message, stackTrace = ex.StackTrace });
+            }
+        }
+
+        // === 获取全部 Referrals（用在 DataTable）===
+        [HttpGet("api/referrals/get-all")]
+        public async Task<IActionResult> GetAllReferrals()
+        {
+            try
+            {
+                var rows = await _db.Referrals
+                    .OrderByDescending(r => r.IsActive)
+                    .ThenBy(r => r.ReferralName)
+                    .Select(r => new { r.Id, r.ReferralName, r.IsActive, r.CreatedAt })
+                    .ToListAsync();
+                return Json(new { success = true, data = rows });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+
+        // === 下拉选项（仅启用）===
+        [HttpGet("api/referrals/options")]
+        public async Task<IActionResult> GetReferralOptions()
+        {
+            try
+            {
+                var rows = await _db.Referrals
+                    .Where(r => r.IsActive)
+                    .OrderBy(r => r.ReferralName)
+                    .Select(r => new { value = r.Id, text = r.ReferralName })
+                    .ToListAsync();
+                return Json(new { success = true, data = rows });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+
+        // === 单条读取：api/referrals/get/1 ===
+        [HttpGet("api/referrals/get/{id}")]
+        public async Task<IActionResult> GetReferralById(int id)
+        {
+            try
+            {
+                var row = await _db.Referrals.FindAsync(id);
+                if (row == null)
+                    return Json(new { success = false, message = "Referral not found." });
+                return Json(new { success = true, data = new { row.Id, row.ReferralName, row.IsActive, row.CreatedAt } });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // === 新增：/api/referrals/create ===
+        [HttpPost("api/referrals/create")]
+        public async Task<IActionResult> CreateReferral([FromBody] ReferralCreateUpdateDto model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.ReferralName))
+                    return Json(new { success = false, message = "Referral name is required." });
+
+                var exists = await _db.Referrals.AnyAsync(r => r.ReferralName == model.ReferralName);
+                if (exists)
+                    return Json(new { success = false, message = "Referral name already exists." });
+
+                var entity = new Referral
+                {
+                    ReferralName = model.ReferralName,
+                    IsActive = model.IsActive,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _db.Referrals.Add(entity);
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true, id = entity.Id });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // === 更新：/api/referrals/update ===
+        [HttpPost("api/referrals/update")]
+        public async Task<IActionResult> UpdateReferral([FromBody] ReferralUpdateDto model)
+        {
+            try
+            {
+                if (model == null || model.Id <= 0)
+                    return Json(new { success = false, message = "Invalid id." });
+
+                if (string.IsNullOrWhiteSpace(model.ReferralName))
+                    return Json(new { success = false, message = "Referral name is required." });
+
+                var entity = await _db.Referrals.FindAsync(model.Id);
+                if (entity == null)
+                    return Json(new { success = false, message = "Referral not found." });
+
+                // 名称唯一性（排除自己）
+                var exists = await _db.Referrals.AnyAsync(r => r.ReferralName == model.ReferralName && r.Id != model.Id);
+                if (exists)
+                    return Json(new { success = false, message = "Referral name already exists." });
+
+                entity.ReferralName = model.ReferralName;
+                entity.IsActive = model.IsActive;
+
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // === 删除：/api/referrals/delete?id=1 ===
+        [HttpPost("api/referrals/delete")]
+        public async Task<IActionResult> DeleteReferral(int id)
+        {
+            try
+            {
+                if (id <= 0) return Json(new { success = false, message = "Invalid id." });
+
+                var entity = await _db.Referrals.FindAsync(id);
+                if (entity == null)
+                    return Json(new { success = false, message = "Referral not found." });
+
+                _db.Referrals.Remove(entity);
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+
         #endregion
     }
 }

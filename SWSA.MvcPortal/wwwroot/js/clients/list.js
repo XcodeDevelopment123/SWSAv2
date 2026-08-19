@@ -23,7 +23,7 @@ $(function () {
         grouping: $filterForm.find('select[name="grouping"]'),
         referral: $filterForm.find('select[name="referral"]'),
         fileNo: $filterForm.find('input[name="fileNo"]'),
-        name: $filterForm.find('input[name="companyName"]'),
+        name: $filterForm.find('select[name="companyName"], input[name="companyName"]'),
         companyNumber: $filterForm.find('input[name="companyNumber"]'),
         incorpDateFrom: $filterForm.find('input[name="incorpDateFrom"]'),
         incorpDateTo: $filterForm.find('input[name="incorpDateTo"]'),
@@ -56,12 +56,10 @@ $(function () {
                 minlength: 3
             },
             companyName: {
-                required: false,
-                minlength: 2
+                required: false
             },
             companyNumber: {
-                required: false,
-                minlength: 3
+                required: false
             },
             incorpDateFrom: {
                 required: false,
@@ -76,12 +74,6 @@ $(function () {
         messages: {
             fileNo: {
                 minlength: "File No must be at least 3 characters long."
-            },
-            companyName: {
-                minlength: "Company Name must be at least 2 characters long."
-            },
-            companyNumber: {
-                minlength: "Company Number must be at least 3 characters long."
             },
             incorpDateFrom: {
                 date: "Please enter a valid start date."
@@ -227,8 +219,10 @@ $(function () {
         switch (clientType) {
             case "Enterprise":
             case "LLP":
-            case "SdnBhd": req.includeGroups = true;
+            case "SdnBhd": 
+                req.includeGroups = true;
                 req.includeReferrals = true;
+                req.includeCompanies = true;
                 break;
             case "Individual":
                 req.includeGroups = true;
@@ -242,6 +236,7 @@ $(function () {
     }
 
     var referralCompanyMap = {};
+    var companyNameToRegNoMap = {};
 
     function updateSelectOption(res) {
 
@@ -263,6 +258,27 @@ $(function () {
             });
 
             filterFormInputs.grouping.append(html);
+        }
+
+        if (res.companies && res.companies.length > 0) {
+            let html = '';
+            $.each(res.companies, function (i, item) {
+                if (item && item.name && item.name.trim() !== "") {
+                    html += `<option value="${item.name}">${item.name}</option>`;
+                    companyNameToRegNoMap[item.name] = item.registrationNumber || '';
+                }
+            });
+
+            filterFormInputs.name.append(html);
+
+            filterFormInputs.name.on('change', function () {
+                const selectedCompany = $(this).val();
+                if (selectedCompany && companyNameToRegNoMap[selectedCompany] !== undefined) {
+                    filterFormInputs.companyNumber.val(companyNameToRegNoMap[selectedCompany]);
+                } else if (!selectedCompany) {
+                    filterFormInputs.companyNumber.val('');
+                }
+            });
         }
 
         if (res.referrals && res.referrals.length > 0) {

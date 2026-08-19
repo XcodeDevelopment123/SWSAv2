@@ -1,9 +1,9 @@
-﻿$(function () {
+$(function () {
     //#region Admin Form
     const $adminForm = $("#adminForm");
     const adminFormInputs = {
         groupId: $adminForm.find('select[name="groupId"]'),  // 改成 select
-        referral: $adminForm.find('input[name="referral"]')
+        referral: $adminForm.find('select[name="referral"], input[name="referral"]')
     };
     //#endregion
 
@@ -80,6 +80,7 @@
 
     // ===== 新增：加载 Groups =====
     loadGroups();
+    loadReferrals();
 
     flatpickr("#yearEndMonth", {
         plugins: [
@@ -168,4 +169,40 @@
             }
         });
     }
-})
+
+    // ===== 新增：加载 Referrals 函数 =====
+    function loadReferrals() {
+        $.ajax({
+            url: '/api/referrals/options',
+            type: 'GET',
+            success: function (res) {
+                if (res && res.success && res.data) {
+                    const referrals = res.data;
+                    const $referralSelect = $('select[name="referral"]');
+
+                    // 清空现有选项（保留第一个空选项）
+                    $referralSelect.find('option:not(:first)').remove();
+
+                    // 添加 Referrals
+                    referrals.forEach(function (ref) {
+                        // ref.value = Id, ref.text = ReferralName
+                        const option = new Option(ref.text, ref.text, false, false);
+                        $referralSelect.append(option);
+                    });
+
+                    // 刷新 Select2（如果已经初始化）
+                    if ($referralSelect.hasClass('select2-hidden-accessible')) {
+                        $referralSelect.trigger('change');
+                    }
+
+                    console.log('Loaded ' + referrals.length + ' referrals');
+                } else {
+                    console.error('Failed to load referrals:', res?.message);
+                }
+            },
+            error: function (xhr) {
+                console.error('Error loading referrals:', xhr);
+            }
+        });
+    }
+});

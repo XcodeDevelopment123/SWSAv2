@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Enums
 @model ClientType
 @{
     var isIndividual = Model == ClientType.Individual;
@@ -84,13 +84,15 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="companyName">Company Name</label>
-                            <input type="text" class="form-control" name="companyName" placeholder="Enter company name">
+                            <select class="form-control select2" name="companyName">
+                                <option value="">All</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="companyNumber">Company #</label>
-                            <input type="text" class="form-control" name="companyNumber" placeholder="Enter company registration number">
+                            <input type="text" class="form-control" name="companyNumber" placeholder="Auto fill" readonly>
                         </div>
                     </div>
                     <div class="col-md-4">

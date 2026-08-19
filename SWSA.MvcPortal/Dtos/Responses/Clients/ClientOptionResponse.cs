@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Dtos.Responses.Clients;
+namespace SWSA.MvcPortal.Dtos.Responses.Clients;
 
 public class ClientOptionResponse
 {
@@ -6,6 +6,13 @@ public class ClientOptionResponse
     public List<string> Groups { get; set; }
     public List<string> Referrals { get; set; }
     public Dictionary<string, ReferralCompanyInfoDto> ReferralCompanyInfoMap { get; set; }
+    public List<CompanyFilterOptionDto> Companies { get; set; }
+}
+
+public class CompanyFilterOptionDto
+{
+    public string Name { get; set; } = "";
+    public string RegistrationNumber { get; set; } = "";
 }
 
 public class ReferralCompanyInfoDto

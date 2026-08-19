@@ -118,6 +118,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public virtual DbSet<Group> Groups { get; set; }
 
+    public virtual DbSet<Referral> Referrals { get; set; }
+
     public virtual DbSet<S13a> S13A { get; set; }
 
     public virtual DbSet<S13b> S13B { get; set; }

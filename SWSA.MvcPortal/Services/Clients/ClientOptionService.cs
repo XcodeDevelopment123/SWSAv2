@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Dtos.Responses.Clients;
@@ -36,6 +36,11 @@ public class ClientOptionService(
             tasks.Add(LoadReferralsAsync(res, req.ClientType));
         }
 
+        if (req.IncludeCompanies && req.ClientType != ClientType.Individual)
+        {
+            tasks.Add(LoadCompaniesAsync(res, req.ClientType));
+        }
+
         await Task.WhenAll(tasks);
 
         return res;
@@ -44,13 +49,11 @@ public class ClientOptionService(
     private async Task LoadGroupsAsync(ClientOptionResponse res, ClientType clientType)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
-        var query = db.Set<BaseClient>().AsQueryable().AsNoTracking();
-        //Can do cahing here
-        var groups = await query
-            .Where(c => c.ClientType == clientType)
-            .Select(c => c.Group ?? "")
+        var groups = await db.Groups.AsNoTracking()
+            .Where(g => g.IsActive)
+            .OrderBy(g => g.GroupName)
+            .Select(g => g.GroupName)
             .Distinct()
-            .OrderBy(c => c)
             .ToListAsync();
 
         res.Groups = groups ?? [];
@@ -74,42 +77,32 @@ public class ClientOptionService(
     private async Task LoadReferralsAsync(ClientOptionResponse res, ClientType clientType)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
-        var baseQuery = db.Set<BaseClient>().AsQueryable().AsNoTracking()
-            .Where(c => c.ClientType == clientType)
-            .Where(c => c.Referral != null && c.Referral.Trim() != "");
-
-        var referrals = await baseQuery
-            .Select(c => c.Referral ?? "")
+        var referrals = await db.Referrals.AsNoTracking()
+            .Where(r => r.IsActive)
+            .OrderBy(r => r.ReferralName)
+            .Select(r => r.ReferralName)
             .Distinct()
-            .OrderBy(c => c)
             .ToListAsync();
 
         res.Referrals = referrals ?? [];
+    }
 
-        if (clientType == ClientType.Individual)
-            return;
-
+    private async Task LoadCompaniesAsync(ClientOptionResponse res, ClientType clientType)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
         var companyQuery = db.Set<BaseCompany>().AsQueryable().AsNoTracking()
             .Where(c => c.ClientType == clientType)
-            .Where(c => c.Referral != null && c.Referral.Trim() != "");
+            .Where(c => c.Name != null && c.Name.Trim() != "");
 
-        var data = await companyQuery
-            .GroupBy(c => c.Referral)
-            .Select(g => new
+        var companies = await companyQuery
+            .OrderBy(c => c.Name)
+            .Select(c => new CompanyFilterOptionDto
             {
-                Referral = g.Key ?? "",
-                CompanyNo = g.First().RegistrationNumber ?? "",
-                IncorpDate = g.First().IncorporationDate
+                Name = c.Name ?? "",
+                RegistrationNumber = c.RegistrationNumber ?? ""
             })
             .ToListAsync();
 
-        res.ReferralCompanyInfoMap = data.ToDictionary(
-            x => x.Referral,
-            x => new ReferralCompanyInfoDto
-            {
-                CompanyNumber = x.CompanyNo,
-                IncorporationDate = x.IncorpDate?.ToString("yyyy-MM-dd") ?? ""
-            }
-        );
+        res.Companies = companies ?? [];
     }
 }

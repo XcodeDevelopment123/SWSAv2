@@ -1,4 +1,4 @@
-﻿@using SWSA.MvcPortal.Commons.Enums
+@using SWSA.MvcPortal.Commons.Enums
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Commons.Helpers
 @using SWSA.MvcPortal.Models.Companies
@@ -56,7 +56,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="referral">Referral</label>
-                                <input name="referral" class="form-control" placeholder="" />
+                                <select id="referral" name="referral" class="form-control select2">
+                                    <option value="">-- Select Referral --</option>
+                                    @* 选项会通过 JavaScript 动态加载 *@
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">

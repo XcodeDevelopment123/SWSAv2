@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWSA.MvcPortal.Entities.Models;
 
-[Table("Groups", Schema = "dbo")]
-public partial class Group
+[Table("Referrals", Schema = "dbo")]
+public partial class Referral
 {
     public int Id { get; set; }
 
-    public string GroupName { get; set; } = null!;
+    public string ReferralName { get; set; } = null!;
 
     public bool IsActive { get; set; }
 
