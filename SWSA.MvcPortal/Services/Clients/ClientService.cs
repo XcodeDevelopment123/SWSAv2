@@ -380,6 +380,35 @@ public class ClientService(
         }
     }
 
+    private async Task<Dictionary<string, string>> GetLatestBP21AccDeptMthAsync()
+    {
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            var sql = @"
+                SELECT CompanyName, ESTmthToDo 
+                FROM (
+                    SELECT CompanyName, ESTmthToDo, 
+                           ROW_NUMBER() OVER (PARTITION BY CompanyName ORDER BY Id DESC) as rn 
+                    FROM [Quartz2].[dbo].[BP21]
+                    WHERE CompanyName IS NOT NULL AND CompanyName <> ''
+                ) t 
+                WHERE rn = 1";
+            var records = await connection.QueryAsync<(string CompanyName, string ESTmthToDo)>(sql);
+            return records.ToDictionary(
+                x => x.CompanyName.Trim(), 
+                x => x.ESTmthToDo, 
+                StringComparer.OrdinalIgnoreCase
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching latest BP21 AccDeptMth: {ex.Message}");
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
     public async Task<List<CompanyOptionDto>> GetCompanyOptionsAsync()
     {
         // 如果你有特定 filter（比如只要 active），可以在这里设置
@@ -392,33 +421,53 @@ public class ClientService(
         // 1️⃣ 先用 SearchClientsAsync 拿到所有 SdnBhd
         var raw = await SearchClientsAsync(ClientType.SdnBhd, filter);
         var latestDates = await GetLatestA31ADatesAsync();
+        var latestAccMth = await GetLatestBP21AccDeptMthAsync();
 
         // 2️⃣ 把 object 转回 SdnBhdClient，然后投影成我们要的 DTO
         return raw
             .Cast<SdnBhdClient>()
-            .Select(c => new CompanyOptionDto
-            {
-                Id = c.Id,
-                Grouping = c.Group,
-                FileNo = c.FileNo,
-                Referral = c.Referral,
-                CompanyName = c.Name,
-                CompanyNo = c.RegistrationNumber,
-                IncorporationDate = c.IncorporationDate,
-                YearEndMonth = c.YearEndMonth.HasValue
-                    ? c.YearEndMonth.Value.ToString()
-                    : string.Empty,
-                TaxIdentificationNumber =c.TaxIdentificationNumber,
-                EmployerNumber = c.EmployerNumber,
-                ActivitySize = c.ActivitySize.GetDisplayName(),
-                CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
-                CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
-                AuditExemption = "",
-                AppointmentEngagementData = c.AppointmentEngagementData,
-                ServiceSelected = c.ServiceSelected,
-                LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
-                MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
-                MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : ""
+            .Select(c => {
+                string auditExemptionVal = "";
+                if (!string.IsNullOrEmpty(c.AppointmentEngagementData))
+                {
+                    try
+                    {
+                        using var doc = System.Text.Json.JsonDocument.Parse(c.AppointmentEngagementData);
+                        if (doc.RootElement.TryGetProperty("linkE1", out var linkE1) &&
+                            linkE1.TryGetProperty("auditExemption", out var exemptProp))
+                        {
+                            if (exemptProp.ValueKind == System.Text.Json.JsonValueKind.True) auditExemptionVal = "Yes";
+                            else if (exemptProp.ValueKind == System.Text.Json.JsonValueKind.False) auditExemptionVal = "No";
+                        }
+                    }
+                    catch { }
+                }
+
+                return new CompanyOptionDto
+                {
+                    Id = c.Id,
+                    Grouping = c.Group,
+                    FileNo = c.FileNo,
+                    Referral = c.Referral,
+                    CompanyName = c.Name,
+                    CompanyNo = c.RegistrationNumber,
+                    IncorporationDate = c.IncorporationDate,
+                    YearEndMonth = c.YearEndMonth.HasValue
+                        ? c.YearEndMonth.Value.ToString()
+                        : string.Empty,
+                    TaxIdentificationNumber = c.TaxIdentificationNumber,
+                    EmployerNumber = c.EmployerNumber,
+                    ActivitySize = c.ActivitySize.GetDisplayName(),
+                    CompanyStatus = c.CompanyStatus.HasValue ? c.CompanyStatus.Value.ToString() : "",
+                    CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
+                    AuditExemption = auditExemptionVal,
+                    AppointmentEngagementData = c.AppointmentEngagementData,
+                    ServiceSelected = c.ServiceSelected,
+                    LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
+                    MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
+                    MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : "",
+                    AccDeptMth = latestAccMth.TryGetValue(c.Name.Trim(), out var accMth) ? accMth : null
+                };
             })
             .ToList();
     }

@@ -148,35 +148,21 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Enter year" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2020; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="companyStatus">Co Status</label>
                                 <input type="text" id="companyStatus" name="companyStatus" class="form-control" placeholder="Auto fill" readonly />
-                                @*                                 <select id="companyStatus" name="companyStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
-                                    <option value="In Liquidation">In Liquidation</option>
-                                </select> *@
                             </div>
                         </div>
-                        @*         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="auditStatus">Audit Status</label>
-                                <select id="auditStatus" name="auditStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Not Started">Not Started</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="On Hold">On Hold</option>
-                                </select>
-                            </div>
-                        </div> *@
                     </div>
 
                     <!-- Schedule Information -->
@@ -228,17 +214,14 @@
                             <div class="form-group">
                                 <label for="coSec">Co Sec?</label>
                                 <input type="text" id="coSec" name="coSec" class="form-control" placeholder="Auto fill" readonly />
-                                @* <select id="coSec" name="coSec" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select> *@
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="auditStaff">Audit Staff (PIC)</label>
-                                <input type="text" id="auditStaff" name="auditStaff" class="form-control" placeholder="S" />
+                                <select id="auditStaff" name="auditStaff" class="form-control select2" style="width:100%">
+                                    <option value="">-- Select PIC --</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -296,20 +279,25 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="acctngWk">Acc dept mth to do</label>
-                                <input type="text" id="acctngWk" name="acctngWk" class="form-control" />
+                                <label for="accDeptMthToDo">Acc dept mth to do</label>
+                                <input type="text" id="accDeptMthToDo" name="accDeptMthToDo" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="jobCompleted">Job Completed</label>
-                                <input type="text" id="jobCompleted" name="jobCompleted" class="form-control" placeholder="Y/N" readonly />
+                                <label for="jobCompleted2">Job Completed</label>
+                                <input type="text" id="jobCompleted2" name="jobCompleted2" class="form-control" placeholder="Y/N" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="signingFirm">Signing Firm</label>
-                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Auto fill" readonly />
+                                <select id="signingFirm" name="signingFirm" class="form-control">
+                                    <option value="">Select Signing Firm</option>
+                                    <option value="BTM">BTM</option>
+                                    <option value="KT NG">KT NG</option>
+                                    <option value="RAKC">RAKC</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -348,10 +336,43 @@
                 $('#taskForm').append('<input type="hidden" id="companyName" name="companyName" />');
             }
 
-            // 先加载 Dropdown，再加载数据
+            // 先加载 Dropdown 和 PIC，再加载数据
             loadClientOptions();
+            loadPicOptions();
             loadData();
         });
+
+        // ---------------------------------------------------------
+        //  0. Load PIC / Staff List
+        // ---------------------------------------------------------
+        function loadPicOptions() {
+            $.ajax({
+                url: '/users/pic',
+                type: 'GET',
+                success: function (res) {
+                    if (res && Array.isArray(res)) {
+                        const $select = $('#auditStaff');
+                        $select.find('option:not(:first)').remove();
+                        res.forEach(item => {
+                            const name = item.Name || item.name || '';
+                            const dept = item.Department || item.department || '';
+                            if (name) {
+                                const label = dept ? `${name} (${dept})` : name;
+                                $select.append(`<option value="${name}">${label}</option>`);
+                            }
+                        });
+                        $select.select2({
+                            theme: 'bootstrap4',
+                            dropdownParent: $('#taskModal'),
+                            width: '100%'
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.error('Failed to load PIC list', err);
+                }
+            });
+        }
 
         // ---------------------------------------------------------
         //  1. Load Client Options (构建反向查找表)
@@ -416,14 +437,34 @@
                 $('#client').val(clientData.companyName);
                 $('#clientId').val(clientData.id);
 
-                // E. 自动计算 Year End Date
+                // E. 自动计算 Year End Date 与 AFS due date (Year End + 7 months)
                 if (clientData.yearEndMonth) {
                     const yearEndDate = calculateYearEndDateForInput(clientData.yearEndMonth);
                     $('#yearEnd').val(yearEndDate);
+                    
+                    // Auto calculate AFS due date = Year End + 7 months
+                    calculateAfsDueDate(yearEndDate);
+
+                    // Auto set Year to do if not already selected
+                    if (!$('#yearToDo').val() && yearEndDate) {
+                        const yEndYear = yearEndDate.split('-')[0];
+                        $('#yearToDo').val(yEndYear);
+                    }
+                } else {
+                    $('#yearEnd').val('');
+                    $('#aFSdueDate').val('');
                 }
 
-                // F. 自动填充 Co. Sec (link from appointed B1)
+                // F. 自动计算 1st 18mths due (Incorp Date + 18 months)
+                if (clientData.incorporationDate) {
+                    calculate18MthsDueDate(clientData.incorporationDate);
+                } else {
+                    $('#first18mthdue').val('');
+                }
+
+                // G. 自动填充 Co. Sec (link from appointed B1)
                 let coSecVal = 'No';
+                let signingFirmVal = '';
                 if (clientData.appointmentEngagementData) {
                     try {
                         const apptData = typeof clientData.appointmentEngagementData === 'string'
@@ -437,13 +478,23 @@
                         if (hasCoSec || hasSecDate) {
                             coSecVal = 'Yes';
                         }
+
+                        // Check Signing Firm from appointment engagement data
+                        if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                            signingFirmVal = apptData.appointments.Audit.signingFirm;
+                        } else if (apptData.linkE1 && apptData.linkE1.who) {
+                            signingFirmVal = apptData.linkE1.who;
+                        }
                     } catch (e) {
                         console.error('Error parsing appointmentEngagementData:', e);
                     }
                 }
                 $('#coSec').val(coSecVal);
+                if (signingFirmVal) {
+                    $('#signingFirm').val(signingFirmVal);
+                }
 
-                // G. 自动填充 Acc Wk? (link from B1 "Service type")
+                // H. 自动填充 Acc Wk? (link from B1 "Service type")
                 let hasAcc = false;
                 if (clientData.serviceSelected) {
                     const services = clientData.serviceSelected.split(',').map(s => s.trim().toLowerCase());
@@ -451,11 +502,18 @@
                 }
                 $('select#acctngWk').val(hasAcc ? 'Yes' : 'No');
 
-                // H. 自动填充 Date doc in (link from c1-1)
+                // I. 自动填充 Date doc in (link from C1.1 / A31A)
                 if (clientData.latestDateDocIn) {
                     $('#dateDocIn').val(convertDateToYmd(clientData.latestDateDocIn));
                 } else {
                     $('#dateDocIn').val('');
+                }
+
+                // J. 自动填充 Acc dept mth to do (link to F1.1 / BP21)
+                if (clientData.accDeptMth) {
+                    $('#accDeptMthToDo').val(clientData.accDeptMth);
+                } else {
+                    $('#accDeptMthToDo').val('');
                 }
             } else {
                 // 清空逻辑
@@ -469,6 +527,10 @@
                 $('#coSec').val('');
                 $('select#acctngWk').val('');
                 $('#dateDocIn').val('');
+                $('#first18mthdue').val('');
+                $('#aFSdueDate').val('');
+                $('#accDeptMthToDo').val('');
+                $('#signingFirm').val('');
             }
         });
 
@@ -507,7 +569,6 @@
                                 $('#clientId').val(foundId);
                             } else {
                                 console.warn('Edit Error: Client name found but not in dropdown list:', record.companyName);
-                                // 可选：如果找不到，保留为 "Select client" 或者不做处理
                             }
                         }
                         // === 关键逻辑结束 ===
@@ -525,11 +586,12 @@
                         $('#first18mthdue').val(formatDateForInput(record.first18mthdue));
                         $('#aFSdueDate').val(formatDateForInput(record.afSdueDate));
                         $('#coSec').val(record.coSec || '');
-                        $('#auditStaff').val(record.auditStaff || '');
+                        $('#auditStaff').val(record.auditStaff || '').trigger('change');
                         $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
                         $('#estRev').val(record.estRev || '');
                         $('#acctngWk').val(record.acctngWk || '');
                         $('#jobCompleted').val(record.jobCompleted || '');
+                        $('#signingFirm').val(record.signingFirm || '');
                         $('#remark').val(record.remark || '');
 
                         $('#taskModal').modal('show');
@@ -547,27 +609,34 @@
         //  4. Save & Other Logic (保持不变)
         // ---------------------------------------------------------
         function saveRecord() {
+            // 获取 client companyName
+            let compName = $('#companyName').val();
+            if (!compName && $('#clientSelect').val()) {
+                const selectedClient = clientOptionsMap[$('#clientSelect').val()];
+                if (selectedClient) compName = selectedClient.companyName;
+            }
+
             const formData = {
-                grouping: $('#grouping').val(),
-                // 这里的 companyName 由 Dropdown change 事件或 Edit 回显填充
-                companyName: $('#companyName').val(),
-                quartertoAudit: $('#quartertoAudit').val(),
-                activity: $('#activity').val(),
-                yearEnd: $('#yearEnd').val() || null,
-                yearToDo: $('#yearToDo').val(),
-                companyStatus: $('#companyStatus').val(),
-                auditStatus: $('#auditStatus').val(),
-                movetoAEX: $('#movetoAEX').val(),
-                movetoBacklog: $('#movetoBacklog').val(),
-                first18mthdue: $('#first18mthdue').val() || null,
-                aFSdueDate: $('#aFSdueDate').val() || null,
-                coSec: $('#coSec').val(),
-                auditStaff: $('#auditStaff').val(),
-                dateDocIn: $('#dateDocIn').val() || null,
-                estRev: $('#estRev').val(),
-                acctngWk: $('#acctngWk').val(),
-                jobCompleted: $('#jobCompleted').val(),
-                remark: $('#remark').val()
+                grouping: $('#grouping').val() || '',
+                companyName: compName || '',
+                quartertoAudit: $('#quartertoAudit').val() || '',
+                activity: $('#activity').val() || '',
+                yearEnd: $('#yearEnd').val() ? convertDateToYmd($('#yearEnd').val()) : null,
+                yearToDo: $('#yearToDo').val() || '',
+                companyStatus: $('#companyStatus').val() || '',
+                auditStatus: $('#auditStatus').val() || '',
+                movetoAEX: $('#movetoAEX').val() || '',
+                movetoBacklog: $('#movetoBacklog').val() || '',
+                first18mthdue: $('#first18mthdue').val() ? convertDateToYmd($('#first18mthdue').val()) : null,
+                aFSdueDate: $('#aFSdueDate').val() ? convertDateToYmd($('#aFSdueDate').val()) : null,
+                coSec: $('#coSec').val() || '',
+                auditStaff: $('#auditStaff').val() || '',
+                dateDocIn: $('#dateDocIn').val() ? convertDateToYmd($('#dateDocIn').val()) : null,
+                estRev: $('#estRev').val() || '',
+                acctngWk: $('#acctngWk').val() || '',
+                jobCompleted: $('#jobCompleted').val() || '',
+                signingFirm: $('#signingFirm').val() || '',
+                remark: $('#remark').val() || ''
             };
 
             if (currentEditingId) {
@@ -588,22 +657,51 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
-                    if (response.success) {
+                    if (response && response.success) {
                         const message = `Record ${currentEditingId ? 'updated' : 'created'} successfully!`;
                         showAlert(message, 'success');
                         $('#taskModal').modal('hide');
                         loadData();
                     } else {
-                        showAlert('Error saving record: ' + response.message, 'danger');
+                        const msg = (response && (response.message || (response.errors && response.errors.join(', ')))) || 'Unknown error';
+                        showAlert('Error saving record: ' + msg, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    showAlert('Error saving record: ' + error, 'danger');
+                    const responseJson = xhr.responseJSON;
+                    const msg = (responseJson && (responseJson.message || (responseJson.errors && responseJson.errors.join(', ')))) || error || 'Server error';
+                    showAlert('Error saving record: ' + msg, 'danger');
                 }
             });
         }
 
         // --- Helper Functions ---
+
+        function calculate18MthsDueDate(incorpDateStr) {
+            if (!incorpDateStr) return;
+            try {
+                const incorpDate = new Date(incorpDateStr);
+                if (isNaN(incorpDate.getTime())) return;
+                // Add 18 months
+                const targetDate = new Date(incorpDate.getFullYear(), incorpDate.getMonth() + 18, incorpDate.getDate());
+                $('#first18mthdue').val(formatJsDateForInput(targetDate));
+            } catch (e) {
+                console.error('Error calculating 18mths due date:', e);
+            }
+        }
+
+        function calculateAfsDueDate(yearEndDateStr) {
+            if (!yearEndDateStr) return;
+            try {
+                const yearEnd = new Date(yearEndDateStr);
+                if (isNaN(yearEnd.getTime())) return;
+                // Year End + 7 months
+                const afsDue = new Date(yearEnd.getFullYear(), yearEnd.getMonth() + 7, yearEnd.getDate());
+                $('#aFSdueDate').val(formatJsDateForInput(afsDue));
+            } catch (e) {
+                console.error('Error calculating AFS due date:', e);
+            }
+        }
 
         function formatJsDateForInput(date) {
             if (!date) return '';

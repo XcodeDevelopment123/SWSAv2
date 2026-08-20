@@ -361,12 +361,12 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
          [YearToDo], [CompanyStatus], [AuditStatus], [MovetoAEX], [MovetoBacklog],
          [First18mthdue], [AFSdueDate], [CoSec], [AuditStaff], [DateDocIn],
-         [EstRev], [AcctngWk], [JobCompleted], [Remark])
+         [EstRev], [AcctngWk], [JobCompleted], [SigningFirm], [Remark])
         VALUES 
         (@Grouping, @CompanyName, @QuartertoAudit, @Activity, @YearEnd, 
-         @YearToDo, @CompanyStatus, @AuditStatus, @MovetoAEX, @MovetoBacklog,
+         @YearTodo, @CompanyStatus, @AuditStatus, @MovetoAEX, @MovetoBacklog,
          @First18mthdue, @AFSdueDate, @CoSec, @AuditStaff, @DateDocIn,
-         @EstRev, @AcctngWk, @JobCompleted, @Remark);
+         @EstRev, @AcctngWk, @JobCompleted, @SigningFirm, @Remark);
         SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 Console.WriteLine($"Executing SQL: {sql}");
@@ -416,7 +416,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [QuartertoAudit] = @QuartertoAudit, 
         [Activity] = @Activity, 
         [YearEnd] = @YearEnd, 
-        [YearToDo] = @YearToDo, 
+        [YearToDo] = @YearTodo, 
         [CompanyStatus] = @CompanyStatus, 
         [AuditStatus] = @AuditStatus, 
         [MovetoAEX] = @MovetoAEX, 
@@ -429,6 +429,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [EstRev] = @EstRev, 
         [AcctngWk] = @AcctngWk, 
         [JobCompleted] = @JobCompleted, 
+        [SigningFirm] = @SigningFirm, 
         [Remark] = @Remark
         WHERE Id = @Id";
 
@@ -578,12 +579,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz2].[dbo].[AT22] 
             ([Grouping], [CompanyName], [QuarterToDoAudit], [Activity], [YearEnd], 
-             [YearToDo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningFirm],
-             [MoveToActiveAexSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
+             [YearToDo], [MoveToActiveAexSch], [DateDocIn], [AcctngWk], [ReasonWhyBacklog])
             VALUES 
             (@Grouping, @CompanyName, @QuarterToDoAudit, @Activity, @YearEnd, 
-             @YearToDo, @CompanyStatus, @AuditExemption, @CoSec, @CreditRating, @SigningFirm,
-             @MoveToActiveAexSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
+             @YearToDo, @MoveToActiveAexSch, @DateDocIn, @AcctngWk, @ReasonWhyBacklog);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -626,11 +625,6 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [Activity] = @Activity, 
             [YearEnd] = @YearEnd, 
             [YearToDo] = @YearToDo, 
-            [CompanyStatus] = @CompanyStatus, 
-            [AuditExemption] = @AuditExemption, 
-            [CoSec] = @CoSec, 
-            [CreditRating] = @CreditRating, 
-            [SigningFirm] = @SigningFirm, 
             [MoveToActiveAexSch] = @MoveToActiveAexSch, 
             [DateDocIn] = @DateDocIn, 
             [AcctngWk] = @AcctngWk, 
@@ -1954,13 +1948,13 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
 
                 var sql = @"INSERT INTO [Quartz2].[dbo].[AEX41] 
         ([Grouping], [CompanyName], [QuartertoAudit], [Activity], [YearEnd], 
-         [Yeattodo], [CompanyStatus], [AuditExemption], [CoSec], [CreditRating], [SigningPages],
+         [Yeattodo], [CoSec],
          [MovetoActiveSch], [MovetoBacklog], [First18mthsdue], 
          [AuditedAccDueDate], [Team], [DateDocIn], [EstRev], 
          [EstNetProfit], [AcctngWk], [JobCompleted], [Remark])
         VALUES 
         (@Grouping, @CompanyName, @QuartertoAudit, @Activity, @YearEnd, 
-         @Yeattodo, @CompanyStatus, @AuditExemption, @CoSec, @CreditRating, @SigningPages,
+         @Yeattodo, @CoSec,
          @MovetoActiveSch, @MovetoBacklog, @First18mthsdue, 
          @AuditedAccDueDate, @Team, @DateDocIn, @EstRev, 
          @EstNetProfit, @AcctngWk, @JobCompleted, @Remark);
@@ -2012,11 +2006,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
         [Activity] = @Activity, 
         [YearEnd] = @YearEnd, 
         [Yeattodo] = @Yeattodo, 
-        [CompanyStatus] = @CompanyStatus, 
-        [AuditExemption] = @AuditExemption, 
         [CoSec] = @CoSec, 
-        [CreditRating] = @CreditRating, 
-        [SigningPages] = @SigningPages, 
         [MovetoActiveSch] = @MovetoActiveSch, 
         [MovetoBacklog] = @MovetoBacklog, 
         [First18mthsdue] = @First18mthsdue, 

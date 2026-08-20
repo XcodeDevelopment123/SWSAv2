@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.AuditDeptModel
+namespace SWSA.MvcPortal.Models.AuditDeptModel
 {
     public class AT21Model
     {
@@ -21,6 +21,7 @@
         public string EstRev { get; set; }
         public string AcctngWk { get; set; }
         public string JobCompleted { get; set; }
+        public string SigningFirm { get; set; }
         public string Remark { get; set; }
     }
 }

@@ -149,13 +149,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="creditRating">Credit Rating</label>
-                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto Fill" />
+                                <input type="text" id="creditRating" name="creditRating" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="signingFirm">Signing Firm</label>
-                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Enter signing firm" />
+                                <input type="text" id="signingFirm" name="signingFirm" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -164,13 +164,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearEnd">Year End</label>
-                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill (e.g., Dec 2024)" />
+                                <input type="text" id="yearEnd" name="yearEnd" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="date" id="yearToDo" name="yearToDo" class="form-control" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2020; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -199,11 +205,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="acctngWk">Acctng wk?</label>
-                                <select id="acctngWk" name="acctngWk" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <input type="text" id="acctngWk" name="acctngWk" class="form-control" placeholder="Auto Fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -241,9 +243,10 @@
         let clientDataMap = {};
 
         $(document).ready(function() {
-            loadClientOptions();
             initializeDataTable();
-            loadData();
+            loadClientOptions(function() {
+                loadData();
+            });
 
             $('#clientSelect').on('change', function() {
                 handleClientChange($(this).val());
@@ -272,7 +275,7 @@
             dtCollectionObserver.observe(document.body, { childList: true, subtree: true });
         });
 
-        function loadClientOptions() {
+        function loadClientOptions(callback) {
             $.ajax({
                 url: '/api/get/company-options',
                 type: 'GET',
@@ -303,9 +306,11 @@
                             });
                         }
                     }
+                    if (typeof callback === 'function') callback();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error loading client options:', error);
+                    if (typeof callback === 'function') callback();
                 }
             });
         }
@@ -334,11 +339,54 @@
                     $('#creditRating').val(clientData.creditRating);
                 }
 
-                // Auto fill Year End
+                // Auto fill Year End and default Year to do
                 if (clientData.yearEndMonth) {
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
                     $('#yearEnd').val(calculatedDate);
+                    if (!$('#yearToDo').val() && calculatedDate) {
+                        const parts = calculatedDate.split('/');
+                        if (parts.length === 3) {
+                            $('#yearToDo').val(parts[2]);
+                        }
+                    }
+                } else {
+                    $('#yearEnd').val('');
                 }
+
+                // Auto fill Co. Sec & Signing Firm from Appointment Data
+                let coSecVal = 'No';
+                let signingFirmVal = '';
+                if (clientData.appointmentEngagementData) {
+                    try {
+                        const apptData = typeof clientData.appointmentEngagementData === 'string'
+                            ? JSON.parse(clientData.appointmentEngagementData)
+                            : clientData.appointmentEngagementData;
+
+                        const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                        const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+
+                        if (hasCoSec || hasSecDate) {
+                            coSecVal = 'Yes';
+                        }
+                        if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                            signingFirmVal = apptData.appointments.Audit.signingFirm;
+                        } else if (apptData.linkE1 && apptData.linkE1.who) {
+                            signingFirmVal = apptData.linkE1.who;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing appointmentEngagementData in E3.2:', e);
+                    }
+                }
+                $('#coSec').val(coSecVal);
+                $('#signingFirm').val(signingFirmVal || clientData.signingFirm || '');
+
+                // Auto fill Acctng wk? from B1 serviceSelected
+                let hasAcc = false;
+                if (clientData.serviceSelected) {
+                    const services = clientData.serviceSelected.split(',').map(s => s.trim().toLowerCase());
+                    hasAcc = services.includes('acc');
+                }
+                $('#acctngWk').val(hasAcc ? 'Yes' : 'No');
 
                 // Auto fill Date Doc in from C1-1 Inward Doc (A31A) if available
                 if (clientData.latestDateDocIn) {
@@ -356,6 +404,11 @@
                 $('#auditExemption').val('');
                 $('#creditRating').val('');
                 $('#yearEnd').val('');
+                $('#yearToDo').val('');
+                $('#coSec').val('');
+                $('#signingFirm').val('');
+                $('#acctngWk').val('');
+                $('#dateDocIn').val('');
             }
         }
 
@@ -478,17 +531,44 @@
         function populateTable(data) {
             if (data && data.length > 0) {
                 const formattedData = data.map(function(item) {
+                    const compName = (item.companyName || item.CompanyName || '').trim();
+                    const client = clientDataMap[clientNameMap[compName]] || {};
+
+                    // 从 client 解析 coSec / signingFirm / auditExemption
+                    let clientCoSec = client.coSec || '';
+                    let clientSigningFirm = client.signingFirm || '';
+                    let clientAuditExemption = client.auditExemption || '';
+
+                    if (client.appointmentEngagementData) {
+                        try {
+                            const apptData = typeof client.appointmentEngagementData === 'string'
+                                ? JSON.parse(client.appointmentEngagementData)
+                                : client.appointmentEngagementData;
+
+                            const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                            const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+                            if (hasCoSec || hasSecDate) clientCoSec = 'Yes';
+                            else if (!clientCoSec) clientCoSec = 'No';
+
+                            if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                                clientSigningFirm = apptData.appointments.Audit.signingFirm;
+                            } else if (apptData.linkE1 && apptData.linkE1.who) {
+                                clientSigningFirm = apptData.linkE1.who;
+                            }
+                        } catch (e) {}
+                    }
+
                     return {
                         id: item.id || item.Id,
-                        grouping: escapeHtml(item.grouping || item.Grouping || ''),
-                        companyName: escapeHtml(item.companyName || item.CompanyName || ''),
+                        grouping: escapeHtml(item.grouping || item.Grouping || client.grouping || ''),
+                        companyName: escapeHtml(compName),
                         quarterToDoAudit: escapeHtml(item.quarterToDoAudit || item.QuarterToDoAudit || ''),
-                        activity: escapeHtml(item.activity || item.Activity || ''),
-                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || ''),
-                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || ''),
-                        coSec: escapeHtml(item.coSec || item.CoSec || ''),
-                        creditRating: escapeHtml(item.creditRating || item.CreditRating || ''),
-                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || ''),
+                        activity: escapeHtml(item.activity || item.Activity || client.activitySize || client.activity || ''),
+                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || client.companyStatus || ''),
+                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || clientAuditExemption || ''),
+                        coSec: escapeHtml(item.coSec || item.CoSec || clientCoSec || ''),
+                        creditRating: escapeHtml(item.creditRating || item.CreditRating || client.creditRating || ''),
+                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || clientSigningFirm || ''),
                         yearEnd: escapeHtml(item.yearEnd || item.YearEnd || ''),
                         yearToDo: escapeHtml(item.yearToDo || item.YearToDo || ''),
                         moveToActiveSch: escapeHtml(item.moveToActiveSch || item.MoveToActiveSch || ''),
@@ -570,23 +650,52 @@
                             if ($.fn.select2) $('#clientSelect').trigger('change.select2');
                         }
 
+                        const client = (compName && clientNameMap[compName.trim()]) ? clientDataMap[clientNameMap[compName.trim()]] || {} : {};
+
+                        // 从 client 解析 coSec / signingFirm / auditExemption
+                        let clientCoSec = client.coSec || '';
+                        let clientSigningFirm = client.signingFirm || '';
+                        let clientAuditExemption = client.auditExemption || '';
+
+                        if (client.appointmentEngagementData) {
+                            try {
+                                const apptData = typeof client.appointmentEngagementData === 'string'
+                                    ? JSON.parse(client.appointmentEngagementData)
+                                    : client.appointmentEngagementData;
+
+                                const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                                const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+                                if (hasCoSec || hasSecDate) clientCoSec = 'Yes';
+                                else if (!clientCoSec) clientCoSec = 'No';
+
+                                if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                                    clientSigningFirm = apptData.appointments.Audit.signingFirm;
+                                } else if (apptData.linkE1 && apptData.linkE1.who) {
+                                    clientSigningFirm = apptData.linkE1.who;
+                                }
+                            } catch (e) {}
+                        }
+
                         // Populate form fields
-                        $('#grouping').val(record.grouping || record.Grouping || '');
+                        $('#grouping').val(record.grouping || record.Grouping || client.grouping || '');
                         $('#quarterToDoAudit').val(record.quarterToDoAudit || record.QuarterToDoAudit || '');
-                        $('#activity').val(record.activity || record.Activity || '');
-                        $('#companyStatus').val(record.companyStatus || record.CompanyStatus || '');
-                        $('#auditExemption').val(record.auditExemption || record.AuditExemption || '');
-                        $('#coSec').val(record.coSec || record.CoSec || '');
-                        $('#creditRating').val(record.creditRating || record.CreditRating || '');
-                        $('#signingFirm').val(record.signingFirm || record.SigningFirm || '');
+                        $('#activity').val(record.activity || record.Activity || client.activitySize || client.activity || '');
+                        $('#companyStatus').val(record.companyStatus || record.CompanyStatus || client.companyStatus || '');
+                        $('#auditExemption').val(record.auditExemption || record.AuditExemption || clientAuditExemption || '');
+                        $('#coSec').val(record.coSec || record.CoSec || clientCoSec || '');
+                        $('#creditRating').val(record.creditRating || record.CreditRating || client.creditRating || '');
+                        $('#signingFirm').val(record.signingFirm || record.SigningFirm || clientSigningFirm || '');
                         $('#yearEnd').val(record.yearEnd || record.YearEnd || '');
 
                         const yVal = record.yearToDo || record.YearToDo;
-                        if (yVal) {
-                            $('#yearToDo').val(formatIsoForDateInput(yVal));
-                        } else {
-                            $('#yearToDo').val('');
+                        let formattedYearToDo = yVal || '';
+                        if (formattedYearToDo && formattedYearToDo.includes('-')) {
+                            formattedYearToDo = formattedYearToDo.split('-')[0];
+                        } else if (formattedYearToDo && formattedYearToDo.includes('/')) {
+                            const p = formattedYearToDo.split('/');
+                            formattedYearToDo = p[p.length - 1];
                         }
+                        $('#yearToDo').val(formattedYearToDo);
                         $('#moveToActiveSch').val(record.moveToActiveSch || record.MoveToActiveSch || '');
 
                         const dVal = record.dateDocIn || record.DateDocIn;

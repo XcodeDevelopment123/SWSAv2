@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -16,6 +16,7 @@ public partial class At21
     public string? Activity { get; set; }
 
     public string? YearEnd { get; set; }
+    public string? YearToDo { get; set; }
 
     public string? CompanyStatus { get; set; }
 
@@ -40,6 +41,8 @@ public partial class At21
     public string? AcctngWk { get; set; }
 
     public string? JobCompleted { get; set; }
+
+    public string? SigningFirm { get; set; }
 
     public string? Remark { get; set; }
 }

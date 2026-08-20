@@ -28,5 +28,6 @@ namespace SWSA.MvcPortal.Dtos.Requests.Clients
         public string? LatestDateDocIn { get; set; } // From A31A (C1-1)
         public string? MiscCode { get; set; }
         public string? MiscDescription { get; set; }
+        public string? AccDeptMth { get; set; }
     }
 }

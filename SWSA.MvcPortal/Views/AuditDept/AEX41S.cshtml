@@ -132,7 +132,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="date" id="yearToDo" name="yearToDo" class="form-control" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2020; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -334,8 +340,8 @@
                 $('#client').val(clientData.companyName);
 
                 // 自动填充 Activity
-                if (clientData.activitySize) {
-                    $('#activity').val(clientData.activitySize);
+                if (clientData.activitySize || clientData.activity) {
+                    $('#activity').val(clientData.activitySize || clientData.activity);
                 }
 
                 // 自动填充 Co.Status, Audit Exemption, Credit Rating
@@ -349,17 +355,68 @@
                     $('#creditRating').val(clientData.creditRating);
                 }
 
-                // 计算 Year End 及 UFS Acc due date (Year End + 7个月)
+                // 1. 计算 Year End 及 UFS Acc due date (Year End + 7个月)
                 if (clientData.yearEndMonth) {
                     const calculatedDate = calculateYearEndDate(clientData.yearEndMonth);
                     const calculated7MonthsDueDate = calculate7MonthsDueDate(clientData.yearEndMonth);
 
                     $('#yearEnd').val(calculatedDate);
                     $('#auditedAccDueDate').val(calculated7MonthsDueDate);
+
+                    // 默认预选 Year to do
+                    if (!$('#yearToDo').val() && calculatedDate) {
+                        const parts = calculatedDate.split('/');
+                        if (parts.length === 3) {
+                            $('#yearToDo').val(parts[2]);
+                        }
+                    }
                 } else {
                     $('#yearEnd').val('');
                     $('#auditedAccDueDate').val('');
                 }
+
+                // 2. 自动计算 1st 18 mths due (成立日起算 18 个月)
+                if (clientData.incorporationDate) {
+                    $('#first18MonthsDue').val(calculate18MonthsDueDate(clientData.incorporationDate));
+                } else {
+                    $('#first18MonthsDue').val('');
+                }
+
+                // 3. 自动填充 Co. Sec (link from B1 appointed secretary)
+                let coSecVal = 'No';
+                if (clientData.appointmentEngagementData) {
+                    try {
+                        const apptData = typeof clientData.appointmentEngagementData === 'string'
+                            ? JSON.parse(clientData.appointmentEngagementData)
+                            : clientData.appointmentEngagementData;
+
+                        const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                        const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+
+                        if (hasCoSec || hasSecDate) {
+                            coSecVal = 'Yes';
+                        }
+                    } catch (e) {
+                        console.error('Error parsing appointmentEngagementData in AEX41:', e);
+                    }
+                }
+                $('#coSec').val(coSecVal);
+
+                // 4. 自动填充 Date Doc in (link from C1.1 / latestDateDocIn)
+                if (clientData.latestDateDocIn) {
+                    $('#dateDocIn').val(convertDateToYmd(clientData.latestDateDocIn));
+                } else {
+                    $('#dateDocIn').val('');
+                }
+
+                // 5. 自动填充 Acctng wk? (link from B1 "Service Type")
+                let hasAcc = false;
+                if (clientData.serviceSelected) {
+                    const services = clientData.serviceSelected.split(',').map(s => s.trim().toLowerCase());
+                    hasAcc = services.includes('acc');
+                }
+                $('#acctngWk').val(hasAcc ? 'Yes' : 'No');
+
             } else {
                 // 清空
                 $('#grouping').val('');
@@ -372,16 +429,67 @@
                 $('#companyStatus').val('');
                 $('#auditExemption').val('');
                 $('#creditRating').val('');
+                $('#first18MonthsDue').val('');
+                $('#coSec').val('');
+                $('#dateDocIn').val('');
+                $('#acctngWk').val('');
+                $('#yearToDo').val('');
             }
         }
 
-        // --- 你的日期计算逻辑 ---
+        // --- 日期计算逻辑 ---
         function formatJsDate(date) {
             if (!date) return '';
             const dd = String(date.getDate()).padStart(2, '0');
             const mm = String(date.getMonth() + 1).padStart(2, '0');
             const yyyy = date.getFullYear();
             return `${dd}/${mm}/${yyyy}`;
+        }
+
+        function calculate18MonthsDueDate(incorpDateStr) {
+            if (!incorpDateStr) return '';
+            try {
+                const incorpDate = new Date(incorpDateStr);
+                if (isNaN(incorpDate.getTime())) return '';
+                const targetDate = new Date(incorpDate.getFullYear(), incorpDate.getMonth() + 18, incorpDate.getDate());
+                return formatJsDate(targetDate);
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function convertDateToYmd(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.includes('/')) {
+                let parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            } else if (dateStr.includes('-')) {
+                let parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return dateStr.substring(0, 10);
+                    }
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            try {
+                let d = new Date(dateStr);
+                if (!isNaN(d.getTime())) {
+                    let dd = String(d.getDate()).padStart(2, '0');
+                    let mm = String(d.getMonth() + 1).padStart(2, '0');
+                    let yyyy = d.getFullYear();
+                    return `${yyyy}-${mm}-${dd}`;
+                }
+            } catch (e) {}
+            return '';
         }
 
         function calculateYearEndDate(monthName) {
@@ -602,7 +710,18 @@
                         $('#first18MonthsDue').val(formatDate(data.first18mthsdue));
                         $('#auditedAccDueDate').val(formatDate(data.auditedAccDueDate));
                         $('#dateDocIn').val(formatIsoForDateInput(data.dateDocIn));
-                        $('#yearToDo').val(formatIsoForDateInput(data.yeattodo) || data.yeattodo || '');
+                        
+                        // 确保 Year to do 被正确回显为年份
+                        const rawYearToDo = data.yeattodo || data.yearToDo || '';
+                        let formattedYearToDo = rawYearToDo;
+                        if (rawYearToDo && rawYearToDo.includes('-')) {
+                            formattedYearToDo = rawYearToDo.split('-')[0];
+                        } else if (rawYearToDo && rawYearToDo.includes('/')) {
+                            const p = rawYearToDo.split('/');
+                            formattedYearToDo = p[p.length - 1];
+                        }
+                        $('#yearToDo').val(formattedYearToDo);
+
                         $('#companyStatus').val(data.companyStatus || '');
                         $('#auditExemption').val(data.auditExemption || '');
                         $('#creditRating').val(data.creditRating || '');

@@ -109,7 +109,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="date" id="yearToDo" name="yearToDo" class="form-control" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2020; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -213,21 +219,22 @@
         let isInitialLoad = true;
 
         $(document).ready(function() {
-            // ⭐⭐ 1. Load Client List into Dropdown
-            loadClientOptions();
-
-            // 先初始化 DataTable，然后再加载数据
+            // 先初始化 DataTable
             initializeDataTable();
-            loadData();
+
+            // ⭐⭐ 1. Load Client List into Dropdown then load data
+            loadClientOptions(function() {
+                loadData();
+            });
         });
 
         // 存储客户数据用于自动填充
         let clientDataMap = {};
 
-        // ⭐⭐ 新增：加载客户列表函数
-        function loadClientOptions() {
+        // ⭐⭐ 新增：加载客户列表函数（使用完整的 /api/get/company-options）
+        function loadClientOptions(callback) {
             $.ajax({
-                url: '/api/auditdept/clients/get-list',
+                url: '/api/get/company-options',
                 type: 'GET',
                 success: function (res) {
                     if (res && res.success && res.data) {
@@ -236,28 +243,12 @@
                         clientDataMap = {};
 
                         res.data.forEach(client => {
-                            const name = client.CompanyName || client.companyName || client.Name || client.name;
-                            const type = client.ClientType || client.clientType || '';
-
+                            const name = client.companyName || client.name;
                             if (name) {
-                                let displayText = name;
-                                if (type) {
-                                    displayText = `${name} (${type})`;
-                                }
-                                $select.append(`<option value="${name}">${displayText}</option>`);
+                                $select.append(`<option value="${name}">${name}</option>`);
 
                                 // 存储客户数据用于自动填充
-                                clientDataMap[name] = {
-                                    grouping: client.Grouping || client.grouping || client.Group || client.group || '',
-                                    activitySize: client.ActivitySize || client.activitySize || '',
-                                    yearEndMonth: client.YearEndMonth || client.yearEndMonth || '',
-                                    companyStatus: client.CompanyStatus || client.companyStatus || '',
-                                    creditRating: client.CreditRating || client.creditRating || '',
-                                    auditExemption: client.AuditExemption || client.auditExemption || '',
-                                    coSec: client.CoSec || client.coSec || '',
-                                    signingFirm: client.SigningFirm || client.signingFirm || '',
-                                    acctngWk: client.AcctngWk || client.acctngWk || client.AccountingWork || ''
-                                };
+                                clientDataMap[name] = client;
                             }
                         });
 
@@ -269,9 +260,15 @@
                             width: '100%'
                         });
                     }
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                 },
                 error: function (err) {
                     console.error('Failed to load client list', err);
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                 }
             });
         }
@@ -292,23 +289,115 @@
             return `${dd}/${mm}/${date.getFullYear()}`;
         }
 
+        function convertDateToYmd(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.includes('/')) {
+                let parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            } else if (dateStr.includes('-')) {
+                let parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) {
+                        return dateStr.substring(0, 10);
+                    }
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            try {
+                let d = new Date(dateStr);
+                if (!isNaN(d.getTime())) {
+                    let dd = String(d.getDate()).padStart(2, '0');
+                    let mm = String(d.getMonth() + 1).padStart(2, '0');
+                    let yyyy = d.getFullYear();
+                    return `${yyyy}-${mm}-${dd}`;
+                }
+            } catch (e) {}
+            return '';
+        }
+
         // 公司选择变更时自动填充
         $(document).on('change', '#companyName', function() {
             const selectedName = $(this).val();
             if (selectedName && clientDataMap[selectedName]) {
                 const data = clientDataMap[selectedName];
-                if (data.grouping) $('#grouping').val(data.grouping);
-                if (data.companyStatus) $('#companyStatus').val(data.companyStatus);
-                if (data.auditExemption) $('#auditExemption').val(data.auditExemption);
-                if (data.creditRating) $('#creditRating').val(data.creditRating);
-                if (data.activitySize) $('#activity').val(data.activitySize);
-                if (data.coSec) $('#coSec').val(data.coSec);
-                if (data.signingFirm) $('#signingFirm').val(data.signingFirm);
-                if (data.acctngWk) $('#acctngWk').val(data.acctngWk);
+                
+                // 1. Grouping
+                $('#grouping').val(data.grouping || '');
+                
+                // 2. Activity
+                $('#activity').val(data.activitySize || data.activity || '');
+                
+                // 3. Co.Status & Credit Rating
+                $('#companyStatus').val(data.companyStatus || '');
+                $('#creditRating').val(data.creditRating || '');
+
+                // 4. Audit exemption? (Link to A1 Appointment & Engagement -> linkE1.auditExemption)
+                $('#auditExemption').val(data.auditExemption || '');
+
+                // 5. Year End & Year to do
                 if (data.yearEndMonth) {
                     const yearEndVal = calculateYearEndDateForInput(data.yearEndMonth);
                     $('#yearEnd').val(yearEndVal);
+                    if (!$('#yearToDo').val() && yearEndVal) {
+                        const parts = yearEndVal.split('/');
+                        if (parts.length === 3) {
+                            $('#yearToDo').val(parts[2]);
+                        }
+                    }
+                } else {
+                    $('#yearEnd').val('');
                 }
+
+                // 6. Co.Sec? & Signing Firm from Appointment Data
+                let coSecVal = 'No';
+                let signingFirmVal = '';
+                if (data.appointmentEngagementData) {
+                    try {
+                        const apptData = typeof data.appointmentEngagementData === 'string'
+                            ? JSON.parse(data.appointmentEngagementData)
+                            : data.appointmentEngagementData;
+
+                        const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                        const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+
+                        if (hasCoSec || hasSecDate) {
+                            coSecVal = 'Yes';
+                        }
+                        if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                            signingFirmVal = apptData.appointments.Audit.signingFirm;
+                        } else if (apptData.linkE1 && apptData.linkE1.who) {
+                            signingFirmVal = apptData.linkE1.who;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing appointmentEngagementData in E3.1:', e);
+                    }
+                }
+                $('#coSec').val(coSecVal);
+                $('#signingFirm').val(signingFirmVal || data.signingFirm || '');
+
+                // 7. Date Doc in (from C1.1 latestDateDocIn)
+                if (data.latestDateDocIn) {
+                    $('#dateDocIn').val(convertDateToYmd(data.latestDateDocIn));
+                } else {
+                    $('#dateDocIn').val('');
+                }
+
+                // 8. Acctng wk? (from B1 serviceSelected)
+                let hasAcc = false;
+                if (data.serviceSelected) {
+                    const services = data.serviceSelected.split(',').map(s => s.trim().toLowerCase());
+                    hasAcc = services.includes('acc');
+                }
+                $('#acctngWk').val(hasAcc ? 'Yes' : 'No');
+
             } else if (!selectedName) {
                 $('#grouping').val('');
                 $('#companyStatus').val('');
@@ -316,8 +405,10 @@
                 $('#creditRating').val('');
                 $('#activity').val('');
                 $('#yearEnd').val('');
+                $('#yearToDo').val('');
                 $('#coSec').val('');
                 $('#signingFirm').val('');
+                $('#dateDocIn').val('');
                 $('#acctngWk').val('');
             }
         });
@@ -409,19 +500,46 @@
 
             if (data && data.length > 0) {
                 const formattedData = data.map(function(item) {
+                    const compName = (item.companyName || item.CompanyName || '').trim();
+                    const client = clientDataMap[compName] || {};
+
+                    // 从 client 解析 coSec / signingFirm / auditExemption
+                    let clientCoSec = client.coSec || '';
+                    let clientSigningFirm = client.signingFirm || '';
+                    let clientAuditExemption = client.auditExemption || '';
+
+                    if (client.appointmentEngagementData) {
+                        try {
+                            const apptData = typeof client.appointmentEngagementData === 'string'
+                                ? JSON.parse(client.appointmentEngagementData)
+                                : client.appointmentEngagementData;
+
+                            const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                            const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+                            if (hasCoSec || hasSecDate) clientCoSec = 'Yes';
+                            else if (!clientCoSec) clientCoSec = 'No';
+
+                            if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                                clientSigningFirm = apptData.appointments.Audit.signingFirm;
+                            } else if (apptData.linkE1 && apptData.linkE1.who) {
+                                clientSigningFirm = apptData.linkE1.who;
+                            }
+                        } catch (e) {}
+                    }
+
                     return {
                         id: item.id || item.Id,
-                        grouping: escapeHtml(item.grouping || item.Grouping || ''),
-                        companyName: escapeHtml(item.companyName || item.CompanyName || ''),
+                        grouping: escapeHtml(item.grouping || item.Grouping || client.grouping || ''),
+                        companyName: escapeHtml(compName),
                         quarterToDoAudit: escapeHtml(item.quarterToDoAudit || item.QuarterToDoAudit || ''),
-                        activity: escapeHtml(item.activity || item.Activity || ''),
+                        activity: escapeHtml(item.activity || item.Activity || client.activitySize || client.activity || ''),
                         yearEnd: item.yearEnd || item.YearEnd,
                         yearToDo: escapeHtml(item.yearToDo || item.YearToDo || ''),
-                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || ''),
-                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || ''),
-                        coSec: escapeHtml(item.coSec || item.CoSec || ''),
-                        creditRating: escapeHtml(item.creditRating || item.CreditRating || ''),
-                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || ''),
+                        companyStatus: escapeHtml(item.companyStatus || item.CompanyStatus || client.companyStatus || ''),
+                        auditExemption: escapeHtml(item.auditExemption || item.AuditExemption || clientAuditExemption || ''),
+                        coSec: escapeHtml(item.coSec || item.CoSec || clientCoSec || ''),
+                        creditRating: escapeHtml(item.creditRating || item.CreditRating || client.creditRating || ''),
+                        signingFirm: escapeHtml(item.signingFirm || item.SigningFirm || clientSigningFirm || ''),
                         moveToActiveAexSch: escapeHtml(item.moveToActiveAexSch || item.MoveToActiveAexSch || ''),
                         dateDocIn: item.dateDocIn || item.DateDocIn,
                         acctngWk: escapeHtml(item.acctngWk || item.AcctngWk || ''),
@@ -468,12 +586,49 @@
                         $('#quarterToDoAudit').val(record.quarterToDoAudit || '');
                         $('#activity').val(record.activity || '');
                         $('#yearEnd').val(formatDateForInput(record.yearEnd));
-                        $('#yearToDo').val(formatDateForInput(record.yearToDo) || record.yearToDo || '');
-                        $('#companyStatus').val(record.companyStatus || '');
-                        $('#auditExemption').val(record.auditExemption || '');
-                        $('#coSec').val(record.coSec || '');
-                        $('#creditRating').val(record.creditRating || '');
-                        $('#signingFirm').val(record.signingFirm || '');
+                        
+                        // 格式化 Year to do 回显
+                        const rawYearToDo = record.yearToDo || '';
+                        let formattedYearToDo = rawYearToDo;
+                        if (rawYearToDo && rawYearToDo.includes('-')) {
+                            formattedYearToDo = rawYearToDo.split('-')[0];
+                        } else if (rawYearToDo && rawYearToDo.includes('/')) {
+                            const p = rawYearToDo.split('/');
+                            formattedYearToDo = p[p.length - 1];
+                        }
+                        $('#yearToDo').val(formattedYearToDo);
+
+                        const client = clientDataMap[existingCompany] || {};
+
+                        // 从 client 解析 coSec / signingFirm / auditExemption
+                        let clientCoSec = client.coSec || '';
+                        let clientSigningFirm = client.signingFirm || '';
+                        let clientAuditExemption = client.auditExemption || '';
+
+                        if (client.appointmentEngagementData) {
+                            try {
+                                const apptData = typeof client.appointmentEngagementData === 'string'
+                                    ? JSON.parse(client.appointmentEngagementData)
+                                    : client.appointmentEngagementData;
+
+                                const hasCoSec = (apptData.linkE22 && apptData.linkE22.coSecretary === true);
+                                const hasSecDate = (apptData.appointments && apptData.appointments.Sec && apptData.appointments.Sec.appointmentDate);
+                                if (hasCoSec || hasSecDate) clientCoSec = 'Yes';
+                                else if (!clientCoSec) clientCoSec = 'No';
+
+                                if (apptData.appointments && apptData.appointments.Audit && apptData.appointments.Audit.signingFirm) {
+                                    clientSigningFirm = apptData.appointments.Audit.signingFirm;
+                                } else if (apptData.linkE1 && apptData.linkE1.who) {
+                                    clientSigningFirm = apptData.linkE1.who;
+                                }
+                            } catch (e) {}
+                        }
+
+                        $('#companyStatus').val(record.companyStatus || client.companyStatus || '');
+                        $('#auditExemption').val(record.auditExemption || clientAuditExemption || '');
+                        $('#coSec').val(record.coSec || clientCoSec || '');
+                        $('#creditRating').val(record.creditRating || client.creditRating || '');
+                        $('#signingFirm').val(record.signingFirm || clientSigningFirm || '');
                         $('#moveToActiveAexSch').val(record.moveToActiveAexSch || '');
                         $('#dateDocIn').val(formatDateForInput(record.dateDocIn));
                         $('#acctngWk').val(record.acctngWk || '');
@@ -492,21 +647,21 @@
 
         function saveRecord() {
             const formData = {
-                grouping: $('#grouping').val(),
-                companyName: $('#companyName').val(), // Select 的值
-                quarterToDoAudit: $('#quarterToDoAudit').val(),
-                activity: $('#activity').val(),
-                yearEnd: $('#yearEnd').val() || null,
-                yearToDo: $('#yearToDo').val(),
-                companyStatus: $('#companyStatus').val(),
-                auditExemption: $('#auditExemption').val(),
-                coSec: $('#coSec').val(),
-                creditRating: $('#creditRating').val(),
-                signingFirm: $('#signingFirm').val(),
-                moveToActiveAexSch: $('#moveToActiveAexSch').val(),
-                dateDocIn: $('#dateDocIn').val() || null,
-                acctngWk: $('#acctngWk').val(),
-                reasonWhyBacklog: $('#reasonWhyBacklog').val()
+                grouping: $('#grouping').val() || '',
+                companyName: $('#companyName').val() || '', // Select 的值
+                quarterToDoAudit: $('#quarterToDoAudit').val() || '',
+                activity: $('#activity').val() || '',
+                yearEnd: $('#yearEnd').val() ? convertDateToYmd($('#yearEnd').val()) : null,
+                yearToDo: $('#yearToDo').val() || '',
+                companyStatus: $('#companyStatus').val() || '',
+                auditExemption: $('#auditExemption').val() || '',
+                coSec: $('#coSec').val() || '',
+                creditRating: $('#creditRating').val() || '',
+                signingFirm: $('#signingFirm').val() || '',
+                moveToActiveAexSch: $('#moveToActiveAexSch').val() || '',
+                dateDocIn: $('#dateDocIn').val() ? convertDateToYmd($('#dateDocIn').val()) : null,
+                acctngWk: $('#acctngWk').val() || '',
+                reasonWhyBacklog: $('#reasonWhyBacklog').val() || ''
             };
 
             // Add ID for update
@@ -534,11 +689,21 @@
                         $('#taskModal').modal('hide');
                         loadData(); // 重新加载数据
                     } else {
-                        showAlert('Error saving record: ' + response.message, 'danger');
+                        const errMsg = response.message || (response.errors ? response.errors.join(', ') : 'Unknown error');
+                        showAlert('Error saving record: ' + errMsg, 'danger');
                     }
                 },
                 error: function(xhr, status, error) {
-                    showAlert('Error saving record: ' + error, 'danger');
+                    let errMsg = error;
+                    try {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            const parsed = JSON.parse(xhr.responseText);
+                            errMsg = parsed.message || parsed.title || xhr.responseText;
+                        }
+                    } catch (e) {}
+                    showAlert('Error saving record: ' + errMsg, 'danger');
                 }
             });
         }
