@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     initSelect2();
     const $userForm = $("#userForm");
     const userFormInputs = {
@@ -8,7 +8,10 @@
         password: $userForm.find('input[name="password"]'),
         rePassword: $userForm.find('input[name="rePassword"]'),
         isActive: $userForm.find('select[name="isActive"]'),
-        role: $userForm.find('select[name="role"]')
+        role: $userForm.find('select[name="role"]'),
+        title: $userForm.find('input[name="title"]'),
+        department: $userForm.find('select[name="department"]'),
+        joinDate: $userForm.find('input[name="joinDate"]')
     };
 
     userFormInputs.rePassword.addClass('prevent-typing').val('');
@@ -59,7 +62,7 @@
             },
             title: { required: true },
             department: { required: true },
-            joinDate: { required: true, date: true }
+            joinDate: { required: true }
         },
         messages: {
             fullName: {
@@ -82,14 +85,13 @@
                 required: "Please select an active status."
             },
             role: {
-                required: "Please select an role."
+                required: "Please select a role."
             },
 
             title: { required: "Title is required." },
             department: { required: "Please select a department." },
             joinDate: {
-                required: "Join date is required.",
-                date: "Please enter a valid date."
+                required: "Join date is required."
             }
         },
         errorElement: 'span',
@@ -103,16 +105,25 @@
         },
         highlight: function (element) {
             $(element).addClass('is-invalid');
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').find('.select2-selection').addClass('is-invalid border-danger');
+            }
         },
         unhighlight: function (element) {
             $(element).removeClass('is-invalid');
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').find('.select2-selection').removeClass('is-invalid border-danger');
+            }
         }
+    });
+
+    $('select.select2').on('change.select2', function () {
+        $(this).valid();
     });
 
     flatpickr("#joinDate", {
         allowInput: true
     });
-
 
     $userForm.on('submit', function (e) {
         e.preventDefault();
@@ -123,6 +134,13 @@
 
         const userData = getFormData(userFormInputs);
         userData.staffId = $("#staffId").val();
+        if ($("#role").prop('disabled')) {
+            userData.role = $("#role").val();
+        }
+        if ($("#IsActive").prop('disabled')) {
+            userData.isActive = $("#IsActive").val();
+        }
+
         $.ajax({
             url: `${urls.users}/edit`,
             method: "POST",
@@ -131,11 +149,14 @@
                 if (res) {
                     Toast_Fire(ICON_SUCCESS, "Updated", "User updated successfully.");
                     setTimeout(() => {
-                        //  window.location.href = `${urls.users}/${userData.staffId}/overview`;
-                    }, 200);
+                        window.location.href = `${urls.users}/${userData.staffId}/overview`;
+                    }, 500);
                 }
             },
             error: function (jqxhr) {
+                stopLoading();
+                const responseJson = jqxhr.responseJSON;
+                Toast_Fire(ICON_ERROR, responseJson?.message || "Error", responseJson?.error || "Failed to update user.");
             }
         });
     });

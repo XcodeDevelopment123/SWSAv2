@@ -154,9 +154,7 @@
                             <div class="form-group">
                                 <label for="yEtodo">Year to do</label>
                                 <select id="yEtodo" name="yEtodo" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="">Select Year</option>
                                 </select>
                             </div>
                         </div>
@@ -178,7 +176,7 @@
                             <div class="form-group">
                                 <label for="ssMextensionDate">SSM Extension Date</label>
                                 <div class="input-group date" id="ssmExtensionDatePicker">
-                                    <input type="text" id="ssMextensionDate" name="ssMextensionDate" class="form-control" placeholder="dd/MM" />
+                                    <input type="text" id="ssMextensionDate" name="ssMextensionDate" class="form-control" placeholder="dd/mm/yyyy" />
                                     <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                 </div>
                             </div>
@@ -419,10 +417,22 @@
                 return companyOptionsPromise;
             }
 
+            function initYearToDoDropdown() {
+                const $sel = $("#yEtodo");
+                const curr = $sel.val();
+                $sel.empty().append('<option value="">Select Year</option>');
+                const startYear = 2020;
+                const endYear = 2050;
+                for (let y = startYear; y <= endYear; y++) {
+                    $sel.append(`<option value="${y}">${y}</option>`);
+                }
+                if (curr) $sel.val(curr);
+            }
+
             $("#companyName").on("change", function () {
                 const $opt = $(this).find("option:selected");
                 if (!$opt.val()) {
-                    $("#grouping,#referral,#secFileNo,#yearEnd,#incorpDateDisplay,#creditRating,#acCmthTodo,#aDdueDate").val("");
+                    $("#grouping,#referral,#secFileNo,#yearEnd,#incorpDateDisplay,#creditRating,#companyStatus,#activeCoActivitySize,#yEtodo,#acCmthTodo,#aDdueDate").val("");
                     $('#ssMextensionDate').datepicker('update', '');
                     $("#incorpDate").val("");
                     return;
@@ -431,6 +441,8 @@
                 $("#referral").val($opt.data("referral") || "");
                 $("#secFileNo").val($opt.data("fileno") || "");
                 $("#creditRating").val($opt.data("creditrating") || "");
+                $("#companyStatus").val($opt.data("companystatus") || "");
+                $("#activeCoActivitySize").val($opt.data("activitysize") || "");
 
                 const isoIncorp = $opt.data("incorpdate") || "";
                 $("#incorpDate").val(isoIncorp);
@@ -449,6 +461,30 @@
                     if (adDueDate) {
                         $("#aDdueDate").val(toDisplayDDMMYYYY(adDueDate));
                     }
+
+                    const parts = yearEndText.split('/');
+                    if (parts.length === 3) {
+                        $('#yEtodo').val(parts[2]);
+                    }
+                }
+
+                // Check and auto-get SSM Extension Date from F1.2 (BP22)
+                const companyName = $opt.data("companyname") || $opt.text();
+                if (companyName) {
+                    $.ajax({
+                        url: '/api/llp-master/get-bp22-extension?companyName=' + encodeURIComponent(companyName.trim()),
+                        type: 'GET',
+                        success: function (res) {
+                            if (res && res.success && res.extensionDate) {
+                                const parsedExt = parseToDate(res.extensionDate);
+                                if (parsedExt) {
+                                    $('#ssMextensionDate').datepicker('update', toDisplayDDMMYYYY(parsedExt));
+                                } else {
+                                    $('#ssMextensionDate').datepicker('update', res.extensionDate);
+                                }
+                            }
+                        }
+                    });
                 }
             });
 
@@ -672,9 +708,7 @@
                 if (ssmExtRaw) {
                     const parsedSsm = parseToDate(ssmExtRaw);
                     if (parsedSsm) {
-                        const dd = String(parsedSsm.getDate()).padStart(2, '0');
-                        const mm = String(parsedSsm.getMonth() + 1).padStart(2, '0');
-                        $('#ssMextensionDate').datepicker('update', `${dd}/${mm}`);
+                        $('#ssMextensionDate').datepicker('update', toDisplayDDMMYYYY(parsedSsm));
                     } else {
                         $('#ssMextensionDate').datepicker('update', ssmExtRaw);
                     }
@@ -705,18 +739,18 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(formData),
-                    success: function (resp) {
-                        if (resp.success) {
-                            showAlert(resp.message, 'success');
+                    success: function (response) {
+                        if (response.success) {
+                            showAlert(response.message, 'success');
                             $('#taskModal').modal('hide');
                             table.ajax.reload(null, false);
                         } else {
-                            showAlert('Error: ' + resp.message, 'danger');
+                            showAlert('Error: ' + response.message, 'danger');
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error('Save error:', xhr.responseText);
-                        showAlert('Error: ' + (xhr.responseJSON?.message || error), 'danger');
+                        showAlert('Error saving record: ' + error, 'danger');
                     }
                 });
             });
@@ -769,6 +803,7 @@
             });
 
             $('#taskModal').on('show.bs.modal', function () {
+                initYearToDoDropdown();
                 if (!isEditMode) resetForm();
             });
             $('#taskModal').on('hidden.bs.modal', function () {
@@ -779,11 +814,12 @@
                 $(this).removeClass('is-invalid');
             });
 
+            initYearToDoDropdown();
             initializeDataTable();
             loadLlpCompanyOptions();
 
             $('#ssMextensionDate').datepicker({
-                format: 'dd/mm',
+                format: 'dd/mm/yyyy',
                 autoclose: true,
                 todayHighlight: true
             });

@@ -114,12 +114,11 @@
                             <div class="form-group">
                                 <label for="dbSource">Which Database</label>
                                 <select id="dbSource" name="dbSource" class="form-control">
-                                    <option value="">-- Select Database --</option>
-                                    <option value="sdnbhd">Sdn Bhd</option>
+                                    <option value="sdnbhd" selected>Sdn Bhd</option>
                                     <option value="llp">LLP</option>
                                 </select>
-                                <small class="text-muted">
-                                    Select a database to load company list.
+                                <small id="dbSourceHint" class="text-muted">
+                                    Loaded companies from Sdn Bhd database.
                                 </small>
                             </div>
                         </div>
@@ -284,19 +283,30 @@
 
         function loadCompanyOptions(dbType) {
             let url;
+            const dbName = dbType === 'llp' ? 'LLP' : 'Sdn Bhd';
             if (dbType === 'llp') {
                 url = "/api/get/llp-company-options";
             } else {
                 url = "/api/get/company-options";
             }
+
+            const $sel = $("#companyName");
+            $sel.prop('disabled', true).empty().append(`<option value="">Loading ${dbName} companies...</option>`);
+            $('#dbSourceHint').text(`Loading companies from ${dbName} database...`);
+
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (res) {
-                    const $sel = $("#companyName");
-                    $sel.empty().append('<option value="">-- Select company --</option>');
+                    $sel.prop('disabled', false).empty().append('<option value="">-- Select company --</option>');
 
-                    if (!(res && res.success && res.data)) return;
+                    if (!(res && res.success && Array.isArray(res.data))) {
+                        $('#dbSourceHint').text(`Failed to load companies from ${dbName}.`);
+                        return;
+                    }
+
+                    const count = res.data.length;
+                    $('#dbSourceHint').text(`Loaded ${count} companies from ${dbName} database.`);
 
                     res.data.forEach(function (o) {
                         const name = o.companyName || o.CompanyName || "-";
@@ -327,6 +337,10 @@
                             </option>
                         `);
                     });
+                },
+                error: function () {
+                    $sel.prop('disabled', false).empty().append('<option value="">-- Select company --</option>');
+                    $('#dbSourceHint').text(`Error loading companies from ${dbName}.`);
                 }
             });
         }
@@ -569,6 +583,7 @@
 
         function clearForm() {
             $('#taskForm')[0].reset();
+            $('#dbSource').val('sdnbhd');
             $('#editIndex').val('');
             $('#modalTitle').text('Add New Sdn Bhd Master Sec Record');
             hideModalAlert();
@@ -578,13 +593,37 @@
         $(document).ready(function () {
             initDefaultYearToDoDropdown();
 
+            // Load initial companies on page ready
+            loadCompanyOptions('sdnbhd');
+
+            $('#taskModal').on('show.bs.modal', function () {
+                if (!$('#editIndex').val()) {
+                    $('#dbSource').val('sdnbhd');
+                    loadCompanyOptions('sdnbhd');
+                }
+            });
+
             $('#dbSource').on('change', function () {
                 const dbType = $(this).val();
-                clearForm();
+                $('#companyName').empty().append('<option value="">-- Select company --</option>');
+                $('#grouping').val('');
+                $('#referral').val('');
+                $('#secFileNo').val('');
+                $('#creditRating').val('');
+                $('#coStatus').val('');
+                $('#activitySize').val('');
+                $('#companyNoHidden').val('');
+                $('#incorpDateHidden').val('');
+                $('#yearEnd').val('');
+                $('#yearToDo').val('');
+                $('#accMthToDo').val('');
+                $('#auditMthToDo').val('');
+                $('#firstYearDueDate').val('');
+                $('#circulationDueDate').val('');
+                $('#arDueDate').val('');
+
                 if (dbType) {
                     loadCompanyOptions(dbType);
-                } else {
-                    $('#companyName').empty().append('<option value="">-- Select company --</option>');
                 }
             });
 

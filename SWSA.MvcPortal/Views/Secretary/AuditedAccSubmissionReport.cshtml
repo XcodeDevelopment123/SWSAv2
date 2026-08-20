@@ -123,13 +123,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <select id="coStatus" name="coStatus" class="form-control">
-                                    <option value="">Select Status</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Dormant">Dormant</option>
-                                    <option value="Strike Off">Strike Off</option>
-                                    <option value="In Liquidation">In Liquidation</option>
-                                </select>
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -161,19 +155,11 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mbrsReceivedDate">MBRS received date</label>
-
-                                <select id="mbrsSourceSelect" class="form-control mb-2">
-                                    <option value="">-- Link from E5 Audit --</option>
-                                </select>
-                                <small class="text-muted">
-                                    Select a record from AT3.1 to auto-fill MBRS received date.
-                                </small>
-
                                 <input type="text"
                                        id="mbrsReceivedDate"
                                        name="mbrsReceivedDate"
-                                       class="form-control mt-2"
-                                       placeholder="Select date or choose from AT3.1" />
+                                       class="form-control"
+                                       placeholder="Auto fill from E5 Audit / Select date" />
                             </div>
                         </div>
 
@@ -409,6 +395,10 @@
                 $('#incorpDate').val(formattedIncorp);
                 $('#yearEnd').val(formattedYearEnd);
 
+                // 自动填入 Co Status
+                const coStatus = getVal(selectedClient, 'CompanyStatus') || '';
+                $('#coStatus').val(coStatus);
+
                 // 自动填入 Audit Exemption
                 const auditExemption = getVal(selectedClient, 'AuditExemption') || '';
                 $('#auditExemption').val(auditExemption);
@@ -416,18 +406,23 @@
                 // 更新 Datepicker UI 状态
                 $('#incorpDate').datepicker('update');
 
+                // 自动从 E5 Audit (AT3.1) 查询并带入 MBRS received date
+                const compName = getVal(selectedClient, 'CompanyName') || '';
+                if (compName && mbrsSourceOptions && mbrsSourceOptions.length > 0) {
+                    const match = mbrsSourceOptions.find(x => 
+                        (getVal(x, 'CompanyName') || '').trim().toLowerCase() === compName.trim().toLowerCase()
+                    );
+                    if (match && getVal(match, 'MbrsReceivedDate')) {
+                        $('#mbrsReceivedDate').datepicker('update', getVal(match, 'MbrsReceivedDate'));
+                    } else {
+                        $('#mbrsReceivedDate').val('');
+                    }
+                } else {
+                    $('#mbrsReceivedDate').val('');
+                }
+
                 // 🔥 重点：数据填完后，立即触发计算 🔥
                 calculateDueDates();
-            }
-        });
-
-        // 5. 监听 MBRS Source
-        $('#mbrsSourceSelect').on('change', function () {
-            const selectedId = $(this).val();
-            if (!selectedId) return;
-            const item = mbrsSourceOptions.find(x => String(getVal(x, 'SourceId')) === String(selectedId));
-            if (item) {
-                $('#mbrsReceivedDate').val(getVal(item, 'MbrsReceivedDate') || '');
             }
         });
 
@@ -491,7 +486,7 @@
                     mbrsSourceOptions = res.data || [];
                     const $sel = $('#mbrsSourceSelect');
                     $sel.empty();
-                    $sel.append('<option value="">-- Link from AT3.1 Audit Logbook --</option>');
+                    $sel.append('<option value="">-- Link from E5 Audit --</option>');
                     mbrsSourceOptions.forEach(function (x) {
                         const text = getVal(x, 'CompanyName') + (getVal(x, 'MbrsReceivedDate') ? ' (' + getVal(x, 'MbrsReceivedDate') + ')' : '');
                         $sel.append(`<option value="${getVal(x, 'SourceId')}">${text}</option>`);

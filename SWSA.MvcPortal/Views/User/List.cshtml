@@ -1,4 +1,4 @@
-﻿@using Newtonsoft.Json
+@using Newtonsoft.Json
 @using SWSA.MvcPortal.Commons.Constants
 @using SWSA.MvcPortal.Commons.Extensions
 @using SWSA.MvcPortal.Models.Users
@@ -19,6 +19,16 @@
 		<!-- /.card -->
 
 		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">
+					<i class="fas fa-users me-2"></i>
+				</h3>
+				<div class="card-tools">
+					<a href="/users/create" class="btn btn-primary btn-sm">
+						<i class="fas fa-plus me-2"></i>New User
+					</a>
+				</div>
+			</div>
 			<!-- /.card-header -->
 			<div class="card-body">
 				<table id="userDatatable" class="table table-bordered table-striped">

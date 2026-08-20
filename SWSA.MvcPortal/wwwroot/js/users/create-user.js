@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     initSelect2();
 
     const $userForm = $("#userForm");
@@ -71,10 +71,20 @@
         },
         highlight: function (element) {
             $(element).addClass('is-invalid');
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').find('.select2-selection').addClass('is-invalid border-danger');
+            }
         },
         unhighlight: function (element) {
             $(element).removeClass('is-invalid');
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').find('.select2-selection').removeClass('is-invalid border-danger');
+            }
         }
+    });
+
+    $('select.select2').on('change.select2', function () {
+        $(this).valid();
     });
 
     flatpickr("#joinDate", {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SWSA.MvcPortal.Commons.Attributes;
 using SWSA.MvcPortal.Commons.Constants;
 using SWSA.MvcPortal.Commons.Enums;
@@ -49,7 +49,7 @@ public class SelectHelper
     {
         return new List<SelectListItem>
         {
-            new SelectListItem { Text = "Please select", Value = "", Selected = true, Disabled=true },
+            new SelectListItem { Text = "Please select", Value = "", Selected = string.IsNullOrEmpty(type), Disabled = true },
             new SelectListItem { Text = DepartmentType.Account, Value = DepartmentType.Account, Selected = type == DepartmentType.Account },
             new SelectListItem { Text = DepartmentType.Audit, Value = DepartmentType.Audit, Selected = type == DepartmentType.Audit },
             new SelectListItem { Text = DepartmentType.Tax, Value = DepartmentType.Tax, Selected = type == DepartmentType.Tax },

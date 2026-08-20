@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -18,6 +18,10 @@ public partial class S14b
     public string? YearEnd { get; set; }
 
     public string? CompanyStatus { get; set; }
+
+    public string? ReportType { get; set; }
+
+    public string? AuditExemption { get; set; }
 
     public string? YrMthdueDate { get; set; }
 

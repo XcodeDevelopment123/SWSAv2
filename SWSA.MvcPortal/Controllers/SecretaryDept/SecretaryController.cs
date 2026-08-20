@@ -814,8 +814,6 @@ WHERE Id = @Id";
 
 		SELECT CAST(SCOPE_IDENTITY() AS int);";
 
-
-
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
                 return Json(new { success = true, id = id, data = model });
             }
@@ -850,8 +848,6 @@ WHERE Id = @Id";
  		[ReasonForLate] = @ReasonForLate,
  		[JobCompleted] = @JobCompleted
 		WHERE Id = @Id;";
-
-
 
                 var affectedRows = await connection.ExecuteAsync(sql, model);
                 if (affectedRows == 0)

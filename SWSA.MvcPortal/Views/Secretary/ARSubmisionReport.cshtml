@@ -20,44 +20,46 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">File No</th>
-                            <th rowspan="2">Company Name</th>
-                            <th rowspan="2">Company No.</th>
-                            <th rowspan="2">Incorp Date</th>
-                            <th rowspan="2">Co Status</th>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="taskDatatable" class="table table-bordered table-striped text-nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">File No</th>
+                                <th rowspan="2">Company Name</th>
+                                <th rowspan="2">Company No.</th>
+                                <th rowspan="2">Incorp Date</th>
+                                <th rowspan="2">Co Status</th>
 
-                            <th colspan="3">SSM AR Due Dates</th>
-                            <th colspan="2">Actual AR Submission Dates</th>
-                            <th colspan="2">Client's Sign & Return</th>
+                                <th colspan="3">SSM AR Due Dates</th>
+                                <th colspan="2">Actual AR Submission Dates</th>
+                                <th colspan="2">Client's Sign & Return</th>
 
-                            <th rowspan="2">Job Completed/Backlog</th>
-                            <th rowspan="2">Remarks</th>
-                            <th colspan="2">Actions</th>
-                        </tr>
+                                <th rowspan="2">Job Completed/Backlog</th>
+                                <th rowspan="2">Remarks</th>
+                                <th colspan="2">Actions</th>
+                            </tr>
 
-                        <tr>
-                            <th>Annivesary date (1st Yr Only)</th>
-                            <th>AR due date</th>
-                            <th>Reminder Date</th>
+                            <tr>
+                                <th>Annivesary date (1st Yr Only)</th>
+                                <th>AR due date</th>
+                                <th>Reminder Date</th>
 
-                            <th>Date of Annual Return</th>
-                            <th>AR Submitted Date</th>
+                                <th>Date of Annual Return</th>
+                                <th>AR Submitted Date</th>
 
-                            <th>Date send to Client</th>
-                            <th>Date Returned</th>
+                                <th>Date send to Client</th>
+                                <th>Date Returned</th>
 
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -168,7 +170,7 @@
                                 <label for="dateOfAnnualReturn">Date of Annual Return</label>
                                 <small class="text-muted">(auto = anniversary day of this/next year)</small>
                                 <input type="text" id="dateOfAnnualReturn" name="dateOfAnnualReturn"
-                                       class="form-control" placeholder="dd/MM" />
+                                       class="form-control" placeholder="dd/mm/yyyy" />
                             </div>
                         </div>
 
@@ -384,17 +386,15 @@
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
 
-        // 根据 Incorp Date 自动计算 Anniversary / DateOfAR
-        // AR due date 根据 Year End + 7 months 计算
+        // 根据 Incorp Date 自动计算 Anniversary / DateOfAR / AR due date
         function recalcFromIncorp() {
             const incorpStr = ($('#incorpDate').val() || '').trim();
             const incorp = parseDdMmYyyy(incorpStr);
-            const yearEndMonth = ($('#yearEndMonth').val() || '').trim();
 
             if (!incorp) {
                 $('#anniversaryDate').val('');
                 $('#dateOfAnnualReturn').datepicker('update', '');
-                if (!yearEndMonth) $('#arDueDate').val('');
+                $('#arDueDate').val('');
                 return;
             }
 
@@ -403,33 +403,23 @@
             const incorpDay = incorp.getDate();
             const monthName = MONTH_NAMES_SHORT[incorpMonthIndex];
 
-            // 1) Anniversary：只要月份
+            // 1) Anniversary：只要月份简称 (Jul)
             $('#anniversaryDate').val(monthName);
 
-            // 2) Date of Annual Return：dd/MM (anniversary day + month)
-            const arDate = new Date(today.getFullYear(), incorpMonthIndex, incorpDay);
-            let arYear = today.getFullYear();
-            if (today > arDate) arYear++;
-            const arDate2 = new Date(arYear, incorpMonthIndex, incorpDay);
-            const dd = ('0' + arDate2.getDate()).slice(-2);
-            const mm = ('0' + (arDate2.getMonth() + 1)).slice(-2);
-            $('#dateOfAnnualReturn').datepicker('update', dd + '/' + mm);
-
-            // 3) SSM AR due date：Year End + 7 months
-            if (yearEndMonth) {
-                const fullMonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-                const yeIdx = fullMonths.indexOf(yearEndMonth.toLowerCase());
-                if (yeIdx >= 0) {
-                    const dueIdx = (yeIdx + 7) % 12;
-                    const dueYearAdd = Math.floor((yeIdx + 7) / 12);
-                    let dueYear = today.getFullYear();
-                    const thisYearYe = new Date(dueYear, yeIdx, 1);
-                    if (today > thisYearYe) dueYear++;
-                    dueYear += dueYearAdd;
-                    const arDueText = MONTH_NAMES_SHORT[dueIdx] + '-' + dueYear;
-                    $('#arDueDate').val(arDueText);
-                }
+            // 2) 计算当年或明年的周年日 (Anniversary Date: day + month + this/next year)
+            const thisYearAnniv = new Date(today.getFullYear(), incorpMonthIndex, incorpDay);
+            let targetYear = today.getFullYear();
+            if (today > thisYearAnniv) {
+                targetYear++;
             }
+            const targetAnnivDate = new Date(targetYear, incorpMonthIndex, incorpDay);
+            const targetDdMmYyyy = formatDdMmYyyy(targetAnnivDate);
+
+            // Date of Annual Return：dd/mm/yyyy
+            $('#dateOfAnnualReturn').datepicker('update', targetDdMmYyyy);
+
+            // 3) AR due date：自动计算 (可显示如 01/07/2027 或 dd/mm/yyyy)
+            $('#arDueDate').val(targetDdMmYyyy);
         }
 
         function formatDateForDisplay(s) {
@@ -545,7 +535,7 @@
                 });
 
             $('#dateOfAnnualReturn').datepicker({
-                format: 'dd/mm',
+                format: 'dd/mm/yyyy',
                 autoclose: true,
                 todayHighlight: true
             });
@@ -553,7 +543,7 @@
 
             // DataTable：对应 S14A 所有列
             dataTable = $('#taskDatatable').DataTable({
-                responsive: true,
+                responsive: false,
                 ordering: true,
                 autoWidth: false,
                 pageLength: 10,
@@ -760,7 +750,12 @@
                         $('#editIndex').val(getVal(d, 'Id'));
 
                         $('#fileNo').val(getVal(d, 'FileNo'));
-                        $('#companyName').val(getVal(d, 'CompanyName'));
+                        const compName = getVal(d, 'CompanyName') || '';
+                        if ($('#companyName option[value="' + compName + '"]').length > 0) {
+                            $('#companyName').val(compName);
+                        } else {
+                            $('#companyName').empty().append('<option value="' + compName + '" selected>' + compName + '</option>');
+                        }
                         $('#companyNo').val(getVal(d, 'CompanyNo'));
                         $('#incorpDate').val(formatDateForDisplay(getVal(d, 'IncorpDate')));
                         $('#coStatus').val(getVal(d, 'CompanyStatus'));

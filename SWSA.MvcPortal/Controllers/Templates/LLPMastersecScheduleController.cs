@@ -232,6 +232,26 @@ namespace SWSA.MvcPortal.Controllers.Templates
             }
         }
 
+        [HttpGet("api/llp-master/get-bp22-extension")]
+        public async Task<IActionResult> GetBp22ExtensionDate([FromQuery] string companyName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(companyName))
+                    return Json(new { success = true, extensionDate = "" });
+
+                using var connection = new SqlConnection(_connectionString);
+                var sql = "SELECT TOP 1 ExtensionDate FROM [Quartz2].[dbo].[BP22] WHERE CompanyName = @CompanyName ORDER BY Id DESC";
+                var extDate = await connection.QueryFirstOrDefaultAsync<string>(sql, new { CompanyName = companyName.Trim() });
+
+                return Json(new { success = true, extensionDate = extDate ?? "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpGet("api/get/llp-company-options")]
         public async Task<IActionResult> GetLlpCompanyOptions()
         {
