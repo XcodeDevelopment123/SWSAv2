@@ -135,7 +135,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="Auto Fill" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2026; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>

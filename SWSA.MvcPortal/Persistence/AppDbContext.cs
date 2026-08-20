@@ -142,6 +142,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public virtual DbSet<Tx4> TX4 { get; set; }
 
+    public virtual DbSet<Tx5> TX5 { get; set; }
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

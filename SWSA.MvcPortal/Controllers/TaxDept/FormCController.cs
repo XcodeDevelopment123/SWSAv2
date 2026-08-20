@@ -98,17 +98,17 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"INSERT INTO [Quartz2].[dbo].[FormC] 
-                            ([YearEnd], [YearToDo], [TaxDueDate], [EstQuarterTodo], [DateMgmtAccAvailable], [StartDate], 
-                             [EndDate], [NoOfDays], [PnLAnalysis], [CAnTaxCompu], [DraftFormC], 
-                             [TaxPayableRM], [PenaltiesRM], [TaxCompCA], [FormC], [Sent], [Received], 
+                            ([TaxDueDate], [EstQuarterTodo], [DateMgmtAccAvailable], [StartDate], 
+                             [EndDate], [NoOfDays], [PnLanalysis], [CanTaxCompu], [DraftFormC], 
+                             [TaxPayableRm], [TaxCompCa], [FormC1], [Sent], [Received], 
                              [TaxPaymentDate], [FormCsubmitedDate], [InvDate], [Fees], 
-                             [MITSubmitted], [TRSSubmitted], [JobCompleted])
+                             [JobCompleted])
                             VALUES 
-                            (@YearEnd, @YearToDo, @TaxDueDate, @EstQuarterTodo, @DateMgmtAccAvailable, @StartDate, 
+                            (@TaxDueDate, @EstQuarterTodo, @DateMgmtAccAvailable, @StartDate, 
                              @EndDate, @NoOfDays, @PnLAnalysis, @CAnTaxCompu, @DraftFormC, 
-                             @TaxPayableRM, @PenaltiesRM, @TaxCompCA, @FormC, @Sent, @Received, 
+                             @TaxPayableRM, @TaxCompCA, @FormC, @Sent, @Received, 
                              @TaxPaymentDate, @FormCsubmitedDate, @InvDate, @Fees, 
-                             @MITSubmitted, @TRSSubmitted, @JobCompleted);
+                             @JobCompleted);
                             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var id = await connection.ExecuteScalarAsync<int>(sql, model);
@@ -130,17 +130,15 @@ namespace SWSA.MvcPortal.Controllers.TaxDept
 
                 using var connection = new SqlConnection(_connectionString);
                 var sql = @"UPDATE [Quartz2].[dbo].[FormC] SET 
-                            [YearEnd] = @YearEnd, [YearToDo] = @YearToDo,
                             [TaxDueDate] = @TaxDueDate, [EstQuarterTodo] = @EstQuarterTodo, 
                             [DateMgmtAccAvailable] = @DateMgmtAccAvailable, [StartDate] = @StartDate, 
-                            [EndDate] = @EndDate, [NoOfDays] = @NoOfDays, [PnLAnalysis] = @PnLAnalysis, 
-                            [CAnTaxCompu] = @CAnTaxCompu, [DraftFormC] = @DraftFormC, 
-                            [TaxPayableRM] = @TaxPayableRM, [PenaltiesRM] = @PenaltiesRM,
-                            [TaxCompCA] = @TaxCompCA, 
-                            [FormC] = @FormC, [Sent] = @Sent, [Received] = @Received, 
+                            [EndDate] = @EndDate, [NoOfDays] = @NoOfDays, [PnLanalysis] = @PnLAnalysis, 
+                            [CanTaxCompu] = @CAnTaxCompu, [DraftFormC] = @DraftFormC, 
+                            [TaxPayableRm] = @TaxPayableRM, 
+                            [TaxCompCa] = @TaxCompCA, 
+                            [FormC1] = @FormC, [Sent] = @Sent, [Received] = @Received, 
                             [TaxPaymentDate] = @TaxPaymentDate, [FormCsubmitedDate] = @FormCsubmitedDate, 
-                            [InvDate] = @InvDate, [Fees] = @Fees, [MITSubmitted] = @MITSubmitted, 
-                            [TRSSubmitted] = @TRSSubmitted,
+                            [InvDate] = @InvDate, [Fees] = @Fees, 
                             [JobCompleted] = @JobCompleted
                             WHERE Id = @Id";
 

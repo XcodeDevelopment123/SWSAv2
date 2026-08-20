@@ -23,16 +23,17 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body" style="overflow:auto">
-                <table id="taskDatatable" class="table table-bordered table-striped table-responsive">
+                <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <!-- Row 1: Main headers -->
                         <tr>
-                            <th colspan="5">TX Tax Scheduling</th>
+                            <th colspan="2">Year Info</th>
+                            <th colspan="3">TX Tax Scheduling</th>
                             <th colspan="2">Tax WIP</th>
                             <th colspan="2">Metrics</th>
                             <th colspan="3">Tax work process(Date Done)</th>
                             <th rowspan="2">Tax payable</th>
-                            <th rowspan="2">Penalties MITRS Submitted</th>
+                            <th rowspan="2">Penalties RM</th>
                             <th colspan="2">Form C</th>
                             <th colspan="2">Date to Client</th>
                             <th rowspan="2">Tax payment date</th>
@@ -45,10 +46,10 @@
 
                         <!-- Row 2: Sub-headers -->
                         <tr>
-                            <th>Tax Due Date</th>
-                            <th>Qtr to do</th>
                             <th>Year End</th>
                             <th>Year to do</th>
+                            <th>Tax Due Date</th>
+                            <th>Qtr to do</th>
                             <th>Date mgmtAC</th>
                             <th>a. Start Date</th>
                             <th>b. End Date</th>
@@ -103,7 +104,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="yearToDo">Year to do</label>
-                                <input type="text" id="yearToDo" name="yearToDo" class="form-control" placeholder="e.g. 2024" />
+                                <select id="yearToDo" name="yearToDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    @for (int year = 2026; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
