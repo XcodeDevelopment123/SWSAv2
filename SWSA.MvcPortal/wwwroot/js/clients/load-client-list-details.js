@@ -522,7 +522,11 @@ $(function () {
             companyStatusReason: $('#detailCompanyStatusReason').val() || '',
             creditRating: $('#detailCreditRating').val() || null,
             businessNature: $('#detailBusinessNature').val() || '',
-            serviceSelected: ($('#detailServiceSelected').val() || []).join(', '),
+            serviceSelected: (serviceSelectedValues && serviceSelectedValues.length > 0)
+                ? serviceSelectedValues.join(', ')
+                : (Array.isArray($('#detailServiceSelected').val())
+                    ? ($('#detailServiceSelected').val() || []).join(', ')
+                    : ($('#detailServiceSelected').val() || '')),
             principalActivity: $('#detailPrincipalActivity').val() || '',
             foreignOwned: $('#detailForeignOwned').val() === 'true' ? true : ($('#detailForeignOwned').val() === 'false' ? false : null),
             appointmentEngagementData: JSON.stringify(apptEngData),
