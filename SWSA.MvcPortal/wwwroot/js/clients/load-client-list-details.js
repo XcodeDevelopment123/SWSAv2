@@ -268,6 +268,25 @@ $(function () {
             $("#individualName").val(data.name);
             $("#icOrPassport").val(data.icOrPassportNumber);
             $("#profession").val(data.profession);
+
+            if (data.yearEndMonth) {
+                const monthNum = getMonthNumber(data.yearEndMonth);
+                if (monthNum) {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const lastDay = new Date(year, monthNum, 0);
+                    const fp = document.getElementById("yearEnd")?._flatpickr;
+                    if (fp) {
+                        fp.setDate(lastDay, true);
+                    } else {
+                        $('#yearEnd').val(monthNum);
+                    }
+                }
+            } else {
+                const fp = document.getElementById("yearEnd")?._flatpickr;
+                if (fp) fp.clear();
+                else $('#yearEnd').val('');
+            }
         }
 
         $("#detailGroup").val(data.group).trigger('change');
@@ -492,6 +511,57 @@ $(function () {
             return;
         }
 
+        const isIndividual = clientType === "Individual";
+
+        $('#btnSaveDetails').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i>Saving...');
+
+        if (isIndividual) {
+            var indYearEndMonth = null;
+            const indYearEndVal = $('#yearEnd').val();
+            if (indYearEndVal) {
+                const parsedNum = parseInt(indYearEndVal);
+                if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= 12 && !indYearEndVal.includes("-")) {
+                    indYearEndMonth = parsedNum;
+                } else {
+                    const d = new Date(indYearEndVal);
+                    if (!isNaN(d)) {
+                        indYearEndMonth = d.getMonth() + 1;
+                    }
+                }
+            }
+
+            const data = {
+                clientId: parseInt(id),
+                individualName: $('#individualName').val() || '',
+                icOrPassportNumber: $('#icOrPassport').val() || '',
+                professions: $('#profession').val() || '',
+                yearEndMonth: indYearEndMonth,
+                taxIdentificationNumber: $('#tinNumber').val() || '',
+                clientType: "Individual",
+                categoryInfo: {
+                    group: $('#detailGroup').val() || '',
+                    referral: $('#detailReferral').val() || ''
+                }
+            };
+
+            $.ajax({
+                url: `${urls.edit_client}/individual`,
+                method: "POST",
+                data: { req: data },
+                success: function (res) {
+                    $('#btnSaveDetails').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Save Changes');
+                    if (res) {
+                        Toast_Fire(ICON_SUCCESS, "Saved", "Individual details updated successfully.");
+                    }
+                },
+                error: function () {
+                    $('#btnSaveDetails').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Save Changes');
+                    Toast_Fire(ICON_ERROR, "Error", "Failed to save changes.");
+                }
+            });
+            return;
+        }
+
         var yearEndMonth = null;
         const yearEndVal = $('#detailYearEnd').val();
         if (yearEndVal) {
@@ -537,8 +607,6 @@ $(function () {
             }
         };
 
-        $('#btnSaveDetails').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i>Saving...');
-
         $.ajax({
             url: `${urls.edit_client}/company`,
             method: "POST",
@@ -557,12 +625,12 @@ $(function () {
     });
 
     // Flatpickr for Year End and Incorporation Date
-    flatpickr("#detailYearEnd", {
+    flatpickr("#detailYearEnd, #yearEnd", {
         plugins: [
             new monthSelectPlugin({
                 shorthand: false,
-                dateFormat: "Y-m",
-                altFormat: "F Y"
+                dateFormat: "m",
+                altFormat: "F",
             })
         ],
         altInput: true,

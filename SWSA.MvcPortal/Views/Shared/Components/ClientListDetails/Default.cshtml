@@ -114,13 +114,26 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="yearEnd">Year End</label>
-                            <input type="text" class="form-control" id="yearEnd">
+                            <div class="input-group">
+                                <input type="text" id="yearEnd" class="form-control" placeholder="Select month" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="tinNumber">TIN Number</label>
                             <input type="text" class="form-control" id="tinNumber">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="btnSaveDetails">
+                                <i class="fas fa-save mr-1"></i> Save Changes
+                            </button>
                         </div>
                     </div>
                 }
