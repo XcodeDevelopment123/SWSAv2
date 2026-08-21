@@ -27,13 +27,13 @@
                 <table id="taskDatatable" class="table table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th colspan="15"></th>
-                            <th colspan="4"> Audit WIP (days)</th>
-                            <th colspan="4"> Review</th>
-                            <th colspan="2"> AT3.3 Audit Reports from KK</th>
-                            <th colspan="4"> AT3.4 Directors' Signing pages</th>
-                            <th colspan="6"> 6. Tax/Sec Dept</th>
-                            <th colspan="2"> 7. Post Audit Work</th>
+                            <th colspan="12">1. Basic Information</th>
+                            <th colspan="4">2. Financial Information</th>
+                            <th colspan="4">3. Audit WIP (days)</th>
+                            <th colspan="3">4. Review - Kuching 1st Review</th>
+                            <th colspan="6">5. DIRECTORS'REPORT</th>
+                            <th colspan="5">6. Tax/Sec Dept</th>
+                            <th colspan="2">7. Post Audit Work</th>
                             <th rowspan="3">Action</th>
                         </tr>
                         <tr>
@@ -41,8 +41,8 @@
                             <th rowspan="2">Company Name</th>
                             <th rowspan="2">Activity</th>
                             <th rowspan="2">Which database?</th>
-                            <th rowspan="2">Year End</th>
                             <th rowspan="2">YE to do</th>
+                            <th rowspan="2">Year End</th>
                             <th rowspan="2">Quarter to do</th>
                             <th rowspan="2">PIC</th>
                             <th rowspan="2">Status</th>
@@ -53,41 +53,39 @@
                             <th colspan="2">Est current yr result '000'</th>
                             <th colspan="2">Billing</th>
 
-                            <th rowspan="2">a.Start date</th>
-                            <th rowspan="2">b.As at</th>
-                            <th rowspan="2">c.No of days</th>
-                            <th rowspan="2">Total field work days</th>
+                            <th rowspan="2">a. Start Date</th>
+                            <th rowspan="2">b. As at</th>
+                            <th rowspan="2">c. No of Days</th>
+                            <th rowspan="2">d. Total Field Work Days (c + Rc)</th>
 
                             <th colspan="3">Kuching 1st Review</th>
-                            <th rowspan="2">2.Total Review days</th>
 
                             <th rowspan="2">Date of Report</th>
-                            <th rowspan="2">Date of directors rept</th>
+                            <th rowspan="2">Date of Directors Report</th>
 
-                            <th rowspan="2">Date sent</th>
-                            <th rowspan="2">Follow up dates</th>
-                            <th rowspan="2">Date received</th>
-                            <th rowspan="2">Comm of Oaths date</th>
+                            <th rowspan="2">Date Sent Signing</th>
+                            <th rowspan="2">Follow up Date</th>
+                            <th rowspan="2">Date Received Signing</th>
+                            <th rowspan="2">Comm of Oaths Date</th>
 
-                            <th rowspan="2">Tax due date</th>
-                            <th rowspan="2">SSM Due date</th>
-                            <th rowspan="2">Date pass to sec dept (MBRS)</th>
-                            <th rowspan="2">6a. Target Tax Work Date</th>
+                            <th rowspan="2">SSM Due Date (Auto YE+7m)</th>
+                            <th rowspan="2">Date Pass to Sec Dept</th>
+                            <th rowspan="2">6a. Target Tax Work Date (Auto YE+7m)</th>
                             <th rowspan="2">6b. Date pass to tax dept</th>
                             <th rowspan="2">6c. Metric (# of days)</th>
 
                             <th rowspan="2">Binded?</th>
-                            <th rowspan="2">Date binded</th>
+                            <th rowspan="2">Date Binded</th>
                         </tr>
                         <tr>
-                            <th>Revenue</th>
-                            <th>Profit/Loss</th>
+                            <th>Revenue ('000)</th>
+                            <th>Profit/(Loss) ('000)</th>
                             <th>Audit Fee</th>
-                            <th>Date billed</th>
+                            <th>Date Billed</th>
 
-                            <th>a.Date sent</th>
-                            <th>b.End date</th>
-                            <th>c.Review days</th>
+                            <th>Ra. Date Sent</th>
+                            <th>Rb. End Date</th>
+                            <th>Rc. Kuching Review Days</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,14 +146,20 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="yEnd">Year End</label>
-                                <input type="text" id="yEnd" name="yEnd" class="form-control" placeholder="Auto fill" readonly />
+                                <label for="yEtodo">YE to do</label>
+                                <select id="yEtodo" name="yEtodo" class="form-control select2" style="width:100%">
+                                    <option value="">-- Select Year --</option>
+                                    @for (int year = 2026; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="yEtodo">YE to do</label>
-                                <input type="date" id="yEtodo" name="yEtodo" class="form-control" />
+                                <label for="yEnd">Year End</label>
+                                <input type="text" id="yEnd" name="yEnd" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -277,7 +281,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="totalFieldWkDays">Total Field Work Days (c + Rc)</label>
+                                <label for="totalFieldWkDays">d.Total Field Work Days (c + Rc)</label>
                                 <input type="number" id="totalFieldWkDays" name="totalFieldWkDays" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
@@ -285,7 +289,7 @@
 
                     <!-- Review - Kuching 1st Review -->
                     <div class="form-info-label col-12">
-                        <label>Review - Kuching 1st Review</label>
+                        <label>4.Review - Kuching 1st Review</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -308,9 +312,9 @@
                         </div>
                     </div>
 
-                    <!-- AT3.3 Audit Reports from KK -->
+                    <!-- 5. DIRECTORS'REPORT -->
                     <div class="form-info-label col-12">
-                        <label>AT3.3 Audit Reports from KK</label>
+                        <label>5. DIRECTORS'REPORT</label>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -321,38 +325,35 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="dateOfDirectorRept">Date of Directors Rept</label>
+                                <label for="dateOfDirectorRept">Date of Directors Report</label>
                                 <input type="date" id="dateOfDirectorRept" name="dateOfDirectorRept" class="form-control" />
                             </div>
                         </div>
                     </div>
-
-                    <!-- AT3.4 Directors' signing pages -->
-                    <div class="form-info-label col-12">
-                        <label>AT3.4 Directors' signing pages</label>
-                    </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="dateSentSigning">Date Sent</label>
+                                <label for="dateSentSigning">Date Sent Signing</label>
                                 <input type="date" id="dateSentSigning" name="dateSentSigning" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="flwUpDate">Follow up dates</label>
+                                <label for="flwUpDate">Follow up Date</label>
                                 <input type="date" id="flwUpDate" name="flwUpDate" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="dateReceived">Date received</label>
+                                <label for="dateReceived">Date Received Signing</label>
                                 <input type="date" id="dateReceived" name="dateReceived" class="form-control" />
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="commOfOathsDate">Comm of Oaths date</label>
+                                <label for="commOfOathsDate">Comm of Oaths Date</label>
                                 <input type="date" id="commOfOathsDate" name="commOfOathsDate" class="form-control" />
                             </div>
                         </div>
@@ -517,9 +518,63 @@
         }
 
         function handleYearEndChange() {
-            const yeStr = $('#yEtodo').val();
-            if (yeStr) {
-                const autoDate = addMonths(yeStr, 7);
+            const yEtodoVal = ($('#yEtodo').val() || '').trim();
+            const yEndVal = ($('#yEnd').val() || '').trim();
+            const val = yEtodoVal || yEndVal;
+            if (!val) return;
+
+            let yearEndObj = null;
+            if (val.includes('/')) {
+                const parts = val.split('/');
+                if (parts.length === 3) {
+                    yearEndObj = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                } else if (parts.length === 2) {
+                    const currentYear = new Date().getFullYear();
+                    yearEndObj = new Date(currentYear, parseInt(parts[0]) - 1, 1);
+                    yearEndObj = new Date(yearEndObj.getFullYear(), yearEndObj.getMonth() + 1, 0);
+                }
+            } else if (val.includes('-')) {
+                const parts = val.split('-');
+                if (parts.length === 3) {
+                    yearEndObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                }
+            }
+
+            if (!yearEndObj || isNaN(yearEndObj.getTime())) {
+                const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+                const shortMonths = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+                
+                const lowerVal = val.toLowerCase();
+                let foundMonth = -1;
+                months.forEach((m, idx) => {
+                    if (lowerVal.includes(m)) foundMonth = idx;
+                });
+                if (foundMonth === -1) {
+                    shortMonths.forEach((m, idx) => {
+                        if (lowerVal.includes(m)) foundMonth = idx;
+                    });
+                }
+
+                if (foundMonth !== -1) {
+                    const yearMatch = val.match(/\d{4}/) || (yEtodoVal ? [yEtodoVal] : null);
+                    const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+                    yearEndObj = new Date(year, foundMonth + 1, 0);
+                } else if (/^\d{4}$/.test(val)) {
+                    yearEndObj = new Date(parseInt(val), 12, 0);
+                }
+            }
+
+            if (yearEndObj && !isNaN(yearEndObj.getTime())) {
+                const targetMonth = yearEndObj.getMonth() + 7;
+                const targetYear = yearEndObj.getFullYear() + Math.floor(targetMonth / 12);
+                const monthInYear = targetMonth % 12;
+
+                const resultDate = new Date(targetYear, monthInYear + 1, 0);
+                const yyyy = resultDate.getFullYear();
+                const mm = String(resultDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(resultDate.getDate()).padStart(2, '0');
+                const autoDate = `${yyyy}-${mm}-${dd}`;
+
                 $('#ssmDueDate').val(autoDate);
                 $('#targetTaxWorkDate').val(autoDate);
                 calculateMetric();
@@ -537,6 +592,13 @@
             $('#pic').select2({
                 theme: 'bootstrap4',
                 placeholder: '-- Select PIC --',
+                allowClear: true,
+                dropdownParent: $('#taskModal')
+            });
+
+            $('#yEtodo').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Select Year --',
                 allowClear: true,
                 dropdownParent: $('#taskModal')
             });
@@ -592,11 +654,26 @@
                                 let displayText = type ? `${name} (${type})` : name;
                                 $select.append(`<option value="${name}">${displayText}</option>`);
 
+                                let auditExemptVal = '';
+                                if (client.AuditExemption !== undefined && client.AuditExemption !== null && client.AuditExemption !== '') {
+                                    auditExemptVal = (client.AuditExemption === true || client.AuditExemption === 'Yes' || client.AuditExemption === 'true') ? 'Yes' : ((client.AuditExemption === false || client.AuditExemption === 'No' || client.AuditExemption === 'false') ? 'No' : client.AuditExemption);
+                                } else if (client.AppointmentEngagementData || client.appointmentEngagementData) {
+                                    try {
+                                        const rawAppt = client.AppointmentEngagementData || client.appointmentEngagementData;
+                                        const apptData = typeof rawAppt === 'string' ? JSON.parse(rawAppt) : rawAppt;
+                                        if (apptData && apptData.linkE1 && apptData.linkE1.auditExemption !== undefined && apptData.linkE1.auditExemption !== null) {
+                                            auditExemptVal = apptData.linkE1.auditExemption === true ? 'Yes' : (apptData.linkE1.auditExemption === false ? 'No' : '');
+                                        }
+                                    } catch (e) {
+                                        console.error('Error parsing AppointmentEngagementData for AuditExemption', e);
+                                    }
+                                }
+
                                 clientDataMap[name] = {
                                     activity: client.ActivitySize || client.activitySize || '',
                                     yearEnd: client.YearEndMonth || client.yearEndMonth || '',
-                                    status: 'Pending',
-                                    auditExemption: client.AuditExemption !== undefined && client.AuditExemption !== null ? (client.AuditExemption ? 'Yes' : 'No') : '',
+                                    status: client.CompanyStatus || client.companyStatus || 'Active',
+                                    auditExemption: auditExemptVal,
                                     reportType: (type === 'SdnBhd' || type === 'Sdn Bhd') ? 'AFS' : (client.ReportType || client.reportType || '')
                                 };
                             }
@@ -624,8 +701,8 @@
                     const data = clientDataMap[selectedName];
                     if (data.activity) $('#activity').val(data.activity);
                     if (data.yearEnd) $('#yEnd').val(data.yearEnd);
-                    $('#status').val('Pending');
-                    if (data.auditExemption) $('#auditExrmption').val(data.auditExemption);
+                    if (data.status) $('#status').val(data.status);
+                    $('#auditExrmption').val(data.auditExemption || '');
                     if (data.reportType) $('#reportType').val(data.reportType);
                 } else if (!selectedName) {
                     $('#activity').val('');
@@ -670,8 +747,8 @@
                     { data: null, render: function(d,t,r) { return r.companyName || r.CompanyName || ''; } },
                     { data: null, render: function(d,t,r) { return r.activity || r.Activity || ''; } },
                     { data: null, render: function(d,t,r) { return r.whichDB || r.WhichDB || ''; } },
-                    { data: null, render: function(d,t,r) { return r.yEnd || r.YEnd || ''; } },
                     { data: null, render: function(d,t,r) { return r.yEtodo || r.YEtodo || ''; } },
+                    { data: null, render: function(d,t,r) { return r.yEnd || r.YEnd || ''; } },
                     { data: null, render: function(d,t,r) { return r.quarterTodo || r.QuarterTodo || ''; } },
                     { data: null, render: function(d,t,r) { return r.pic || r.PIC || ''; } },
                     { data: null, render: function(d,t,r) { return r.status || r.Status || ''; } },
@@ -689,27 +766,12 @@
                     { data: null, render: function(d,t,r) { return r.dateSentKuching || r.DateSentKuching || ''; } },
                     { data: null, render: function(d,t,r) { return r.endDateKuching || r.EndDateKuching || ''; } },
                     { data: null, render: function(d,t,r) { return r.kuchingReviewDays || r.KuchingReviewDays || r.resultOverUnderKuching || r.ResultOverUnderKuching || ''; } },
-                    {
-                        data: null,
-                        render: function(data, type, row) {
-                            const sendStr = row.dateSentKuching || row.DateSentKuching;
-                            const endStr = row.endDateKuching || row.EndDateKuching;
-                            const sendDate = sendStr ? new Date(sendStr) : null;
-                            const endDate = endStr ? new Date(endStr) : null;
-                            if (sendDate && endDate && !isNaN(sendDate) && !isNaN(endDate)) {
-                                const diff = Math.ceil((endDate - sendDate) / (1000 * 60 * 60 * 24));
-                                return diff >= 0 ? diff : 0;
-                            }
-                            return 0;
-                        }
-                    },
                     { data: null, render: function(d,t,r) { return r.dateReport || r.DateReport || ''; } },
                     { data: null, render: function(d,t,r) { return r.dateOfDirectorRept || r.DateOfDirectorRept || ''; } },
                     { data: null, render: function(d,t,r) { return r.dateSentSigning || r.DateSentSigning || ''; } },
                     { data: null, render: function(d,t,r) { return r.flwUpDate || r.FlwUpDate || ''; } },
                     { data: null, render: function(d,t,r) { return r.dateReceived || r.DateReceived || ''; } },
                     { data: null, render: function(d,t,r) { return r.commOfOathsDate || r.CommOfOathsDate || ''; } },
-                    { data: null, render: function(d,t,r) { return r.taxDueDate || r.TaxDueDate || ''; } },
                     { data: null, render: function(d,t,r) { return r.ssmDueDate || r.SSMDueDate || ''; } },
                     { data: null, render: function(d,t,r) { return r.datePassToSecDept || r.DatePassToSecDept || ''; } },
                     { data: null, render: function(d,t,r) { return r.targetTaxWorkDate || r.TargetTaxWorkDate || ''; } },
@@ -760,6 +822,7 @@
             $('#modalTitle').text('Add New Audit AEX Template Record');
             $('#companyName').val('').trigger('change');
             $('#pic').val('').trigger('change');
+            $('#yEtodo').val('').trigger('change');
             $('#noOfDays, #kuchingReviewDays, #totalFieldWkDays, #timelinessMetric').val('');
         }
 
@@ -785,7 +848,7 @@
                         $('#activity').val(record.activity || record.Activity || '');
                         $('#whichDB').val(record.whichDB || record.WhichDB || '');
                         $('#yEnd').val(record.yEnd || record.YEnd || '');
-                        $('#yEtodo').val(record.yEtodo || record.YEtodo || '');
+                        $('#yEtodo').val(record.yEtodo || record.YEtodo || '').trigger('change');
                         handleYearEndChange();
                         $('#quarterTodo').val(record.quarterTodo || record.QuarterTodo || '');
                         

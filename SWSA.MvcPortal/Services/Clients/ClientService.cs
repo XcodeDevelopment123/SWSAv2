@@ -623,7 +623,8 @@ public class ClientService(
             AuditExemption = "",
             ActivitySize = (c as BaseCompany) != null
                 ? (c as BaseCompany).ActivitySize.ToString()
-                : ""
+                : "",
+            AppointmentEngagementData = (c as BaseCompany).AppointmentEngagementData
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();

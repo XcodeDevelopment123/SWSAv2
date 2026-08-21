@@ -174,7 +174,13 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="yEtodo">Year to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter year end" />
+                                <select id="yEtodo" name="yEtodo" class="form-control select2" style="width:100%">
+                                    <option value="">-- Select Year --</option>
+                                    @for (int year = 2026; year <= 2050; year++)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -217,12 +223,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="auditExrmption">Audit Exrmption</label>
-                                <select id="auditExrmption" class="form-control">
-                                    <option value="">Select Y/N</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                                <label for="auditExrmption">Audit Exemption</label>
+                                <input type="text" id="auditExrmption" name="auditExrmption" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -236,11 +238,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="signingFirm">Signing Firm</label>
-                                <select id="signingFirm" class="form-control">
+                                <select id="signingFirm" name="signingFirm" class="form-control">
                                     <option value="">Select Signing Firm</option>
                                     <option value="BTM">BTM</option>
-                                    <option value="KT">KT</option>
-                                    <option value="NG">NG</option>
+                                    <option value="KT NG">KT NG</option>
                                     <option value="RAKC">RAKC</option>
                                 </select>
                             </div>
@@ -307,7 +308,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="totalFieldWkDays">Total Field Work Days</label>
+                                <label for="totalFieldWkDays">d. Total Field Work Days</label>
                                 <input type="number" id="totalFieldWkDays" name="totalFieldWkDays" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
@@ -368,7 +369,7 @@
                     </div>
 
                     <div class="form-info-label col-12">
-                        <label>Review</label>
+                        <label>3.Review</label>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -589,6 +590,13 @@
                 dropdownParent: $('#taskModal')
             });
 
+            $('#yEtodo').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Select Year --',
+                allowClear: true,
+                dropdownParent: $('#taskModal')
+            });
+
             // ✅ 每次打开下拉时，设置搜索框 placeholder
             $('#companyName').on('select2:open', function () {
                 setTimeout(function () {
@@ -614,10 +622,26 @@
                                 let displayText = type ? `${name} (${type})` : name;
                                 $select.append(`<option value="${name}">${displayText}</option>`);
 
+                                let auditExemptVal = '';
+                                if (client.AuditExemption !== undefined && client.AuditExemption !== null && client.AuditExemption !== '') {
+                                    auditExemptVal = (client.AuditExemption === true || client.AuditExemption === 'Yes' || client.AuditExemption === 'true') ? 'Yes' : ((client.AuditExemption === false || client.AuditExemption === 'No' || client.AuditExemption === 'false') ? 'No' : client.AuditExemption);
+                                } else if (client.AppointmentEngagementData || client.appointmentEngagementData) {
+                                    try {
+                                        const rawAppt = client.AppointmentEngagementData || client.appointmentEngagementData;
+                                        const apptData = typeof rawAppt === 'string' ? JSON.parse(rawAppt) : rawAppt;
+                                        if (apptData && apptData.linkE1 && apptData.linkE1.auditExemption !== undefined && apptData.linkE1.auditExemption !== null) {
+                                            auditExemptVal = apptData.linkE1.auditExemption === true ? 'Yes' : (apptData.linkE1.auditExemption === false ? 'No' : '');
+                                        }
+                                    } catch (e) {
+                                        console.error('Error parsing AppointmentEngagementData for AuditExemption', e);
+                                    }
+                                }
+
                                 clientDataMap[name] = {
                                     activity: client.ActivitySize || client.activitySize || '',
                                     yearEnd: client.YearEndMonth || client.yearEndMonth || '',
                                     status: client.CompanyStatus || client.companyStatus || '',
+                                    auditExemption: auditExemptVal,
                                     reportType: (type === 'SdnBhd' || type === 'Sdn Bhd') ? 'AFS' : (client.ReportType || client.reportType || '')
                                 };
                             }
@@ -727,6 +751,9 @@
             // ✅ Select2 reset
             $('#companyName').val('').trigger('change');
             $('#pic').val('').trigger('change');
+            $('#yEtodo').val('').trigger('change');
+            $('#auditExrmption').val('');
+            $('#signingFirm').val('');
             hideModalAlert();
             clearFieldErrors();
             resetSubmitState();
@@ -760,7 +787,7 @@
             loadPicOptions();
             initSelect2();
 
-            // ✅ 选择 Company 时自动填充 Activity, Year End, Status, Report Type
+            // ✅ 选择 Company 时自动填充 Activity, Year End, Status, Audit Exemption, Report Type
             $(document).on('change', '#companyName', function () {
                 const selectedName = $(this).val();
                 if (selectedName && clientDataMap[selectedName]) {
@@ -768,8 +795,15 @@
                     if (data.activity) $('#activity').val(data.activity);
                     if (data.yearEnd) $('#yEnd').val(data.yearEnd);
                     if (data.status) $('#status').val(data.status);
+                    $('#auditExrmption').val(data.auditExemption || '');
                     if (data.reportType) $('#reportType').val(data.reportType);
                     calculate7MonthsDueDate();
+                } else if (!selectedName) {
+                    $('#activity').val('');
+                    $('#yEnd').val('');
+                    $('#status').val('');
+                    $('#auditExrmption').val('');
+                    $('#reportType').val('');
                 }
             });
 
@@ -1232,6 +1266,7 @@
                 SSMDueDate: ($('#ssmDueDate').val() || '').trim(),
                 DatePassToSecDept: ($('#datePassToSecDept').val() || '').trim(),
                 AuditExemption: ($('#auditExrmption').val() || '').trim(),
+                SigningFirm: ($('#signingFirm').val() || '').trim(),
                 Metric: ($('#metric').val() || '').trim(),
                 Binded: ($('#binded').val() || '').trim(),
                 DateBinded: ($('#bindedDate').val() || '').trim(),
@@ -1280,17 +1315,17 @@
                         const d = res.data || {};
                         $('#recordId').val(getVal(d, 'Id'));
 
-                        // ✅ Select2 set value
+                        // ✅ Select2 set value (without triggering auto-fill overwrite on edit)
                         const existingCompany = getVal(d, 'CompanyName');
                         const $select = $('#companyName');
                         if ($select.find(`option[value="${existingCompany}"]`).length === 0 && existingCompany) {
                             $select.append(`<option value="${existingCompany}">${existingCompany} (Archived)</option>`);
                         }
-                        $select.val(existingCompany).trigger('change');
+                        $select.val(existingCompany).trigger('change.select2');
 
                         $('#activity').val(getVal(d, 'Activity'));
                         $('#whichDB').val(getVal(d, 'WhichDB'));
-                        $('#yEtodo').val(getVal(d, 'YEtodo'));
+                        $('#yEtodo').val(getVal(d, 'YEtodo')).trigger('change');
                         $('#quarterTodo').val(getVal(d, 'QuarterTodo'));
                         const existingPic = getVal(d, 'PIC');
                         const $picSelect = $('#pic');
@@ -1332,8 +1367,9 @@
                         $('#taxDueDate').val(formatDateForInput(getVal(d, 'TaxDueDate')));
                         $('#passToTaxDept').val(formatDateForInput(getVal(d, 'PassToTaxDept')));
                         $('#ssmDueDate').val(formatDateForInput(getVal(d, 'SSMDueDate')));
-                        $('#datePassToSecDept').val(formatDateForInput(getVal(d, 'DatePassToSecDept')));
-                        $('#auditExrmption').val(getVal(d, 'AuditExemption'));
+                        const auditExVal = getVal(d, 'AuditExemption') || (clientDataMap[existingCompany] ? clientDataMap[existingCompany].auditExemption : '');
+                        $('#auditExrmption').val(auditExVal || '');
+                        $('#signingFirm').val(getVal(d, 'SigningFirm') || '');
                         $('#metric').val(getVal(d, 'Metric'));
                         $('#binded').val(getVal(d, 'Binded'));
                         $('#bindedDate').val(formatDateForInput(getVal(d, 'DateBinded')));

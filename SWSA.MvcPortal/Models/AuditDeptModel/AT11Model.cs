@@ -44,6 +44,8 @@ namespace SWSA.MvcPortal.Models.AccDeptModel
         public string PassToTaxDept { get; set; }
         public string SSMDueDate { get; set; }
         public string DatePassToSecDept { get; set; }
+        public string AuditExemption { get; set; }
+        public string SigningFirm { get; set; }
         public string DateBinded { get; set; }
         public string DespatchDateToClient { get; set; }
     }

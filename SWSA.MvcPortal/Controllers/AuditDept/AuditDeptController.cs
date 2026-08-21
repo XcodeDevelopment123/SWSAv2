@@ -149,6 +149,20 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             }
         }
 
+        private async Task EnsureAT11ColumnsAsync(SqlConnection connection)
+        {
+            var alterSql = @"
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[AT11]') AND name = 'AuditExemption')
+                BEGIN
+                    ALTER TABLE [Quartz2].[dbo].[AT11] ADD [AuditExemption] NVARCHAR(255) NULL;
+                END
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[Quartz2].[dbo].[AT11]') AND name = 'SigningFirm')
+                BEGIN
+                    ALTER TABLE [Quartz2].[dbo].[AT11] ADD [SigningFirm] NVARCHAR(255) NULL;
+                END";
+            await connection.ExecuteAsync(alterSql);
+        }
+
         [AllowAnonymous]
         [HttpPost("api/auditdept/at11/create")]
         public async Task<IActionResult> CreateAT11([FromBody] AT11Model model)
@@ -157,6 +171,9 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             {
                 Console.WriteLine("Creating new AT11 record...");
                 using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                await EnsureAT11ColumnsAsync(connection);
+
                 var sql = @"INSERT INTO [Quartz2].[dbo].[AT11] 
             ([CompanyName], [Activity], [WhichDB], [YEtodo], [QuarterTodo], [PIC], [Status],
              [Revenue], [ProfitLoss], [AuditFee], [DateBilled], [StartDate], [AsAt], [NoOfDays],
@@ -166,6 +183,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
              [TotalReviewDaysKK], [DateSentToKK], [DateReceivedAR], [DateOfReport],
              [DateOfDirectorsRept], [DateSentSigning], [FlwUpDate], [DateReceivedSigning],
              [CommOfOathsDate], [TaxDueDate], [PassToTaxDept], [SSMDueDate], [DatePassToSecDept],
+             [AuditExemption], [SigningFirm],
              [DateBinded], [DespatchDateToClient])
             VALUES 
             (@CompanyName, @Activity, @WhichDB, @YEtodo, @QuarterTodo, @PIC, @Status,
@@ -176,6 +194,7 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
              @TotalReviewDaysKK, @DateSentToKK, @DateReceivedAR, @DateOfReport,
              @DateOfDirectorsRept, @DateSentSigning, @FlwUpDate, @DateReceivedSigning,
              @CommOfOathsDate, @TaxDueDate, @PassToTaxDept, @SSMDueDate, @DatePassToSecDept,
+             @AuditExemption, @SigningFirm,
              @DateBinded, @DespatchDateToClient);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
@@ -197,6 +216,9 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             try
             {
                 using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                await EnsureAT11ColumnsAsync(connection);
+
                 var sql = @"UPDATE [Quartz2].[dbo].[AT11] SET 
             [CompanyName] = @CompanyName, [Activity] = @Activity, [WhichDB] = @WhichDB,
             [YEtodo] = @YEtodo, [QuarterTodo] = @QuarterTodo, [PIC] = @PIC, [Status] = @Status,
@@ -214,7 +236,10 @@ namespace SWSA.MvcPortal.Controllers.AuditDept
             [FlwUpDate] = @FlwUpDate, [DateReceivedSigning] = @DateReceivedSigning,
             [CommOfOathsDate] = @CommOfOathsDate, [TaxDueDate] = @TaxDueDate,
             [PassToTaxDept] = @PassToTaxDept, [SSMDueDate] = @SSMDueDate,
-            [DatePassToSecDept] = @DatePassToSecDept, [DateBinded] = @DateBinded,
+            [DatePassToSecDept] = @DatePassToSecDept, 
+            [AuditExemption] = @AuditExemption,
+            [SigningFirm] = @SigningFirm,
+            [DateBinded] = @DateBinded,
             [DespatchDateToClient] = @DespatchDateToClient
             WHERE Id = @Id";
 

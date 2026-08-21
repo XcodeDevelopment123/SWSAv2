@@ -20,5 +20,6 @@ namespace SWSA.MvcPortal.Dtos.Requests.Clients
         public string CreditRating { get; set; } = "";
         public string AuditExemption { get; set; } = "";
         public string ActivitySize { get; set; } = "";
+        public string? AppointmentEngagementData { get; set; }
     }
 }
