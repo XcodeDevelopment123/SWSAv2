@@ -390,11 +390,11 @@
             let year = now.getFullYear();
             const anniv = new Date(year, month, day);
             if (anniv < now) {
-                year++;
+                anniv.setFullYear(year + 1);
             }
-            const dd = String(day).padStart(2, '0');
-            const mm = String(month + 1).padStart(2, '0');
-            return `${dd}/${mm}/${year}`;
+            // AR Due Date is 30 days after anniversary date
+            const due = new Date(anniv.getTime() + (30 * 24 * 60 * 60 * 1000));
+            return formatDateObjToDdMmYyyy(due);
         }
 
         function getYrFromDdMmYyyy(dateStr) {
@@ -591,6 +591,10 @@
         }
 
         $(document).ready(function () {
+            $('#taskForm').on('submit', function (e) {
+                e.preventDefault();
+            });
+
             initDefaultYearToDoDropdown();
 
             // Load initial companies on page ready
@@ -599,7 +603,9 @@
             $('#taskModal').on('show.bs.modal', function () {
                 if (!$('#editIndex').val()) {
                     $('#dbSource').val('sdnbhd');
-                    loadCompanyOptions('sdnbhd');
+                    if ($('#companyName option').length <= 1) {
+                        loadCompanyOptions('sdnbhd');
+                    }
                 }
             });
 

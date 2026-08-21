@@ -28,8 +28,10 @@ $(function () {
         const d = new Date(incorpDate);
         if (isNaN(d.getTime())) return null;
         const now = new Date();
-        let due = new Date(now.getFullYear(), d.getMonth(), d.getDate());
-        if (due < now) due.setFullYear(due.getFullYear() + 1);
+        let anniv = new Date(now.getFullYear(), d.getMonth(), d.getDate());
+        if (anniv < now) anniv.setFullYear(anniv.getFullYear() + 1);
+        // AR Due Date is 30 days after the anniversary date (Companies Act 2016)
+        let due = new Date(anniv.getTime() + (30 * 24 * 60 * 60 * 1000));
         return due;
     }
 
@@ -239,8 +241,14 @@ $(function () {
                         ConvertTimeFormat(res.adSentToClientDate, "YYYY-MM-DD"),
                         ConvertTimeFormat(res.adReturnByClientDate, "YYYY-MM-DD"),
                         res.remarks,
-                        `<button class="btn btn-sm btn-primary edit-task" data-id="${res.id}">Edit</button>
-                         <button class="btn btn-sm btn-danger delete-task" data-id="${res.id}">Delete</button>`
+                        `<div class="d-flex gap-1 justify-content-center">
+                            <button class="btn btn-sm btn-outline-primary edit-task" data-id="${res.id}" title="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-task" data-id="${res.id}" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`
                     ]).draw();
 
                     $('#taskModal').modal('hide');

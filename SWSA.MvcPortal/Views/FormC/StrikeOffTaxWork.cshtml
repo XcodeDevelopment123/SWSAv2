@@ -99,11 +99,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="companyName">Company Name (Suppose Link From Client List)</label>
+                                <label for="companyName">Company Name</label>
                                 <select id="companyName" name="companyName" class="form-control" required>
                                     <option value="">-- Select company --</option>
                                 </select>
-                                <small class="text-muted">* Company list is linked from the Client List</small>
+                                <small class="text-muted">* Company list is linked from H1 Strike Off Schedule</small>
                             </div>
                         </div>
 
@@ -235,7 +235,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="accWkDone">Acc wk done?</label>
-                                <input type="text" id="accWkDone" name="accWkDone" class="form-control" placeholder="e.g. Yes/No" />
+                                <select id="accWkDone" name="accWkDone" class="form-control">
+                                    <option value="">-- Select Yes/No --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -377,26 +381,58 @@
                 saveTX4Record();
             });
 
-            // 选公司时自动带出 Year End，格式：MM/yyyy
+            // 选公司时自动带出 Year End 及 Sec Dept 相关资料（来自 H1 Strike Off Schedule）
             $('#companyName').on('change', function () {
                 const $selected = $(this).find('option:selected');
-                const yearEndMonth = parseInt($selected.data('yearendmonth'), 10);   // 1~12
-
-                if (yearEndMonth && yearEndMonth >= 1 && yearEndMonth <= 12) {
-                    const now = new Date();
-                    const year = now.getFullYear();  // 还是用今年
-
-                    const mm = yearEndMonth.toString().padStart(2, '0');
-                    const formatted = `${mm}/${year}`;
-                    $('#yearEnd').val(formatted);
-                } else {
-                    $('#yearEnd').val('');
+                
+                // 只有新建记录时才自动覆盖，或根据选择带入
+                if (!currentEditId) {
+                    $('#yearEnd').val($selected.data('yearend') || '');
+                    $('#ssmSubmissionDate').val($selected.data('ssmsubmissiondate') || '');
+                    $('#dateSOff').val($selected.data('datesoff') || '');
+                    $('#dateReceiveFrSecDept').val($selected.data('datereceivefrsecdept') || '');
+                    $('.datepicker').datepicker('update');
                 }
 
-                // ★ 顺便把 Referral / CompanyNo / IncorporationDate 写到隐藏栏位
+                // 隐藏字段
                 $('#referral').val($selected.data('referral') || '');
                 $('#companyNoHidden').val($selected.data('companyno') || '');
                 $('#incorporationDate').val($selected.data('incorpdate') || '');
+            });
+
+            // 自动计算 N or Y days = Date Start 与 Date End 之间的天数
+            function calculateDays() {
+                const startVal = $('#dateStart').val();
+                const endVal = $('#dateEnd').val();
+
+                if (!startVal || !endVal) {
+                    return;
+                }
+
+                // 转换 dd/mm/yyyy 格式到 Date 对象
+                const parseDate = function(str) {
+                    const parts = str.split('/');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0], 10);
+                        const month = parseInt(parts[1], 10) - 1;
+                        const year = parseInt(parts[2], 10);
+                        return new Date(year, month, day);
+                    }
+                    return new Date(str);
+                };
+
+                const startDate = parseDate(startVal);
+                const endDate = parseDate(endVal);
+
+                if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                    const diffTime = endDate.getTime() - startDate.getTime();
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                    $('#nOrYDays').val(diffDays >= 0 ? diffDays : diffDays);
+                }
+            }
+
+            $('#dateStart, #dateEnd').on('change changeDate', function () {
+                calculateDays();
             });
 
 
@@ -459,7 +495,13 @@
                         { "data": "review", "defaultContent": "" },
                         { "data": "clientDateSent", "defaultContent": "" },
                         { "data": "clientDateReceived", "defaultContent": "" },
-                        { "data": "irbpenalties", "defaultContent": "" },
+                        {
+                            "data": "irBpenalties",
+                            "defaultContent": "",
+                            "render": function (data, type, row) {
+                                return row.irBpenalties ?? row.irbpenalties ?? row.iRBpenalties ?? data ?? '';
+                            }
+                        },
                         { "data": "appealDate", "defaultContent": "" },
                         { "data": "paymentDate", "defaultContent": "" },
                         { "data": "noteRemark", "defaultContent": "" },
@@ -532,6 +574,8 @@
                     dateSOff: $('#dateSOff').val(),
                     dateReceiveFrSecDept: $('#dateReceiveFrSecDept').val(),
                     iRBpenalties: $('#irbPenalties').val(),
+                    irbPenalties: $('#irbPenalties').val(),
+                    irbpenalties: $('#irbPenalties').val(),
                     staff: $('#staff').val(),
                     dateStart: $('#dateStart').val(),
                     dateEnd: $('#dateEnd').val(),
@@ -674,11 +718,12 @@
                 }
             }
 
-            // ★ 用共用的 /api/get/company-options，并挂上 yearEndMonth + 3 个 data
+            // ★ 从 H1 (Strike Off Schedule - S16) 加载公司选项
             function loadClientOptionsForTx4(callback) {
-                $.get('/api/get/company-options', function (response) {
+                $.get('/secretary-dept/api/s16/get-all', function (response) {
                     if (!response || !response.success) {
-                        showAlert('Error loading clients: ' + (response?.message || ''), 'danger');
+                        showAlert('Error loading companies from Strike Off Schedule: ' + (response?.message || ''), 'danger');
+                        if (typeof callback === 'function') callback();
                         return;
                     }
 
@@ -686,51 +731,39 @@
                     $ddl.empty();
                     $ddl.append('<option value="">-- Select company --</option>');
 
+                    // 避免重复公司名称，保留最新/完整数据
+                    const seenCompanies = new Set();
+
                     (response.data || []).forEach(function (item) {
                         const name = item.companyName || item.CompanyName || '';
-                        const yearEndMthRaw = item.yearEndMonth || item.YearEndMonth || '';
-                        const referral = item.referral || item.Referral || '';
+                        if (!name || seenCompanies.has(name.trim().toLowerCase())) return;
+                        seenCompanies.add(name.trim().toLowerCase());
+
+                        const yearEnd = item.yearEnd || item.YearEnd || '';
+                        const ssmSubmissionDate = item.ssMsubmitDate || item.ssmsubmitDate || item.SSMsubmitDate || '';
+                        const dateSOff = item.ssMstrikeoffDate || item.ssmstrikeoffDate || item.SSMstrikeoffDate || '';
+                        const dateReceiveFrSecDept = item.datePassToTaxDept || item.DatePassToTaxDept || '';
+                        const referral = item.ref || item.Ref || '';
                         const companyNo = item.companyNo || item.CompanyNo || '';
-                        const incorpRaw = item.incorporationDate || item.IncorporationDate || '';
-
-                        // ★ 把英文月份转成数字 1~12
-                        let yearEndMth = '';
-                        if (yearEndMthRaw) {
-                            const monthMap = {
-                                'january': 1,
-                                'february': 2,
-                                'march': 3,
-                                'april': 4,
-                                'may': 5,
-                                'june': 6,
-                                'july': 7,
-                                'august': 8,
-                                'september': 9,
-                                'october': 10,
-                                'november': 11,
-                                'december': 12
-                            };
-                            const key = yearEndMthRaw.toString().trim().toLowerCase();
-                            yearEndMth = monthMap[key] || '';
-                        }
-
-                        const incorpDisplay = typeof formatDateForDisplay === 'function'
-                            ? formatDateForDisplay(incorpRaw)
-                            : incorpRaw;
+                        const incorpDate = item.incorpDate || item.IncorpDate || '';
 
                         const $opt = $('<option>')
                             .val(name)
                             .text(name)
-                            .attr('data-yearendmonth', yearEndMth || '')   // 这里现在是 1~12
-                            .attr('data-referral', referral || '')
-                            .attr('data-companyno', companyNo || '')
-                            .attr('data-incorpdate', incorpDisplay || '');
+                            .attr('data-yearend', yearEnd)
+                            .attr('data-ssmsubmissiondate', ssmSubmissionDate)
+                            .attr('data-datesoff', dateSOff)
+                            .attr('data-datereceivefrsecdept', dateReceiveFrSecDept)
+                            .attr('data-referral', referral)
+                            .attr('data-companyno', companyNo)
+                            .attr('data-incorpdate', incorpDate);
 
                         $ddl.append($opt);
                     });
+
                     if (typeof callback === 'function') callback();
                 }).fail(function (xhr, status, error) {
-                    showAlert('Error loading clients: ' + error, 'danger');
+                    showAlert('Error loading companies from Strike Off Schedule: ' + error, 'danger');
                     if (typeof callback === 'function') callback();
                 });
             }

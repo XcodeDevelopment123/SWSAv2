@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -38,4 +38,19 @@ public partial class Tx4
     public string? ClientCopySent { get; set; }
 
     public string? JobCompletedDate { get; set; }
+
+    // Admin & Client dates
+    public string? Staff { get; set; }
+
+    public string? DateStart { get; set; }
+
+    public string? DateEnd { get; set; }
+
+    public string? NOrYDays { get; set; }
+
+    public string? Review { get; set; }
+
+    public string? ClientDateSent { get; set; }
+
+    public string? ClientDateReceived { get; set; }
 }
