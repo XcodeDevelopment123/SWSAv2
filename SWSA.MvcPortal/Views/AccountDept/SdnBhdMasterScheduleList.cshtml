@@ -524,7 +524,7 @@
                         dataSrc: function (response) {
                             if (response.success) return response.data;
                             console.error('Error loading data:', response.message);
-                            showAlert('Error loading data: ' + response.message, 'danger');
+                            Popup_Error('Loading Error', response.message || 'Failed to load records');
                             return [];
                         }
                     },
@@ -648,14 +648,14 @@
                             $('#taskModal').modal('hide');
                             dataTable.ajax.reload(null, false);
                             resetForm();
-                            showAlert('Record saved successfully!', 'success');
+                            Popup_Success('Saved!', 'Record saved successfully!');
                         } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
+                            Popup_Error('Save Failed', response.message || 'Error saving record');
                         }
                     },
                     error: function (xhr, status, error) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                        showAlert('Error saving record: ' + error, 'danger');
+                        Popup_Error('Save Error', error || 'Failed to communicate with server');
                     }
                 });
             }
@@ -669,7 +669,7 @@
             function editRecord(id) {
                 $.get(`/api/bp21/get/${id}`, function (response) {
                     if (!response.success) {
-                        showAlert('Error loading record: ' + response.message, 'danger');
+                        Popup_Error('Error', response.message || 'Error loading record');
                         return;
                     }
                     const record = response.data;
@@ -690,12 +690,9 @@
                     if (cid && companyOptionsMap[cid]) {
                         $sel.val(String(cid));
                     } else {
-                        // 尝试用名称匹配
-                        const textMatch = $sel.find('option').filter(function () {
-                            return $(this).text().trim().toLowerCase().startsWith((record.companyName || '').trim().toLowerCase());
-                        });
-                        if (textMatch.length > 0) {
-                            $sel.val(textMatch.first().val());
+                        const hit = Object.values(companyOptionsMap).find(x => (x.companyName || '').trim() === (record.companyName || '').trim());
+                        if (hit) {
+                            $sel.val(hit.id);
                         } else if (record.companyName) {
                             // 插入一个只读显示项（value 为空，不参与提交）
                             if ($sel.find('option[value="__temp__"]').length === 0) {
@@ -735,7 +732,7 @@
                     $('#modalTitle').text('Edit Sdn Bhd Record');
                     $('#taskModal').modal('show');
                 }).fail(function (xhr, status, error) {
-                    showAlert('Error loading record: ' + error, 'danger');
+                    Popup_Error('Loading Error', error || 'Failed to load record details');
                 });
             }
 
@@ -745,19 +742,22 @@
                 deleteRecord(id);
             });
             function deleteRecord(id) {
-                if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-                $.ajax({
-                    url: `/api/bp21/delete/${id}`, type: 'DELETE',
-                    success: function (response) {
-                        if (response.success) {
-                            dataTable.ajax.reload(null, false);
-                            showAlert('Record deleted successfully!', 'success');
-                        } else {
-                            showAlert('Error deleting record: ' + response.message, 'danger');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        showAlert('Error deleting record: ' + error, 'danger');
+                Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/bp21/delete/${id}`, type: 'DELETE',
+                            success: function (response) {
+                                if (response.success) {
+                                    dataTable.ajax.reload(null, false);
+                                    Popup_Success('Deleted!', 'Record deleted successfully!');
+                                } else {
+                                    Popup_Error('Delete Failed', response.message || 'Error deleting record');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Popup_Error('Delete Error', error || 'Failed to delete record');
+                            }
+                        });
                     }
                 });
             }

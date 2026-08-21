@@ -195,7 +195,34 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yEtoDo">Year to do</label>
-                                <input type="text" id="yEtoDo" name="yEtoDo" class="form-control" placeholder="Enter Year to do" />
+                                <select id="yEtoDo" name="yEtoDo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                    <option value="2034">2034</option>
+                                    <option value="2035">2035</option>
+                                    <option value="2036">2036</option>
+                                    <option value="2037">2037</option>
+                                    <option value="2038">2038</option>
+                                    <option value="2039">2039</option>
+                                    <option value="2040">2040</option>
+                                    <option value="2041">2041</option>
+                                    <option value="2042">2042</option>
+                                    <option value="2043">2043</option>
+                                    <option value="2044">2044</option>
+                                    <option value="2045">2045</option>
+                                    <option value="2046">2046</option>
+                                    <option value="2047">2047</option>
+                                    <option value="2048">2048</option>
+                                    <option value="2049">2049</option>
+                                    <option value="2050">2050</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -210,7 +237,21 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="estMthTodo">Month to do</label>
-                                <input type="text" id="estMthTodo" name="estMthTodo" class="form-control" placeholder="Enter month" />
+                                <select id="estMthTodo" name="estMthTodo" class="form-control">
+                                    <option value="">Select Month</option>
+                                    <option value="Jan">January</option>
+                                    <option value="Feb">February</option>
+                                    <option value="Mar">March</option>
+                                    <option value="Apr">April</option>
+                                    <option value="May">May</option>
+                                    <option value="Jun">June</option>
+                                    <option value="Jul">July</option>
+                                    <option value="Aug">August</option>
+                                    <option value="Sep">September</option>
+                                    <option value="Oct">October</option>
+                                    <option value="Nov">November</option>
+                                    <option value="Dec">December</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -362,6 +403,17 @@
                 $('#description').val(c.miscDescription || '');
                 $('#coStatus').val(c.companyStatus || '');
                 $('#activeCoActivitySize').val(c.activitySize || '');
+
+                // 自动从 C1.2 (A31B) 填充 Date Doc In
+                const docInVal = c.latestDateDocInA31B || c.latestDateDocIn || '';
+                if (docInVal) {
+                    const docInIso = docInVal.split('T')[0];
+                    $('#dateDocIn').val(docInIso);
+                    $('#dateDocIn').datepicker('update', docInIso);
+                } else {
+                    $('#dateDocIn').val('');
+                    $('#dateDocIn').datepicker('update', '');
+                }
             });
 
             function loadStaffOptions() {
@@ -465,6 +517,8 @@
                                 return response.success ? response.data : [];
                             }
                         },
+                        "dom": '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
                         "columns": [
                             { "data": "grouping", "defaultContent": "" },
                             { "data": "referral", "defaultContent": "" },
@@ -501,7 +555,8 @@
                             }
                         ],
                         "order": [[0, 'desc']],
-                        "responsive": true,
+                        "responsive": false,
+                        "scrollX": true,
                         "searching": true,
                         "paging": true,
                         "pageLength": 10
@@ -513,11 +568,10 @@
             }
 
             function initializeSimpleTable() {
-                // ... 你的 fallback 表格逻辑保持原样 ...
-                // (这里为了节省篇幅省略，你需要的话我可以贴上，但如果你用的是上面那段，已经包含了)
+                // fallback
             }
 
-            // ⚠️ 我没有动你的 Save 逻辑 ⚠️
+            // 保存 BP31 记录
             function saveBP31Record() {
                 const formData = {
                     grouping: $('#grouping').val(),
@@ -558,26 +612,25 @@
                             $('#taskModal').modal('hide');
                             refreshTable();
                             resetForm();
-                            showAlert('Record saved successfully!', 'success');
+                            Popup_Success('Saved!', 'Record saved successfully!');
                         } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
+                            Popup_Error('Save Failed', response.message || 'Error saving record');
                         }
                     },
                     error: function(xhr, status, error) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                        showAlert('Error saving record: ' + error, 'danger');
+                        Popup_Error('Save Error', error || 'Failed to save record');
                     }
                 });
             }
 
-            // 🟢 修改：编辑记录 (增加 Dropdown 回填逻辑)
+            // 编辑记录
             function editRecord(id) {
                 $.get(`/api/bp31/get/${id}`, function(response) {
                     if (response.success) {
                         const record = response.data;
                         currentEditId = record.id;
 
-                        // --- 这里的逻辑是必须加的，否则编辑时下拉菜单是空的 ---
                         let foundId = "";
                         for (const [key, val] of Object.entries(companyOptionsMap)) {
                             if (val.companyName === record.companyName) {
@@ -586,7 +639,6 @@
                             }
                         }
                         $('#companySelect').val(foundId);
-                        // -----------------------------------------------
 
                         $('#grouping').val(record.grouping || '');
                         $('#referral').val(record.referral || '');
@@ -611,33 +663,36 @@
                         $('#modalTitle').text('Edit Sdn Bhd Backlog Record');
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
+                        Popup_Error('Error', response.message || 'Failed to load record');
                     }
                 });
             }
 
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    $.ajax({
-                        url: `/api/bp31/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                refreshTable();
-                                showAlert('Record deleted successfully!', 'success');
-                            } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
+                Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/bp31/delete/${id}`,
+                            type: 'DELETE',
+                            success: function(response) {
+                                if (response.success) {
+                                    refreshTable();
+                                    Popup_Success('Deleted!', 'Record deleted successfully!');
+                                } else {
+                                    Popup_Error('Delete Failed', response.message || 'Failed to delete record');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Popup_Error('Delete Error', error || 'Failed to delete record');
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
 
             function refreshTable() {
                 if (dataTable && typeof dataTable.ajax.reload === 'function') {
                     dataTable.ajax.reload(null, false);
-                } else {
-                    initializeSimpleTable();
                 }
             }
 
@@ -660,7 +715,7 @@
             initializeDatePickers();
             loadCompanyOptions(); // 加载 Dropdown
             loadStaffOptions();
-            testApiConnection();
+            initializeDataTable();
         });
     </script>
 }

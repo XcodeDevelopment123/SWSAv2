@@ -1243,11 +1243,12 @@ namespace SWSA.MvcPortal.Controllers.AccDept
 
         [AllowAnonymous]
         [HttpPost("api/bp25/create")]
-        public async Task<IActionResult> CreateBP25([FromBody] BP25Model model)
+        public async Task<IActionResult> CreateBP25([FromBody] BP25Model? model)
         {
             try
             {
-                Console.WriteLine("Creating new BP25 record...");
+                model ??= new BP25Model();
+                Console.WriteLine("Creating new BP25 record for: " + (model.CompanyName ?? ""));
                 using var connection = new SqlConnection(_connectionString);
 
                 await connection.OpenAsync();
@@ -1270,13 +1271,33 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                      @MthTodo, @Staff, @AllocateToWkSch, @Completed);
                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                    var id = await connection.ExecuteScalarAsync<int>(sql, model, transaction);
+                    var id = await connection.ExecuteScalarAsync<int>(sql, new
+                    {
+                        Grouping = model.Grouping ?? "",
+                        Refferal = model.Refferal ?? "",
+                        FileNo = model.FileNo ?? "",
+                        CompanyName = model.CompanyName ?? "",
+                        YearEnd = model.YearEnd ?? "",
+                        Enumber = model.Enumber ?? "",
+                        TinNumber = model.TinNumber ?? "",
+                        Login = model.Login ?? "",
+                        Password = model.Password ?? "",
+                        Code = model.Code ?? "",
+                        Description = model.Description ?? "",
+                        JobServices = model.JobServices ?? "",
+                        YEtodo = model.YEtodo ?? "",
+                        DateDocIn = model.DateDocIn ?? "",
+                        MthTodo = model.MthTodo ?? "",
+                        Staff = model.Staff ?? "",
+                        AllocateToWkSch = model.AllocateToWkSch ?? "",
+                        Completed = model.Completed ?? ""
+                    }, transaction);
                     Console.WriteLine($"BP25 record created successfully with ID: {id}");
 
                     // 2. 如果 DateDocIn 有值，则同步到 A31B 的 DateDocFr 字段
                     if (!string.IsNullOrEmpty(model.DateDocIn))
                     {
-                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName, model.DateDocIn);
+                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName ?? "", model.DateDocIn);
                     }
 
                     // 提交事务
@@ -1288,9 +1309,9 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 catch (Exception ex)
                 {
                     // 回滚事务
-                    transaction.Rollback();
+                    try { transaction.Rollback(); } catch { }
                     Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
-                    throw;
+                    return Json(new { success = false, message = ex.Message });
                 }
             }
             catch (Exception ex)
@@ -1302,10 +1323,11 @@ namespace SWSA.MvcPortal.Controllers.AccDept
 
         [AllowAnonymous]
         [HttpPut("api/bp25/update")]
-        public async Task<IActionResult> UpdateBP25([FromBody] BP25Model model)
+        public async Task<IActionResult> UpdateBP25([FromBody] BP25Model? model)
         {
             try
             {
+                model ??= new BP25Model();
                 using var connection = new SqlConnection(_connectionString);
 
                 await connection.OpenAsync();
@@ -1330,7 +1352,28 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                     [Completed] = @Completed
                     WHERE Id = @Id";
 
-                    var affectedRows = await connection.ExecuteAsync(sql, model, transaction);
+                    var affectedRows = await connection.ExecuteAsync(sql, new
+                    {
+                        Id = model.Id,
+                        Grouping = model.Grouping ?? "",
+                        Refferal = model.Refferal ?? "",
+                        FileNo = model.FileNo ?? "",
+                        CompanyName = model.CompanyName ?? "",
+                        YearEnd = model.YearEnd ?? "",
+                        Enumber = model.Enumber ?? "",
+                        TinNumber = model.TinNumber ?? "",
+                        Login = model.Login ?? "",
+                        Password = model.Password ?? "",
+                        Code = model.Code ?? "",
+                        Description = model.Description ?? "",
+                        JobServices = model.JobServices ?? "",
+                        YEtodo = model.YEtodo ?? "",
+                        DateDocIn = model.DateDocIn ?? "",
+                        MthTodo = model.MthTodo ?? "",
+                        Staff = model.Staff ?? "",
+                        AllocateToWkSch = model.AllocateToWkSch ?? "",
+                        Completed = model.Completed ?? ""
+                    }, transaction);
                     if (affectedRows == 0)
                     {
                         transaction.Rollback();
@@ -1343,7 +1386,7 @@ namespace SWSA.MvcPortal.Controllers.AccDept
 
                     if (dateDocInChanged && !string.IsNullOrEmpty(model.DateDocIn))
                     {
-                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName, model.DateDocIn);
+                        await SyncDateDocInToA31BDateDocFr3(connection, transaction, model.CompanyName ?? "", model.DateDocIn);
                     }
 
                     // 提交事务
@@ -1354,9 +1397,9 @@ namespace SWSA.MvcPortal.Controllers.AccDept
                 catch (Exception ex)
                 {
                     // 回滚事务
-                    transaction.Rollback();
+                    try { transaction.Rollback(); } catch { }
                     Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
-                    throw;
+                    return Json(new { success = false, message = ex.Message });
                 }
             }
             catch (Exception ex)

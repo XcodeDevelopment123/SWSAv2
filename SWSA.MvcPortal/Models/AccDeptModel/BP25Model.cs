@@ -1,4 +1,4 @@
-﻿namespace SWSA.MvcPortal.Models.AccDeptModel
+namespace SWSA.MvcPortal.Models.AccDeptModel
 {
     public class BP25Model
     {

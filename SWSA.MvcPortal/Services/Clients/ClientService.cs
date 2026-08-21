@@ -380,6 +380,35 @@ public class ClientService(
         }
     }
 
+    private async Task<Dictionary<string, string>> GetLatestA31BDatesAsync()
+    {
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            var sql = @"
+                SELECT Clients, DateReceived 
+                FROM (
+                    SELECT Clients, DateReceived, 
+                           ROW_NUMBER() OVER (PARTITION BY Clients ORDER BY Id DESC) as rn 
+                    FROM [Quartz2].[dbo].[A31B]
+                    WHERE Clients IS NOT NULL AND Clients <> ''
+                ) t 
+                WHERE rn = 1";
+            var records = await connection.QueryAsync<(string Clients, string DateReceived)>(sql);
+            return records.ToDictionary(
+                x => x.Clients.Trim(), 
+                x => x.DateReceived, 
+                StringComparer.OrdinalIgnoreCase
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching latest A31B dates: {ex.Message}");
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
     private async Task<Dictionary<string, string>> GetLatestBP21AccDeptMthAsync()
     {
         try
@@ -421,6 +450,7 @@ public class ClientService(
         // 1️⃣ 先用 SearchClientsAsync 拿到所有 SdnBhd
         var raw = await SearchClientsAsync(ClientType.SdnBhd, filter);
         var latestDates = await GetLatestA31ADatesAsync();
+        var latestA31BDates = await GetLatestA31BDatesAsync();
         var latestAccMth = await GetLatestBP21AccDeptMthAsync();
 
         // 2️⃣ 把 object 转回 SdnBhdClient，然后投影成我们要的 DTO
@@ -462,8 +492,8 @@ public class ClientService(
                     CreditRating = c.CreditRating.HasValue ? c.CreditRating.Value.ToString() : "",
                     AuditExemption = auditExemptionVal,
                     AppointmentEngagementData = c.AppointmentEngagementData,
-                    ServiceSelected = c.ServiceSelected,
                     LatestDateDocIn = latestDates.TryGetValue(c.Name.Trim(), out var date) ? date : null,
+                    LatestDateDocInA31B = latestA31BDates.TryGetValue(c.Name.Trim(), out var dateB) ? dateB : null,
                     MiscCode = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Code ?? "" : "",
                     MiscDescription = c.MsicCodes.FirstOrDefault() != null ? c.MsicCodes.FirstOrDefault()!.MsicCode?.Description ?? "" : "",
                     AccDeptMth = latestAccMth.TryGetValue(c.Name.Trim(), out var accMth) ? accMth : null
@@ -585,6 +615,7 @@ public class ClientService(
     public async Task<List<ClientListDto>> GetAllClientsListAsync()
     {
         var query = _clients.AsNoTracking();
+        var latestDates = await GetLatestA31BDatesAsync();
 
         var result = await query.Select(c => new ClientListDto
         {
@@ -617,17 +648,19 @@ public class ClientService(
             CompanyStatus = (c as BaseCompany).CompanyStatus.HasValue
                 ? (c as BaseCompany).CompanyStatus.Value.ToString()
                 : "",
-            CreditRating = (c as BaseCompany).CreditRating.HasValue
-                ? (c as BaseCompany).CreditRating.Value.ToString()
-                : "",
-            AuditExemption = "",
-            ActivitySize = (c as BaseCompany) != null
-                ? (c as BaseCompany).ActivitySize.ToString()
-                : "",
-            AppointmentEngagementData = (c as BaseCompany).AppointmentEngagementData
+            MiscCode = (c as BaseCompany).MsicCodes.Select(m => m.MsicCode.Code).FirstOrDefault() ?? "",
+            MiscDescription = (c as BaseCompany).MsicCodes.Select(m => m.MsicCode.Description).FirstOrDefault() ?? ""
         })
         .OrderByDescending(c => c.Id)
         .ToListAsync();
+
+        foreach (var item in result)
+        {
+            if (!string.IsNullOrWhiteSpace(item.CompanyName) && latestDates.TryGetValue(item.CompanyName.Trim(), out var date))
+            {
+                item.LatestDateDocIn = date;
+            }
+        }
 
         return result;
     }

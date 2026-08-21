@@ -17,15 +17,15 @@
         <div id="alertContainer"></div>
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header">
                 <h3 class="card-title">
                     <i class="fas fa-file-invoice-dollar me-2"></i> BP32 Records (Work In Progress - Accounts)
                 </h3>
-                <div class="d-flex align-items-center gap-2">
-                    <label class="mb-0 fw-bold me-1">Report as at:</label>
+                <div class="card-tools d-flex align-items-center gap-2">
+                    <label class="mb-0 fw-bold me-1 text-nowrap">Report as at:</label>
                     <input type="text" id="reportAsAtDate" class="form-control form-control-sm datepicker" style="width: 130px;" placeholder="Select Date" />
-                    <button type="button" class="btn btn-info btn-sm me-3" id="filterReportBtn"><i class="fas fa-filter me-1"></i>Filter</button>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
+                    <button type="button" class="btn btn-info btn-sm me-2 text-nowrap" id="filterReportBtn"><i class="fas fa-filter me-1"></i>Filter</button>
+                    <button type="button" class="btn btn-primary btn-sm text-nowrap" data-bs-toggle="modal" data-bs-target="#taskModal" id="addNewBtn">
                         <i class="fas fa-plus me-2"></i>New Record
                     </button>
                 </div>
@@ -60,7 +60,7 @@
                                 <th>Time Taken</th>
                                 <th>Date Pass to Audit</th>
                                 <th>Target date to Audit</th>
-                                <th>Timelines Matric</th>
+                                <th>Timelines Metrics</th>
                                 <th>Date Tax Submitted</th>
                                 <th>Completed/Backlog</th>
 
@@ -144,31 +144,24 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="jobServices">Job Services</label>
-                                @* <input type="text" id="jobServices" name="jobServices" class="form-control" placeholder="Enter job services" /> *@
-                                    <select id="jobServices" name="jobServices" class="form-control">
-                                        <option value="">Select Company Type</option>
-                                        <option value="Accounting">Accounting Only</option>
-                                        <option value="AccTax">Acc+Tax</option>
-                                        <option value="Tax">Tax Only</option>
-                                    </select>
+                                <select id="jobServices" name="jobServices" class="form-control">
+                                    <option value="">Select Job Services</option>
+                                    <option value="Accounting">Accounting Only</option>
+                                    <option value="AccTax">Acc+Tax</option>
+                                    <option value="Tax">Tax Only</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coType">Co Type</label>
-                                @*  <input type="text" id="coType" name="coType" class="form-control" placeholder="Enter job services" /> *@
-                                    <select id="coType" name="coType" class="form-control">
-                                        <option value="">Select Company Type</option>
-                                        <option value="SdnBhd">Sdn Bhd</option>
-                                        <option value="LLP">LLP</option>
-                                        <option value="Enterprise">Enterprise</option>
-                                    </select>
+                                <input type="text" id="coType" name="coType" class="form-control" placeholder="Auto-fill" readonly />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="coStatus">Co Status</label>
-                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Enter company status" />
+                                <input type="text" id="coStatus" name="coStatus" class="form-control" placeholder="Auto fill" readonly />
                             </div>
                         </div>
                     </div>
@@ -188,7 +181,21 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="mthTodo">Month to do</label>
-                                <input type="text" id="mthTodo" name="mthTodo" class="form-control" placeholder="Enter month" />
+                                <select id="mthTodo" name="mthTodo" class="form-control">
+                                    <option value="">Select Month</option>
+                                    <option value="Jan">January</option>
+                                    <option value="Feb">February</option>
+                                    <option value="Mar">March</option>
+                                    <option value="Apr">April</option>
+                                    <option value="May">May</option>
+                                    <option value="Jun">June</option>
+                                    <option value="Jul">July</option>
+                                    <option value="Aug">August</option>
+                                    <option value="Sep">September</option>
+                                    <option value="Oct">October</option>
+                                    <option value="Nov">November</option>
+                                    <option value="Dec">December</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -276,7 +283,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="timelinesMatric">Timelines Matric</label>
+                                <label for="timelinesMatric">Timelines Metrics</label>
                                 <input type="text" id="timelinesMatric" name="timelinesMatric" class="form-control" placeholder="Auto calculate" readonly />
                             </div>
                         </div>
@@ -312,34 +319,27 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="amountTaxPay">Amount Tax Pay (RM)</label>
                                 <input type="number" step="0.01" id="amountTaxPay" name="amountTaxPay" class="form-control" placeholder="0.00" />
                             </div>
                         </div>
-                        <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" /><label class="form-check-label" for="eFileDraft">E-File Draft</label></div></div>
-                        <div class="col-md-4"><div class="form-check mt-4"><input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" /><label class="form-check-label" for="eFileFinal">E-File Final</label></div></div>
+                        <div class="col-md-3"><div class="form-check mt-4"><input type="checkbox" id="eFileDraft" name="eFileDraft" class="form-check-input" /><label class="form-check-label" for="eFileDraft">E-File Draft</label></div></div>
+                        <div class="col-md-3"><div class="form-check mt-4"><input type="checkbox" id="eFileFinal" name="eFileFinal" class="form-check-input" /><label class="form-check-label" for="eFileFinal">E-File Final</label></div></div>
+                        <div class="col-md-3"><div class="form-check mt-4"><input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" /><label class="form-check-label" for="eFileviaSPC">E-File via SPC</label></div></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="invoiceNo">Invoice Date</label>
-                                <input type="text" id="invoiceNo" name="invoiceNo" class="form-control" placeholder="Enter invoice number" />
                                 <label for="invoiceDate">Invoice Date</label>
-                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control" placeholder="Enter invoice date" />
+                                <input type="text" id="invoiceDate" name="invoiceDate" class="form-control datepicker" placeholder="Select invoice date" />
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="amountRM">Amount RM</label>
                                 <input type="number" step="0.01" id="amountRM" name="amountRM" class="form-control" placeholder="0.00" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check mt-4">
-                                <input type="checkbox" id="eFileviaSPC" name="eFileviaSPC" class="form-check-input" />
-                                <label class="form-check-label" for="eFileviaSPC">E-File via SPC</label>
                             </div>
                         </div>
                     </div>
@@ -421,6 +421,7 @@
                 const c = companyOptionsMap[selectedId];
                 $('#companyName').val(c.companyName || '');
                 $('#fileNo').val(c.fileNo || '');
+                $('#coType').val(c.companyType || 'Sdn Bhd');
                 const rawYearEnd = c.yearEndMonth || c.yearEnd || '';
                 const formattedYearEnd = yearEndMonthToDateString(rawYearEnd);
                 $('#yearEnd').val(formattedYearEnd);
@@ -478,24 +479,19 @@
 
             function initializeDataTable() {
                 if ($.fn.DataTable.isDataTable('#taskDatatable')) {
-                    dataTable.destroy();
+                    $('#taskDatatable').DataTable().destroy();
                 }
 
-                // ✅ 参考 Sdn Bhd List 设计 — 用 _DatatablesScriptsPartial 的本地插件
                 dataTable = $('#taskDatatable').DataTable({
-                    paging: true,
-                    lengthChange: false,
-                    searching: true,
-                    ordering: true,
-                    info: true,
-                    autoWidth: false,
+                    processing: true,
+                    serverSide: false,
                     scrollX: true,
                     dom: '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
                     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
                     ajax: {
-                        url: "/api/bp32/get-all",
-                        type: "GET",
-                        dataSrc: function(response) {
+                        url: '/api/bp32/get-all',
+                        type: 'GET',
+                        dataSrc: function (response) {
                             if (response.success) {
                                 return response.data;
                             } else {
@@ -537,7 +533,7 @@
                                 if (!d) return '';
                                 const formatted = formatDate(d);
                                 const name = encodeURIComponent(row.companyName || '');
-                                return `<a href="/AuditDept/AT31AuditMasterLogBook?company=${name}" target="_blank">${formatted}</a>`;
+                                return `<a href="/AuditDept/AT21AuditMasterSchedule?company=${name}" target="_blank" title="Go to E2.1 Audit Work Schedule">${formatted}</a>`;
                             }, 
                             defaultContent: "" 
                         },
@@ -559,7 +555,7 @@
                         { data: "eFileDraft", render: renderCheck },
                         { data: "eFileFinal", render: renderCheck },
                         { data: "eFileviaSPC", render: renderCheck },
-                        { data: "invoiceDate", defaultContent: "" },
+                        { data: "invoiceDate", render: function(d) { return d ? formatDate(d) : ''; }, defaultContent: "" },
                         { data: "amountRM", render: function(d) { return d ? parseFloat(d).toFixed(2) : ''; }, defaultContent: "" },
                         {
                             data: "id",
@@ -690,6 +686,7 @@
                     eFileFinal: $('#eFileFinal').is(':checked') ? "1" : "0",
                     eFileviaSPC: $('#eFileviaSPC').is(':checked') ? "1" : "0",
                     invoiceDate: $('#invoiceDate').val(),
+                    invoiceNo: $('#invoiceDate').val(),
                     amountRM: $('#amountRM').val()
                 };
 
@@ -705,14 +702,14 @@
                             $('#taskModal').modal('hide');
                             if (dataTable) dataTable.ajax.reload(null, false);
                             resetForm();
-                            showAlert('Saved successfully!', 'success');
+                            Popup_Success('Saved!', 'Record saved successfully!');
                         } else {
-                            showAlert('Error: ' + response.message, 'danger');
+                            Popup_Error('Save Failed', response.message || 'Error saving record');
                         }
                     },
                     error: function(xhr) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                        showAlert('Error saving record', 'danger');
+                        Popup_Error('Save Error', 'Error saving record');
                     }
                 });
             }
@@ -741,18 +738,12 @@
                         $('#startDate').val(formatDateForInput(d.startDate));
                         $('#endDate').val(formatDateForInput(d.endDate));
                         $('#datePassToAudit').val(formatDateForInput(d.datePassToAudit));
-                        $('#dateTaxSubmited').val(formatDateForInput(d.dateTaxSubmited));
-
-
-
-
-
-
+                        $('#coType').val(d.coType || 'Sdn Bhd');
                         $('#staff').val(d.staff);
                         $('#timeTaken').val(d.timeTaken);
                         $('#completedBacklog').val(d.completedBacklog);
                         $('#amountTaxPay').val(d.amountTaxPay);
-                        $('#invoiceDate').val(d.invoiceDate);
+                        $('#invoiceDate').val(formatDateForInput(d.invoiceDate || d.invoiceNo));
                         $('#amountRM').val(d.amountRM);
                         const check = (val) => (val == "1" || val == 1 || val === true);
                         $('#singleEntry').prop('checked', check(d.singleEntry));
@@ -771,26 +762,31 @@
                         $('#modalTitle').text('Edit BP32 Record');
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Failed to load record', 'danger');
+                        Popup_Error('Load Failed', 'Failed to load record');
                     }
                 });
             }
 
             function deleteRecord(id) {
-                if (confirm('Are you sure?')) {
-                    $.ajax({
-                        url: `/api/bp32/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(res) {
-                            if (res.success) {
-                                dataTable.ajax.reload(null, false);
-                                showAlert('Deleted', 'success');
-                            } else {
-                                showAlert('Delete failed', 'danger');
+                Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/bp32/delete/${id}`,
+                            type: 'DELETE',
+                            success: function(res) {
+                                if (res.success) {
+                                    dataTable.ajax.reload(null, false);
+                                    Popup_Success('Deleted!', 'Record deleted successfully!');
+                                } else {
+                                    Popup_Error('Delete Failed', res.message || 'Delete failed');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Popup_Error('Delete Error', error || 'Failed to delete record');
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
 
             $('#saveBtn').click(saveBP32Record);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SWSA.MvcPortal.Entities.Models;
@@ -36,6 +36,8 @@ public partial class Bp21
     public string? ActiveCoActivitySize { get; set; }
 
     public string? Yetodo { get; set; }
+
+    public string? AuditDeptMth { get; set; }
 
     public string? DueDate { get; set; }
 

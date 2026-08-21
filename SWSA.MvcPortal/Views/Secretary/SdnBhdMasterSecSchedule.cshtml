@@ -862,21 +862,16 @@
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
                     if (res && res.success) {
                         $('#taskModal').modal('hide');
-                        showAlert('Record saved successfully.', 'success');
-                        if (res.s14bAction === 'created') {
-                            showAlert('Related S1.4B record has been CREATED.', 'info');
-                        } else if (res.s14bAction === 'updated') {
-                            showAlert('Related S1.4B record has been UPDATED.', 'info');
-                        }
+                        Popup_Success('Saved!', 'Record saved successfully.');
                         loadRecordsFromDatabase();
                     } else {
                         const msg = res?.errors ? res.errors.join(', ') : (res?.message || 'Unknown error');
-                        showModalAlert('Error saving record: ' + msg, 'error');
+                        Popup_Error('Save Failed', msg);
                     }
                 },
                 error: function (xhr) {
                     $btn.prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                    showModalAlert('Error saving record: ' + (xhr.statusText || 'Network error'), 'error');
+                    Popup_Error('Save Error', xhr.statusText || 'Network error');
                 }
             });
         }
@@ -922,31 +917,34 @@
 
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Error loading record: ' + (res?.message || 'Unknown error'), 'error');
+                        Popup_Error('Loading Error', res?.message || 'Unknown error');
                     }
                 },
                 error: function (xhr) {
                     $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Sdn Bhd Master Sec Record');
-                    showAlert('Error loading record: ' + (xhr.statusText || 'Network error'), 'error');
+                    Popup_Error('Loading Error', xhr.statusText || 'Network error');
                 }
             });
         }
 
         function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) return;
-            $.ajax({
-                url: 'api/s13a/delete/' + id,
-                type: 'DELETE',
-                success: function (res) {
-                    if (res && res.success) {
-                        showAlert('Record deleted successfully.', 'success');
-                        loadRecordsFromDatabase();
-                    } else {
-                        showAlert('Error deleting record: ' + (res?.message || 'Unknown error'), 'error');
-                    }
-                },
-                error: function (xhr) {
-                    showAlert('Error deleting record: ' + (xhr.statusText || 'Network error'), 'error');
+            Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'api/s13a/delete/' + id,
+                        type: 'DELETE',
+                        success: function (res) {
+                            if (res && res.success) {
+                                Popup_Success('Deleted!', 'Record deleted successfully.');
+                                loadRecordsFromDatabase();
+                            } else {
+                                Popup_Error('Delete Failed', res?.message || 'Unknown error');
+                            }
+                        },
+                        error: function (xhr) {
+                            Popup_Error('Delete Error', xhr.statusText || 'Network error');
+                        }
+                    });
                 }
             });
         }

@@ -17,9 +17,8 @@ namespace SWSA.MvcPortal.Dtos.Requests.Clients
         public string ENumber { get; set; } = "";               // Employer Number (Form E 关键字段)
         public string TaxIdentificationNumber { get; set; } = ""; // TIN
         public string CompanyStatus { get; set; } = "";
-        public string CreditRating { get; set; } = "";
-        public string AuditExemption { get; set; } = "";
-        public string ActivitySize { get; set; } = "";
-        public string? AppointmentEngagementData { get; set; }
+        public string? MiscCode { get; set; } = "";
+        public string? MiscDescription { get; set; } = "";
+        public string? LatestDateDocIn { get; set; }
     }
 }

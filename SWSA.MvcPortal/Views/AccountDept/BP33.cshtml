@@ -137,7 +137,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="taxReferennceNo">Tax<br /> Reference No</label>
+                                <label for="taxReferennceNo">Tax Reference No</label>
                                 <input type="text" id="taxReferennceNo" name="taxReferennceNo" class="form-control" placeholder="Enter reference number" />
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="invoicesNo">Invoices Date</label>
-                                <input type="text" id="invoicesNo" name="invoicesNo" class="form-control" placeholder="Enter invoices number" />
+                                <input type="text" id="invoicesNo" name="invoicesNo" class="form-control datepicker" placeholder="Select invoice date" />
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -394,7 +394,11 @@
                         { "data": "login", "defaultContent": "" },
                         { "data": "password", "defaultContent": "" },
                         { "data": "typeofForm", "defaultContent": "" },
-                        { "data": "invoicesNo", "defaultContent": "" },
+                        { 
+                            "data": "invoicesNo", 
+                            "render": function(data) { return data ? formatDate(data) : ''; },
+                            "defaultContent": "" 
+                        },
                         {
                             "data": "invoiceAmount",
                             "render": function(data) { return data ? parseFloat(data).toFixed(2) : ''; },
@@ -426,13 +430,16 @@
                     draftTaxCompleted: $('#draftFormE').val(),
                     reviewTax: $('#reviewFormE').val(),
                     taxComFinalSignByClient: $('#formESignByClient').val(),
+                    amountofTaxPay: $('#amountofTaxPay').val() || '',
                     eFileDraft: $('#eFileDraft').val(),
                     eFileFinal: $('#eFileFinal').val(),
                     taxReferennceNo: $('#taxReferennceNo').val(),
                     login: $('#login').val(),
                     password: $('#password').val(),
                     typeofForm: $('#typeofForm').val(),
+                    spc: '',
                     invoicesNo: $('#invoicesNo').val(),
+                    docDespatchDate: '',
                     invoiceAmount: $('#invoiceAmount').val()
                 };
 
@@ -452,14 +459,14 @@
                             $('#taskModal').modal('hide');
                             if(dataTable) dataTable.ajax.reload(null, false);
                             resetForm();
-                            showAlert('Saved successfully!', 'success');
+                            Popup_Success('Saved!', 'Record saved successfully!');
                         } else {
-                            showAlert('Error: ' + response.message, 'danger');
+                            Popup_Error('Save Failed', response.message || 'Error saving record');
                         }
                     },
                     error: function(xhr) {
                         $('#saveBtn').prop('disabled', false).html('Save');
-                        showAlert('Error saving record', 'danger');
+                        Popup_Error('Save Error', 'Error saving record');
                     }
                 });
             }
@@ -496,32 +503,37 @@
                         $('#login').val(d.login);
                         $('#password').val(d.password);
                         $('#typeofForm').val(d.typeofForm);
-                        $('#invoicesNo').val(d.invoicesNo);
+                        $('#invoicesNo').val(formatDateForInput(d.invoicesNo));
                         $('#invoiceAmount').val(d.invoiceAmount);
 
                         $('#modalTitle').text('Edit BP33 Record');
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Failed to load record', 'danger');
+                        Popup_Error('Load Failed', 'Failed to load record');
                     }
                 });
             }
 
             function deleteRecord(id) {
-                if (confirm('Are you sure?')) {
-                    $.ajax({
-                        url: `/api/bp33/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(res) {
-                            if (res.success) {
-                                dataTable.ajax.reload(null, false);
-                                showAlert('Deleted', 'success');
-                            } else {
-                                showAlert('Delete failed', 'danger');
+                Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/bp33/delete/${id}`,
+                            type: 'DELETE',
+                            success: function(res) {
+                                if (res.success) {
+                                    dataTable.ajax.reload(null, false);
+                                    Popup_Success('Deleted!', 'Record deleted successfully!');
+                                } else {
+                                    Popup_Error('Delete Failed', res.message || 'Delete failed');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Popup_Error('Delete Error', error || 'Failed to delete record');
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
 
             // Init

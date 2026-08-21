@@ -21,21 +21,23 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body" style="overflow-x:auto; overflow-y:visible;">
-                <table id="taskDatatable" class="table table-bordered table-striped w-100">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="taskDatatable" class="table table-bordered table-striped text-center w-100">
                     <thead>
-                        <tr>
-                            <th colspan="11" class="text-center">Admin</th>
-                            <th rowspan="3" style="vertical-align: middle;">Actions</th>
+                        <!-- 第一行：大类分组 (3 + 1 + 8 + 1 = 13列) -->
+                        <tr class="text-center">
+                            <th colspan="3">Admin</th>
+                            <th>Tax Reference</th>
+                            <th colspan="8">Login Info</th>
+                            <th rowspan="2" style="vertical-align: middle;">Actions</th>
                         </tr>
-                        <tr>
-                            <th rowspan="2" style="vertical-align: middle;">Grouping</th>
-                            <th rowspan="2" style="vertical-align: middle;">Referral</th>
-                            <th rowspan="2" style="vertical-align: middle;">Co Name</th>
-                            <th colspan="1" class="text-center">Tax Reference</th>
-                            <th colspan="7" class="text-center">Login Info</th>
-                        </tr>
-                        <tr>
+
+                        <!-- 第二行：12 个明细列名 + 第 13 列由第一行 Actions 垂直合并 -->
+                        <tr class="text-center">
+                            <th>Grouping</th>
+                            <th>Referral</th>
+                            <th>Co Name</th>
                             <th>E number</th>
                             <th>Login</th>
                             <th>Password</th>
@@ -143,13 +145,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="code">MISC Code</label>
-                                <input type="text" id="code" name="code" class="form-control" placeholder="Enter MISC code" />
+                                <input type="text" id="code" name="code" class="form-control" placeholder="Auto fill from Client" readonly />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="description">MISC Description</label>
-                                <input type="text" id="description" name="description" class="form-control" placeholder="Enter description" />
+                                <input type="text" id="description" name="description" class="form-control" placeholder="Auto fill from Client" readonly />
                             </div>
                         </div>
                     </div>
@@ -164,7 +166,34 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="yEtodo">Year to do</label>
-                                <input type="text" id="yEtodo" name="yEtodo" class="form-control" placeholder="Enter Year to do" />
+                                <select id="yEtodo" name="yEtodo" class="form-control">
+                                    <option value="">Select Year</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                    <option value="2034">2034</option>
+                                    <option value="2035">2035</option>
+                                    <option value="2036">2036</option>
+                                    <option value="2037">2037</option>
+                                    <option value="2038">2038</option>
+                                    <option value="2039">2039</option>
+                                    <option value="2040">2040</option>
+                                    <option value="2041">2041</option>
+                                    <option value="2042">2042</option>
+                                    <option value="2043">2043</option>
+                                    <option value="2044">2044</option>
+                                    <option value="2045">2045</option>
+                                    <option value="2046">2046</option>
+                                    <option value="2047">2047</option>
+                                    <option value="2048">2048</option>
+                                    <option value="2049">2049</option>
+                                    <option value="2050">2050</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -327,6 +356,8 @@
                     $('#yearEnd').val('');
                     $('#enumber').val('');
                     $('#tinNumber').val('');
+                    $('#code').val('');
+                    $('#description').val('');
                     return;
                 }
 
@@ -343,6 +374,20 @@
                 // 处理 E Number 和 TIN Number (注意 API 返回的字段名，这里做兼容处理)
                 $('#enumber').val(client.eNumber || client.enumber || '');
                 $('#tinNumber').val(client.taxIdentificationNumber || client.taxRefNo || '');
+
+                // 自动填充 MISC Code & MISC Description
+                $('#code').val(client.miscCode || client.msicCode || '');
+                $('#description').val(client.miscDescription || client.msicDescription || '');
+
+                // 自动从 C1.2 (A31B) 填充 Date Doc In
+                if (client.latestDateDocIn) {
+                    const docInIso = client.latestDateDocIn.split('T')[0];
+                    $('#dateDocIn').val(docInIso);
+                    $('.datepicker').datepicker('update', docInIso);
+                } else {
+                    $('#dateDocIn').val('');
+                    $('.datepicker').datepicker('update', '');
+                }
 
                 // 🟢 处理 Year End (转换 Month Name -> Date String)
                 // 假设 API 返回的是 client.yearEnd 或 client.yearEndMonth
@@ -392,110 +437,78 @@
                 $('#modalTitle').text('Add New Form E Record');
                 $('.datepicker').datepicker('update', '');
                 $('#recordId').val('');
-                $('#companySelect').val(''); // 重置 Dropdown
-            }
-
-            // 测试 API 连接 (你的原始逻辑)
-            function testApiConnection() {
-                console.log('Testing API connection to /api/bp26/get-all');
-
-                $.ajax({
-                    url: '/api/bp26/get-all',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            initializeDataTable();
-                        } else {
-                            showAlert('API returned error: ' + response.message, 'danger');
-                            initializeSimpleTable();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showAlert('Cannot connect to server. Please check your connection.', 'danger');
-                        initializeSimpleTable();
-                    }
-                });
+                $('#companySelect').val('');
             }
 
             // 初始化 DataTable (加上 Buttons 工具栏: Copy/CSV/Excel/PDF/Print/Column visibility)
             function initializeDataTable() {
-                try {
-                    if ($.fn.DataTable.isDataTable('#taskDatatable')) {
-                        dataTable.destroy();
-                        $('#taskDatatable').empty();
-                    }
-
-                    dataTable = $('#taskDatatable').DataTable({
-                        "processing": true,
-                        "serverSide": false,
-                        "ajax": {
-                            "url": "/api/bp26/get-all",
-                            "type": "GET",
-                            "dataSrc": function(response) {
-                                return response.success ? response.data : [];
-                            },
-                            "error": function(xhr, error, thrown) {
-                                showAlert('Failed to load data: ' + error, 'danger');
-                            }
-                        },
-                        "dom": '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
-                        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                        "language": {
-                            search: "Search:",
-                            emptyTable: "No records found. Click \"New Record\" to create one.",
-                            info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                            infoEmpty: "Showing 0 to 0 of 0 entries",
-                            paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
-                        },
-                        "columns": [
-                            { "data": "grouping", "defaultContent": "" },
-                            { "data": "refferal", "defaultContent": "" },
-                            { "data": "companyName", "defaultContent": "" },
-                            { "data": "enumber", "defaultContent": "" },
-                            { "data": "login", "defaultContent": "" },
-                            { "data": "password", "defaultContent": "" },
-                            { "data": "jobServices", "defaultContent": "" },
-                            { "data": "yEtodo", "defaultContent": "" },
-                            {
-                                "data": "dateDocIn",
-                                "render": function(data, type, row) {
-                                    if (!data) return '';
-                                    const formatted = formatDate(data);
-                                    const name = encodeURIComponent(row.companyName || '');
-                                    return `<a href="/AccountDept/FormBnPBacklog?company=${name}" target="_blank" title="Go to Backlog (C1.2)">${formatted}</a>`;
-                                },
-                                "defaultContent": ""
-                            },
-                            { "data": "staff", "defaultContent": "" },
-                            { "data": "allocateToWkSch", "defaultContent": "" },
-                            { "data": "completed", "defaultContent": "" },
-                            {
-                                "data": "id",
-                                "render": function(data, type, row) {
-                                    return `
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    `;
-                                },
-                                "orderable": false,
-                                "searchable": false
-                            }
-                        ],
-                        "order": [[0, 'desc']],
-                        "responsive": false,
-                        "searching": true,
-                        "paging": true,
-                        "pageLength": 10,
-                        "lengthChange": false,
-                        "scrollX": true
-                    });
-                } catch (error) {
-                    console.error('DataTable initialization failed:', error);
-                    initializeSimpleTable();
+                if ($.fn.DataTable.isDataTable('#taskDatatable')) {
+                    $('#taskDatatable').DataTable().destroy();
                 }
+
+                dataTable = $('#taskDatatable').DataTable({
+                    "processing": true,
+                    "serverSide": false,
+                    "ajax": {
+                        "url": "/api/bp26/get-all",
+                        "type": "GET",
+                        "dataSrc": function(response) {
+                            return response.success ? response.data : [];
+                        }
+                    },
+                    "dom": '<"d-flex justify-content-between align-items-center mb-2"Bf>rtip',
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    "language": {
+                        search: "Search:",
+                        emptyTable: "No records found. Click \"New Record\" to create one.",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+                    },
+                    "columns": [
+                        { "data": "grouping", "defaultContent": "" },
+                        { "data": "refferal", "defaultContent": "" },
+                        { "data": "companyName", "defaultContent": "" },
+                        { "data": "enumber", "defaultContent": "" },
+                        { "data": "login", "defaultContent": "" },
+                        { "data": "password", "defaultContent": "" },
+                        { "data": "jobServices", "defaultContent": "" },
+                        { "data": "yEtodo", "defaultContent": "" },
+                        {
+                            "data": "dateDocIn",
+                            "render": function(data, type, row) {
+                                if (!data) return '';
+                                const formatted = formatDate(data);
+                                const name = encodeURIComponent(row.companyName || '');
+                                return `<a href="/Document/A31BDocControl?company=${name}" target="_blank" title="Go to C1.2 Acc Dept Inbound / Outbound">${formatted}</a>`;
+                            },
+                            "defaultContent": ""
+                        },
+                        { "data": "staff", "defaultContent": "" },
+                        { "data": "allocateToWkSch", "defaultContent": "" },
+                        { "data": "completed", "defaultContent": "" },
+                        {
+                            "data": "id",
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-warning edit-btn" data-id="${data}" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                `;
+                            },
+                            "orderable": false,
+                            "searchable": false
+                        }
+                    ],
+                    "order": [[0, 'desc']],
+                    "responsive": false,
+                    "searching": true,
+                    "paging": true,
+                    "pageLength": 10,
+                    "lengthChange": false,
+                    "scrollX": true
+                });
             }
 
             function initializeSimpleTable() {
@@ -577,14 +590,14 @@
                             $('#taskModal').modal('hide');
                             refreshTable();
                             resetForm();
-                            showAlert('Record saved successfully!', 'success');
+                            Popup_Success('Saved!', 'Record saved successfully!');
                         } else {
-                            showAlert('Error saving record: ' + response.message, 'danger');
+                            Popup_Error('Save Failed', response.message || 'Error saving record');
                         }
                     },
                     error: function(xhr, status, error) {
                         $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Save');
-                        showAlert('Error saving record: ' + error, 'danger');
+                        Popup_Error('Save Error', error || 'Failed to save record');
                     }
                 });
             }
@@ -630,32 +643,34 @@
                         $('#modalTitle').text('Edit Form E Record');
                         $('#taskModal').modal('show');
                     } else {
-                        showAlert('Error loading record: ' + response.message, 'danger');
+                        Popup_Error('Error', response.message || 'Failed to load record');
                     }
                 }).fail(function(xhr, status, error) {
-                    showAlert('Error loading record: ' + error, 'danger');
+                    Popup_Error('Error', 'Failed to load record');
                 });
             }
 
             // 删除记录
             function deleteRecord(id) {
-                if (confirm('Are you sure you want to delete this record?')) {
-                    $.ajax({
-                        url: `/api/bp26/delete/${id}`,
-                        type: 'DELETE',
-                        success: function(response) {
-                            if (response.success) {
-                                refreshTable();
-                                showAlert('Record deleted successfully!', 'success');
-                            } else {
-                                showAlert('Error deleting record: ' + response.message, 'danger');
+                Popup_Questions('Delete Record', 'Are you sure you want to delete this record? This action cannot be undone.').then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/api/bp26/delete/${id}`,
+                            type: 'DELETE',
+                            success: function(response) {
+                                if (response.success) {
+                                    refreshTable();
+                                    Popup_Success('Deleted!', 'Record deleted successfully!');
+                                } else {
+                                    Popup_Error('Delete Failed', response.message || 'Error deleting record');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Popup_Error('Delete Error', error || 'Failed to delete record');
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            showAlert('Error deleting record: ' + error, 'danger');
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             }
 
             function refreshTable() {
@@ -707,7 +722,7 @@
             initializeDatePickers();
             loadCompanyOptions(); // 🟢 启动时加载 Dropdown
             loadStaffOptions();
-            testApiConnection();
+            initializeDataTable();
         });
     </script>
 }
