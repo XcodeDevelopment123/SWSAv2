@@ -261,7 +261,6 @@ $(function () {
                 apptEngData = {};
             }
             updateApptEngText();
-            updateNoteReferences(data);
             updateMsicCodeTable(data.msicCodes);
             updateOwnerTable(data.owners);
         } else {
@@ -308,14 +307,6 @@ $(function () {
             'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12
         };
         return months[monthName] || null;
-    }
-
-    function updateNoteReferences(data) {
-        $('#noteClientRating').text(data.clientRating || '-');
-        $('#noteCompanyStatus').text(data.companyStatus ? data.companyStatus.toString() : '-');
-        $('#noteCreditRating').text(data.creditRating ? data.creditRating.toString() : '-');
-        $('#noteBusinessNature').text(data.businessNature || '-');
-        $('#noteServiceSelected').text(data.serviceSelected || '-');
     }
 
     function updateMsicCodeTable(data) {

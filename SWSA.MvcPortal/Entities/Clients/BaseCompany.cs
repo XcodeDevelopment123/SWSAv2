@@ -42,7 +42,7 @@ public abstract class BaseCompany : BaseClient
     [SystemAuditLog("Client Rating")]
     public string? ClientRating { get; set; }
 
-    [SystemAuditLog("Business Nature")]
+    [SystemAuditLog("Business Description")]
     public string? BusinessNature { get; set; }
 
     [SystemAuditLog("Service Selected")]
