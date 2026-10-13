@@ -1,4 +1,4 @@
-﻿using SWSA.MvcPortal.Commons.Enums;
+using SWSA.MvcPortal.Commons.Enums;
 using SWSA.MvcPortal.Dtos.Requests.Clients;
 using SWSA.MvcPortal.Entities.Clients;
 using SWSA.MvcPortal.Models.Clients;
@@ -8,6 +8,7 @@ namespace SWSA.MvcPortal.Services.Interfaces.Clients;
 public interface IClientService
 {
     Task<BaseCompany> CreateCompanyAsync(CreateCompanyRequest req);
+    Task<ImportCompanyResult> ImportCompaniesAsync(ClientType clientType, CompanyType companyType, List<ImportCompanyRow> rows);
     Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req);
     Task<T> GetClientByIdAsync<T>(int id) where T : BaseClient;
     Task<List<T>> GetClientsAsync<T>() where T : BaseClient;

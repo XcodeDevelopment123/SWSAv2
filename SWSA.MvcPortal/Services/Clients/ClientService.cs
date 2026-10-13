@@ -168,6 +168,284 @@ public class ClientService(
         return entity;
     }
 
+    #region Excel Import
+    public async Task<ImportCompanyResult> ImportCompaniesAsync(ClientType clientType, CompanyType companyType, List<ImportCompanyRow> rows)
+    {
+        var result = new ImportCompanyResult { Total = rows.Count };
+        if (rows.Count == 0) return result;
+
+        // ---- Lookups (load once) ----
+        List<GroupInfoDto> groups;
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            groups = (await connection.QueryAsync<GroupInfoDto>("SELECT Id, GroupName, IsActive FROM dbo.Groups")).ToList();
+        }
+        var groupLookup = groups
+            .GroupBy(g => g.GroupName.Trim(), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        var msicLookup = (await _msicCodeds.AsNoTracking().Select(m => new { m.Id, m.Code }).ToListAsync())
+            .GroupBy(m => m.Code.Trim(), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First().Id, StringComparer.OrdinalIgnoreCase);
+
+        var existing = await _companies.AsNoTracking()
+            .Select(c => new { c.Name, c.RegistrationNumber })
+            .ToListAsync();
+        var existingKeys = new HashSet<string>(
+            existing.Select(e => DupKey(e.Name, e.RegistrationNumber)),
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var row in rows)
+        {
+            var rowResult = new ImportCompanyRowResult
+            {
+                RowNumber = row.RowNumber,
+                CompanyName = row.CompanyName?.Trim()
+            };
+            result.Results.Add(rowResult);
+
+            var errors = new List<string>();
+            var name = row.CompanyName?.Trim();
+            var regNo = row.RegistrationNumber?.Trim();
+
+            if (string.IsNullOrWhiteSpace(name)) errors.Add("Company Name is required");
+            if (string.IsNullOrWhiteSpace(regNo)) errors.Add("Registration Number is required");
+
+            // Incorporation date
+            DateTime? incorpDate = null;
+            if (!string.IsNullOrWhiteSpace(row.IncorporationDate))
+            {
+                if (TryParseImportDate(row.IncorporationDate, out var d)) incorpDate = d;
+                else errors.Add($"Invalid Incorporation Date '{row.IncorporationDate}'");
+            }
+
+            // Year end month
+            MonthOfYear? yearEnd = null;
+            if (!string.IsNullOrWhiteSpace(row.YearEndMonth))
+            {
+                if (TryParseMonth(row.YearEndMonth, out var m)) yearEnd = m;
+                else errors.Add($"Invalid Year End Month '{row.YearEndMonth}'");
+            }
+
+            // Activity size (D, 1-6). Defaults to D when empty.
+            var activity = CompanyActivityLevel.D;
+            if (!string.IsNullOrWhiteSpace(row.ActivitySize) && !TryParseActivity(row.ActivitySize, out activity))
+                errors.Add($"Invalid Activity Size '{row.ActivitySize}' (use D, 1-6)");
+
+            // MSIC codes
+            var msicIds = new List<int>();
+            if (!string.IsNullOrWhiteSpace(row.MsicCodes))
+            {
+                var codes = row.MsicCodes
+                    .Split(new[] { ',', ';', '/', '\n', '|' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (codes.Count > 3) errors.Add("Maximum 3 MSIC codes allowed");
+                foreach (var code in codes)
+                {
+                    if (msicLookup.TryGetValue(code, out var id)) msicIds.Add(id);
+                    else errors.Add($"MSIC code '{code}' not found");
+                }
+            }
+
+            // Group
+            int? groupId = null;
+            string? groupName = null;
+            if (!string.IsNullOrWhiteSpace(row.Group))
+            {
+                if (!groupLookup.TryGetValue(row.Group.Trim(), out var g)) errors.Add($"Group '{row.Group}' not found");
+                else if (!g.IsActive) errors.Add($"Group '{row.Group}' is not active");
+                else { groupId = g.Id; groupName = g.GroupName; }
+            }
+
+            // Duplicate (same rule as manual create: Name + Registration Number)
+            if (errors.Count == 0)
+            {
+                var key = DupKey(name!, regNo!);
+                if (existingKeys.Contains(key)) errors.Add("Company Name / Number already exists");
+            }
+
+            if (errors.Count > 0)
+            {
+                rowResult.Success = false;
+                rowResult.Message = string.Join("; ", errors);
+                result.FailedCount++;
+                continue;
+            }
+
+            var targetCompanyType = companyType;
+            if (!string.IsNullOrWhiteSpace(row.CompanyType) && TryParseCompanyType(row.CompanyType, out var parsedType))
+            {
+                targetCompanyType = parsedType;
+            }
+
+            var req = new CreateCompanyRequest
+            {
+                CompanyName = name!,
+                RegistrationNumber = regNo!,
+                EmployerNumber = NullIfEmpty(row.EmployerNumber),
+                TaxIdentificationNumber = NullIfEmpty(row.TaxIdentificationNumber),
+                IncorporationDate = incorpDate,
+                YearEndMonth = yearEnd,
+                ActivitySize = activity,
+                ClientType = clientType,
+                CompanyType = targetCompanyType,
+                MsicCodeIds = msicIds,
+                CategoryInfo = new ClientCategoryRequest
+                {
+                    GroupId = groupId,
+                    Group = groupName,
+                    Referral = NullIfEmpty(row.Referral),
+                    FileNo = NullIfEmpty(row.FileNo)
+                }
+            };
+
+            var entity = _clientCreationFactory.CreateCompanyAsync(req);
+            try
+            {
+                await db.AddAsync(entity);
+                await db.SaveChangesAsync();
+
+                existingKeys.Add(DupKey(name!, regNo!));
+                rowResult.Success = true;
+                rowResult.ClientId = entity.Id;
+                rowResult.Message = "Created";
+                result.SuccessCount++;
+
+                var log = SystemAuditLogEntry.Create(SystemAuditModule.Client, entity.Id.ToString(), $"Client (Excel Import): {entity.Name}", entity);
+                _sysAuditService.LogInBackground(log);
+            }
+            catch (Exception ex)
+            {
+                // Detach failed entity so the next rows can still be saved
+                db.ChangeTracker.Clear();
+                rowResult.Success = false;
+                rowResult.Message = ex.InnerException?.Message ?? ex.Message;
+                result.FailedCount++;
+            }
+        }
+
+        return result;
+    }
+
+    private static string DupKey(string name, string regNo) => $"{name?.Trim()}||{regNo?.Trim()}";
+
+    private static string? NullIfEmpty(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
+
+    private static readonly string[] _dateFormats =
+    [
+        "yyyy-MM-dd", "yyyy/MM/dd", "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy",
+        "dd.MM.yyyy", "d MMM yyyy", "dd MMM yyyy", "d-MMM-yyyy", "dd-MMM-yyyy", "d-MMM-yy", "dd-MMM-yy",
+        "d MMM,yyyy", "dd MMM,yyyy", "d MMM, yyyy", "dd MMM, yyyy", "d MMMM yyyy", "dd MMMM yyyy", "d MMMM,yyyy", "d MMMM, yyyy",
+        "MMM d, yyyy", "MMMM d, yyyy", "d/MMM/yyyy", "dd/MMM/yyyy",
+        "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-dd HH:mm:ss"
+    ];
+
+    private static bool TryParseImportDate(string input, out DateTime date)
+    {
+        input = input.Trim();
+        if (DateTime.TryParseExact(input, _dateFormats, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out date))
+            return true;
+
+        // Excel serial number (e.g. 45123)
+        if (double.TryParse(input, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var serial)
+            && serial > 0 && serial < 2958466)
+        {
+            date = DateTime.FromOADate(serial).Date;
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryParseMonth(string input, out MonthOfYear month)
+    {
+        month = default;
+        input = input.Trim();
+
+        if (int.TryParse(input, out var n) && n >= 1 && n <= 12)
+        {
+            month = (MonthOfYear)n;
+            return true;
+        }
+
+        // Common Malay / alternative month abbreviations (e.g. Mac = March, Mei = May, Ogo/Ogos = August, Okt = October, Dis = December)
+        var cleanInput = input.TrimEnd('.');
+        if (cleanInput.Equals("mac", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.March; return true; }
+        if (cleanInput.Equals("mei", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.May; return true; }
+        if (cleanInput.StartsWith("ogo", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.August; return true; }
+        if (cleanInput.StartsWith("okt", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.October; return true; }
+        if (cleanInput.StartsWith("dis", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.December; return true; }
+        if (cleanInput.Equals("sept", StringComparison.OrdinalIgnoreCase)) { month = MonthOfYear.September; return true; }
+
+        foreach (MonthOfYear m in Enum.GetValues(typeof(MonthOfYear)))
+        {
+            var full = m.ToString();
+            if (input.Length >= 3 &&
+                full.StartsWith(cleanInput, StringComparison.OrdinalIgnoreCase))
+            {
+                month = m;
+                return true;
+            }
+            // e.g. "Sept"
+            if (input.Length >= 3 &&
+                input.StartsWith(full[..3], StringComparison.OrdinalIgnoreCase) &&
+                full.StartsWith(input[..Math.Min(input.Length, full.Length)], StringComparison.OrdinalIgnoreCase) == false &&
+                input.Length <= 4)
+            {
+                month = m;
+                return true;
+            }
+        }
+
+        // A full date like 31/12/2024 -> December
+        if (TryParseImportDate(input, out var d))
+        {
+            month = (MonthOfYear)d.Month;
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryParseActivity(string input, out CompanyActivityLevel level)
+    {
+        level = CompanyActivityLevel.D;
+        input = input.Trim();
+        if (input.Equals("D", StringComparison.OrdinalIgnoreCase)) return true;
+        if (int.TryParse(input, out var n) && n >= 1 && n <= 6)
+        {
+            level = (CompanyActivityLevel)n;
+            return true;
+        }
+        return Enum.TryParse(input, true, out level) && Enum.IsDefined(typeof(CompanyActivityLevel), level);
+    }
+
+    private static bool TryParseCompanyType(string input, out CompanyType type)
+    {
+        type = CompanyType.SdnBhd;
+        if (string.IsNullOrWhiteSpace(input)) return false;
+        var clean = input.Trim().ToLowerInvariant().Replace(" ", "").Replace(".", "").Replace("-", "");
+        if (clean == "sdnbhd" || clean == "sdn" || clean == "bhd") { type = CompanyType.SdnBhd; return true; }
+        if (clean == "llp") { type = CompanyType.LLP; return true; }
+        if (clean.Contains("sole") || clean == "sp" || clean == "soleproprietorship" || clean == "soleproprietorships")
+        {
+            type = CompanyType.SoleProprietorships;
+            return true;
+        }
+        if (clean.Contains("partner") || clean == "partnership")
+        {
+            type = CompanyType.Partnership;
+            return true;
+        }
+        if (clean == "enterprise")
+        {
+            type = CompanyType.SoleProprietorships;
+            return true;
+        }
+        return Enum.TryParse(input, true, out type);
+    }
+    #endregion
+
     public async Task<IndividualClient> CreateIndividualAsync(CreateIndividualRequest req)
     {
         var isExist = await _individualClients.IcOrPassportExistsAsync(req.ICOrPassportNumber);

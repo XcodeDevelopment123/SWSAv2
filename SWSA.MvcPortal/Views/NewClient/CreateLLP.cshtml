@@ -24,6 +24,8 @@
 
 <div class="row">
 
+    <partial name="_BulkImportCard" model='"LLP"' />
+
     <div class="col-md-12">
         <!-- jquery validation -->
         <form id="adminForm">
@@ -198,5 +200,8 @@
     <partial name="_DatatablesScriptsPartial" />
 
     <script src="~/js/clients/new-clients/create-company.js" asp-append-version="true"></script>
+    <!-- Excel import (SheetJS) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="~/js/clients/new-clients/import-company.js" asp-append-version="true"></script>
     <!-- date-range-picker -->
 }

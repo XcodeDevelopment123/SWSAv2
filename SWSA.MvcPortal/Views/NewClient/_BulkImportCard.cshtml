@@ -1,0 +1,73 @@
+@model string
+@{
+    var profileTitle = string.IsNullOrWhiteSpace(Model) ? "Client" : Model;
+}
+<!-- ===== Bulk Import from Excel ===== -->
+<div class="col-md-12">
+    <div class="card card-success card-outline" id="importCard">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-file-excel mr-1 text-success"></i>
+                Bulk Import @profileTitle from Excel
+            </h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-2">
+                Upload an Excel file (.xlsx / .xls / .csv) to create many @profileTitle clients at once.
+                Download the template first to see the required columns.
+            </p>
+
+            <div class="d-flex flex-wrap align-items-center" style="gap:.5rem">
+                <button type="button" id="btnDownloadTemplate" class="btn btn-outline-success">
+                    <i class="fas fa-download mr-1"></i> Download Template
+                </button>
+
+                <label for="importFile" class="btn btn-success mb-0">
+                    <i class="fas fa-upload mr-1"></i> Choose Excel File
+                </label>
+                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" class="d-none" />
+                <span id="importFileName" class="text-muted">No file selected</span>
+
+                <div class="ml-auto">
+                    <button type="button" id="btnClearImport" class="btn btn-outline-secondary d-none">
+                        <i class="fas fa-times mr-1"></i> Clear
+                    </button>
+                    <button type="button" id="btnStartImport" class="btn btn-primary d-none">
+                        <i class="fas fa-cloud-upload-alt mr-1"></i> Import <span id="importCount">0</span> Rows
+                    </button>
+                </div>
+            </div>
+
+            <div id="importSummary" class="mt-3 d-none"></div>
+
+            <div id="importPreviewWrap" class="table-responsive mt-3 d-none" style="max-height:420px; overflow:auto;">
+                <table class="table table-sm table-bordered table-hover mb-0" id="importPreviewTable">
+                    <thead class="thead-light" style="position:sticky; top:0; z-index:1;">
+                        <tr>
+                            <th>Row</th>
+                            <th>Status</th>
+                            <th>Company Name</th>
+                            <th>Registration No</th>
+                            <th>E Number</th>
+                            <th>TIN</th>
+                            <th>Incorp. Date</th>
+                            <th>Year End</th>
+                            <th>Activity</th>
+                            <th>MSIC</th>
+                            <th>Group</th>
+                            <th>Referral</th>
+                            <th>File No</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===== /Bulk Import ===== -->

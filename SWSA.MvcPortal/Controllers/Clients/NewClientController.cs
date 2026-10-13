@@ -58,6 +58,48 @@ public class NewClientController(
     }
 
     [InternalAjaxOnly]
+    [HttpPost("sdnbhd/import")]
+    public async Task<IActionResult> ImportSdnBhdAsync([FromBody] ImportCompanyRequest req)
+    {
+        if (req?.Rows == null || req.Rows.Count == 0)
+            return BadRequest(new { message = "No rows found in the uploaded file." });
+
+        if (req.Rows.Count > 1000)
+            return BadRequest(new { message = "Maximum 1000 rows per import." });
+
+        var result = await _clientService.ImportCompaniesAsync(ClientType.SdnBhd, CompanyType.SdnBhd, req.Rows);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("llp/import")]
+    public async Task<IActionResult> ImportLLPAsync([FromBody] ImportCompanyRequest req)
+    {
+        if (req?.Rows == null || req.Rows.Count == 0)
+            return BadRequest(new { message = "No rows found in the uploaded file." });
+
+        if (req.Rows.Count > 1000)
+            return BadRequest(new { message = "Maximum 1000 rows per import." });
+
+        var result = await _clientService.ImportCompaniesAsync(ClientType.LLP, CompanyType.LLP, req.Rows);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
+    [HttpPost("enterprise/import")]
+    public async Task<IActionResult> ImportEnterpriseAsync([FromBody] ImportCompanyRequest req)
+    {
+        if (req?.Rows == null || req.Rows.Count == 0)
+            return BadRequest(new { message = "No rows found in the uploaded file." });
+
+        if (req.Rows.Count > 1000)
+            return BadRequest(new { message = "Maximum 1000 rows per import." });
+
+        var result = await _clientService.ImportCompaniesAsync(ClientType.Enterprise, CompanyType.SoleProprietorships, req.Rows);
+        return Ok(result);
+    }
+
+    [InternalAjaxOnly]
     [HttpPost("individual")]
     public async Task<IActionResult> CreateIndividualAsync(CreateIndividualRequest req)
     {
